@@ -1,0 +1,250 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 父工程信息 -->
+    <parent>
+        <groupId>icu.etl</groupId>
+        <artifactId>easyetl-dependencies</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../easyetl-dependencies</relativePath>
+    </parent>
+
+    <!-- 工程信息 -->
+    <artifactId>easyetl-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <!-- 子工程信息 -->
+    <modules>
+        <module>easyetl-tool</module>
+        <module>easyetl-logger</module>
+        <module>easyetl-ioc</module>
+    </modules>
+
+    <!-- 插件属性 -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.charset>UTF-8</maven.compiler.charset>
+        <maven.test.skip>true</maven.test.skip>
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+        <maven.javadoc.skip>false</maven.javadoc.skip>
+    </properties>
+
+    <!-- Source Code Management，源代码版本管理信息 -->
+    <scm>
+        <!-- connection 用于一般用户访问代码仓库的URL，通常用于只读访问 -->
+        <connection>scm:git:https://github.com/jeremy8551/easyetl-parent.git</connection>
+        <!-- developerConnection：用于开发者访问代码仓库的URL，可以读写 -->
+        <developerConnection>scm:git:https://github.com/jeremy8551/easyetl-parent.git</developerConnection>
+        <!-- url：项目的Web页面或信息页面的URL -->
+        <url>https://github.com/jeremy8551/easyetl-parent</url>
+    </scm>
+
+    <!-- 问题工单 -->
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/jeremy8551/easyetl-parent/issues</url>
+    </issueManagement>
+
+    <!-- 开发人员 -->
+    <developers>
+        <developer>
+            <name>jeremy8551</name>
+            <email>jeremy8551@qq.com</email>
+            <timezone>+8</timezone>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <build>
+        <plugins>
+            <!--            &lt;!&ndash; easyetl的编译插件 &ndash;&gt;-->
+            <!--            <plugin>-->
+            <!--                <groupId>icu.etl</groupId>-->
+            <!--                <artifactId>easyetl-maven-plugin</artifactId>-->
+            <!--                <extensions>true</extensions>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>generate-sources</phase> &lt;!&ndash; 生成源代码 &ndash;&gt;-->
+            <!--                        <goals>-->
+            <!--                            <goal>jdk</goal> &lt;!&ndash; 在编译源代码之前执行JDK目标，自动选择合适的JDK适配器方言 &ndash;&gt;-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
+
+            <!-- 单元测试插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>${maven.test.skip}</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 编译插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <!-- 生成 Javadoc 的jar文件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 插件用于生成源码jar文件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 插件用于生成Javadoc的jar文件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <tags>
+                        <tag>
+                            <!-- https://maven.apache.org/plugins/maven-javadoc-plugin/examples/tag-configuration.html -->
+                            <name>createtime</name> <!-- 自定义 @createtime 标记，屏蔽生成javadoc时的错误信息 -->
+                            <placement>a</placement> <!-- 指定标签的放置位置，a表示能在所有位置使用 -->
+                            <head>创建时间:</head> <!-- 定义标签的前缀，例如 "作者:" 或 "版本:" -->
+                        </tag>
+                    </tags>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <doclint>none</doclint> <!-- 禁用DocLint检查,屏蔽警告和报错信息 -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- GPG签名插件,对项目最后生成的jar包进行签名 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>verify</phase> <!-- 验证阶段 -->
+                        <goals>
+                            <goal>sign</goal> <!-- 插件目标: 在验证阶段执行 GPG 签名操作 -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- sonatype插件，用于登录验证、上传jar到sonatype的maven仓库 -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- 项目jar包分发管理信息 -->
+    <distributionManagement>
+        <snapshotRepository>
+            <!-- 快照版本 -->
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <!-- 这里的 https://s01.oss.sonatype.org/ 是生成 sonatype 的issues工单时, 机器人评论的那个地址-->
+        </snapshotRepository>
+        <repository>
+            <!-- 发布正式版 -->
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+
+    <profiles>
+        <!-- 将deploy配置作为一个profile，在执行deploy命令时激活这个profile: clean deploy -P release -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!--                    &lt;!&ndash; 插件用于生成Javadoc的jar文件 &ndash;&gt;-->
+                    <!--                    <plugin>-->
+                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+                    <!--                        <artifactId>maven-javadoc-plugin</artifactId>-->
+                    <!--                        <executions>-->
+                    <!--                            <execution>-->
+                    <!--                                <phase>package</phase>-->
+                    <!--                                <goals>-->
+                    <!--                                    <goal>jar</goal>-->
+                    <!--                                </goals>-->
+                    <!--                                <configuration>-->
+                    <!--                                    <doclint>none</doclint> &lt;!&ndash; 禁用DocLint检查,屏蔽警告和报错信息 &ndash;&gt;-->
+                    <!--                                </configuration>-->
+                    <!--                            </execution>-->
+                    <!--                        </executions>-->
+                    <!--                    </plugin>-->
+
+                    <!-- GPG签名插件,对项目最后生成的jar包进行签名 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase> <!-- 验证阶段 -->
+                                <goals>
+                                    <goal>sign</goal> <!-- 插件目标: 在验证阶段执行 GPG 签名操作 -->
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- sonatype插件，用于登录验证、上传jar到sonatype的maven仓库 -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <!-- 这里的 https://s01.oss.sonatype.org/ 是生成 sonatype 的issues工单时, 机器人评论的那个地址-->
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
