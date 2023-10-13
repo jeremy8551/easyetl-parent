@@ -1,0 +1,82 @@
+package icu.etl.jdk;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.Character.UnicodeBlock;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLXML;
+import java.sql.Statement;
+import java.util.Date;
+import java.util.Properties;
+
+import icu.etl.util.IO;
+
+public class JDK6 implements JavaDialect {
+
+    public int getNetworkTimeout(Connection conn) throws SQLException {
+        return 0;
+    }
+
+    public String toLongname(File file) {
+        return "";
+    }
+
+    public void setClientInfo(Connection conn, Properties p) throws SQLException {
+        try {
+            conn.setClientInfo(p);
+        } catch (Throwable e) {
+        }
+    }
+
+    public Properties getClientInfo(Connection conn) throws SQLException {
+        try {
+            return conn.getClientInfo();
+        } catch (Throwable e) {
+            return new Properties();
+        }
+    }
+
+    public int getAvailableThreads() {
+        ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+        ThreadInfo[] threads = threadMXBean.dumpAllThreads(false, false);
+        int thread = (Runtime.getRuntime().availableProcessors() * 2) - threads.length - 2;
+        return thread < 0 ? 0 : thread;
+    }
+
+    public boolean canExecute(File file) {
+        return file.canExecute();
+    }
+
+    public Object parseJdbcObject(Object obj) throws IOException, SQLException {
+        if (obj instanceof java.sql.SQLXML) {
+            SQLXML xml = (java.sql.SQLXML) obj;
+            StringBuilder buf = IO.read(xml.getCharacterStream(), new StringBuilder());
+            return buf.toString();
+        } else if (obj instanceof java.sql.RowId) {
+            return ((java.sql.RowId) obj).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public boolean isStatementClosed(Statement statement) throws SQLException {
+        return statement == null || statement.isClosed();
+    }
+
+    public boolean isChineseLetter(UnicodeBlock ub) {
+        return false;
+    }
+
+    public String getLink(File file) {
+        return null;
+    }
+
+    public Date getCreateTime(String filepath) {
+        return null;
+    }
+
+}

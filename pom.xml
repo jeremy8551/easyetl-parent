@@ -22,6 +22,11 @@
         <module>easyetl-tool</module>
         <module>easyetl-logger</module>
         <module>easyetl-ioc</module>
+        <module>easyetl-expression</module>
+        <module>easyetl-io</module>
+        <module>easyetl-cn</module>
+        <module>easyetl-jdk</module>
+        <module>easyetl-concurrent</module>
     </modules>
 
     <!-- 插件属性 -->

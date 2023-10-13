@@ -1,0 +1,5 @@
+package icu.etl.jdk;
+
+public class JDK8 extends JDK7 {
+
+}

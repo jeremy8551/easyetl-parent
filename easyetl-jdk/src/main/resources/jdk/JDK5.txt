@@ -1,0 +1,61 @@
+package icu.etl.jdk;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.Character.UnicodeBlock;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+import java.util.Properties;
+
+public class JDK5 implements JavaDialect {
+
+    public int getNetworkTimeout(Connection conn) throws SQLException {
+        return 0;
+    }
+
+    public Properties getClientInfo(Connection conn) throws SQLException {
+        return new Properties();
+    }
+
+    public int getAvailableThreads() {
+        ThreadMXBean mxbean = ManagementFactory.getThreadMXBean();
+        int thread = (mxbean.getThreadCount() * 2) - 2;
+        return thread <= 0 ? 1 : thread;
+    }
+
+    public boolean canExecute(File file) {
+        return false;
+    }
+
+    public Object parseJdbcObject(Object obj) throws IOException, SQLException {
+        return null;
+    }
+
+    public boolean isStatementClosed(Statement statement) throws SQLException {
+        return true;
+    }
+
+    public void setClientInfo(Connection conn, Properties p) throws SQLException {
+    }
+
+    public boolean isChineseLetter(UnicodeBlock ub) {
+        return false;
+    }
+
+    public String toLongname(File file) {
+        return "";
+    }
+
+    public String getLink(File file) {
+        return null;
+    }
+
+    public Date getCreateTime(String filepath) {
+        return null;
+    }
+
+}

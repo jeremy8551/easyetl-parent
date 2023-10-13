@@ -43,7 +43,10 @@ public class BeanContext implements BeanRegister {
     /**
      * 上下文信息
      *
-     * @param args 参数数组, sout:trace 表示使用控制台输出debug级别的日志
+     * @param args 参数数组，格式如下:
+     *             org.test 表示扫描这个包名下的类信息
+     *             !org.test 表示扫描包时，排除掉这个包名下的类
+     *             sout:debug 表示使用控制台输出debug级别的日志
      */
     public BeanContext(String... args) {
         this(null, args);
