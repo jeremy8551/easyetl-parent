@@ -14,6 +14,9 @@ public class BeanFactory {
     /** 组件工厂上下文信息 */
     private static BeanContext context;
 
+    /** 初始化上下文时使用的锁 */
+    private final static Object lock = new Object();
+
     /**
      * 初始化
      */
@@ -35,6 +38,13 @@ public class BeanFactory {
      * @return 上下文信息
      */
     public static BeanContext getContext() {
+        if (BeanFactory.context == null) {
+            synchronized (lock) {
+                if (BeanFactory.context == null) {
+                    BeanFactory.context = new BeanContext();
+                }
+            }
+        }
         return BeanFactory.context;
     }
 
@@ -51,7 +61,7 @@ public class BeanFactory {
      * @return 实例对象
      */
     public static <E> E get(Class<E> clazz, Object... array) {
-        List<BeanCreator> creators = context.getCreators();
+        List<BeanCreator> creators = getContext().getCreators();
 
         E obj;
         for (BeanCreator c : creators) {

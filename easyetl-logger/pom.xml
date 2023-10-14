@@ -12,16 +12,6 @@
     </parent>
 
     <artifactId>easyetl-logger</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
-
-    <name>easyetl-logger</name>
-    <url>https://github.com/jeremy8551/easyetl-parent/easyetl-logger</url>
-    <description>easyetl-logger</description>
-
-    <properties>
-        <maven.test.skip>false</maven.test.skip>
-    </properties>
 
     <dependencies>
         <!-- 测试工具包 -->

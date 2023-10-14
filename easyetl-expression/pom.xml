@@ -12,10 +12,6 @@
 
     <artifactId>easyetl-expression</artifactId>
 
-    <properties>
-        <maven.test.skip>false</maven.test.skip>
-    </properties>
-
     <dependencies>
         <!-- 测试工具包 -->
         <dependency>

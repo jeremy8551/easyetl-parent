@@ -12,16 +12,6 @@
     </parent>
 
     <artifactId>easyetl-ioc</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
-
-    <name>easyetl-ioc</name>
-    <url>https://github.com/jeremy8551/easyetl-ioc/</url>
-    <description>easyetl-ioc</description>
-
-    <properties>
-        <maven.test.skip>false</maven.test.skip>
-    </properties>
 
     <dependencies>
         <!-- 测试工具包 -->
