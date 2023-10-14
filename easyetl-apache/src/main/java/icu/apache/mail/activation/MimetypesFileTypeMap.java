@@ -33,9 +33,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Vector;
 
+import icu.apache.ApacheEmailCommand;
 import icu.apache.mail.activation.registries.LogSupport;
 import icu.apache.mail.activation.registries.MimeTypeFile;
-import icu.etl.apache.ApacheEmailCommand;
 
 /**
  * This class extends FileTypeMap and provides data typing of files via their file extension. It uses the <code>.mime.types</code> format.

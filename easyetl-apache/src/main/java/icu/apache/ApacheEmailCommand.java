@@ -1,4 +1,4 @@
-package icu.etl.apache;
+package icu.apache;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;

@@ -36,9 +36,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import icu.apache.ApacheEmailCommand;
 import icu.apache.mail.activation.registries.LogSupport;
 import icu.apache.mail.activation.registries.MailcapFile;
-import icu.etl.apache.ApacheEmailCommand;
 
 /**
  * MailcapCommandMap extends the CommandMap abstract class. It implements a CommandMap whose configuration is based on mailcap files (<A HREF="http://www.ietf.org/rfc/rfc1524.txt">RFC 1524</A>). The MailcapCommandMap can be configured both programmatically and via configuration files.
