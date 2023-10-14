@@ -27,6 +27,7 @@
         <module>easyetl-cn</module>
         <module>easyetl-jdk</module>
         <module>easyetl-concurrent</module>
+        <module>easyetl-apache</module>
     </modules>
 
     <!-- 插件属性 -->
