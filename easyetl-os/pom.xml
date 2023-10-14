@@ -7,33 +7,25 @@
         <groupId>icu.etl</groupId>
         <artifactId>easyetl-parent</artifactId>
         <version>1.0.0</version>
+        <relativePath>../../easyetl-parent</relativePath>
     </parent>
 
     <artifactId>easyetl-os</artifactId>
 
     <dependencies>
-        <!-- 测试工具包 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-jsch</artifactId>
-            <version>1.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-apache</artifactId>
-            <version>1.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-expression</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

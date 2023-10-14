@@ -8,21 +8,15 @@
         <groupId>icu.etl</groupId>
         <artifactId>easyetl-parent</artifactId>
         <version>1.0.0</version>
+        <relativePath>../../easyetl-parent</relativePath>
     </parent>
 
     <artifactId>easyetl-jdk</artifactId>
 
     <dependencies>
-        <!-- 测试工具包 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-ioc</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

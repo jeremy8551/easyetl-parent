@@ -12,16 +12,9 @@
     <artifactId>easyetl-io</artifactId>
 
     <dependencies>
-        <!-- 测试工具包 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-cn</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

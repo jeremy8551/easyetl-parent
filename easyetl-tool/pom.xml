@@ -14,12 +14,6 @@
     <artifactId>easyetl-tool</artifactId>
 
     <dependencies>
-        <!-- 测试工具包 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
         <!-- servlet 规范 -->
         <dependency>
             <groupId>javax.servlet</groupId>

@@ -14,17 +14,10 @@
     <artifactId>easyetl-logger</artifactId>
 
     <dependencies>
-        <!-- 测试工具包 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
         <!-- slf4j日志门面 -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.9</version>
             <optional>true</optional>
         </dependency>
 
@@ -32,14 +25,12 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.3.6</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-tool</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

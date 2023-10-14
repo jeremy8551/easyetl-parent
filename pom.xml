@@ -14,8 +14,8 @@
 
     <!-- 工程信息 -->
     <artifactId>easyetl-parent</artifactId>
-    <version>1.0.0</version>
     <packaging>pom</packaging>
+    <version>${easyetl.project.version}</version>
 
     <!-- 子工程信息 -->
     <modules>
@@ -44,6 +44,7 @@
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
         <maven.javadoc.skip>false</maven.javadoc.skip>
     </properties>
+
 
     <!-- Source Code Management，源代码版本管理信息 -->
     <scm>
@@ -75,8 +76,6 @@
 
     <build>
         <plugins>
-
-
             <!-- 单元测试插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
