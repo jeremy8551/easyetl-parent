@@ -29,8 +29,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>easyetl-cn</finalName>
-    </build>
-
 </project>
