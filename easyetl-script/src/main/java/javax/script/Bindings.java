@@ -1,4 +1,4 @@
-package script;
+package javax.script;
 
 import java.util.Map;
 

@@ -23,7 +23,7 @@
  *
  */
 
-package script;
+package javax.script;
 
 /**
  * 服务配置错误类

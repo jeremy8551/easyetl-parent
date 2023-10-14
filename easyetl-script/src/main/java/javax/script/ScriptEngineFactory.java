@@ -23,10 +23,9 @@
  *
  */
 
-package script;
+package javax.script;
 
 import java.util.List;
-import javax.script.ScriptEngine;
 
 /**
  * 脚本引擎工厂接口

@@ -26,7 +26,7 @@ public class ScriptConfiguration implements UniversalScriptConfiguration {
      * 初始化
      */
     public ScriptConfiguration() {
-        this.config = ResourceBundle.getBundle("script", Locale.getDefault());
+        this.config = ResourceBundle.getBundle("javax/script", Locale.getDefault());
     }
 
     /**

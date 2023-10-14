@@ -23,12 +23,11 @@
  *
  */
 
-package script;
+package javax.script;
 
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
-import javax.script.Bindings;
 
 /**
  * 脚本引擎上下文信息

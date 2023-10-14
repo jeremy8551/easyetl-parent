@@ -23,7 +23,7 @@
  *
  */
 
-package script;
+package javax.script;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -33,11 +33,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
-import javax.script.SimpleBindings;
 
 /**
  * 脚本引擎管理器，用于支持 JDK1.5

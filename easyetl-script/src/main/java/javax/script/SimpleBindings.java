@@ -23,13 +23,12 @@
  *
  */
 
-package script;
+package javax.script;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.script.Bindings;
 
 /**
  * 脚本引擎属性集合默认实现类

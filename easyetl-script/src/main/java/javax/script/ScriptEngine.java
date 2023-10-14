@@ -1,10 +1,6 @@
-package script;
+package javax.script;
 
 import java.io.Reader;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptException;
 
 /**
  * 脚本引擎接口，用于兼容 JDK1.5

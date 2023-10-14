@@ -23,7 +23,7 @@
  *
  */
 
-package script;
+package javax.script;
 
 /**
  * 脚本引擎异常
