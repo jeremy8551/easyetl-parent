@@ -32,6 +32,8 @@
         <module>easyetl-os</module>
         <module>easyetl-database</module>
         <module>easyetl-file</module>
+        <module>easyetl-script</module>
+        <module>easyetl-compress</module>
     </modules>
 
     <!-- 插件属性 -->
