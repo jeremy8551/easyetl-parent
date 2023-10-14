@@ -31,6 +31,7 @@
         <module>easyetl-jsch</module>
         <module>easyetl-os</module>
         <module>easyetl-database</module>
+        <module>easyetl-file</module>
     </modules>
 
     <!-- 插件属性 -->
