@@ -21,7 +21,7 @@ import icu.etl.database.internal.StandardRowSetInternal;
 import icu.etl.ioc.BeanFactory;
 import icu.etl.log.STD;
 import icu.etl.os.OSConnectCommand;
-import icu.etl.timer.Timer;
+import icu.etl.time.Timer;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;

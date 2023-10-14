@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>icu.etl</groupId>
-            <artifactId>easyetl-expression</artifactId>
+            <artifactId>easyetl-database</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>

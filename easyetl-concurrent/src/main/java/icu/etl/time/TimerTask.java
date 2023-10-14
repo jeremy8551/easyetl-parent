@@ -1,4 +1,4 @@
-package icu.etl.timer;
+package icu.etl.time;
 
 import java.util.Date;
 

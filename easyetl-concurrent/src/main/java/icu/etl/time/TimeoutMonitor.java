@@ -1,4 +1,4 @@
-package icu.etl.timer;
+package icu.etl.time;
 
 import icu.etl.log.STD;
 import icu.etl.util.ResourcesUtils;

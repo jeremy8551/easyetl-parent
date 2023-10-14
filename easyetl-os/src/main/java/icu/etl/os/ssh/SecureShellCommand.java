@@ -21,7 +21,7 @@ import icu.etl.os.OSSecureShellCommand;
 import icu.etl.os.OSShellCommand;
 import icu.etl.os.internal.OSCommandStdoutsImpl;
 import icu.etl.os.internal.OSCommandUtils;
-import icu.etl.timer.Timer;
+import icu.etl.time.Timer;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
