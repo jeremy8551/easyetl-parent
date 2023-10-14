@@ -15,22 +15,92 @@
     <dependencies>
         <dependency>
             <groupId>icu.etl</groupId>
-            <artifactId>easyetl-file</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>icu.etl</groupId>
-            <artifactId>easyetl-compress</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>icu.etl</groupId>
             <artifactId>easyetl-tool</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-logger</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-ioc</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-expression</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-io</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-cn</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-jdk</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-concurrent</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-apache</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-jsch</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-os</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-database</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-file</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-script</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-compress</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

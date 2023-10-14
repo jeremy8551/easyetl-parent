@@ -12,10 +12,19 @@
 
     <artifactId>easyetl-jdk</artifactId>
 
+    <properties>
+        <maven.compiler.charset>${project.build.sourceEncoding}</maven.compiler.charset>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-ioc</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-tool</artifactId>
         </dependency>
     </dependencies>
 
@@ -24,7 +33,7 @@
             <plugin>
                 <groupId>icu.etl</groupId>
                 <artifactId>easyetl-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>${easyetl.project.version}</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
