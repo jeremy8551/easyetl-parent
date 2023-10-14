@@ -28,6 +28,9 @@
         <module>easyetl-jdk</module>
         <module>easyetl-concurrent</module>
         <module>easyetl-apache</module>
+        <module>easyetl-jsch</module>
+        <module>easyetl-os</module>
+        <module>easyetl-database</module>
     </modules>
 
     <!-- 插件属性 -->

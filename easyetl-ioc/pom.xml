@@ -53,8 +53,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>easyetl-ioc</finalName>
-    </build>
-
 </project>

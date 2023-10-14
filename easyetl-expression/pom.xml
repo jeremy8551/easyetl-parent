@@ -30,8 +30,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>easyetl-expression</finalName>
-    </build>
-
 </project>

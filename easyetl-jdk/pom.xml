@@ -31,7 +31,6 @@
     </dependencies>
 
     <build>
-        <finalName>easyetl-jdk</finalName>
         <plugins>
             <plugin>
                 <groupId>icu.etl</groupId>

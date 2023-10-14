@@ -37,8 +37,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>easyetl-tool</finalName>
-    </build>
-
 </project>

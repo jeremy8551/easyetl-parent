@@ -53,8 +53,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>easyetl-logger</finalName>
-    </build>
-
 </project>
