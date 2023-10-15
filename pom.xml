@@ -16,7 +16,6 @@
 
     <!-- 模块信息 -->
     <modules>
-        <module>easyetl-tool</module>
         <module>easyetl-logger</module>
         <module>easyetl-ioc</module>
         <module>easyetl-expression</module>
@@ -75,5 +74,13 @@
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
