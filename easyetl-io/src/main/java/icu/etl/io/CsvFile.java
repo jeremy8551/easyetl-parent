@@ -189,10 +189,6 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
      * @return csv文件格式字符串
      */
     public static String joinFields(String... array) {
-        if (array == null) {
-            return null;
-        }
-
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
             String str = array[i];
@@ -227,8 +223,11 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
      * @return
      */
     public static String replaceFieldValue(CharSequence str, int column, String newStr) {
-        if (column <= 0 || newStr == null) {
-            throw new IllegalArgumentException("replaceDB2FieldValue(\"" + str + "\", " + column + ", \"" + newStr + "\")");
+        if (newStr == null) {
+            throw new NullPointerException();
+        }
+        if (column <= 0) {
+            throw new IllegalArgumentException(String.valueOf(column));
         }
         if (str == null) {
             return null;

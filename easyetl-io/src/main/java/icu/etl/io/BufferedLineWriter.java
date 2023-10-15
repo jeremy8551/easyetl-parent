@@ -43,7 +43,7 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
      *
      * @param file        文件
      * @param charsetName 文件字符集
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     public BufferedLineWriter(File file, String charsetName) throws IOException {
         this(file, charsetName, false, 20);
@@ -55,7 +55,7 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
      * @param file        文件
      * @param charsetName 文件字符集
      * @param cache       缓冲行数
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     public BufferedLineWriter(File file, String charsetName, int cache) throws IOException {
         this(file, charsetName, false, cache);
@@ -67,8 +67,8 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
      * @param file        文件
      * @param charsetName 文件字符集
      * @param append      true表示追加方式写入文件
-     * @param cache       写入缓冲行数
-     * @throws IOException
+     * @param cache       缓冲行数
+     * @throws IOException 访问文件发生错误
      */
     public BufferedLineWriter(File file, String charsetName, boolean append, int cache) throws IOException {
         FileUtils.createFile(file);
@@ -83,9 +83,9 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
     /**
      * 初始化
      *
-     * @param out
-     * @param cache
-     * @throws IOException
+     * @param out   文件输出流
+     * @param cache 缓冲行数
+     * @throws IOException 访问文件发生错误
      */
     public BufferedLineWriter(Writer out, int cache) throws IOException {
         if (out == null) {
@@ -109,7 +109,7 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
     /**
      * 返回字符集编码
      *
-     * @return
+     * @return 字符集编码
      */
     public String getCharsetName() {
         return this.charsetName;
@@ -134,8 +134,8 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
      * 写入一行字符串
      *
      * @param line 字符串
-     * @return
-     * @throws IOException
+     * @return 写入成功返回true 失败返回false
+     * @throws IOException 访问文件发生错误
      */
     public boolean writeLine(String line) throws IOException {
         return this.writeLine(line, this.lineSeparator);
@@ -147,16 +147,15 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
      * @param line          字符串
      * @param lineSeperator 行间分隔符
      * @return 返回 true 表示已将缓存写入文件
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     public boolean writeLine(String line, String lineSeperator) throws IOException {
         this.buffer.append(line);
         this.buffer.append(lineSeperator);
+        this.lineSeparator = lineSeperator;
 
         if (++this.count >= this.cacheRows) {
             this.flush();
-            this.total += this.count;
-            this.count = 0;
             return true;
         } else {
             return false;
@@ -168,6 +167,8 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
             this.out.write(this.buffer.value(), 0, this.buffer.length());
             this.out.flush();
             this.buffer.clear();
+            this.total += this.count;
+            this.count = 0;
         }
     }
 
