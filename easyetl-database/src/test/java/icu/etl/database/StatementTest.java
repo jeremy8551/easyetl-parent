@@ -1,0 +1,262 @@
+package icu.etl.database;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
+
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
+import icu.etl.util.ClassUtils;
+
+/**
+ * Statement 代理
+ *
+ * @author jeremy8551@qq.com
+ * @createtime 2011-9-23
+ */
+public class StatementTest implements Statement {
+    protected static Log log = LogFactory.getLog(StatementTest.class);
+
+    /** 被代理的 Statement 对象 */
+    private Statement statement;
+
+    /**
+     * 暂停秒数
+     */
+    private int timeout;
+
+    public StatementTest(Statement statement, int timeout) {
+        this.statement = statement;
+        this.timeout = timeout;
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return this.statement.unwrap(iface);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return this.statement.isWrapperFor(iface);
+    }
+
+    @Override
+    public ResultSet executeQuery(String sql) throws SQLException {
+        try {
+            Thread.sleep(this.timeout * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return this.statement.executeQuery(sql);
+    }
+
+    @Override
+    public int executeUpdate(String sql) throws SQLException {
+        return this.statement.executeUpdate(sql);
+    }
+
+    @Override
+    public void close() throws SQLException {
+        this.statement.close();
+    }
+
+    @Override
+    public int getMaxFieldSize() throws SQLException {
+        return this.statement.getMaxFieldSize();
+    }
+
+    @Override
+    public void setMaxFieldSize(int max) throws SQLException {
+        this.statement.setMaxFieldSize(max);
+    }
+
+    @Override
+    public int getMaxRows() throws SQLException {
+        return this.statement.getMaxRows();
+    }
+
+    @Override
+    public void setMaxRows(int max) throws SQLException {
+        this.statement.setMaxRows(max);
+    }
+
+    @Override
+    public void setEscapeProcessing(boolean enable) throws SQLException {
+        this.statement.setEscapeProcessing(enable);
+    }
+
+    @Override
+    public int getQueryTimeout() throws SQLException {
+        return this.statement.getQueryTimeout();
+    }
+
+    @Override
+    public void setQueryTimeout(int seconds) throws SQLException {
+        this.statement.setQueryTimeout(seconds);
+    }
+
+    @Override
+    public void cancel() throws SQLException {
+        this.statement.cancel();
+    }
+
+    @Override
+    public SQLWarning getWarnings() throws SQLException {
+        return this.statement.getWarnings();
+    }
+
+    @Override
+    public void clearWarnings() throws SQLException {
+        this.statement.clearWarnings();
+    }
+
+    @Override
+    public void setCursorName(String name) throws SQLException {
+        this.statement.setCursorName(name);
+    }
+
+    @Override
+    public boolean execute(String sql) throws SQLException {
+        return this.statement.execute(sql);
+    }
+
+    @Override
+    public ResultSet getResultSet() throws SQLException {
+        return this.statement.getResultSet();
+    }
+
+    @Override
+    public int getUpdateCount() throws SQLException {
+        return this.statement.getUpdateCount();
+    }
+
+    @Override
+    public boolean getMoreResults() throws SQLException {
+        return this.statement.getMoreResults();
+    }
+
+    @Override
+    public void setFetchDirection(int direction) throws SQLException {
+        this.statement.setFetchDirection(direction);
+    }
+
+    @Override
+    public int getFetchDirection() throws SQLException {
+        return this.statement.getFetchDirection();
+    }
+
+    @Override
+    public void setFetchSize(int rows) throws SQLException {
+        this.statement.setFetchSize(rows);
+    }
+
+    @Override
+    public int getFetchSize() throws SQLException {
+        return this.statement.getFetchSize();
+    }
+
+    @Override
+    public int getResultSetConcurrency() throws SQLException {
+        return this.statement.getResultSetConcurrency();
+    }
+
+    @Override
+    public int getResultSetType() throws SQLException {
+        return this.statement.getResultSetType();
+    }
+
+    @Override
+    public void addBatch(String sql) throws SQLException {
+        this.statement.addBatch(sql);
+    }
+
+    @Override
+    public void clearBatch() throws SQLException {
+        this.statement.clearBatch();
+    }
+
+    @Override
+    public int[] executeBatch() throws SQLException {
+        return this.statement.executeBatch();
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return this.statement.getConnection();
+    }
+
+    @Override
+    public boolean getMoreResults(int current) throws SQLException {
+        return this.statement.getMoreResults(current);
+    }
+
+    @Override
+    public ResultSet getGeneratedKeys() throws SQLException {
+        return this.statement.getGeneratedKeys();
+    }
+
+    @Override
+    public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
+        return this.statement.executeUpdate(sql, autoGeneratedKeys);
+    }
+
+    @Override
+    public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
+        return this.statement.executeUpdate(sql, columnIndexes);
+    }
+
+    @Override
+    public int executeUpdate(String sql, String[] columnNames) throws SQLException {
+        return this.statement.executeUpdate(sql, columnNames);
+    }
+
+    @Override
+    public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
+        return this.statement.execute(sql, autoGeneratedKeys);
+    }
+
+    @Override
+    public boolean execute(String sql, int[] columnIndexes) throws SQLException {
+        return this.statement.execute(sql, columnIndexes);
+    }
+
+    @Override
+    public boolean execute(String sql, String[] columnNames) throws SQLException {
+        return this.statement.execute(sql, columnNames);
+    }
+
+    @Override
+    public int getResultSetHoldability() throws SQLException {
+        return this.statement.getResultSetHoldability();
+    }
+
+    @Override
+    public boolean isClosed() throws SQLException {
+        return this.statement.isClosed();
+    }
+
+    @Override
+    public void setPoolable(boolean poolable) throws SQLException {
+        this.statement.setPoolable(poolable);
+    }
+
+    @Override
+    public boolean isPoolable() throws SQLException {
+        return this.statement.isPoolable();
+    }
+
+    //	@Override
+    public void closeOnCompletion() throws SQLException {
+//		this.statement.closeOnCompletion();
+        ClassUtils.executeMethod(this.statement, "closeOnCompletion", new Object[0]);
+    }
+
+    //	@Override
+    public boolean isCloseOnCompletion() throws SQLException {
+//		return this.statement.isCloseOnCompletion();
+        return ((Boolean) ClassUtils.executeMethod(this.statement, "isCloseOnCompletion", new Object[0])).booleanValue();
+    }
+
+}

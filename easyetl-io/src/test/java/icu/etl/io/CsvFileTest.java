@@ -61,7 +61,7 @@ public class CsvFileTest {
 
     @Test
     public void testJoinCsvFields() {
-        Assert.assertEquals(",, ,\"this is ,  good dear '' ; \"", CsvFile.joinFields(new String[]{null, "", " ", "this is ,  good dear '' ; "}));
+        Assert.assertEquals(",, ,\"this is ,  good dear '' ; \"", CsvFile.joinFields(null, "", " ", "this is ,  good dear '' ; "));
     }
-    
+
 }

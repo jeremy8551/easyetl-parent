@@ -1,4 +1,4 @@
-package icu.etl;
+package icu.etl.script;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
