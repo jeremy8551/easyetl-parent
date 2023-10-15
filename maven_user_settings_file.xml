@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <!-- apache-maven-3.3.1 下载地址: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.3.1/ -->
+    <pluginGroups></pluginGroups>
+
+    <proxies></proxies>
+
+    <servers>
+        <server>
+            <id>ossrh</id>
+            <username>xxx</username> <!-- sonatype帐号 -->
+            <password>zavruc-bextYk-fympe6</password> <!-- sonatype帐号密码 -->
+        </server>
+    </servers>
+
+    <mirrors></mirrors>
+
+    <profiles>
+        <profile>
+            <id>ossrh</id>
+            <properties>
+                <gpg.executable>gpg</gpg.executable>
+                <gpg.passphrase>zavruc-bextYk-fympe6</gpg.passphrase> <!-- GPG签名的密码 -->
+            </properties>
+        </profile>
+    </profiles>
+
+    <!-- 激活 profile -->
+    <activeProfiles>
+        <activeProfile>ossrh</activeProfile>
+    </activeProfiles>
+
+</settings>

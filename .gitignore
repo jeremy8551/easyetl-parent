@@ -38,3 +38,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+easyetl-jdk/src/main/java/icu/etl/jdk/JDK*.java
