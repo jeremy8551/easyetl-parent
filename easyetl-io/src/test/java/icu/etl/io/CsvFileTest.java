@@ -26,7 +26,7 @@ public class CsvFileTest {
         FileUtils.createDirectory(dir);
         File file = new File(dir, "csvTestFile" + StringUtils.toRandomUUID() + ".csv");
         FileUtils.createFile(file);
-        System.out.println("csv testfile: " + file.getAbsolutePath());
+        System.out.println(CsvFile.class.getSimpleName() + " testfile: " + file.getAbsolutePath());
         return file;
     }
 

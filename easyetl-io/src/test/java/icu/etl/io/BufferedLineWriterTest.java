@@ -24,6 +24,7 @@ public class BufferedLineWriterTest {
         FileUtils.createDirectory(dir);
         File file = new File(dir, name);
         FileUtils.createFile(file);
+        System.out.println(BufferedLineWriter.class.getSimpleName() + " testfile: " + file.getAbsolutePath());
         return file;
     }
 
