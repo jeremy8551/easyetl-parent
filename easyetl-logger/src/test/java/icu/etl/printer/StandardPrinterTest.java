@@ -43,6 +43,22 @@ public class StandardPrinterTest {
     }
 
     @Test
+    public void test0() {
+        StandardPrinter p = new StandardPrinter();
+        p.println("test", new Exception("common exception"));
+        p.println("task1", "task1");
+        p.println("task2", "task2");
+        p.println("task3", "task3");
+        p.println("task4", "task4");
+        p.close();
+
+        Assert.assertNull(p.getFormatter());
+        Assert.assertNotNull(p.getLineSeperator());
+        Assert.assertNotNull(p.toString());
+        Assert.assertNull(p.getWriter());
+    }
+
+    @Test
     public void test1() {
         CharArrayWriter writer = new CharArrayWriter();
 
@@ -118,13 +134,41 @@ public class StandardPrinterTest {
 
     @Test
     public void test2() {
-        StandardPrinter p = new StandardPrinter();
-        p.println("test", new Exception("common exception"));
-        p.println("task1", "task1");
-        p.println("task2", "task2");
-        p.println("task3", "task3");
-        p.println("task4", "task4");
+        CharArrayWriter writer = new CharArrayWriter();
+
+        StandardPrinter p = new StandardPrinter(writer, null);
+        p.print(new Integer(0));
+        Assert.assertEquals("0", writer.toString());
+
+        writer.reset();
+        p.println(new Integer(1));
+        Assert.assertEquals("1" + FileUtils.lineSeparator, writer.toString());
+
         p.close();
+    }
+
+    @Test
+    public void test3() {
+        Writer writer = new Writer() {
+            @Override
+            public void write(char[] cbuf, int off, int len) throws IOException {
+                System.out.print(new String(cbuf, off, len));
+            }
+
+            @Override
+            public void flush() throws IOException {
+                throw new IOException("cs");
+            }
+
+            @Override
+            public void close() throws IOException {
+            }
+        };
+
+        StandardPrinter out = new StandardPrinter(writer);
+        out.println("test");
+        out.println("test", new IOException());
+        out.close();
     }
 
 }

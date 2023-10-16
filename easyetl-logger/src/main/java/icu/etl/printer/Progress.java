@@ -110,6 +110,9 @@ public class Progress {
         if (total < 0) {
             throw new IllegalArgumentException(String.valueOf(total));
         }
+        if (format == null) {
+            throw new NullPointerException();
+        }
 
         this.out = out;
         this.total = Long.valueOf(total);
@@ -143,14 +146,18 @@ public class Progress {
     /**
      * 设置进度输出信息
      *
-     * @param message
+     * @param message 输出进度信息: <br>
+     *                ${taskId} 显示当前任务的编号 <br>
+     *                ${process} 显示当前进度百分比信息 <br>
+     *                ${totalRecord} 显示总次数信息 <br>
+     *                ${leftTime} 用于显示剩余时间信息
      */
     public void setMessage(String message) {
         this.message = message;
-        this.needPrcess = message != null && message.indexOf("${process}") != -1;
-        this.needTotalRecords = message != null && message.indexOf("${totalRecord}") != -1;
-        this.needLeftTime = message != null && message.indexOf("${leftTime}") != -1;
-        this.needTaskId = message != null && message.indexOf("${taskId}") != -1;
+        this.needPrcess = message != null && message.contains("${process}");
+        this.needTotalRecords = message != null && message.contains("${totalRecord}");
+        this.needLeftTime = message != null && message.contains("${leftTime}");
+        this.needTaskId = message != null && message.contains("${taskId}");
     }
 
     /**

@@ -123,9 +123,9 @@ public class StandardPrinter implements Printer, java.io.Closeable {
     public void println(String id, CharSequence msg) {
         synchronized (this.buffer) {
             this.buffer.setLength(0);
-            this.mulityTask.put(id, msg);
+            this.mulityTask.put(id, msg); // 保存某个任务信息
             Set<String> keys = this.mulityTask.keySet();
-            for (Iterator<String> it = keys.iterator(); it.hasNext(); ) {
+            for (Iterator<String> it = keys.iterator(); it.hasNext(); ) { // 保存某个任务信息后，重新生成最新的任务信息
                 String name = it.next();
                 CharSequence cs = this.mulityTask.get(name);
                 this.buffer.append(StringUtils.escapeLineSeparator(cs));
@@ -204,7 +204,7 @@ public class StandardPrinter implements Printer, java.io.Closeable {
                 this.log.write(this.buffer);
             }
         } catch (Exception e) {
-            this.log.error(StringUtils.toString(e));
+            this.log.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -220,7 +220,7 @@ public class StandardPrinter implements Printer, java.io.Closeable {
                 this.log.write(this.buffer);
             }
         } catch (Exception e) {
-            this.log.error(StringUtils.toString(e));
+            this.log.error(e.getLocalizedMessage(), e);
         }
     }
 

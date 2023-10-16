@@ -19,28 +19,30 @@ public class OutputStreamPrinter extends OutputStream implements Charset {
     protected Printer out;
 
     /** 缓存 */
-    protected ByteBuffer buf;
+    protected ByteBuffer buffer;
 
     /**
      * 初始化
      *
      * @param out         信息输出接口
-     * @param charsetName 输出字符串的字符集编码
+     * @param charsetName 输出字符串的字符集编码，为空时默认取默认值
      */
     public OutputStreamPrinter(Printer out, String charsetName) {
         super();
-
         if (out == null) {
             throw new NullPointerException();
-        } else {
-            this.out = out;
-            this.buf = new ByteBuffer(512, 50, StringUtils.defaultString(charsetName, StringUtils.CHARSET));
         }
+        if (StringUtils.isBlank(charsetName)) {
+            charsetName = StringUtils.CHARSET;
+        }
+
+        this.out = out;
+        this.buffer = new ByteBuffer(512, 50, charsetName);
     }
 
     public void write(int b) throws IOException {
         byte c = (byte) b;
-        this.buf.append(c);
+        this.buffer.append(c);
 
         if (c == '\r' || c == '\n') {
             this.flush();
@@ -64,7 +66,7 @@ public class OutputStreamPrinter extends OutputStream implements Charset {
                     break;
 
                 default:
-                    this.buf.append(b);
+                    this.buffer.append(b);
                     break;
             }
         }
@@ -75,23 +77,23 @@ public class OutputStreamPrinter extends OutputStream implements Charset {
     }
 
     public void flush() {
-        if (this.buf.length() > 0) {
-            this.out.println(this.buf.toString());
-            this.buf.clear();
+        if (this.buffer.length() > 0) {
+            this.out.println(this.buffer.toString());
+            this.buffer.clear();
         }
     }
 
     public void close() {
         this.flush();
-        this.buf.restore(10);
+        this.buffer.restore(10);
     }
 
     public String getCharsetName() {
-        return this.buf.getCharsetName();
+        return this.buffer.getCharsetName();
     }
 
     public void setCharsetName(String charsetName) {
-        this.buf.setCharsetName(charsetName);
+        this.buffer.setCharsetName(charsetName);
     }
 
 }

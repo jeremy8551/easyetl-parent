@@ -13,7 +13,7 @@ public class JavaDialectFactory {
     /**
      * 返回 JDK 方言对象
      *
-     * @return
+     * @return 方言接口的实现类
      */
     public static JavaDialect getDialect() {
         if (dialect == null) {
@@ -67,6 +67,12 @@ public class JavaDialectFactory {
         }
     }
 
+    /**
+     * 按类名查找类
+     *
+     * @param className 类名
+     * @return 类信息
+     */
     protected Class<JavaDialect> forName(String className) {
         try {
             return (Class<JavaDialect>) Class.forName(className);
@@ -75,6 +81,13 @@ public class JavaDialectFactory {
         }
     }
 
+    /**
+     * 创建数据库方言实现类
+     *
+     * @param className 数据库方言实现类名
+     * @param cls       数据库方言实现类
+     * @return 数据库方言实现类对象
+     */
     protected JavaDialect create(String className, Class<JavaDialect> cls) {
         try {
             return cls.newInstance();

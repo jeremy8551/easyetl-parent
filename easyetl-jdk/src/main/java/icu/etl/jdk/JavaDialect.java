@@ -18,42 +18,42 @@ public interface JavaDialect {
     /**
      * 返回数据库连接网络的超时时间
      *
-     * @param conn
-     * @return
-     * @throws SQLException
+     * @param conn 数据库连接
+     * @return 超时时间
+     * @throws SQLException 数据库错误
      */
     int getNetworkTimeout(Connection conn) throws SQLException;
 
     /**
      * 设置数据库连接配置信息
      *
-     * @param conn
-     * @param p
-     * @throws SQLException
+     * @param conn 数据库连接
+     * @param p    数据库连接的属性
+     * @throws SQLException 数据库错误
      */
     void setClientInfo(Connection conn, Properties p) throws SQLException;
 
     /**
      * 通过数据库连接查询属性信息
      *
-     * @param conn
-     * @return
-     * @throws SQLException
+     * @param conn 数据库连接
+     * @return 数据库连接的属性
+     * @throws SQLException 数据库错误
      */
     Properties getClientInfo(Connection conn) throws SQLException;
 
     /**
      * 返回 true 表示可以执行文件
      *
-     * @param file
-     * @return
+     * @param file 文件
+     * @return true表示文件可执行
      */
     boolean canExecute(File file);
 
     /**
      * 返回当前可用的线程数
      *
-     * @return
+     * @return 线程数
      */
     int getAvailableThreads();
 
@@ -61,26 +61,26 @@ public interface JavaDialect {
      * 将Jdbc参数 object 转为脚本引擎内部类型
      *
      * @param obj 对象
-     * @return
-     * @throws IOException
-     * @throws SQLException
+     * @return 脚本引擎内部类型的对象
+     * @throws IOException  IO错误
+     * @throws SQLException 数据库错误
      */
     Object parseJdbcObject(Object obj) throws IOException, SQLException;
 
     /**
      * 返回 true 表示参数 Statement 对象已关闭
      *
-     * @param statement
-     * @return
-     * @throws SQLException
+     * @param statement Statement对象
+     * @return true表示 Statement 已关闭
+     * @throws SQLException 数据库错误
      */
     boolean isStatementClosed(Statement statement) throws SQLException;
 
     /**
      * 返回 true 表示字符参数 ub 是一个汉字
      *
-     * @param ub
-     * @return
+     * @param ub 字符子集
+     * @return true表示字符是中文
      */
     boolean isChineseLetter(Character.UnicodeBlock ub);
 
