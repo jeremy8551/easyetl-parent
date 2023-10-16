@@ -64,8 +64,8 @@ public class TextTableFileCounter {
      *
      * @param file        文件信息
      * @param charsetName 字符集编码
-     * @return
-     * @throws IOException
+     * @return 文件行数
+     * @throws IOException 读取文件发生错误
      */
     public long executeSerial(File file, String charsetName) throws IOException {
         long count = 0;
@@ -86,7 +86,7 @@ public class TextTableFileCounter {
      * @param file       文件信息
      * @param unit       临时文件大小的最大值
      * @param readBuffer 输入流缓冲区长度，单位字符
-     * @return
+     * @return 文件行数
      */
     public long executeParallel(File file, long unit, int readBuffer) {
         int thread = JavaDialectFactory.getDialect().getAvailableThreads();
