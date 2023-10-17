@@ -3,10 +3,12 @@ package icu.etl.io;
 import java.io.IOException;
 import java.io.StringReader;
 
-import icu.etl.util.IO;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class BufferedLineReaderTest {
@@ -14,30 +16,27 @@ public class BufferedLineReaderTest {
     @Test
     public void test0() throws IOException {
         BufferedLineReader in = new BufferedLineReader(new StringReader("line1\rline2\r\nline3\nline4\rline5 "), 2, 10);
-        String line = null;
-        try {
-            assertTrue((line = in.readLine()) != null);
-            assertEquals(line, "line1");
-            assertEquals(in.getLineSeparator(), "\r");
+        String line;
+        assertNotNull((line = in.readLine()));
+        assertEquals(line, "line1");
+        assertEquals(in.getLineSeparator(), "\r");
 
-            assertTrue((line = in.readLine()) != null);
-            assertEquals(line, "line2");
-            assertEquals(in.getLineSeparator(), "\r\n");
+        assertNotNull((line = in.readLine()));
+        assertEquals(line, "line2");
+        assertEquals(in.getLineSeparator(), "\r\n");
 
-            assertTrue((line = in.readLine()) != null);
-            assertEquals(line, "line3");
-            assertEquals(in.getLineSeparator(), "\n");
+        assertNotNull((line = in.readLine()));
+        assertEquals(line, "line3");
+        assertEquals(in.getLineSeparator(), "\n");
 
-            assertTrue((line = in.readLine()) != null);
-            assertEquals(line, "line4");
-            assertEquals(in.getLineSeparator(), "\r");
+        assertNotNull((line = in.readLine()));
+        assertEquals(line, "line4");
+        assertEquals(in.getLineSeparator(), "\r");
 
-            assertTrue((line = in.readLine()) != null);
-            assertEquals(line, "line5 ");
-            assertEquals(in.getLineSeparator(), "");
-        } finally {
-            IO.close(in);
-        }
+        assertNotNull((line = in.readLine()));
+        assertEquals(line, "line5 ");
+        assertEquals(in.getLineSeparator(), "");
+        in.close();
     }
 
     @Test
@@ -46,35 +45,34 @@ public class BufferedLineReaderTest {
         BufferedLineReader in = new BufferedLineReader(str, 2, 0);
 
         String s = in.readLine();
-        assertTrue(1 == in.getLineNumber());
+        assertEquals(1, in.getLineNumber());
         assertEquals(s, "1");
         assertEquals(in.getLineSeparator(), "\r");
 
         s = in.readLine();
-        assertTrue(2 == in.getLineNumber());
+        assertEquals(2, in.getLineNumber());
         assertEquals(s, "2");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(3 == in.getLineNumber());
+        assertEquals(3, in.getLineNumber());
         assertEquals(s, "3");
         assertEquals(in.getLineSeparator(), "\r\n");
 
         s = in.readLine();
-        assertTrue(4 == in.getLineNumber());
+        assertEquals(4, in.getLineNumber());
         assertEquals(s, "4");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(5 == in.getLineNumber());
+        assertEquals(5, in.getLineNumber());
         assertEquals(s, "");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(5 == in.getLineNumber());
-        assertEquals(s, null);
+        assertEquals(5, in.getLineNumber());
+        assertNull(s);
         assertEquals(in.getLineSeparator(), "");
-
         in.close();
     }
 
@@ -84,35 +82,34 @@ public class BufferedLineReaderTest {
         BufferedLineReader in = new BufferedLineReader(str, 1, 0);
 
         String s = in.readLine();
-        assertTrue(1 == in.getLineNumber());
+        assertEquals(1, in.getLineNumber());
         assertEquals(s, "1");
         assertEquals(in.getLineSeparator(), "\r");
 
         s = in.readLine();
-        assertTrue(2 == in.getLineNumber());
+        assertEquals(2, in.getLineNumber());
         assertEquals(s, "2");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(3 == in.getLineNumber());
+        assertEquals(3, in.getLineNumber());
         assertEquals(s, "3");
         assertEquals(in.getLineSeparator(), "\r\n");
 
         s = in.readLine();
-        assertTrue(4 == in.getLineNumber());
+        assertEquals(4, in.getLineNumber());
         assertEquals(s, "4");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(5 == in.getLineNumber());
+        assertEquals(5, in.getLineNumber());
         assertEquals(s, "");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(5 == in.getLineNumber());
-        assertEquals(s, null);
+        assertEquals(5, in.getLineNumber());
+        assertNull(s);
         assertEquals(in.getLineSeparator(), "");
-
         in.close();
     }
 
@@ -122,35 +119,34 @@ public class BufferedLineReaderTest {
         BufferedLineReader in = new BufferedLineReader(str);
 
         String s = in.readLine();
-        assertTrue(1 == in.getLineNumber());
+        assertEquals(1, in.getLineNumber());
         assertEquals(s, "1");
         assertEquals(in.getLineSeparator(), "\r");
 
         s = in.readLine();
-        assertTrue(2 == in.getLineNumber());
+        assertEquals(2, in.getLineNumber());
         assertEquals(s, "2");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(3 == in.getLineNumber());
+        assertEquals(3, in.getLineNumber());
         assertEquals(s, "3");
         assertEquals(in.getLineSeparator(), "\r\n");
 
         s = in.readLine();
-        assertTrue(4 == in.getLineNumber());
+        assertEquals(4, in.getLineNumber());
         assertEquals(s, "4");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(5 == in.getLineNumber());
+        assertEquals(5, in.getLineNumber());
         assertEquals(s, "");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(5 == in.getLineNumber());
-        assertEquals(s, null);
+        assertEquals(5, in.getLineNumber());
+        assertNull(s);
         assertEquals(in.getLineSeparator(), "");
-
         in.close();
     }
 
@@ -161,45 +157,46 @@ public class BufferedLineReaderTest {
 
         assertTrue(in.hasNext());
         String s = in.next();
-        assertTrue(1 == in.getLineNumber());
+        assertEquals(1, in.getLineNumber());
         assertEquals(s, "1");
         assertEquals(in.getLineSeparator(), "\r");
-        assertTrue(!in.isClosed());
+        assertFalse(in.isClosed());
 
         assertTrue(in.hasNext());
         s = in.next();
-        assertTrue(2 == in.getLineNumber());
+        assertEquals(2, in.getLineNumber());
         assertEquals(s, "2");
         assertEquals(in.getLineSeparator(), "\n");
-        assertTrue(!in.isClosed());
+        assertFalse(in.isClosed());
 
         assertTrue(in.hasNext());
         s = in.next();
-        assertTrue(3 == in.getLineNumber());
+        assertEquals(3, in.getLineNumber());
         assertEquals(s, "3");
         assertEquals(in.getLineSeparator(), "\r\n");
-        assertTrue(!in.isClosed());
+        assertFalse(in.isClosed());
 
         assertTrue(in.hasNext());
         s = in.next();
-        assertTrue(4 == in.getLineNumber());
+        assertEquals(4, in.getLineNumber());
         assertEquals(s, "4");
         assertEquals(in.getLineSeparator(), "\n");
-        assertTrue(!in.isClosed());
+        assertFalse(in.isClosed());
 
         assertTrue(in.hasNext());
         s = in.next();
-        assertTrue(5 == in.getLineNumber());
+        assertEquals(5, in.getLineNumber());
         assertEquals(s, "");
         assertEquals(in.getLineSeparator(), "\n");
 
-        assertTrue(!in.hasNext());
+        assertFalse(in.hasNext());
         s = in.next();
-        assertTrue(5 == in.getLineNumber());
-        assertEquals(s, null);
+        assertEquals(5, in.getLineNumber());
+        assertNull(s);
         assertEquals(in.getLineSeparator(), "");
 
         assertTrue(in.isClosed());
+        in.close();
     }
 
     @Test
@@ -208,33 +205,33 @@ public class BufferedLineReaderTest {
         BufferedLineReader in = new BufferedLineReader(str);
 
         String s = in.readLine();
-        assertTrue(1 == in.getLineNumber());
+        assertEquals(1, in.getLineNumber());
         assertEquals(s, "1");
         assertEquals(in.getLineSeparator(), "\r");
 
         s = in.readLine();
-        assertTrue(2 == in.getLineNumber());
+        assertEquals(2, in.getLineNumber());
         assertEquals(s, "2");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(3 == in.getLineNumber());
+        assertEquals(3, in.getLineNumber());
         assertEquals(s, "3");
         assertEquals(in.getLineSeparator(), "\r\n");
 
         s = in.readLine();
-        assertTrue(4 == in.getLineNumber());
+        assertEquals(4, in.getLineNumber());
         assertEquals(s, "4");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(5 == in.getLineNumber());
+        assertEquals(5, in.getLineNumber());
         assertEquals(s, "");
         assertEquals(in.getLineSeparator(), "\n");
 
         s = in.readLine();
-        assertTrue(5 == in.getLineNumber());
-        assertEquals(s, null);
+        assertEquals(5, in.getLineNumber());
+        assertNull(s);
         assertEquals(in.getLineSeparator(), "");
 
         in.close();
@@ -287,52 +284,53 @@ public class BufferedLineReaderTest {
         assertEquals(in.next(), "4");
         assertEquals(in.getLineNumber(), 4);
 
-        assertTrue(!in.hasNext());
-
+        assertFalse(in.hasNext());
         in.close();
     }
 
     @Test
-    public void test10() {
+    public void test10() throws IOException {
         BufferedLineReader in = new BufferedLineReader("1\n2\n3");
 
         assertTrue(in.hasNext());
-        assertTrue("1".equals(in.next()));
-        assertTrue(in.getLineNumber() == 1);
-        assertTrue("\n".equals(in.getLineSeparator()));
+        assertEquals("1", in.next());
+        assertEquals(1, in.getLineNumber());
+        assertEquals("\n", in.getLineSeparator());
 
         assertTrue(in.hasNext());
-        assertTrue("2".equals(in.next()));
-        assertTrue(in.getLineNumber() == 2);
-        assertTrue("\n".equals(in.getLineSeparator()));
+        assertEquals("2", in.next());
+        assertEquals(2, in.getLineNumber());
+        assertEquals("\n", in.getLineSeparator());
 
         assertTrue(in.hasNext());
-        assertTrue("3".equals(in.next()));
-        assertTrue(in.getLineNumber() == 3);
+        assertEquals("3", in.next());
+        assertEquals(3, in.getLineNumber());
         assertEquals(in.getLineSeparator(), "");
 
-        assertTrue(!in.hasNext());
-        assertTrue(in.next() == null);
-        assertTrue(in.getLineNumber() == 3);
+        assertFalse(in.hasNext());
+        assertNull(in.next());
+        assertEquals(3, in.getLineNumber());
+        in.close();
     }
 
     @Test
-    public void test11() {
+    public void test11() throws IOException {
         BufferedLineReader in = new BufferedLineReader(" ");
         assertTrue(in.hasNext());
-        assertTrue(" ".equals(in.next()));
-        assertTrue(in.getLineNumber() == 1);
+        assertEquals(" ", in.next());
+        assertEquals(1, in.getLineNumber());
         assertEquals(in.getLineSeparator(), "");
+        in.close();
     }
 
     @Test
-    public void test12() {
+    public void test12() throws IOException {
         BufferedLineReader in = new BufferedLineReader("");
-
-        assertTrue(!in.hasNext());
-        assertTrue(in.next() == null);
-        assertTrue(in.getLineNumber() == 0);
+        assertFalse(in.hasNext());
+        assertNull(in.next());
+        assertEquals(0, in.getLineNumber());
         assertEquals(in.getLineSeparator(), "");
+        in.close();
     }
 
 }

@@ -45,7 +45,7 @@ public class RandomAccessStream extends InputStream {
      *
      * @param in     随机输入流
      * @param length 从输入流中最多能读取的字节总数
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     public RandomAccessStream(RandomAccessFile in, long length) throws IOException {
         super();
@@ -58,7 +58,7 @@ public class RandomAccessStream extends InputStream {
      * @param file   文件
      * @param offset 文件位置
      * @param length 读取的最多字节总数
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     public RandomAccessStream(File file, long offset, long length) throws IOException {
         super();
@@ -72,7 +72,7 @@ public class RandomAccessStream extends InputStream {
      *
      * @param in     文件随机输入流
      * @param length 读取最大字节数
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     protected void open(RandomAccessFile in, long length) throws IOException {
         this.in = in;
@@ -86,7 +86,7 @@ public class RandomAccessStream extends InputStream {
     /**
      * 搜索首行的起始位置
      *
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     protected void start(long pointer) throws IOException {
         if (pointer <= 0) { // 文件中第一个字节
@@ -272,6 +272,7 @@ public class RandomAccessStream extends InputStream {
         } catch (Exception e) {
             throw new RuntimeException("mark stream error!", e);
         }
+
         this.markedSize = this.size;
         this.markedSkipLF = this.skipLF;
         this.markedEOF = this.EOF;
@@ -281,7 +282,7 @@ public class RandomAccessStream extends InputStream {
      * 设置输入流起始状态
      *
      * @param count 字节总数
-     * @throws IOException
+     * @throws IOException 发生错误
      */
     protected synchronized void reset(int count) throws IOException {
         this.markedPointer += count;

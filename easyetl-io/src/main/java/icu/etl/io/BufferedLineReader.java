@@ -1,5 +1,6 @@
 package icu.etl.io;
 
+import java.io.CharArrayReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -119,7 +120,7 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
         if (str instanceof String) {
             this.open(new StringReader(str.toString()), size, expectedLength);
         } else {
-            this.open(new CharReader(str), size, expectedLength);
+            this.open(new CharArrayReader(str.toString().toCharArray()), size, expectedLength);
         }
     }
 
@@ -146,15 +147,18 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
      * 初始化
      *
      * @param file           文件
-     * @param charsetName    文件字符集
+     * @param charsetName    文件字符集，为null时默认取 file.encoding 的属性值
      * @param size           缓冲区长度（单位：字符），小于等于零时会使用默认值
      * @param expectedLength 每行字符串的初始容量长度（单位：字符），小于等于零时会使用默认值
      */
     public BufferedLineReader(File file, String charsetName, int size, int expectedLength) {
-        String charset = StringUtils.defaultString(charsetName, StringUtils.CHARSET);
+        if (StringUtils.isBlank(charsetName)) {
+            charsetName = StringUtils.CHARSET;
+        }
+
         try {
             FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis, charset);
+            InputStreamReader isr = new InputStreamReader(fis, charsetName);
             this.open(isr, size, expectedLength);
         } catch (Throwable e) {
             throw new RuntimeException(StringUtils.toString(file), e);

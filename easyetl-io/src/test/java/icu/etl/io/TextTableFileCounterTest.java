@@ -23,8 +23,6 @@ public class TextTableFileCounterTest {
 
     /**
      * 使用指定用户名创建一个文件
-     *
-     * @return
      */
     public File createfile() throws IOException {
         File dir = FileUtils.getTempDir(CsvFile.class);
@@ -116,7 +114,7 @@ public class TextTableFileCounterTest {
      * 3445201 行数据, 共计 2147720745 字节, 文件 2.00 GB <br>
      * 文本最后一行没有换行符
      *
-     * @param file
+     * @param file        文件
      * @param charsetName 字符集
      * @return 返回行数
      * @throws IOException 生成文件发生错误
@@ -254,8 +252,8 @@ public class TextTableFileCounterTest {
      *
      * @param file        文件
      * @param charsetName 文件字符集, 为空时取操作系统默认值
-     * @return
-     * @throws IOException
+     * @return 文本行数
+     * @throws IOException 读取文件发生错误
      */
     public long countTextFileLines(File file, String charsetName) throws IOException {
         BufferedReader in = IO.getBufferedReader(file, charsetName, IO.READER_BUFFER_SIZE);

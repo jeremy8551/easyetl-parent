@@ -32,10 +32,13 @@ public class OutputStreamLogger extends OutputStream implements Charset {
         super();
         if (log == null) {
             throw new NullPointerException();
-        } else {
-            this.log = log;
-            this.buf = new ByteBuffer(512, 50, StringUtils.defaultString(charsetName, StringUtils.CHARSET));
         }
+        if (StringUtils.isBlank(charsetName)) {
+            charsetName = StringUtils.CHARSET;
+        }
+
+        this.log = log;
+        this.buf = new ByteBuffer(512, 50, charsetName);
     }
 
     public void write(int b) throws IOException {

@@ -88,12 +88,13 @@ public class CsvFileTest {
         Assert.assertEquals("1995,ceshi,grand chaeds ,\"must sellair sdf sdf, loader\",\"\",\"\"\"\",100", CsvFile.replaceFieldValue("1995,Jep1,grand chaeds ,\"must sellair sdf sdf, loader\",\"\",\"\"\"\",100", 2, "ceshi"));
         Assert.assertEquals("1995,Jep1,grand chaeds ,\"must sellair sdf sdf, loader\",\"\",\"\"\"\",800", CsvFile.replaceFieldValue("1995,Jep1,grand chaeds ,\"must sellair sdf sdf, loader\",\"\",\"\"\"\",100", 7, "800"));
         Assert.assertEquals("1995,Jep1,grand chaeds ,ceshi,\"\",\"\"\"\",800", CsvFile.replaceFieldValue("1995,Jep1,grand chaeds ,\"ceshi\",\"\",\"\"\"\",800", 4, "ceshi"));
-        Assert.assertEquals(null, CsvFile.replaceFieldValue(null, 4, "ceshi"));
+        Assert.assertNull(CsvFile.replaceFieldValue(null, 4, "ceshi"));
 
         try {
             Assert.assertEquals("1995,Jep1,grand chaeds ,ceshi,\"\",\"\"\"\",800", CsvFile.replaceFieldValue("1995,Jep1,grand chaeds ,\"ceshi\",\"\",\"\"\"\",800", 4, null));
             Assert.fail();
         } catch (NullPointerException e) {
+            Assert.assertTrue(true);
         }
 
         try {

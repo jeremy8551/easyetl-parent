@@ -20,7 +20,7 @@ public class OutputStreamWriter extends java.io.OutputStream {
             throw new NullPointerException();
         }
         if (StringUtils.isBlank(charsetName)) {
-            throw new IllegalArgumentException(charsetName);
+            charsetName = StringUtils.CHARSET;
         }
 
         this.out = out;

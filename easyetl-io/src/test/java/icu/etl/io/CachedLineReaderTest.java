@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -17,43 +18,43 @@ public class CachedLineReaderTest {
         String str = "1\r2\n3\r\n4\n\n";
         CacheLineReader r = new CacheLineReader(new CharArrayReader(str.toCharArray()), 1);
 
-        assertTrue(r.cacheLine(1) == 1);
+        assertEquals(1, r.cacheLine(1));
         assertEquals("", StringUtils.escapeLineSeparator(r.getLineSeparator()));
-        assertTrue(r.getLineNumber() == 0);
+        assertEquals(0, r.getLineNumber());
 
         try {
             r.cacheLine(1);
-            assertTrue("1".equals(r.readLine()));
-            assertTrue(r.getLineNumber() == 1);
-            assertTrue("\r".equals(r.getLineSeparator()));
+            assertEquals("1", r.readLine());
+            assertEquals(1, r.getLineNumber());
+            assertEquals("\r", r.getLineSeparator());
 
             r.cacheLine(1);
-            assertTrue(r.getLineNumber() == 1);
+            assertEquals(1, r.getLineNumber());
 
-            assertTrue("2".equals(r.readLine()));
-            assertTrue(r.getLineNumber() == 2);
-            assertTrue("\n".equals(r.getLineSeparator()));
-
-            r.cacheLine(1);
-            assertTrue("3".equals(r.readLine()));
-            assertTrue(r.getLineNumber() == 3);
-            assertTrue("\r\n".equals(r.getLineSeparator()));
+            assertEquals("2", r.readLine());
+            assertEquals(2, r.getLineNumber());
+            assertEquals("\n", r.getLineSeparator());
 
             r.cacheLine(1);
-            assertTrue("4".equals(r.readLine()));
-            assertTrue(r.getLineNumber() == 4);
-            assertTrue("\n".equals(r.getLineSeparator()));
+            assertEquals("3", r.readLine());
+            assertEquals(3, r.getLineNumber());
+            assertEquals("\r\n", r.getLineSeparator());
 
             r.cacheLine(1);
-            assertTrue("".equals(r.readLine()));
-            assertTrue(r.getLineNumber() == 5);
-            assertTrue("\n".equals(r.getLineSeparator()));
+            assertEquals("4", r.readLine());
+            assertEquals(4, r.getLineNumber());
+            assertEquals("\n", r.getLineSeparator());
 
-            assertTrue(r.cacheLine(1) == 0);
+            r.cacheLine(1);
+            assertEquals("", r.readLine());
+            assertEquals(5, r.getLineNumber());
+            assertEquals("\n", r.getLineSeparator());
+
+            assertEquals(0, r.cacheLine(1));
             assertTrue(r.readLine() == null && "".equals(r.getLineSeparator()));
         } catch (Exception e) {
             e.printStackTrace();
-            assertTrue(false);
+            Assert.fail();
         } finally {
             r.close();
         }

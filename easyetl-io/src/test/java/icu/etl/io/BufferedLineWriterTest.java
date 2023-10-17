@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class BufferedLineWriterTest {
 
@@ -68,7 +69,7 @@ public class BufferedLineWriterTest {
 
         assertEquals(5, out.getLineNumber());
         assertEquals("\n", out.getLineSeparator());
-        assertEquals(null, out.getCharsetName());
+        assertNull(out.getCharsetName());
 
         assertEquals("01", FileUtils.readline(file, "UTF-8", 1));
         assertEquals("3", FileUtils.readline(file, "UTF-8", 3));
@@ -133,7 +134,8 @@ public class BufferedLineWriterTest {
         }
 
         try {
-            new BufferedLineWriter(null, 0);
+            BufferedLineWriter out = new BufferedLineWriter(null, 0);
+            out.close();
             Assert.fail();
         } catch (NullPointerException e) {
             Assert.assertTrue(true);
