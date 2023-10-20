@@ -18,8 +18,8 @@ public class GPatternExpression {
      * 判断字符串参数 {@code str} 是否与通配符参数 {@code gpattern} 匹配
      *
      * @param str      字符串
-     * @param gpattern 通配符表达式
-     * @return
+     * @param gpattern 通配符表达式 {@linkplain #GPatternExpression(Analysis, String)}
+     * @return 返回true表示字符串与通配符匹配
      */
     public static boolean match(String str, String gpattern) {
         return str != null && gpattern != null && (str.equals(gpattern) || new GPatternExpression(gpattern).match(str));

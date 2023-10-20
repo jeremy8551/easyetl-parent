@@ -14,7 +14,9 @@ public class BlobConverter extends AbstractConverter {
 
     public void execute() throws IOException, SQLException {
         Blob value = this.resultSet.getBlob(this.column);
-        if (value != null) {
+        if (value == null) {
+            this.array[this.column] = "";
+        } else {
             InputStream in = value.getBinaryStream();
             if (in != null) {
                 try {

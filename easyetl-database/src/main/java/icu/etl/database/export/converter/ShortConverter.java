@@ -10,7 +10,9 @@ public class ShortConverter extends AbstractConverter {
 
     public void execute() throws IOException, SQLException {
         Short value = this.resultSet.getShort(this.column);
-        if (!this.resultSet.wasNull()) {
+        if (this.resultSet.wasNull()) {
+            this.array[this.column] = "";
+        } else {
             this.array[this.column] = value.toString();
         }
     }

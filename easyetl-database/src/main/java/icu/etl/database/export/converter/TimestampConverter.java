@@ -16,7 +16,9 @@ public class TimestampConverter extends DateConverter {
 
     public void execute() throws IOException, SQLException {
         Timestamp value = this.resultSet.getTimestamp(this.column);
-        if (value != null) {
+        if (value == null) {
+            this.array[this.column] = "";
+        } else {
             this.array[this.column] = this.format.format(value);
         }
     }

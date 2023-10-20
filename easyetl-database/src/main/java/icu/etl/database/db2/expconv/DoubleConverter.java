@@ -16,7 +16,9 @@ public class DoubleConverter extends AbstractConverter {
 
     public void execute() throws IOException, SQLException {
         Double value = this.resultSet.getDouble(this.column);
-        if (!this.resultSet.wasNull()) {
+        if (this.resultSet.wasNull()) {
+            this.array[this.column] = "";
+        } else {
             this.array[this.column] = this.format.format(value).toString();
         }
     }

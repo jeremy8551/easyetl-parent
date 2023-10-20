@@ -16,7 +16,9 @@ public class TimeConverter extends DateConverter {
 
     public void execute() throws IOException, SQLException {
         Time value = this.resultSet.getTime(this.column);
-        if (value != null) {
+        if (value == null) {
+            this.array[this.column] = "";
+        } else {
             this.array[this.column] = this.format.format(value);
         }
     }

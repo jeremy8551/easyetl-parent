@@ -136,6 +136,16 @@ public class MessySequence implements CharSequence {
     }
 
     /**
+     * 返回true表示可以编码字符参数
+     *
+     * @param c 字符
+     * @return true表示字符参数在字符集内
+     */
+    public boolean canEncode(char c) { // TODO 需要单元测试
+        return this.encoder.canEncode(c);
+    }
+
+    /**
      * 乱码字符个数
      *
      * @return

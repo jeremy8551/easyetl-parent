@@ -20,9 +20,13 @@ public class ClobConverter extends AbstractConverter {
 
     public void execute() throws IOException, SQLException {
         Clob value = this.resultSet.getClob(this.column);
-        if (value != null) {
+        if (value == null) {
+            this.array[this.column] = "";
+        } else {
             Reader in = value.getCharacterStream();
-            if (in != null) {
+            if (in == null) {
+                this.array[this.column] = "";
+            } else {
                 this.cache.setLength(0);
                 IO.read(in, this.cache, this.buffer);
                 this.array[this.column] = this.cache.toString();

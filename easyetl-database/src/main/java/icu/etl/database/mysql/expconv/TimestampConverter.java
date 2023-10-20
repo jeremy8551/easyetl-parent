@@ -14,7 +14,9 @@ public class TimestampConverter extends icu.etl.database.export.converter.Timest
 
     public void execute() throws IOException, SQLException {
         Timestamp value = this.resultSet.getTimestamp(this.column);
-        if (value != null) {
+        if (value == null) {
+            this.array[this.column] = "";
+        } else {
             String str = this.format.format(value);
             StringBuilder buf = new StringBuilder(str.length() + 2);
             buf.append('"');

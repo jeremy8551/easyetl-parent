@@ -170,7 +170,6 @@ public class DatabaseReader implements ExtractReader {
     public boolean hasLine() throws IOException, SQLException {
         if (this.hasNext && this.resultSet.next()) {
             for (this.index = 0; this.index < this.column; this.index++) {
-                this.values[this.index] = "";
                 this.columns[this.index].execute();
             }
 

@@ -19,7 +19,9 @@ public class DateConverter extends AbstractConverter {
 
     public void execute() throws IOException, SQLException {
         Date value = this.resultSet.getDate(this.column);
-        if (value != null) {
+        if (value == null) {
+            this.array[this.column] = "";
+        } else {
             this.array[this.column] = this.format.format(value);
         }
     }

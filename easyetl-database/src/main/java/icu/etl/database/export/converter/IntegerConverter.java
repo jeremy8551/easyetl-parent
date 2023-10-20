@@ -10,7 +10,9 @@ public class IntegerConverter extends AbstractConverter {
 
     public void execute() throws IOException, SQLException {
         Integer value = this.resultSet.getInt(this.column);
-        if (!this.resultSet.wasNull()) {
+        if (this.resultSet.wasNull()) {
+            this.array[this.column] = "";
+        } else {
             this.array[this.column] = value.toString();
         }
     }

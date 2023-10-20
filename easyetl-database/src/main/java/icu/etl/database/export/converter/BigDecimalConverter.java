@@ -11,7 +11,9 @@ public class BigDecimalConverter extends AbstractConverter {
 
     public void execute() throws IOException, SQLException {
         BigDecimal value = this.resultSet.getBigDecimal(this.column);
-        if (value != null) {
+        if (value == null) {
+            this.array[this.column] = "";
+        } else {
             this.array[this.column] = value.toString();
         }
     }

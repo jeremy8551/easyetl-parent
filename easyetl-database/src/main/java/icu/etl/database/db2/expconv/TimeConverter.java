@@ -14,7 +14,9 @@ public class TimeConverter extends icu.etl.database.export.converter.TimeConvert
 
     public void execute() throws IOException, SQLException {
         Time value = this.resultSet.getTime(this.column);
-        if (value != null) {
+        if (value == null) {
+            this.array[this.column] = "";
+        } else {
             String str = this.format.format(value);
             StringBuilder buf = new StringBuilder(str.length() + 2);
             buf.append('"');

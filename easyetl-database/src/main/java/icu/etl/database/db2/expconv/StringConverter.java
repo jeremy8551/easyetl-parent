@@ -12,15 +12,17 @@ import java.sql.SQLException;
  */
 public class StringConverter extends icu.etl.database.export.converter.StringConverter {
 
-    public void execute() throws IOException, SQLException {
-        String value = this.resultSet.getString(this.column);
-        if (value != null) {
-            StringBuilder buf = new StringBuilder(value.length() + 2);
-            buf.append('"');
-            buf.append(this.process.execute(value));
-            buf.append('"');
-            this.array[this.column] = buf.toString();
-        }
+    @Override
+    public void init() throws IOException, SQLException {
+        super.init();
     }
 
+    public void execute() throws IOException, SQLException {
+        String str = this.resultSet.getString(this.column);
+        if (str == null) {
+            this.array[this.column] = "";
+        } else {
+            this.array[this.column] = this.process.execute(str);
+        }
+    }
 }
