@@ -57,14 +57,14 @@ public class LsMethod extends AbstractMethod {
                     if (LinuxLocalOS.KEY_FILENAMES.contains(file.getName())) {
                         continue;
                     } else {
-                        table.addValue(Linuxs.toLongname(f));
+                        table.addCell(Linuxs.toLongname(f));
                     }
                 }
             } else {
-                table.addValue(Linuxs.toLongname(file));
+                table.addCell(Linuxs.toLongname(file));
             }
 
-            this.value = table.removeLeftBlank().toSimpleShape();
+            this.value = table.toSimpleShape().ltrim().toString();
             int next = end + 1;
             return this.executeNextMethod(session, context, stdout, stderr, analysis, variableName, methodHandle, this.value, next);
         } else {

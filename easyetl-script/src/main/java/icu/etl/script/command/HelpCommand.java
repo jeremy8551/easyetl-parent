@@ -96,8 +96,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             String jarfilepath = ClassUtils.getJarPath(this.getClass()); // 脚本引擎jar包所在绝对路径
             String charsetName = context.getCharsetName();
             String usage = ResourcesUtils.getMessage("script.engine.usage.msg001" //
-                    , StringUtils.addLinePrefix(this.getScriptAttributes(context).toStandardShape(), "\t") // 0
-                    , StringUtils.addLinePrefix(cr.toString(charsetName, true), "\t") // 1
+                    , StringUtils.addLinePrefix(this.getScriptAttributes(context).toStandardShape().ltrim().toString(), "\t") // 0
+                    , StringUtils.addLinePrefix(cr.toString(charsetName), "\t") // 1
                     , UniversalScriptCommand.class.getName() // 2
                     , UniversalCommandCompiler.class.getName() // 3
                     , UniversalScriptVariableMethod.class.getName() // 4
@@ -245,14 +245,13 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             buf.append("* ").append(cls.getName()).append(FileUtils.lineSeparator);
             List<BeanConfig> list = context.getImplements(cls);
             CharTable ct = new CharTable();
-            ct.removeLeftBlank();
             ct.addTitle("");
             ct.addTitle("");
             for (BeanConfig anno : list) {
-                ct.addValue(anno.getImplementClass().getName());
-                ct.addValue(anno.getAnnotationAsImplement().description());
+                ct.addCell(anno.getImplementClass().getName());
+                ct.addCell(anno.getAnnotationAsImplement().description());
             }
-            buf.append(ct.toSimpleShape());
+            buf.append(ct.toSimpleShape().ltrim().toString());
             buf.append(FileUtils.lineSeparator);
             buf.append(FileUtils.lineSeparator);
         }
@@ -267,14 +266,13 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
 
             List<BeanConfig> list = context.getImplements(cls);
             CharTable ct = new CharTable();
-            ct.removeLeftBlank();
             ct.addTitle("");
             ct.addTitle("");
             for (BeanConfig bi : list) {
-                ct.addValue(bi.getImplementClass().getName());
-                ct.addValue(bi.getAnnotationAsImplement().description());
+                ct.addCell(bi.getImplementClass().getName());
+                ct.addCell(bi.getAnnotationAsImplement().description());
             }
-            buf.append(ct.toSimpleShape());
+            buf.append(ct.toSimpleShape().ltrim().toString());
             buf.append(FileUtils.lineSeparator);
             buf.append(FileUtils.lineSeparator);
         }
@@ -309,10 +307,9 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
 
         String[] array = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg008"), ',');
         CharTable table = new CharTable(context.getCharsetName());
-        table.removeLeftBlank();
-        table.addTitle(CharTable.ALIGN_MIDDLE, array[0]);
-        table.addTitle(CharTable.ALIGN_LEFT, array[1]);
-        table.addTitle(CharTable.ALIGN_RIGHT, array[2]);
+        table.addTitle(array[0], CharTable.ALIGN_MIDDLE);
+        table.addTitle(array[1], CharTable.ALIGN_LEFT);
+        table.addTitle(array[2], CharTable.ALIGN_RIGHT);
 
         for (BeanConfig impl : list) {
             EasyBeanClass annotation = impl.getAnnotationAsImplement();
@@ -328,12 +325,12 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             String description = annotation.description() + "     ";
             String className = "          " + impl.getImplementClass().getName();
 
-            table.addValue(database);
-            table.addValue(description);
-            table.addValue(className);
+            table.addCell(database);
+            table.addCell(description);
+            table.addCell(className);
         }
 
-        return StringUtils.addLinePrefix(table.toStandardShape(), "\t");
+        return StringUtils.addLinePrefix(table.toStandardShape().ltrim().toString(), "\t");
     }
 
     /**
@@ -365,7 +362,6 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         String[] array = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg006"), ',');
 
         CharTable table = new CharTable(context.getCharsetName());
-        table.removeLeftBlank();
         table.addTitle(array[0]);
         table.addTitle(array[0]);
 
@@ -373,36 +369,36 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         ScriptEngineManager manager = new ScriptEngineManager();
         List<ScriptEngineFactory> engineFactories = manager.getEngineFactories();
         for (ScriptEngineFactory factory : engineFactories) {
-            table.addValue(titles[0]);
-            table.addValue(factory.getEngineName());
-            table.addValue(titles[1]);
-            table.addValue(StringUtils.join(factory.getNames(), ", "));
-            table.addValue(titles[2]);
-            table.addValue(factory.getEngineVersion());
-            table.addValue(titles[3]);
-            table.addValue(StringUtils.join(factory.getExtensions(), ", "));
-            table.addValue(titles[4]);
-            table.addValue(StringUtils.join(factory.getMimeTypes(), ", "));
-            table.addValue(titles[5]);
-            table.addValue(factory.getLanguageName());
-            table.addValue(titles[6]);
-            table.addValue(factory.getLanguageVersion());
-            table.addValue(titles[7]);
-            table.addValue(StringUtils.objToStr(factory.getParameter("THREADING")));
-            table.addValue(titles[8]);
-            table.addValue(factory.getOutputStatement("'hello world!'"));
-            table.addValue(titles[9]);
-            table.addValue(factory.getProgram("help", "help script", "help set"));
-            table.addValue(titles[10]);
-            table.addValue(factory.getMethodCallSyntax("obj", "split", new String[]{"':'", "'\\'"}));
+            table.addCell(titles[0]);
+            table.addCell(factory.getEngineName());
+            table.addCell(titles[1]);
+            table.addCell(StringUtils.join(factory.getNames(), ", "));
+            table.addCell(titles[2]);
+            table.addCell(factory.getEngineVersion());
+            table.addCell(titles[3]);
+            table.addCell(StringUtils.join(factory.getExtensions(), ", "));
+            table.addCell(titles[4]);
+            table.addCell(StringUtils.join(factory.getMimeTypes(), ", "));
+            table.addCell(titles[5]);
+            table.addCell(factory.getLanguageName());
+            table.addCell(titles[6]);
+            table.addCell(factory.getLanguageVersion());
+            table.addCell(titles[7]);
+            table.addCell(StringUtils.objToStr(factory.getParameter("THREADING")));
+            table.addCell(titles[8]);
+            table.addCell(factory.getOutputStatement("'hello world!'"));
+            table.addCell(titles[9]);
+            table.addCell(factory.getProgram("help", "help script", "help set"));
+            table.addCell(titles[10]);
+            table.addCell(factory.getMethodCallSyntax("obj", "split", new String[]{"':'", "'\\'"}));
 
             String name = CollUtils.firstElement(factory.getNames());
             ScriptEngine engine = manager.getEngineByName(name);
-            table.addValue(titles[13]);
-            table.addValue(engine == null ? "" : engine.getClass().getName());
+            table.addCell(titles[13]);
+            table.addCell(engine == null ? "" : engine.getClass().getName());
 
-            table.addValue("");
-            table.addValue("");
+            table.addCell("");
+            table.addCell("");
         }
         return table;
     }

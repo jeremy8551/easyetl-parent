@@ -41,9 +41,9 @@ public class PSCommand extends AbstractTraceCommand implements NohupCommandSuppo
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
         StringBuilder buf = new StringBuilder();
         if (this.type == 1) {
-            buf.append(this.printAllSession(session).toShellShape());
+            buf.append(this.printAllSession(session).toShellShape().ltrim().toString());
         } else {
-            buf.append(this.printAllProcess(session).toShellShape());
+            buf.append(this.printAllProcess(session).toShellShape().ltrim().toString());
         }
 
         if (session.isEchoEnable() || forceStdout) {
@@ -56,12 +56,12 @@ public class PSCommand extends AbstractTraceCommand implements NohupCommandSuppo
         String[] titles = StringUtils.split(ResourcesUtils.getScriptStdoutMessage(48), ',');
         CharTable table = new CharTable();
         table.addTitle(titles[0]);
-        table.addTitle(CharTable.ALIGN_RIGHT, titles[1]);
+        table.addTitle(titles[1], CharTable.ALIGN_RIGHT);
         table.addTitle(titles[2]);
         table.addTitle(titles[3]);
         table.addTitle(titles[4]);
         table.addTitle(titles[5]);
-        table.addTitle(CharTable.ALIGN_RIGHT, titles[6]);
+        table.addTitle(titles[6], CharTable.ALIGN_RIGHT);
         table.addTitle(titles[7]);
 
 //		table.addTitle("pid");
@@ -77,31 +77,31 @@ public class PSCommand extends AbstractTraceCommand implements NohupCommandSuppo
         ScriptMainProcess mainProcess = session.getMainProcess();
         for (Iterator<UniversalScriptCommand> it = mainProcess.iterator(); it.hasNext(); ) {
             UniversalScriptCommand obj = it.next();
-            table.addValue("0");
-            table.addValue(session.getCompiler().getLineNumber());
-            table.addValue(session.isAlive());
-            table.addValue(session.isTerminate());
-            table.addValue(Dates.format19(session.getCreateTime()));
-            table.addValue("");
-            table.addValue(mainProcess.getExitcode());
-            table.addValue(obj.getScript());
+            table.addCell("0");
+            table.addCell(session.getCompiler().getLineNumber());
+            table.addCell(session.isAlive());
+            table.addCell(session.isTerminate());
+            table.addCell(Dates.format19(session.getCreateTime()));
+            table.addCell("");
+            table.addCell(mainProcess.getExitcode());
+            table.addCell(obj.getScript());
         }
 
         // 打印子进程
         ScriptSubProcess subProcess = session.getSubProcess();
         for (Iterator<ScriptProcess> it = subProcess.iterator(); it.hasNext(); ) {
             ScriptProcess obj = it.next();
-            table.addValue(obj.getPid());
-            table.addValue(obj.getLineNumber());
-            table.addValue(obj.isAlive());
-            table.addValue(obj.isTerminate());
-            table.addValue(Dates.format19(obj.getStartTime()));
-            table.addValue(Dates.format19(obj.getEndTime()));
-            table.addValue(obj.getExitcode());
-            table.addValue(obj.getCommand().getScript());
+            table.addCell(obj.getPid());
+            table.addCell(obj.getLineNumber());
+            table.addCell(obj.isAlive());
+            table.addCell(obj.isTerminate());
+            table.addCell(Dates.format19(obj.getStartTime()));
+            table.addCell(Dates.format19(obj.getEndTime()));
+            table.addCell(obj.getExitcode());
+            table.addCell(obj.getCommand().getScript());
         }
 
-        return table.removeLeftBlank();
+        return table;
     }
 
     public CharTable printAllSession(UniversalScriptSession session) {
@@ -128,16 +128,16 @@ public class PSCommand extends AbstractTraceCommand implements NohupCommandSuppo
             String id = it.next();
             UniversalScriptSession obj = sessionFactory.get(id);
             boolean self = id.equals(session.getId());
-            table.addValue(obj.getId());
-            table.addValue(obj.getParentID());
-            table.addValue(obj.isAlive());
-            table.addValue(obj.isTerminate());
-            table.addValue(Dates.format19(obj.getCreateTime()));
-            table.addValue(Dates.format19(obj.getEndTime()));
-            table.addValue(self ? "*" : "");
+            table.addCell(obj.getId());
+            table.addCell(obj.getParentID());
+            table.addCell(obj.isAlive());
+            table.addCell(obj.isTerminate());
+            table.addCell(Dates.format19(obj.getCreateTime()));
+            table.addCell(Dates.format19(obj.getEndTime()));
+            table.addCell(self ? "*" : "");
         }
 
-        return table.removeLeftBlank();
+        return table;
     }
 
     public void terminate() throws IOException, SQLException {

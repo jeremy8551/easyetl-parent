@@ -212,9 +212,9 @@ public class ExtractMessage extends ExecutorMessage {
     public String toString() {
         CharTable ct = new CharTable();
         ct.setDelimiter("   ");
-        ct.addTitle(CharTable.ALIGN_RIGHT, "");
-        ct.addTitle(CharTable.ALIGN_LEFT, "");
-        ct.addTitle(CharTable.ALIGN_LEFT, "");
+        ct.addTitle("", CharTable.ALIGN_RIGHT);
+        ct.addTitle("", CharTable.ALIGN_LEFT);
+        ct.addTitle("", CharTable.ALIGN_LEFT);
 
         String[] titles = StringUtils.split(ResourcesUtils.getExtractMessage(7), ',');
         String[] values = {this.getStart(), //
@@ -233,12 +233,12 @@ public class ExtractMessage extends ExecutorMessage {
 
         Ensure.isTrue(titles.length == values.length, titles.length + " != " + values.length);
         for (int i = 0; i < titles.length; i++) {
-            ct.addValue(titles[i]);
-            ct.addValue("=");
-            ct.addValue(values[i]);
+            ct.addCell(titles[i]);
+            ct.addCell("=");
+            ct.addCell(values[i]);
         }
 
-        return new StringBuilder().append(ct.removeLeftBlank().toSimpleShape()).append(FileUtils.lineSeparator).toString();
+        return new StringBuilder().append(ct.toSimpleShape().ltrim().toString()).append(FileUtils.lineSeparator).toString();
     }
 
 }

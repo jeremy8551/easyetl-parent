@@ -49,21 +49,21 @@ public class StandardDatabaseTypes implements DatabaseTypeSet {
         Set<String> keySet = this.map.keySet();
         for (String key : keySet) {
             DatabaseType type = this.map.get(key);
-            cb.addValue(type.getName());
-            cb.addValue(new StringBuilder().append(type.getTextPrefix()).append("").append(type.getTextSuffix()));
-            cb.addValue(type.getExpression());
-            cb.addValue(type.getScale());
-            cb.addValue(type.getMaxScale());
-            cb.addValue(type.getMinScale());
-            cb.addValue(type.getNullAble());
-            cb.addValue(type.getRadix());
-            cb.addValue(type.getPrecision());
-            cb.addValue(type.getSearchable());
-            cb.addValue(type.getUnsigned());
-            cb.addValue(type.getLocalName());
+            cb.addCell(type.getName());
+            cb.addCell(new StringBuilder().append(type.getTextPrefix()).append("").append(type.getTextSuffix()));
+            cb.addCell(type.getExpression());
+            cb.addCell(type.getScale());
+            cb.addCell(type.getMaxScale());
+            cb.addCell(type.getMinScale());
+            cb.addCell(type.getNullAble());
+            cb.addCell(type.getRadix());
+            cb.addCell(type.getPrecision());
+            cb.addCell(type.getSearchable());
+            cb.addCell(type.getUnsigned());
+            cb.addCell(type.getLocalName());
         }
 
-        return cb.toDB2Shape();
+        return cb.toDB2Shape().toString();
     }
 
 }

@@ -216,30 +216,30 @@ public class DatabaseReader implements ExtractReader {
 
         String[] titles = StringUtils.split(ResourcesUtils.getExtractMessage(4), ',');
         CharTable table = new CharTable();
-        table.addTitle(CharTable.ALIGN_RIGHT, titles[0]);
-        table.addTitle(CharTable.ALIGN_LEFT, titles[1]);
-        table.addTitle(CharTable.ALIGN_LEFT, titles[2]);
-        table.addTitle(CharTable.ALIGN_LEFT, titles[3]);
-        table.addTitle(CharTable.ALIGN_RIGHT, titles[4]);
-        table.addTitle(CharTable.ALIGN_LEFT, titles[5]);
+        table.addTitle(titles[0], CharTable.ALIGN_RIGHT);
+        table.addTitle(titles[1], CharTable.ALIGN_LEFT);
+        table.addTitle(titles[2], CharTable.ALIGN_LEFT);
+        table.addTitle(titles[3], CharTable.ALIGN_LEFT);
+        table.addTitle(titles[4], CharTable.ALIGN_RIGHT);
+        table.addTitle(titles[5], CharTable.ALIGN_LEFT);
 
         ResultSetMetaData metaData = resultSet.getMetaData();
         for (int i = 0; i < processors.length; i++) {
             int column = i + 1;
-            table.addValue(Integer.toString(i + 1));
-            table.addValue(metaData.getColumnClassName(column));
-            table.addValue(metaData.getColumnTypeName(column));
-            table.addValue(metaData.getColumnClassName(column));
-            table.addValue(metaData.getColumnDisplaySize(column));
-            table.addValue(processors[i].getClass().getName());
+            table.addCell(Integer.toString(i + 1));
+            table.addCell(metaData.getColumnClassName(column));
+            table.addCell(metaData.getColumnTypeName(column));
+            table.addCell(metaData.getColumnClassName(column));
+            table.addCell(metaData.getColumnDisplaySize(column));
+            table.addCell(processors[i].getClass().getName());
         }
 
         CharTable cb = new CharTable();
         cb.addTitle("");
-        cb.addValue(ResourcesUtils.getExtractMessage(5, source));
-        cb.addValue(ResourcesUtils.getExtractMessage(6, target));
-        cb.addValue(table.removeLeftBlank().toStandardShape());
-        return FileUtils.lineSeparator + cb.toSimpleShape();
+        cb.addCell(ResourcesUtils.getExtractMessage(5, source));
+        cb.addCell(ResourcesUtils.getExtractMessage(6, target));
+        cb.addCell(table.toStandardShape().ltrim().toString());
+        return FileUtils.lineSeparator + cb.toSimpleShape().toString();
     }
 
     public boolean isColumnBlank(int position) {

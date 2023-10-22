@@ -420,20 +420,20 @@ public class Jdbc {
             String name = names[i];
             Class<Object> cls = ClassUtils.forName(typeNames[i]);
             if (cls != null && Number.class.isAssignableFrom(cls)) {
-                table.addTitle(CharTable.ALIGN_RIGHT, name);
+                table.addTitle(name, CharTable.ALIGN_RIGHT);
             } else {
-                table.addTitle(CharTable.ALIGN_LEFT, name);
+                table.addTitle(name, CharTable.ALIGN_LEFT);
             }
         }
 
         while (result.next()) {
             for (int i = 0; i < names.length; i++) {
                 Object value = result.getObject(names[i]);
-                table.addValue(result.wasNull() ? "" : StringUtils.toString(value));
+                table.addCell(result.wasNull() ? "" : StringUtils.toString(value));
             }
         }
 
-        return table.toDB2Shape();
+        return table.toDB2Shape().toString();
     }
 
     /**

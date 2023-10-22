@@ -39,4 +39,9 @@ build/
 ### Mac OS ###
 .DS_Store
 
+# 过滤打包 easyetl-all 工程下的Java代码
+easyetl-all/src/main/java/**
+easyetl-all/src/main/resources/**
+
+# 过滤JDK方言类的实现包
 easyetl-jdk/src/main/java/icu/etl/jdk/JDK*.java

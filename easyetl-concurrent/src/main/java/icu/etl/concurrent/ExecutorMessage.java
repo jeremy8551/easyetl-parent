@@ -123,22 +123,22 @@ public class ExecutorMessage {
         Set<String> keys = this.attributes.keySet();
         CharTable ct = new CharTable();
         ct.setDelimiter("   ");
-        ct.addTitle(CharTable.ALIGN_RIGHT, "");
-        ct.addTitle(CharTable.ALIGN_LEFT, "");
-        ct.addTitle(CharTable.ALIGN_LEFT, "");
+        ct.addTitle("", CharTable.ALIGN_RIGHT);
+        ct.addTitle("", CharTable.ALIGN_LEFT);
+        ct.addTitle("", CharTable.ALIGN_LEFT);
 
         for (String key : keys) {
-            ct.addValue(key);
-            ct.addValue("=");
+            ct.addCell(key);
+            ct.addCell("=");
 
             Object value = this.attributes.get(key);
             if (value != null) {
-                ct.addValue(StringUtils.escapeLineSeparator(StringUtils.toString(value)));
+                ct.addCell(StringUtils.escapeLineSeparator(StringUtils.toString(value)));
             } else {
-                ct.addValue("");
+                ct.addCell("");
             }
         }
-        return ct.removeLeftBlank().toSimpleShape();
+        return ct.toSimpleShape().ltrim().toString();
     }
 
     /**

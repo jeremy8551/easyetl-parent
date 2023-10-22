@@ -94,12 +94,12 @@ public class VariableMethodRepository {
     public String toString(String charsetName, boolean ltrim) {
         String[] titles = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg004"), ',');
         CharTable ct = new CharTable(charsetName);
-        ct.addTitle(CharTable.ALIGN_LEFT, titles[0]);
-        ct.addTitle(CharTable.ALIGN_LEFT, titles[1]);
-        ct.addTitle(CharTable.ALIGN_LEFT, titles[2]);
-        ct.addTitle(CharTable.ALIGN_LEFT, titles[3]);
-        ct.addTitle(CharTable.ALIGN_LEFT, titles[4]);
-        ct.addTitle(CharTable.ALIGN_LEFT, titles[5]);
+        ct.addTitle(titles[0], CharTable.ALIGN_LEFT);
+        ct.addTitle(titles[1], CharTable.ALIGN_LEFT);
+        ct.addTitle(titles[2], CharTable.ALIGN_LEFT);
+        ct.addTitle(titles[3], CharTable.ALIGN_LEFT);
+        ct.addTitle(titles[4], CharTable.ALIGN_LEFT);
+        ct.addTitle(titles[5], CharTable.ALIGN_LEFT);
 
         // 全部转为小写英文字符
         List<String> methodNameList = ResourcesUtils.getPropertyMiddleName("script.variable.method");
@@ -116,19 +116,21 @@ public class VariableMethodRepository {
             UniversalScriptVariableMethod obj = this.map.get(name);
 
             String methodName = set.contains(name) ? set.get(name) : "";
-            ct.addValue(name); // 显示注解中配置的变量方法名
-            ct.addValue(ResourcesUtils.getMessage("script.variable.method." + methodName + ".synopsis"));
-            ct.addValue(ResourcesUtils.getMessage("script.variable.method." + methodName + ".descriptions"));
-            ct.addValue(ResourcesUtils.getMessage("script.variable.method." + methodName + ".parameters"));
-            ct.addValue(ResourcesUtils.getMessage("script.variable.method." + methodName + ".return"));
-            ct.addValue(obj.getClass().getName());
+            ct.addCell(name); // 显示注解中配置的变量方法名
+            ct.addCell(ResourcesUtils.getMessage("script.variable.method." + methodName + ".synopsis"));
+            ct.addCell(ResourcesUtils.getMessage("script.variable.method." + methodName + ".descriptions"));
+            ct.addCell(ResourcesUtils.getMessage("script.variable.method." + methodName + ".parameters"));
+            ct.addCell(ResourcesUtils.getMessage("script.variable.method." + methodName + ".return"));
+            ct.addCell(obj.getClass().getName());
         }
+
+        ct.toStandardShape();
 
         // 删除表格左侧的空白字符
         if (ltrim) {
-            ct.removeLeftBlank();
+            ct.ltrim();
         }
-        return ct.toStandardShape();
+        return ct.toString();
     }
 
     private class ComparatorImpl implements Comparator<String> {

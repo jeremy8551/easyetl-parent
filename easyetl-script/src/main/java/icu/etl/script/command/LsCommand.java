@@ -89,10 +89,10 @@ public class LsCommand extends AbstractFileCommand implements UniversalScriptInp
                             continue;
                         }
 
-                        table.addValue(Linuxs.toLongname(f));
+                        table.addCell(Linuxs.toLongname(f));
                     }
                 } else {
-                    table.addValue(Linuxs.toLongname(file));
+                    table.addCell(Linuxs.toLongname(file));
                 }
             }
         } else {
@@ -103,12 +103,12 @@ public class LsCommand extends AbstractFileCommand implements UniversalScriptInp
             for (String path : filepaths) {
                 List<OSFile> list = ftp.ls(FileUtils.replaceFolderSeparator(path, false));
                 for (OSFile file : list) {
-                    table.addValue(file.getLongname());
+                    table.addCell(file.getLongname());
                 }
             }
         }
 
-        cb.append(table.removeLeftBlank().toSimpleShape());
+        cb.append(table.toSimpleShape().ltrim().toString());
 
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(cb);

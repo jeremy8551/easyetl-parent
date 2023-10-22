@@ -282,15 +282,15 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
     }
 
     public String toString() {
-        return this.toString(StringUtils.CHARSET, true);
+        return this.toString(StringUtils.CHARSET);
     }
 
-    public String toString(String charsetName, boolean ltrim) {
+    public String toString(String charsetName) {
         String[] titles = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg007"), ',');
         CharTable ct = new CharTable(charsetName);
-        ct.addTitle(CharTable.ALIGN_LEFT, titles[0]);
-        ct.addTitle(CharTable.ALIGN_LEFT, titles[1]);
-        ct.addTitle(CharTable.ALIGN_MIDDLE, titles[3]);
+        ct.addTitle(titles[0], CharTable.ALIGN_LEFT);
+        ct.addTitle(titles[1], CharTable.ALIGN_LEFT);
+        ct.addTitle(titles[3], CharTable.ALIGN_MIDDLE);
 
         for (Iterator<CommandCompilerContext> it = this.iterator(); it.hasNext(); ) {
             CommandCompilerContext obj = it.next();
@@ -299,16 +299,13 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
 
             String[] prefixs = StringUtils.removeBlank(anno.name());
             for (String name : prefixs) {
-                ct.addValue(name);
-                ct.addValue(cls.getName());
-                ct.addValue(ResourcesUtils.existsScriptMessage(obj.getUsage()) ? "" : "------");
+                ct.addCell(name);
+                ct.addCell(cls.getName());
+                ct.addCell(ResourcesUtils.existsScriptMessage(obj.getUsage()) ? "" : "------");
             }
         }
 
-        if (ltrim) {
-            ct.removeLeftBlank();
-        }
-        return ct.toDB2Shape();
+        return ct.toDB2Shape().ltrim().toString();
     }
 
 }

@@ -73,31 +73,30 @@ public class StandardResultSet implements ResultSet {
     public String toString() {
         CharTable table = new CharTable();
         table.setDelimiter("");
-        table.removeLeftBlank();
         table.addTitle("");
         table.addTitle("");
         table.addTitle("");
 
-        table.addValue("Number of rows read");
-        table.addValue("    = ");
-        table.addValue(String.valueOf(this.total));
+        table.addCell("Number of rows read");
+        table.addCell("    = ");
+        table.addCell(String.valueOf(this.total));
 
-        table.addValue("Number of rows skipped");
-        table.addValue("    = ");
-        table.addValue(String.valueOf(this.skip));
+        table.addCell("Number of rows skipped");
+        table.addCell("    = ");
+        table.addCell(String.valueOf(this.skip));
 
-        table.addValue("Number of rows rejected");
-        table.addValue("    = ");
-        table.addValue(String.valueOf(this.reject));
+        table.addCell("Number of rows rejected");
+        table.addCell("    = ");
+        table.addCell(String.valueOf(this.reject));
 
-        table.addValue("Number of rows deleted");
-        table.addValue("    = ");
-        table.addValue(String.valueOf(this.delete));
+        table.addCell("Number of rows deleted");
+        table.addCell("    = ");
+        table.addCell(String.valueOf(this.delete));
 
-        table.addValue("Number of rows committed");
-        table.addValue("    = ");
-        table.addValue(String.valueOf(this.commit));
-        return table.toSimpleShape();
+        table.addCell("Number of rows committed");
+        table.addCell("    = ");
+        table.addCell(String.valueOf(this.commit));
+        return table.toSimpleShape().ltrim().toString();
     }
 
 }

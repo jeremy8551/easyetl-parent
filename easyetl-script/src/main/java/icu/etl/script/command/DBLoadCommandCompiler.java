@@ -309,9 +309,9 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
         ct1.addTitle("");
         for (BeanConfig anno : list1) {
             EasyBeanClass annotation = anno.getAnnotationAsImplement();
-            ct1.addValue(annotation.kind());
-            ct1.addValue(annotation.description());
-            ct1.addValue(anno.getImplementClass().getName());
+            ct1.addCell(annotation.kind());
+            ct1.addCell(annotation.description());
+            ct1.addCell(anno.getImplementClass().getName());
         }
 
         out.println(new ScriptUsage(this.getClass() //
@@ -320,7 +320,7 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
                 , UserListener.class.getName() // 2
                 , JdbcObjectConverter.class.getName() // 3
                 , ExtractWriter.class.getName() // 4
-                , ct1.removeLeftBlank().toSimpleShape() // 5
+                , ct1.toSimpleShape().ltrim().toString() // 5
                 , "" // 6
                 , TextTable.class.getName() // 7
         ));

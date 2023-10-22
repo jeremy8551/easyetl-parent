@@ -83,12 +83,12 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
         table.addTitle("");
         for (BeanConfig anno : list) {
             EasyBeanClass annotation = anno.getAnnotationAsImplement();
-            table.addValue(annotation.kind());
-            table.addValue(annotation.description());
-            table.addValue(anno.getImplementClass().getName());
+            table.addCell(annotation.kind());
+            table.addCell(annotation.description());
+            table.addCell(anno.getImplementClass().getName());
         }
 
-        out.println(new ScriptUsage(this.getClass(), table.removeLeftBlank().toSimpleShape()));
+        out.println(new ScriptUsage(this.getClass(), table.toSimpleShape().ltrim().toString()));
     }
 
 }

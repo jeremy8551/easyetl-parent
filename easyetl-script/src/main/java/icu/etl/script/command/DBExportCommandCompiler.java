@@ -83,9 +83,9 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
         ct1.addTitle("");
         for (BeanConfig anno : list1) {
             EasyBeanClass annotation = anno.getAnnotationAsImplement();
-            ct1.addValue(annotation.kind());
-            ct1.addValue(annotation.description());
-            ct1.addValue(anno.getImplementClass().getName());
+            ct1.addCell(annotation.kind());
+            ct1.addCell(annotation.description());
+            ct1.addCell(anno.getImplementClass().getName());
         }
 
         // 查找接口对应的的实现类
@@ -96,9 +96,9 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
         ct2.addTitle("");
         for (BeanConfig anno : list2) {
             EasyBeanClass annotation = anno.getAnnotationAsImplement();
-            ct2.addValue(annotation.kind());
-            ct2.addValue(annotation.description());
-            ct2.addValue(anno.getImplementClass().getName());
+            ct2.addCell(annotation.kind());
+            ct2.addCell(annotation.description());
+            ct2.addCell(anno.getImplementClass().getName());
         }
 
         out.println(new ScriptUsage(this.getClass() //
@@ -107,8 +107,8 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
                 , UserListener.class.getName() // 2
                 , JdbcObjectConverter.class.getName() // 3
                 , ExtractWriter.class.getName() // 4
-                , ct1.removeLeftBlank().toSimpleShape() // 5
-                , ct2.removeLeftBlank().toSimpleShape() // 6
+                , ct1.toSimpleShape().ltrim().toString() // 5
+                , ct2.toSimpleShape().ltrim().toString() // 6
                 , TextTable.class.getName() // 7
         ));
     }

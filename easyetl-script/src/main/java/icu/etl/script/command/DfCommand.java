@@ -39,16 +39,16 @@ public class DfCommand extends AbstractTraceCommand implements NohupCommandSuppo
 
             List<OSDisk> list = os.getOSDisk();
             for (OSDisk disk : list) {
-                table.addValue(disk.getId());
-                table.addValue(DataUnitExpression.toString(disk.total()));
-                table.addValue(DataUnitExpression.toString(disk.free()));
-                table.addValue(DataUnitExpression.toString(disk.used()));
-                table.addValue(disk.getType());
-                table.addValue(disk.getAmount());
+                table.addCell(disk.getId());
+                table.addCell(DataUnitExpression.toString(disk.total()));
+                table.addCell(DataUnitExpression.toString(disk.free()));
+                table.addCell(DataUnitExpression.toString(disk.used()));
+                table.addCell(disk.getType());
+                table.addCell(disk.getAmount());
             }
 
             if (session.isEchoEnable() || forceStdout) {
-                stdout.println(table.removeLeftBlank().toShellShape());
+                stdout.println(table.toShellShape().ltrim().toString());
             }
             return 0;
         } finally {

@@ -87,9 +87,8 @@ public interface UniversalCommandRepository {
      * 输出所有命令的说明信息
      *
      * @param charsetName 字符集
-     * @param ltrim       true表示删除表格左侧的空白字符
-     * @return
+     * @return 字符图形
      */
-    String toString(String charsetName, boolean ltrim);
+    String toString(String charsetName);
 
 }
