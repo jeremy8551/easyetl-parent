@@ -30,7 +30,7 @@
         <module>easyetl-file</module>
         <module>easyetl-script</module>
         <module>easyetl-compress</module>
-        <module>easyetl-all</module>
+        <module>easyetl</module>
     </modules>
 
     <!-- Source Code Management，源代码版本管理信息 -->
