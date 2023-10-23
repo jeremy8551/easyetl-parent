@@ -13,12 +13,13 @@ import icu.etl.database.export.ExtracterContext;
 import icu.etl.io.TableLine;
 import icu.etl.io.TableWriter;
 import icu.etl.io.TextTable;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.os.OSFtpCommand;
 import icu.etl.util.Ensure;
 
 @EasyBeanClass(kind = "sftp", mode = "", major = "", minor = "", description = "卸载数据到远程sftp服务器", type = ExtractWriter.class)
-public class SftpFileWriter implements ExtractWriter {
+public class SftpFileWriter implements ExtractWriter, EasyetlContextAware {
 
     protected String target;
 
@@ -32,6 +33,12 @@ public class SftpFileWriter implements ExtractWriter {
     protected long lineNumber;
 
     protected ExtractMessage message;
+
+    protected EasyetlContext context;
+
+    public void set(EasyetlContext context) {
+        this.context = context;
+    }
 
     /**
      * 初始化
@@ -72,7 +79,7 @@ public class SftpFileWriter implements ExtractWriter {
      * @param remotepath
      */
     protected void open(String host, String port, String username, String password, String remotepath) {
-        this.ftp = BeanFactory.get(OSFtpCommand.class, "sftp");
+        this.ftp = this.context.get(OSFtpCommand.class, "sftp");
         Ensure.isTrue(this.ftp.connect(host, Integer.parseInt(port), username, password), host, port, username, password);
         this.target = "sftp://" + username + "@" + host + ":" + port + "?password=" + password;
     }

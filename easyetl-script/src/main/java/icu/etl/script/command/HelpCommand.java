@@ -25,10 +25,9 @@ import icu.etl.database.Jdbc;
 import icu.etl.database.internal.AbstractDialect;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.BeanConfig;
-import icu.etl.ioc.BeanContext;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.ioc.ClassScanRule;
 import icu.etl.ioc.ClassScanner;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.jdk.JavaDialect;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.Log;
@@ -153,8 +152,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                     , "" // 54
                     , ClassUtils.toMethodName(EasyBeanClass.class, "major") // 55
                     , ClassUtils.toMethodName(EasyBeanClass.class, "minor") // 56
-                    , ClassUtils.toMethodName(BeanFactory.class, "get", Class.class) // 57
-                    , BeanFactory.class.getName() // 58
+                    , "" // 57
+                    , "" // 58
                     , ClassUtils.toMethodName(EasyBeanClass.class, "kind") // 59
                     , ClassUtils.toMethodName(EasyBeanClass.class, "mode") // 60
                     , ClassUtils.toMethodName(EasyBeanClass.class, "description") // 61
@@ -165,8 +164,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                     , "" // 66
                     , StringUtils.addLinePrefix(repository.toString(charsetName, true), "\t") // 67
                     , analysis.getSegment() // 68
-                    , this.toAllImplements() // 69
-                    , this.toJavaVersionTable() // 70
+                    , this.toAllImplements(context) // 69
+                    , this.toJavaVersionTable(context) // 70
                     , version // 71
                     , Settings.class.getName() // 72
                     , Log.DEFAULT_LEVEL // 73
@@ -186,7 +185,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
      *
      * @return
      */
-    private String toJavaVersionTable() {
+    private String toJavaVersionTable(UniversalScriptContext context) {
         StringBuilder buf = new StringBuilder();
 
         String cp = ClassUtils.getClasspath(JavaDialect.class);
@@ -212,7 +211,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             }
 
             // 读取大版本号
-            List<BeanConfig> list = BeanFactory.getContext().getImplements(JavaDialect.class);
+            List<BeanConfig> list = context.getFactory().getContext().getImplements(JavaDialect.class);
             for (BeanConfig anno : list) {
                 String name = "JDK" + anno.getAnnotationAsImplement().major();
                 set.add(name);
@@ -227,9 +226,9 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         return StringUtils.rtrimBlank(buf, ',');
     }
 
-    public String toAllImplements() {
+    public String toAllImplements(UniversalScriptContext scriptContext) {
         StringBuilder buf = new StringBuilder();
-        BeanContext context = BeanFactory.getContext();
+        EasyetlContext context = scriptContext.getFactory().getContext();
         Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getImplements());
 
         // 以下这些接口的实现类已在帮助说明中删除
@@ -287,7 +286,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
      * @return
      */
     public String supportedDatabase(UniversalScriptContext context) {
-        List<BeanConfig> list = new ArrayList<BeanConfig>(BeanFactory.getContext().getImplements(DatabaseDialect.class));
+        List<BeanConfig> list = new ArrayList<BeanConfig>(context.getFactory().getContext().getImplements(DatabaseDialect.class));
         java.util.Collections.sort(list, new Comparator<BeanConfig>() {
 
             public int compare(BeanConfig o1, BeanConfig o2) {

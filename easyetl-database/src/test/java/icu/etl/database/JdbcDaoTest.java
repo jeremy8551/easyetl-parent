@@ -11,7 +11,8 @@ import javax.sql.DataSource;
 
 import icu.etl.database.internal.StandardDatabaseIndex;
 import icu.etl.database.internal.StandardDatabaseProcedureParameter;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.database.pool.SimpleDatasource;
+import icu.etl.ioc.BeanContext;
 import icu.etl.log.LogFactory;
 import icu.etl.log.STD;
 import icu.etl.util.ArrayUtils;
@@ -27,9 +28,11 @@ public class JdbcDaoTest {
 
     public final static String tableName = "test_table_name_temp".toUpperCase();
 
+    public final static BeanContext context = new BeanContext();
+
     @Before
     public void setUp() throws Exception {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             DatabaseDialect dialect = dao.getDialect();
             if (dialect.containsTable(dao.getConnection(), null, Jdbc.getSchema(tableName), Jdbc.removeSchema(tableName))) {
@@ -78,7 +81,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testtoDDL() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             DatabaseProcedure procedure = dao.getDialect().getProcedureForceOne(dao.getConnection(), dao.getCatalog(), dao.getSchema(), "TEST_PROC");
             DatabaseDDL ddl = dao.toDDL(procedure);
@@ -100,7 +103,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testgetSchema() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             DatabaseTable table = dao.getTable(dao.getCatalog(), dao.getSchema(), tableName);
             String schema = table.getSchema();
@@ -121,7 +124,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testSetConnection() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             assertTrue(dao.existsConnection());
             assertTrue(true);
@@ -137,7 +140,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExistsConnection() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             assertTrue(dao.existsConnection());
             assertTrue(true);
@@ -153,7 +156,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testConnection() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             assertTrue(dao.testConnection());
             dao.rollback();
@@ -168,7 +171,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryFirstRowFirstColByJdbcString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Integer num = (Integer) dao.queryFirstRowFirstColByJdbc("select id, name from " + tableName + " order by id desc");
             dao.commit();
@@ -184,7 +187,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQuery() throws SQLException {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             JdbcQueryStatement query = dao.query("select id, name from " + tableName + " where id = ? and name = ? ", -1, -1, 1, "名字1");
             query.query();
@@ -205,7 +208,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryFirstColumnByJdbc() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             List<String> list = dao.queryFirstColumnByJdbc("select id, name from " + tableName + " order by id desc");
             dao.commit();
@@ -221,7 +224,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryCountByJdbcString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             int num = dao.queryCountByJdbc("select count(*) from " + tableName + " ");
             dao.commit();
@@ -237,7 +240,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryMapByJdbcString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Map<String, String> map = dao.queryMapByJdbc("select id, name from " + tableName + " ");
             dao.commit();
@@ -254,7 +257,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryMapByJdbcStringIntInt() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Map<String, String> map = dao.queryMapByJdbc("select id, name from " + tableName + " ", 1, 2);
             dao.commit();
@@ -271,7 +274,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryMapByJdbcStringStringString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Map<String, String> map = dao.queryMapByJdbc("select id, name from " + tableName + " ", "id", "name");
             dao.commit();
@@ -288,7 +291,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteUpdateByJdbcStringArray() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             String[] array2 = new String[]{"update " + tableName + " set name='名字11' where id = 1", "update " + tableName + " set name='名字22' where id = 2"};
             int[] array = dao.executeUpdateByJdbc(array2);
@@ -306,7 +309,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteUpdateByJdbcListOfString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             List<String> list = ArrayUtils.asList("update " + tableName + " set name='名字11' where id = 1", "update " + tableName + " set name='名字22' where id = 2");
             int[] array = dao.executeUpdateByJdbc(list);
@@ -323,7 +326,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteUpdateByJdbcString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             int val = dao.executeUpdateByJdbc("update " + tableName + " set name='名字11' where id = 1");
             dao.commit();
@@ -345,7 +348,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryListMapByJdbc() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             List<Map<String, String>> list = dao.queryListMapByJdbc("select * from " + tableName + " order by id asc");
 
@@ -367,7 +370,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testResultToList() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             PreparedStatement ps = dao.getConnection().prepareStatement("select * from " + tableName + " order by id asc");
             ResultSet result = ps.executeQuery();
@@ -391,7 +394,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testCurrentRowToMap() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             PreparedStatement ps = dao.getConnection().prepareStatement("select * from " + tableName + " order by id asc");
             ResultSet result = ps.executeQuery();
@@ -413,7 +416,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testResultToMap() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             JdbcQueryStatement query = new JdbcQueryStatement(dao.getConnection(), "select id, name from " + tableName + " order by id asc");
             ResultSet result = query.query();
@@ -432,7 +435,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExistsTable() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             assertTrue(dao.containsTable(null, null, tableName));
             dao.commit();
@@ -447,7 +450,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteByJdbcQuietlyString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             dao.executeByJdbcQuietly("drop table tabletestseljlskjdflk ");
 
@@ -467,7 +470,7 @@ public class JdbcDaoTest {
         LogFactory.turnOff();
         JdbcDao dao = null;
         try {
-            dao = new JdbcDao(TestEnv.getConnection());
+            dao = new JdbcDao(context, TestEnv.getConnection());
             dao.executeByJdbcQuiet("drop table tabletestseljlskjdflk ");
 
             dao.rollback();
@@ -482,7 +485,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteUpdateByJdbcQuietly() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             dao.executeUpdateByJdbcQuietly("delete from tanbl lsdkfjlkjlksdjf ");
             assertTrue(true);
@@ -501,7 +504,7 @@ public class JdbcDaoTest {
         LogFactory.turnOff();
         JdbcDao dao = null;
         try {
-            dao = new JdbcDao(TestEnv.getConnection());
+            dao = new JdbcDao(context, TestEnv.getConnection());
             dao.executeUpdateByJdbcQuiet("update " + tableName + "_tset set name='' where 2=1");
             dao.rollback();
             dao.close();
@@ -517,7 +520,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testCallProcedureByJdbcString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             DatabaseProcedure result = dao.callProcedureByJdbc("call " + dao.getSchema() + ".TEST_PROC(?)");
             assertTrue(result != null);
@@ -540,7 +543,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testCallProcedureByJdbcStringJdbcCallProcedure() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             DatabaseProcedure proc = dao.callProcedureByJdbc("call " + dao.getSchema() + ".TEST_PROC(?)");
             List<DatabaseProcedureParameter> params = proc.getParameters();
@@ -563,7 +566,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteUpdateByJdbcConnectionString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             int result = JdbcDao.executeUpdateByJdbc(dao.getConnection(), "delete from " + tableName + " where id = 1");
             assertTrue(result == 1);
@@ -579,7 +582,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteByJdbcConnectionString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             boolean result = JdbcDao.executeByJdbc(dao.getConnection(), "delete from " + tableName + " where id = 2");
             dao.commit();
@@ -595,10 +598,11 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteCreateTableConnectionDatabaseDialectDatabaseTableInfoBoolean() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        BeanContext cxt = new BeanContext();
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Connection conn = dao.getConnection();
-            DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = cxt.get(DatabaseDialect.class, conn);
             List<DatabaseTable> list = dialect.getTable(conn, dao.getCatalog(), dao.getSchema(), Jdbc.removeSchema(tableName));
             if (list.size() > 1) {
                 throw new RuntimeException();
@@ -620,10 +624,11 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteCreateTableConnectionDatabaseDialectDatabaseTableInfoBooleanBooleanBoolean() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        BeanContext cxt = new BeanContext();
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Connection conn = dao.getConnection();
-            DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = cxt.get(DatabaseDialect.class, conn);
             List<DatabaseTable> list = dialect.getTable(conn, null, dao.getSchema(), Jdbc.removeSchema(tableName));
             if (list.size() > 1) {
                 throw new RuntimeException();
@@ -661,7 +666,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteDropTableIndexConnectionDatabaseTableInfoBoolean() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Connection conn = dao.getConnection();
             DatabaseDialect dialect = dao.getDialect();
@@ -684,7 +689,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteCreateTableIndexConnectionDatabaseDialectDatabaseTableInfoBoolean() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             String schema = dao.getSchema();
 
@@ -713,7 +718,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteCreateTableIndexConnectionDatabaseDialectDatabaseIndexBoolean() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             String schema = dao.getSchema();
 
@@ -742,7 +747,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryListMapsByJdbc() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             List<Map<String, String>> list = JdbcDao.queryListMapsByJdbc(dao.getConnection(), "select * from " + tableName + " order by id asc");
             dao.commit();
@@ -758,7 +763,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryCountByJdbcConnectionString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Connection conn = dao.getConnection();
 
@@ -775,7 +780,8 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryCountByJdbcDataSourceString() {
-        DataSource dataSource = Jdbc.getDataSource(TestEnv.getJdbcconfig());
+        BeanContext context = new BeanContext();
+        DataSource dataSource = new SimpleDatasource(context, TestEnv.getJdbcconfig());
         try {
             assertTrue(JdbcDao.queryCountByJdbc(dataSource, "select count(*) from " + tableName) == 2);
             assertTrue(true);
@@ -789,7 +795,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryFirstRowFirstColByJdbcConnectionString() {
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Connection conn = dao.getConnection();
 

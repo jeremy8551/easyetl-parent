@@ -18,7 +18,7 @@ import icu.etl.database.internal.StandardDatabaseDialect;
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.mysql.MysqlDialect;
 import icu.etl.database.oracle.OracleDialect;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.IO;
@@ -79,8 +79,9 @@ public class DatabaseDialectTest {
     }
 
     public static void main(String[] args) throws SQLException {
+        BeanContext context = new BeanContext();
 //		Connection conn = JT.getConnection("oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@ //110.1.5.37:1521/dadb", "lhbb", "lhbb");
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             System.out.println(StringUtils.toString(Jdbc.getTypeInfo(dao.getConnection())));
 
@@ -94,10 +95,11 @@ public class DatabaseDialectTest {
     }
 
     public static void main2(String[] args) throws SQLException {
-        Connection conn = Jdbc.getConnection("oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@ //110.1.5.37:1521/dadb", "lhbb", "lhbb");
+        BeanContext context = new BeanContext();
+        Connection conn = Jdbc.getConnection(context, "oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@ //110.1.5.37:1521/dadb", "lhbb", "lhbb");
         // Connection conn = UDSFDB.getConnection();
         try {
-            DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
             // System.out.println(JT.getDatabaseTypeInfo(conn));
 
             DatabaseProcedure p = dialect.getProcedureForceOne(conn, null, "LHBB", "CUSTAUM_APPEND");

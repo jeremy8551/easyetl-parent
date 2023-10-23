@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.util.ArrayUtils;
@@ -629,15 +629,16 @@ public class ChinaUtils {
     /**
      * 是否为休息日(周末和法定假日, 不包含法定补休日) <br>
      *
-     * @param date 日期
+     * @param context 容器上下文信息
+     * @param date    日期
      * @return
      */
-    public static boolean isRestDay(Date date) {
+    public static boolean isRestDay(BeanContext context, Date date) {
         if (date == null) {
             return false;
         }
 
-        NationalHoliday holidays = BeanFactory.get(NationalHoliday.class);
+        NationalHoliday holidays = context.get(NationalHoliday.class);
         if (holidays.getWorkDays().contains(date)) {
             return false;
         } else if (holidays.getRestDays().contains(date)) {
@@ -650,15 +651,16 @@ public class ChinaUtils {
     /**
      * 是否为工作日(不包含周末和法定假日, 包含法定补休日)
      *
-     * @param date 日期
+     * @param context 容器上下文信息
+     * @param date    日期
      * @return
      */
-    public static boolean isWorkDay(Date date) {
+    public static boolean isWorkDay(BeanContext context, Date date) {
         if (date == null) {
             return false;
         }
 
-        NationalHoliday holidays = BeanFactory.get(NationalHoliday.class);
+        NationalHoliday holidays = context.get(NationalHoliday.class);
         if (holidays.getWorkDays().contains(date)) {
             return true;
         } else if (holidays.getRestDays().contains(date)) {

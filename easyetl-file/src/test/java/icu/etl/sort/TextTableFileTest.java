@@ -11,8 +11,7 @@ import icu.etl.io.CommonTextTableFileReaderListener;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
-import icu.etl.sort.TableFileSortContext;
-import icu.etl.sort.TableFileSorter;
+import icu.etl.ioc.BeanContext;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
@@ -188,6 +187,7 @@ public class TextTableFileTest {
 
     @Test
     public void testSort() throws IOException {
+        BeanContext context = new BeanContext();
         CommonTextTableFile file = new CommonTextTableFile();
         file.setDelimiter(",");
         file.setCharsetName(StringUtils.CHARSET);
@@ -207,7 +207,7 @@ public class TextTableFileTest {
         try {
             obj.setThreadNumber(1);
             obj.setFileCount(2);
-            File rs = s.sort(file, "1");
+            File rs = s.sort(context, file, "1");
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
@@ -220,7 +220,7 @@ public class TextTableFileTest {
             this.getTestFile(file);
             obj.setThreadNumber(2);
             obj.setFileCount(2);
-            File rs = s.sort(file, "1");
+            File rs = s.sort(context, file, "1");
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
@@ -233,7 +233,7 @@ public class TextTableFileTest {
             this.getTestFile(file);
             obj.setThreadNumber(5);
             obj.setFileCount(2);
-            File rs = s.sort(file, "1");
+            File rs = s.sort(context, file, "1");
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
@@ -246,7 +246,7 @@ public class TextTableFileTest {
             this.getTestFile(file);
             obj.setThreadNumber(3);
             obj.setFileCount(3);
-            File rs = s.sort(file, "1");
+            File rs = s.sort(context, file, "1");
 
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
@@ -258,7 +258,7 @@ public class TextTableFileTest {
 
         try {
             this.getTestFile(file);
-            File rs = s.sort(file, "1");
+            File rs = s.sort(context, file, "1");
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
@@ -275,6 +275,7 @@ public class TextTableFileTest {
      */
     @Test
     public void test1() throws IOException {
+        BeanContext context = new BeanContext();
         CommonTextTableFile file = new CommonTextTableFile();
         file.setDelimiter(",");
         file.setCharsetName(StringUtils.CHARSET);
@@ -293,7 +294,7 @@ public class TextTableFileTest {
 
         TableFileSorter s = new TableFileSorter(obj);
         try {
-            s.sort(file, "1 desc");
+            s.sort(context, file, "1 desc");
             int i = 50000;
             TextTableFileReader in = file.getReader(IO.FILE_BYTES_BUFFER_SIZE);
             TextTableLine line = null;
@@ -314,10 +315,10 @@ public class TextTableFileTest {
             assertTrue(false);
         }
 
-        s.sort(file, "1 asc");
+        s.sort(context, file, "1 asc");
         this.checkFile(file);
 
-        s.sort(file, "int(1) asc");
+        s.sort(context, file, "int(1) asc");
         this.checkFile(file);
     }
 

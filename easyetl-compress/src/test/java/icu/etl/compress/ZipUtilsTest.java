@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import icu.apache.ant.zip.ZipFile;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -48,6 +48,7 @@ public class ZipUtilsTest {
 
     @Test
     public void testCompress() throws IOException {
+        BeanContext context = new BeanContext();
         File f = getFile();
         FileUtils.createDirectory(f);
 
@@ -64,18 +65,19 @@ public class ZipUtilsTest {
         FileUtils.write(f2, StringUtils.CHARSET, false, "中文字符chinese charactors");
         FileUtils.write(f3, StringUtils.CHARSET, false, "中文字符chinese charactors");
 
-        ZipUtils.compress(f, zipfile, StringUtils.CHARSET, false);
+        ZipUtils.compress(context, f, zipfile, StringUtils.CHARSET, false);
 
         assertTrue(f0.exists() && f1.exists() && f2.exists() && f3.exists() && f.exists() && f.isDirectory());
 
         FileUtils.delete(zipfile);
         FileUtils.createFile(zipfile);
-        ZipUtils.compress(f, zipfile, StringUtils.CHARSET, true);
+        ZipUtils.compress(context, f, zipfile, StringUtils.CHARSET, true);
         assertTrue(zipfile.exists() && !f.exists());
     }
 
     @Test
     public void testUncompress() throws IOException {
+        BeanContext context = new BeanContext();
         File f = getFile();
         FileUtils.createDirectory(f);
 
@@ -92,10 +94,10 @@ public class ZipUtilsTest {
         FileUtils.write(f2, StringUtils.CHARSET, false, "中文字符chinese charactors");
         FileUtils.write(f3, StringUtils.CHARSET, false, "中文字符chinese charactors");
 
-        ZipUtils.compress(f, zipfile, StringUtils.CHARSET, true);
+        ZipUtils.compress(context, f, zipfile, StringUtils.CHARSET, true);
         assertTrue(!f0.exists() && !f1.exists() && !f2.exists() && !f3.exists() && !f.exists());
 
-        ZipUtils.uncompress(zipfile, f.getParentFile(), StringUtils.CHARSET, false);
+        ZipUtils.uncompress(context, zipfile, f.getParentFile(), StringUtils.CHARSET, false);
         assertTrue(f0.exists() && f1.exists() && f2.exists() && f3.exists() && f.exists() && f.isDirectory());
     }
 
@@ -111,7 +113,8 @@ public class ZipUtilsTest {
         File f2 = getFile();
         FileUtils.createFile(f2);
 
-        Compress c = BeanFactory.get(Compress.class, FileUtils.getFilenameSuffix(file.getName()));
+        BeanContext context = new BeanContext();
+        Compress c = context.get(Compress.class, FileUtils.getFilenameSuffix(file.getName()));
         c.setFile(file);
         c.archiveFile(f1, null);
         c.archiveFile(f2, null);

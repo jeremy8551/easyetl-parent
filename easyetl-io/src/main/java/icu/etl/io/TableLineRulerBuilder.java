@@ -3,12 +3,12 @@ package icu.etl.io;
 import java.util.List;
 
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.StringUtils;
 
 public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
 
-    public TableLineRuler build(BeanContext context, Object... array) throws Exception {
+    public TableLineRuler build(EasyetlContext context, Object... array) throws Exception {
         TextTable file = this.indexOf(array, TextTable.class, 0);
         if (file != null) {
             String coldel = file.getDelimiter();

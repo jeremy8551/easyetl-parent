@@ -11,7 +11,6 @@ import icu.etl.expression.WordIterator;
 import icu.etl.io.TableColumnComparator;
 import icu.etl.io.TextTableFile;
 import icu.etl.ioc.BeanConfig;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -59,7 +58,7 @@ public class IncrementCommandCompiler extends AbstractTraceCommandCompiler {
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) { // 查找接口对应的的实现类
-        List<BeanConfig> list = BeanFactory.getContext().getImplements(TextTableFile.class);
+        List<BeanConfig> list = context.getFactory().getContext().getImplements(TextTableFile.class);
         CharTable table = new CharTable(context.getCharsetName());
         table.addTitle("");
         table.addTitle("");

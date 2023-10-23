@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.expression.LoginExpression;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.os.OSSecureShellCommand;
 import icu.etl.printer.OutputStreamPrinter;
 import icu.etl.script.UniversalCommandCompiler;
@@ -55,7 +54,7 @@ public class DeclareSSHTunnelCommand extends AbstractCommand {
         List<String> portforward = analysis.split(analysis.replaceVariable(session, context, analysis.replaceVariable(session, context, this.remote, false), false), ':');
 
         // 连接代理服务器
-        OSSecureShellCommand client = BeanFactory.get(OSSecureShellCommand.class);
+        OSSecureShellCommand client = context.getFactory().getContext().get(OSSecureShellCommand.class);
         if (!client.connect(host, port, username, password)) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(38, "ssh2"));
             return UniversalScriptCommand.COMMAND_ERROR;

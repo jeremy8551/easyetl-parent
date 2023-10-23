@@ -9,6 +9,7 @@ import icu.etl.database.JdbcQueryStatement;
 import icu.etl.database.export.ExtracterContext;
 import icu.etl.io.TableLine;
 import icu.etl.io.TextTable;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.StringUtils;
 
 /**
@@ -31,8 +32,8 @@ public class TableTitle implements TableLine {
      * @param context 卸数引擎上下文信息
      * @throws SQLException
      */
-    public TableTitle(ExtracterContext context) throws SQLException {
-        JdbcDao dao = new JdbcDao(context.getDataSource().getConnection());
+    public TableTitle(ExtracterContext context, EasyetlContext ioccxt) throws SQLException {
+        JdbcDao dao = new JdbcDao(ioccxt, context.getDataSource().getConnection());
         try {
             JdbcQueryStatement query = dao.query(context.getSource(), ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ResultSet resultSet = query.getResultSet();

@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import icu.etl.database.logger.DataSourceLogger;
 import icu.etl.database.logger.DataSourceLoggerProxy;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.STD;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.IO;
@@ -49,11 +50,12 @@ public class SimpleDatasource implements DataSource, java.io.Closeable {
     /**
      * 初始化
      *
-     * @param p 配置信息
+     * @param context 容器上下文信息
+     * @param p       配置信息
      */
-    public SimpleDatasource(Properties p) {
+    public SimpleDatasource(EasyetlContext context, Properties p) {
         super();
-        this.pool = new Pool();
+        this.pool = new Pool(context);
         this.pool.setJdbc(p);
         this.pool.start();
         this.init();

@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import icu.etl.annotation.EasyBeanClass;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -29,25 +28,25 @@ import icu.etl.util.StringUtils;
 public class ScriptCompiler implements UniversalScriptCompiler {
 
     /** 脚本命令编译器集合 */
-    private CommandRepository map;
+    protected CommandRepository map;
 
     /** 缓冲区 */
-    private PriorityQueue<UniversalScriptCommand> cache;
+    protected PriorityQueue<UniversalScriptCommand> cache;
 
     /** true表示终止编译操作 */
-    private volatile boolean terminate;
+    protected volatile boolean terminate;
 
     /** 语句分析器 */
-    private ScriptAnalysis analysis;
+    protected ScriptAnalysis analysis;
 
     /** 词法分析器 */
-    private ScriptReader reader;
+    protected ScriptReader reader;
 
     /** 语法分析器 */
-    private ScriptParser parser;
+    protected ScriptParser parser;
 
     /** 起始行数 */
-    private long startLineNumber;
+    protected long startLineNumber;
 
     /**
      * 初始化
@@ -79,7 +78,7 @@ public class ScriptCompiler implements UniversalScriptCompiler {
         this.map.clear();
         this.map.load(context);
         if (this.map.getDefault() == null) { // 设置脚本引擎默认命令
-            String script = BeanFactory.get(UniversalScriptConfiguration.class).getDefaultCommand(); // 读取配置信息中的默认脚本语句
+            String script = context.getFactory().getContext().get(UniversalScriptConfiguration.class).getDefaultCommand(); // 读取配置信息中的默认脚本语句
             if (StringUtils.isNotBlank(script)) {
                 UniversalCommandCompiler compiler = this.map.get(script);
                 this.map.setDefault(compiler);

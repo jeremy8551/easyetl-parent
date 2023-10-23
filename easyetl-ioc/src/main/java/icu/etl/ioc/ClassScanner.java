@@ -57,7 +57,7 @@ public class ClassScanner {
      * 扫描所有类信息
      */
     protected ClassScanner() {
-        this.includePackageNames = new LinkedHashSet<>();
+        this.includePackageNames = new LinkedHashSet<String>();
         this.excludePackageNames = new HashSet<String>();
         this.jarfiles = new HashSet<File>();
         this.rules = new ArrayList<ClassScanRule>();

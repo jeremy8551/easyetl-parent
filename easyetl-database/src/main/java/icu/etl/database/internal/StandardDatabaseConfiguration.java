@@ -11,11 +11,12 @@ import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DatabaseConfiguration;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseURL;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.os.OSAccount;
 import icu.etl.util.StringUtils;
 
-public class StandardDatabaseConfiguration implements DatabaseConfiguration {
+public class StandardDatabaseConfiguration implements DatabaseConfiguration, EasyetlContextAware {
 
     private String host;
     private String driverClassName;
@@ -27,6 +28,8 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration {
     private CaseSensitivMap<StandardOSAccount> sshUsers;
     private OSAccount sshUser;
     private int sshPort;
+
+    protected EasyetlContext context;
 
     /**
      * 初始化
@@ -53,6 +56,10 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration {
     public StandardDatabaseConfiguration(String ipAddress, String driverClassName, String url, String username, String password, String adminUsername, String adminPassword, String sshUser, String sshUserPw, String sshPort) {
         this();
         this.add(ipAddress, driverClassName, url, username, password, adminUsername, adminPassword, sshUser, sshUserPw, sshPort);
+    }
+
+    public void set(EasyetlContext context) {
+        this.context = context;
     }
 
     /**
@@ -85,7 +92,7 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration {
 
         // 设置数据库服务器的IP地址或主机名
         if (StringUtils.isBlank(ipAddress)) { // 截取 URL 中的主机ip或主机名作为默认值
-            DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, url);
+            DatabaseDialect dialect = this.context.get(DatabaseDialect.class, url);
             List<DatabaseURL> urls = dialect.parseJdbcUrl(url);
             if (urls.size() > 0) {
                 this.host = urls.get(0).getHostname();

@@ -8,7 +8,7 @@ import javax.script.ScriptException;
 
 import icu.etl.crypto.MD5Encrypt;
 import icu.etl.io.BufferedLineWriter;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
@@ -26,7 +26,8 @@ public class MD5ToolTest {
             String md5 = MD5Encrypt.encrypt(str, null);
             System.out.println("MD5Encrypt.encrypt value is " + md5);
 
-            OSSecureShellCommand shell = BeanFactory.get(OSSecureShellCommand.class);
+            BeanContext context = new BeanContext();
+            OSSecureShellCommand shell = context.get(OSSecureShellCommand.class);
             try {
                 shell.connect(TestEnv.getSSHHost(), TestEnv.getSSHPort(), TestEnv.getSSHUsername(), TestEnv.getSSHPassword());
                 shell.execute("echo -n " + str + " | md5sum "); // 判断md5值与linux上是否一致
@@ -84,7 +85,8 @@ public class MD5ToolTest {
             e.eval("put " + file.getAbsolutePath() + " `pwd`");
             e.eval("bye");
 
-            OSSecureShellCommand shell = BeanFactory.get(OSSecureShellCommand.class);
+            BeanContext context = new BeanContext();
+            OSSecureShellCommand shell = context.get(OSSecureShellCommand.class);
             try {
                 shell.connect(host, port, username, password);
                 shell.execute("md5sum `pwd`/" + filename); // 判断md5值与linux上是否一致

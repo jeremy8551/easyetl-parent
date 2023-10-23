@@ -5,13 +5,12 @@ import java.io.Writer;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.EasyBeanClass;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.util.Attribute;
 
 /**
  * 表格型数据文件接口 <br>
  * <br>
- * 使用 {@linkplain BeanFactory#get(Class, Object...)} 语句返回一个 {@linkplain TextTableFile} 表格型文件对象 <br>
+ * 从容器上下文 {@linkplain icu.etl.ioc.EasyetlContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象 <br>
  * 第一参数必须是 {@linkplain TextTableFile} <br>
  * 第二个参数必须是文件类型，详见表格型文件类上的 {@linkplain EasyBeanClass#type()} 属性值 <br>
  * 第三个参数必须是 {@linkplain Attribute} 对象的引用，属性集合中可以设置 charset，codepage，chardel，rowdel，coldel，escape，column，colname <br>

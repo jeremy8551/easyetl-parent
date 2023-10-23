@@ -14,21 +14,29 @@ import icu.etl.database.load.LoadTable;
 import icu.etl.database.load.Loader;
 import icu.etl.database.load.inernal.DataWriterFactory;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBeanClass(kind = "replace", mode = "file", major = "", minor = "", type = Loader.class)
-public class ParallelLoadFileEngine implements Loader {
+public class ParallelLoadFileEngine implements Loader, EasyetlContextAware {
 
     /** 上下文信息 */
     private LoadEngineContext context;
+
+    /** 容器上下文信息 */
+    protected EasyetlContext ioccxt;
 
     /**
      * 初始化
      */
     public ParallelLoadFileEngine() {
         super();
+    }
+
+    public void set(EasyetlContext context) {
+        this.ioccxt = context;
     }
 
     public void execute(LoadEngineContext context) throws Exception {
@@ -38,7 +46,7 @@ public class ParallelLoadFileEngine implements Loader {
             this.context = context;
         }
 
-        JdbcDao dao = new JdbcDao();
+        JdbcDao dao = new JdbcDao(this.ioccxt);
         try {
             dao.connect(this.context.getDataSource());
             LoadTable target = new LoadTable(dao, null);
@@ -52,7 +60,7 @@ public class ParallelLoadFileEngine implements Loader {
             try {
                 List<String> sources = context.getFiles();
                 for (String filepath : sources) {
-                    TextTableFile file = BeanFactory.get(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
+                    TextTableFile file = this.ioccxt.get(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
                     file.setAbsolutePath(filepath);
                     this.execute(dao, factory, file);
                 }

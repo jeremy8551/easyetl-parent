@@ -25,6 +25,15 @@ public class StandardBeanCreator implements BeanCreator {
 
     @SuppressWarnings("unchecked")
     public <E> E getBean(Class<E> cls, Object... array) {
+        E obj = this.build(cls, array);
+        if (obj instanceof EasyetlContextAware) {
+            ((EasyetlContextAware) obj).set(this.context);
+        }
+        return obj;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <E> E build(Class<E> cls, Object[] array) {
         // 优先使用接口工厂生成实例对象
         BeanBuilder<?> obj = this.context.getBuilder(cls);
         if (obj != null) {

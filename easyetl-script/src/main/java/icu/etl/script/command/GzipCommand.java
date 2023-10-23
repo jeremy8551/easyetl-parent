@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.sql.SQLException;
 
-import icu.etl.ioc.BeanFactory;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -51,7 +50,7 @@ public class GzipCommand extends AbstractFileCommand implements UniversalScriptI
             stdout.println("gzip " + file.getAbsolutePath());
         }
 
-        this.c = BeanFactory.get(Compress.class, "gz");
+        this.c = context.getFactory().getContext().get(Compress.class, "gz");
         try {
             this.c.setFile(new File(file.getParentFile(), FileUtils.changeFilenameExt(file.getName(), "gz")));
             this.c.archiveFile(file, null);

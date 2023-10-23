@@ -58,7 +58,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
         }
     }
 
-    public NationalHoliday build(BeanContext context, Object... array) throws Exception {
+    public NationalHoliday build(EasyetlContext context, Object... array) throws Exception {
         Locale locale = ArrayUtils.indexOf(array, Locale.class, 0);
         if (locale == null || locale.equals(this.locale)) { // 返回默认值
             if (!this.init.getAndSet(true)) {
@@ -77,7 +77,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
      *
      * @param context
      */
-    protected void addAll(BeanContext context) {
+    protected void addAll(EasyetlContext context) {
         List<BeanConfig> list = context.getImplements(NationalHoliday.class);
         for (BeanConfig bean : list) { // 判断语言和国家信息是否相等
             Class<NationalHoliday> cls = bean.getImplementClass();
@@ -93,7 +93,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
      * @param cls
      * @param anno
      */
-    protected void add(BeanContext context, Class<NationalHoliday> cls, EasyBeanClass anno) {
+    protected void add(EasyetlContext context, Class<NationalHoliday> cls, EasyBeanClass anno) {
         if (anno != null //
                 && anno.kind().equalsIgnoreCase(this.locale.getLanguage()) //
                 && anno.mode().equalsIgnoreCase(this.locale.getCountry()) //

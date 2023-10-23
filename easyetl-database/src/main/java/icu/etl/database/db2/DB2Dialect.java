@@ -61,7 +61,8 @@ import icu.etl.database.internal.StandardJdbcConverterMapper;
 import icu.etl.database.pool.PoolConnection;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.io.ClobWriter;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.log.STD;
 import icu.etl.os.OS;
 import icu.etl.os.OSAccount;
@@ -82,7 +83,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  */
 @EasyBeanClass(kind = "db2", mode = "", major = "", minor = "", description = "IBM DB2 数据库方言模版", type = DatabaseDialect.class)
-public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
+public class DB2Dialect extends AbstractDialect implements DatabaseDialect, EasyetlContextAware {
 
     /** 进程编号名 */
     public final static String APPLICATION_ID = "applicationId";
@@ -94,6 +95,8 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
     protected StandardJdbcConverterMapper exp;
 
     protected StandardJdbcConverterMapper map;
+
+    protected EasyetlContext context;
 
     public DB2Dialect() {
         super();
@@ -447,6 +450,10 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
         this.keyword.add("YEARS");
     }
 
+    public void set(EasyetlContext context) {
+        this.context = context;
+    }
+
     public String dropPrimaryKey(Connection connection, DatabaseIndex index) throws SQLException {
         if (index == null) {
             throw new NullPointerException();
@@ -529,17 +536,17 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
         int minor = metaData.getDatabaseMinorVersion();
 
         // 读取 JDBC 配置信息
-        DatabaseConfigurationContainer container = BeanFactory.get(DatabaseConfigurationContainer.class);
+        DatabaseConfigurationContainer container = this.context.get(DatabaseConfigurationContainer.class);
         DatabaseConfiguration config = container.get(connection);
         List<OSAccount> accounts = config.getAccounts();
         Ensure.isTrue(!accounts.isEmpty(), table);
 
-        DatabaseURL url = Jdbc.parseJdbcUrl(connection);
+        DatabaseURL url = Jdbc.parseJdbcUrl(this.context, connection);
         int port = Integer.parseInt(url.getPort());
         String name = url.getDatabaseName();
 
         // 生成实例
-        OS os = BeanFactory.get(OS.class);
+        OS os = this.context.get(OS.class);
         try {
             OSAccount acct;
             DB2Instance inst = DB2Instance.get(os, port, name);
@@ -552,7 +559,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
 
                     // 如果登陆操作系统发生错误，继续尝试下一个用户与密码
                     try {
-                        os = BeanFactory.get(OS.class, config);
+                        os = this.context.get(OS.class, config);
                     } catch (Throwable e) {
                         continue;
                     }
@@ -562,7 +569,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
                     OSCommand cmd = os.getOSCommand();
 
                     // 执行 db2look 命令
-                    DB2Command builder = BeanFactory.get(DB2Command.class, "db2", os.getName(), major, minor);
+                    DB2Command builder = this.context.get(DB2Command.class, "db2", os.getName(), major, minor);
                     if (builder == null) {
                         throw new NullPointerException();
                     }
@@ -1065,7 +1072,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
             throw new DatabaseException(ResourcesUtils.getDatabaseMessage(54, fullTableName));
         }
 
-        JdbcDao dao = new JdbcDao(conn);
+        JdbcDao dao = new JdbcDao(this.context, conn);
         if (StringUtils.isNotBlank(fullTableName) && names.size() > 0) {
             dao.callProcedureByJdbc("call SYSPROC.ADMIN_CMD('RUNSTATS ON TABLE " + fullTableName + " ON COLUMNS (" + StringUtils.join(names, ", ") + ") WITH DISTRIBUTION ON KEY COLUMNS')");
         }
@@ -1086,7 +1093,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
         }
 
         String applicationHandle = config.getProperty(DB2Dialect.APPLICATION_HANDLE);
-        DatabaseConfigurationContainer container = BeanFactory.get(DatabaseConfigurationContainer.class);
+        DatabaseConfigurationContainer container = this.context.get(DatabaseConfigurationContainer.class);
         DatabaseConfiguration jdbc = container.get(conn);
         if (jdbc == null) {
             throw new NullPointerException();
@@ -1168,9 +1175,9 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
         int major = metaData.getDatabaseMajorVersion();
         int minor = metaData.getDatabaseMinorVersion();
 
-        OS os = BeanFactory.get(OS.class, config);
+        OS os = this.context.get(OS.class, config);
         try {
-            DB2Command builder = BeanFactory.get(DB2Command.class, "db2", os.getName(), major, minor);
+            DB2Command builder = this.context.get(DB2Command.class, "db2", os.getName(), major, minor);
             if (builder == null) {
                 throw new NullPointerException();
             }
@@ -1214,7 +1221,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
      * 强制关闭db2进程
      */
     public boolean forceApplication(Connection conn, String username, String password, String applicationHandle) throws SQLException {
-        JdbcDao dao = new JdbcDao();
+        JdbcDao dao = new JdbcDao(this.context);
         try {
             String url = conn.getMetaData().getURL();
             if (dao.connect(url, -1, username, password)) {
@@ -1397,7 +1404,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect {
         }
 
         List<String> list = new ArrayList<String>();
-        JdbcDao dao = new JdbcDao(connection);
+        JdbcDao dao = new JdbcDao(this.context, connection);
         try {
             // 添加数据库表字段
             if (oc == null) {

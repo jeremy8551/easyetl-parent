@@ -6,7 +6,6 @@ import java.io.Reader;
 import java.sql.SQLException;
 
 import icu.etl.expression.LoginExpression;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.os.OSFtpCommand;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -63,7 +62,7 @@ public class SftpCommand extends FtpCommand implements UniversalScriptInputStrea
             stdout.println("sftp " + this.username + "@" + this.host + ":" + this.port + "?password=" + this.password);
         }
 
-        OSFtpCommand ftp = BeanFactory.get(OSFtpCommand.class, "sftp");
+        OSFtpCommand ftp = context.getFactory().getContext().get(OSFtpCommand.class, "sftp");
         if (!ftp.connect(this.host, Integer.parseInt(this.port), this.username, this.password)) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(38, "sftp"));
             return UniversalScriptCommand.COMMAND_ERROR;

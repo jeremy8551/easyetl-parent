@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.util.IO;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +17,10 @@ public class QueryManagerTest {
 
     @Before
     public void setUp() throws Exception {
+        BeanContext context = new BeanContext();
         Connection conn = TestEnv.getConnection();
         try {
-            DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
             if (dialect.containsTable(conn, null, Jdbc.getSchema(tableName), Jdbc.removeSchema(tableName))) {
                 JdbcDao.executeByJdbc(conn, "drop table " + tableName);
             }

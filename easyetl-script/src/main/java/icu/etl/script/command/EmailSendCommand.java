@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import icu.etl.ioc.BeanFactory;
 import icu.etl.mail.MailCommand;
 import icu.etl.mail.MailFile;
 import icu.etl.script.UniversalCommandCompiler;
@@ -55,7 +54,7 @@ public class EmailSendCommand extends AbstractTraceCommand {
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
-        MailCommand mail = BeanFactory.get(MailCommand.class);
+        MailCommand mail = context.getFactory().getContext().get(MailCommand.class);
         mail.setHost(this.host);
         mail.setUser(this.username, this.password);
         mail.setCharsetName(this.charset);

@@ -17,6 +17,8 @@ import icu.etl.database.export.ExtractReader;
 import icu.etl.database.export.ExtracterContext;
 import icu.etl.database.export.converter.AbstractConverter;
 import icu.etl.io.TextTable;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.printer.Progress;
 import icu.etl.util.CharTable;
 import icu.etl.util.FileUtils;
@@ -24,7 +26,7 @@ import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
-public class DatabaseReader implements ExtractReader {
+public class DatabaseReader implements ExtractReader, EasyetlContextAware {
 
     /** 数据库操作类 */
     private JdbcDao dao;
@@ -56,6 +58,13 @@ public class DatabaseReader implements ExtractReader {
     /** 字段数组 */
     private String[] values;
 
+    /** 容器上下文信息 */
+    protected EasyetlContext context;
+
+    public void set(EasyetlContext context) {
+        this.context = context;
+    }
+
     /**
      * 初始化
      *
@@ -75,7 +84,7 @@ public class DatabaseReader implements ExtractReader {
      * @throws IOException
      */
     private void open(ExtracterContext context) throws SQLException, IOException {
-        this.dao = new JdbcDao();
+        this.dao = new JdbcDao(this.context);
         this.close();
         this.hasNext = true;
         this.index = 0;

@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import icu.etl.concurrent.Executor;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -13,7 +14,7 @@ import icu.etl.util.ResourcesUtils;
  * @author jeremy8551@qq.com
  * @createtime 2020-11-12
  */
-public class Extracter extends Executor {
+public class Extracter extends Executor implements EasyetlContextAware {
 
     /** 上下文信息 */
     protected ExtracterContext context;
@@ -24,6 +25,9 @@ public class Extracter extends Executor {
     /** 消息信息 */
     protected ExtractMessage message;
 
+    /** 容器上下文信息 */
+    protected EasyetlContext ioccxt;
+
     /**
      * 初始化
      */
@@ -31,6 +35,10 @@ public class Extracter extends Executor {
         super();
         this.context = new ExtracterContext(this);
         this.listener = new ExtractListener(this.context);
+    }
+
+    public void set(EasyetlContext context) {
+        this.ioccxt = context;
     }
 
     /**
@@ -88,9 +96,9 @@ public class Extracter extends Executor {
         this.message.setBytes(0); // 在输出流中设置
         this.message.setTarget(""); // 在输出流中设置
 
-        ExtractReader in = BeanFactory.get(ExtractReader.class, context);
+        ExtractReader in = this.ioccxt.get(ExtractReader.class, context);
         try {
-            ExtractWriter out = BeanFactory.get(ExtractWriter.class, context, this.message);
+            ExtractWriter out = this.ioccxt.get(ExtractWriter.class, context, this.message);
             try {
                 while (in.hasLine()) {
                     if (this.terminate) {

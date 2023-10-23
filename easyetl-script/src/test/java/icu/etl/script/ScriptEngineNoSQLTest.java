@@ -11,7 +11,6 @@ import javax.script.ScriptException;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseURL;
 import icu.etl.ioc.BeanContext;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.os.OS;
 import icu.etl.os.OSUser;
 import icu.etl.util.ClassUtils;
@@ -35,7 +34,7 @@ public class ScriptEngineNoSQLTest {
         System.setProperty(ResourcesUtils.PROPERTY_RESOURCE, FileUtils.joinFilepath(ClassUtils.getClasspath(this.getClass()), "script_res.properties"));
 
         // 新文件
-        OS os = BeanFactory.get(OS.class);
+        OS os = context.get(OS.class);
         OSUser user = os.getUser();
         File delfile = new File(user.getHome(), "bhc_finish.del");
 
@@ -51,7 +50,7 @@ public class ScriptEngineNoSQLTest {
         Ensure.isTrue(!ResourcesUtils.existsMessage("test.msg.stdout"));
 
         String url = TestEnv.getDBUrl();
-        DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, url);
+        DatabaseDialect dialect = context.get(DatabaseDialect.class, url);
         List<DatabaseURL> config = dialect.parseJdbcUrl(url);
         DatabaseURL p = config.get(0);
         String host = p.getHostname();

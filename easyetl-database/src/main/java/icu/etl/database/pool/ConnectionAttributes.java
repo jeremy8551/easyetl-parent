@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import icu.etl.database.DatabaseDialect;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.STD;
 
@@ -38,13 +38,21 @@ public class ConnectionAttributes implements Cloneable {
     private boolean hasClientInfo;
     private boolean hasTypeMap;
 
+    private EasyetlContext context;
+
     private ConnectionAttributes() {
         this.types = new HashMap<String, Class<?>>();
         this.clientInfo = new Properties();
     }
 
-    public ConnectionAttributes(Connection conn) {
+    public ConnectionAttributes(EasyetlContext context, Connection conn) {
         this();
+
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        this.context = context;
 
         try {
             this.autoCommit = conn.getAutoCommit();
@@ -65,7 +73,7 @@ public class ConnectionAttributes implements Cloneable {
                 this.schema = conn.getSchema();
                 this.hasSchema = true;
             } catch (Throwable e) {
-                DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, conn);
+                DatabaseDialect dialect = this.context.get(DatabaseDialect.class, conn);
                 this.schema = dialect.getSchema(conn);
                 this.hasSchema = true;
             }
@@ -143,7 +151,7 @@ public class ConnectionAttributes implements Cloneable {
                 try {
                     conn.setSchema(this.schema);
                 } catch (Throwable e) {
-                    DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, conn);
+                    DatabaseDialect dialect = this.context.get(DatabaseDialect.class, conn);
                     dialect.setSchema(conn, this.schema);
                 }
             }
@@ -223,6 +231,7 @@ public class ConnectionAttributes implements Cloneable {
         newobj.hasTransactionIsolation = this.hasTransactionIsolation;
         newobj.hasClientInfo = this.hasClientInfo;
         newobj.hasTypeMap = this.hasTypeMap;
+        newobj.context = this.context;
         return newobj;
     }
 

@@ -12,8 +12,7 @@ import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseURL;
 import icu.etl.database.Jdbc;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanContext;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.os.OSAccount;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.os.OSShellCommand;
@@ -26,6 +25,8 @@ import icu.etl.os.OSShellCommand;
 public class StandardDatabaseConfigurationContainer implements DatabaseConfigurationContainer, BeanBuilder<DatabaseConfigurationContainer> {
 
     private CaseSensitivMap<DatabaseConfiguration> map;
+
+    private EasyetlContext context;
 
     /**
      * 初始化
@@ -52,7 +53,7 @@ public class StandardDatabaseConfigurationContainer implements DatabaseConfigura
     }
 
     public void add(DatabaseConfiguration config) {
-        DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, config.getUrl());
+        DatabaseDialect dialect = this.context.get(DatabaseDialect.class, config.getUrl());
         List<DatabaseURL> list = dialect.parseJdbcUrl(config.getUrl());
         for (DatabaseURL url : list) {
             String key = this.toKey(url.getHostname(), url.getPort(), url.getDatabaseName());
@@ -71,7 +72,7 @@ public class StandardDatabaseConfigurationContainer implements DatabaseConfigura
 
     public DatabaseConfiguration get(Connection conn) {
         String url = Jdbc.getUrl(conn);
-        DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, url);
+        DatabaseDialect dialect = this.context.get(DatabaseDialect.class, url);
         List<DatabaseURL> list = dialect.parseJdbcUrl(url);
         for (DatabaseURL obj : list) {
             DatabaseConfiguration config = this.get(obj.getHostname(), obj.getPort(), obj.getDatabaseName());
@@ -105,7 +106,8 @@ public class StandardDatabaseConfigurationContainer implements DatabaseConfigura
         return buf.toString();
     }
 
-    public DatabaseConfigurationContainer build(BeanContext context, Object... array) throws Exception {
+    public DatabaseConfigurationContainer build(EasyetlContext context, Object... array) throws Exception {
+        this.context = context;
         return this;
     }
 

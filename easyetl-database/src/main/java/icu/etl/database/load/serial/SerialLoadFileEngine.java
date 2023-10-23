@@ -21,7 +21,8 @@ import icu.etl.database.load.inernal.DataWriterFactory;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -32,10 +33,12 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  */
 @EasyBeanClass(kind = "serial", mode = "", major = "", minor = "", type = Loader.class)
-public class SerialLoadFileEngine implements Loader {
+public class SerialLoadFileEngine implements Loader, EasyetlContextAware {
 
     /** true表示终止任务 */
     private volatile boolean running;
+
+    protected EasyetlContext context;
 
     /**
      * 初始化
@@ -45,8 +48,12 @@ public class SerialLoadFileEngine implements Loader {
         this.running = true;
     }
 
+    public void set(EasyetlContext context) {
+        this.context = context;
+    }
+
     public void execute(LoadEngineContext context) throws Exception {
-        JdbcDao dao = new JdbcDao();
+        JdbcDao dao = new JdbcDao(this.context);
         try {
             dao.connect(context.getDataSource());
             this.execute(dao, context);
@@ -116,7 +123,7 @@ public class SerialLoadFileEngine implements Loader {
             List<String> files = context.getFiles(); // 按顺序逐个加载文件中的内容
             for (int i = 0; this.running && i < files.size(); i++) {
                 String filepath = files.get(i);
-                TextTableFile file = BeanFactory.get(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
+                TextTableFile file = this.context.get(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
                 file.setAbsolutePath(filepath);
 
                 try {

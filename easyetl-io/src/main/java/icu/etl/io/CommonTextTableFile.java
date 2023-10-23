@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icu.etl.annotation.EasyBeanClass;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -19,7 +20,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2017-02-22
  */
 @EasyBeanClass(kind = "txt", mode = "file", major = "", minor = "", description = "文本文件, 逗号分隔，无转义字符，无字符串限定符", type = TextTableFile.class)
-public class CommonTextTableFile implements TextTableFile {
+public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
 
     /** 表格数据文件 */
     protected File file;
@@ -48,6 +49,8 @@ public class CommonTextTableFile implements TextTableFile {
     /** 列名集合 */
     protected List<String> columnNames;
 
+    protected EasyetlContext context;
+
     /**
      * 初始化
      */
@@ -61,6 +64,10 @@ public class CommonTextTableFile implements TextTableFile {
         this.escapeChar = 0;
         this.charsetName = StringUtils.CHARSET;
         this.columnNames = new ArrayList<String>();
+    }
+
+    public void set(EasyetlContext context) {
+        this.context = context;
     }
 
     public String getColumnName(int position) {
@@ -152,7 +159,7 @@ public class CommonTextTableFile implements TextTableFile {
     }
 
     public TableLineRuler getRuler() {
-        return BeanFactory.get(TableLineRuler.class, this);
+        return this.context.get(TableLineRuler.class, this);
     }
 
     public TextTableFileReader getReader(int cache) throws IOException {

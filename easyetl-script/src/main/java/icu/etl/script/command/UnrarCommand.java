@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.sql.SQLException;
 
-import icu.etl.ioc.BeanFactory;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -51,7 +50,7 @@ public class UnrarCommand extends AbstractFileCommand implements UniversalScript
             stdout.println("unrar " + file.getAbsolutePath());
         }
 
-        this.c = BeanFactory.get(Compress.class, "rar");
+        this.c = context.getFactory().getContext().get(Compress.class, "rar");
         try {
             this.c.setFile(file);
             this.c.extract(file.getParent(), Settings.getFileEncoding());

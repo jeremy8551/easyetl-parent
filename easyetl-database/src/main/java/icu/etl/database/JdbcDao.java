@@ -18,7 +18,7 @@ import javax.sql.RowSetReader;
 
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.internal.StandardRowSetInternal;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.STD;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.time.Timer;
@@ -52,10 +52,20 @@ public class JdbcDao implements OSConnectCommand {
     /** 数据库厂商提供的数据库连接定制信息（用于终止数据库连接） */
     private Properties attributes;
 
+    /** 容器上下文信息 */
+    private EasyetlContext context;
+
     /**
      * 初始化
+     *
+     * @param context 容器上下文信息
      */
-    public JdbcDao() {
+    public JdbcDao(EasyetlContext context) {
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        this.context = context;
         this.isRtrim = true;
         this.autoClose = true;
         this.attributes = new Properties();
@@ -64,21 +74,23 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 初始化
      *
-     * @param conn 数据库连接
+     * @param context 容器上下文信息
+     * @param conn    数据库连接
      */
-    public JdbcDao(Connection conn) {
-        this();
+    public JdbcDao(EasyetlContext context, Connection conn) {
+        this(context);
         this.setConnection(conn, true);
     }
 
     /**
      * 初始化
      *
+     * @param context   容器上下文信息
      * @param conn      数据库连接
      * @param autoClose true 表示执行 {@link #close()} 方法时关闭数据库连接
      */
-    public JdbcDao(Connection conn, boolean autoClose) {
-        this();
+    public JdbcDao(EasyetlContext context, Connection conn, boolean autoClose) {
+        this(context);
         this.setConnection(conn, autoClose);
     }
 
@@ -101,7 +113,7 @@ public class JdbcDao implements OSConnectCommand {
      * @return
      */
     public boolean testConnection() {
-        return Jdbc.testConnection(this.getConnection(), this.getDialect());
+        return Jdbc.testConnection(context, this.getConnection(), this.getDialect());
     }
 
     /**
@@ -151,7 +163,7 @@ public class JdbcDao implements OSConnectCommand {
      */
     public DatabaseDialect getDialect() {
         if (this.dialect == null && this.existsConnection()) {
-            this.dialect = BeanFactory.get(DatabaseDialect.class, this.getConnection());
+            this.dialect = this.context.get(DatabaseDialect.class, this.getConnection());
         }
         return this.dialect;
     }

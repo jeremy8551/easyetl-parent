@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.ioc.BeanFactory;
 import icu.etl.os.OSSecureShellCommand;
 import icu.etl.printer.OutputStreamPrinter;
 import icu.etl.script.UniversalCommandCompiler;
@@ -61,7 +60,7 @@ public class SSH2Command extends AbstractTraceCommand implements JumpCommandSupp
         }
 
         // 登陆服务器执行命令
-        this.client = BeanFactory.get(OSSecureShellCommand.class);
+        this.client = context.getFactory().getContext().get(OSSecureShellCommand.class);
         try {
             if (!this.client.connect(host, Integer.parseInt(port), username, password)) {
                 stderr.println(ResourcesUtils.getScriptStderrMessage(38, "ssh2"));

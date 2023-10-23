@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import icu.apache.mail.common.EmailAttachment;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.zip.ZipUtils;
@@ -21,20 +22,20 @@ public class MailFile {
 
     private String name;
 
-    public MailFile(String disposition, File file, String name, String description) throws IOException {
-        this(file);
+    public MailFile(EasyetlContext context, String disposition, File file, String name, String description) throws IOException {
+        this(context, file);
         this.disposition = disposition;
         this.name = name;
         this.description = description;
     }
 
-    public MailFile(File file, String name, String description) throws IOException {
-        this(file);
+    public MailFile(EasyetlContext context, File file, String name, String description) throws IOException {
+        this(context, file);
         this.name = name;
         this.description = description;
     }
 
-    public MailFile(File file) throws IOException {
+    public MailFile(EasyetlContext context, File file) throws IOException {
         if (file == null) {
             throw new NullPointerException();
         }
@@ -42,7 +43,7 @@ public class MailFile {
         if (file.exists() && file.isDirectory()) {
             File compressFile = FileUtils.getFileNoRepeat(FileUtils.getTempDir(MailFile.class), FileUtils.changeFilenameExt(file.getName(), "zip"));
             FileUtils.createFile(compressFile);
-            ZipUtils.compress(file, compressFile, StringUtils.CHARSET, false);
+            ZipUtils.compress(context, file, compressFile, StringUtils.CHARSET, false);
             this.file = compressFile;
             this.name = FileUtils.changeFilenameExt(file.getName(), "zip");
             this.description = file.getName();

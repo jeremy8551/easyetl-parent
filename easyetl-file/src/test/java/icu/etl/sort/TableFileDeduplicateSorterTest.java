@@ -9,8 +9,7 @@ import javax.script.ScriptException;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.io.CommonTextTableFile;
 import icu.etl.io.TextTableFile;
-import icu.etl.sort.TableFileDeduplicateSorter;
-import icu.etl.sort.TableFileSortContext;
+import icu.etl.ioc.BeanContext;
 import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -55,6 +54,7 @@ public class TableFileDeduplicateSorterTest {
 
     @Test
     public void test() throws IOException, ScriptException {
+        BeanContext context = new BeanContext();
 //        File dir = new File("/Users/user/Desktop/test");
         CommonTextTableFile file = new CommonTextTableFile();
         file.setDelimiter(",");
@@ -78,7 +78,7 @@ public class TableFileDeduplicateSorterTest {
 
         System.out.println("合并前文件: " + file.getAbsolutePath() + ", 列数: " + file.getColumn());
         watch.start();
-        File sort = sorter.sort(file, "1 asc");
+        File sort = sorter.sort(context, file, "1 asc");
         System.out.println("合并后文件: " + sort.getAbsolutePath() + ", 用时: " + watch.useTime());
 
         // 只加载一次数据文件
@@ -88,7 +88,7 @@ public class TableFileDeduplicateSorterTest {
         cxt.setKeepSource(true);
         cxt.setMaxRows((int) file.getFile().length());
         watch.start();
-        File file1 = sorter.sort(mergefile, "1 desc");
+        File file1 = sorter.sort(context, mergefile, "1 desc");
         System.out.println("合并后文件: " + file1.getAbsolutePath() + ", 用时: " + watch.useTime());
 
         BufferedLineReader in2 = new BufferedLineReader(new File(filepath), mergefile.getCharsetName()); //

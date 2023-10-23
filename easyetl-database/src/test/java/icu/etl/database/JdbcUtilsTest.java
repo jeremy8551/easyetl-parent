@@ -16,6 +16,7 @@ import icu.etl.collection.CaseSensitivSet;
 import icu.etl.database.db2.DB2ExportFile;
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.oracle.OracleDialect;
+import icu.etl.ioc.BeanContext;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Dates;
@@ -187,8 +188,9 @@ public class JdbcUtilsTest {
 
     @Test
     public void test8() throws SQLException {
+        BeanContext context = new BeanContext();
         String tablename = "";
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             tablename = "test".toUpperCase() + Dates.format17(new Date());
             dao.executeByJdbc("create table " + tablename + "(f1 char(100) not null, f2 char(10), primary key(f1) ) ");
@@ -225,8 +227,9 @@ public class JdbcUtilsTest {
 
     @Test
     public void test9() throws SQLException {
+        BeanContext context = new BeanContext();
         String tablename = "";
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             assertTrue(dao.testConnection());
 
@@ -260,8 +263,9 @@ public class JdbcUtilsTest {
 
     @Test
     public void test10() throws Exception {
+        BeanContext context = new BeanContext();
         String tablename = "";
-        JdbcDao dao = new JdbcDao(TestEnv.getConnection());
+        JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             System.out.println("testing");
             assertTrue(dao.testConnection());
@@ -296,6 +300,7 @@ public class JdbcUtilsTest {
 
     @Test
     public void testStoreProperties() throws IOException {
+        BeanContext context = new BeanContext();
         Properties p = new Properties();
         p.put(Jdbc.driverClassName, "com.ibm.db2.jcc.DB2Driver");
         p.put(Jdbc.url, "jdbc:db2://130.1.10.103:50000/UDSFDB");
@@ -307,7 +312,7 @@ public class JdbcUtilsTest {
         FileUtils.delete(pf);
         File jdbcFile = FileUtils.storeProperties(p, pf);
 
-        Properties jdbc = Jdbc.loadJdbcFile(jdbcFile.getAbsolutePath());
+        Properties jdbc = Jdbc.loadJdbcFile(context, jdbcFile.getAbsolutePath());
         Ensure.isTrue(jdbc.getProperty(Jdbc.driverClassName).equals("com.ibm.db2.jcc.DB2Driver"));
         Ensure.isTrue(jdbc.getProperty(Jdbc.url).equals("jdbc:db2://130.1.10.103:50000/UDSFDB"));
         Ensure.isTrue(jdbc.getProperty(OSConnectCommand.username).equals("udsfadm"));

@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.expression.DataUnitExpression;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.os.OS;
 import icu.etl.os.OSDisk;
 import icu.etl.script.UniversalCommandCompiler;
@@ -26,7 +25,7 @@ public class DfCommand extends AbstractTraceCommand implements NohupCommandSuppo
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
-        OS os = BeanFactory.get(OS.class);
+        OS os = context.getFactory().getContext().get(OS.class);
         try {
             CharTable table = new CharTable();
             String[] titles = StringUtils.split(ResourcesUtils.getScriptStdoutMessage(3), ',');

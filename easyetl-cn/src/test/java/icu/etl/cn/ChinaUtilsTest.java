@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import icu.etl.ioc.BeanContext;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
@@ -13,7 +12,6 @@ import icu.etl.util.Property;
 import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -24,21 +22,18 @@ import static org.junit.Assert.assertTrue;
  */
 public class ChinaUtilsTest {
 
-    @Before
-    public void before() {
-        BeanFactory.setContext(new BeanContext());
-    }
-
     @Test
     public void testIsChinaRestDay() {
-        assertTrue(!ChinaUtils.isRestDay(Dates.parse("2019-08-30")));
-        assertTrue(ChinaUtils.isRestDay(Dates.parse("20191001")));
+        BeanContext context = new BeanContext();
+        assertTrue(!ChinaUtils.isRestDay(context, Dates.parse("2019-08-30")));
+        assertTrue(ChinaUtils.isRestDay(context, Dates.parse("20191001")));
     }
 
     @Test
     public void testIsChinaWorkDay() {
-        assertTrue(ChinaUtils.isWorkDay(Dates.parse("2019-08-30")));
-        assertTrue(!ChinaUtils.isWorkDay(Dates.parse("2019-08-31")));
+        BeanContext context = new BeanContext();
+        assertTrue(ChinaUtils.isWorkDay(context, Dates.parse("2019-08-30")));
+        assertTrue(!ChinaUtils.isWorkDay(context, Dates.parse("2019-08-31")));
     }
 
     @Test
@@ -194,30 +189,35 @@ public class ChinaUtilsTest {
 
     @Test
     public void testReloadLegalHolidays() {
-        assertTrue(BeanFactory.get(NationalHoliday.class).getRestDays().size() > 0);
+        BeanContext context = new BeanContext();
+        assertTrue(context.get(NationalHoliday.class).getRestDays().size() > 0);
     }
 
     @Test
     public void testGetLegalRestDay() {
-        assertTrue(BeanFactory.get(NationalHoliday.class).getRestDays().size() > 0);
+        BeanContext context = new BeanContext();
+        assertTrue(context.get(NationalHoliday.class).getRestDays().size() > 0);
     }
 
     @Test
     public void testGetLegalWorkDay() {
-        assertTrue(BeanFactory.get(NationalHoliday.class).getWorkDays().size() > 0);
+        BeanContext context = new BeanContext();
+        assertTrue(context.get(NationalHoliday.class).getWorkDays().size() > 0);
     }
 
     @Test
     public void testIsChinaLegalRestDay() {
-        assertTrue(BeanFactory.get(NationalHoliday.class).getRestDays().contains(Dates.parse("2019-10-01")));
-        assertTrue(!BeanFactory.get(NationalHoliday.class).getRestDays().contains(Dates.parse("2019-08-31")));
-        assertTrue(!BeanFactory.get(NationalHoliday.class).getRestDays().contains(null));
+        BeanContext context = new BeanContext();
+        assertTrue(context.get(NationalHoliday.class).getRestDays().contains(Dates.parse("2019-10-01")));
+        assertTrue(!context.get(NationalHoliday.class).getRestDays().contains(Dates.parse("2019-08-31")));
+        assertTrue(!context.get(NationalHoliday.class).getRestDays().contains(null));
     }
 
     @Test
     public void testIsChinaLegalWorkDay() {
-        assertTrue(BeanFactory.get(NationalHoliday.class).getWorkDays().contains(Dates.parse("2017-02-04")));
-        assertTrue(!BeanFactory.get(NationalHoliday.class).getWorkDays().contains(Dates.parse("2017-02-05")));
+        BeanContext context = new BeanContext();
+        assertTrue(context.get(NationalHoliday.class).getWorkDays().contains(Dates.parse("2017-02-04")));
+        assertTrue(!context.get(NationalHoliday.class).getWorkDays().contains(Dates.parse("2017-02-05")));
     }
 
     @Test

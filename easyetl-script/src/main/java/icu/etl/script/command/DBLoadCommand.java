@@ -91,6 +91,7 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, true, true, false));
         }
 
+        this.engine.set(context.getFactory().getContext());
         this.engine.run();
 
         if (this.engine.alreadyError()) {

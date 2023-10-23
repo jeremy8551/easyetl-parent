@@ -8,7 +8,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import icu.etl.TestEnv;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.os.OS;
 import icu.etl.os.OSUser;
 import icu.etl.util.ClassUtils;
@@ -22,9 +22,10 @@ public class 测试脚本引擎装载数据功能 {
 
     public static void main(String[] args) throws ScriptException, IOException {
         Class<?> cls = 测试脚本引擎装载数据功能.class;
+        BeanContext cxt = new BeanContext();
 
         // 新文件
-        OS os = BeanFactory.get(OS.class);
+        OS os = cxt.get(OS.class);
         OSUser user = os.getUser();
         File delfile = new File(user.getHome(), "bhc_finish.del");
 

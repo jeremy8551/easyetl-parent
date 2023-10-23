@@ -2,7 +2,7 @@ package icu.etl.os.ssh;
 
 import java.util.List;
 
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.os.OSFile;
 import icu.etl.os.OSFtpCommand;
 import icu.etl.os.OSSecureShellCommand;
@@ -19,7 +19,8 @@ public class 端口转发测试 {
     public static int remotePort = 990;
 
     public static void testSSH() throws Exception {
-        OSFtpCommand client = BeanFactory.get(OSFtpCommand.class, "sftp");
+        BeanContext context = new BeanContext();
+        OSFtpCommand client = context.get(OSFtpCommand.class, "sftp");
         try {
             Ensure.isTrue(client.connect(localHost, localPort, "HEBYH_TEST_1", "7vs54b%)e1vw5l"));
             System.out.println("pwd " + client.pwd());
@@ -36,7 +37,8 @@ public class 端口转发测试 {
     }
 
     public static void main(String[] args) throws Exception {
-        OSSecureShellCommand server = BeanFactory.get(OSSecureShellCommand.class);
+        BeanContext context = new BeanContext();
+        OSSecureShellCommand server = context.get(OSSecureShellCommand.class);
         try {
             Ensure.isTrue(server.connect("130.1.16.54", 22, "root", "passw0rd"));
             localPort = server.localPortForward(0, remoteHost, remotePort);

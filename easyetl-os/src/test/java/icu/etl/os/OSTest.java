@@ -2,7 +2,7 @@ package icu.etl.os;
 
 import java.util.Iterator;
 
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.util.Settings;
 import org.junit.Test;
 
@@ -22,7 +22,8 @@ public class OSTest {
         String password = TestEnv.getSSHPassword();
         System.out.println(username + "@" + host + ":" + port + "?password=" + password);
 
-        OS os = BeanFactory.get(OS.class, host, port, username, password);
+        BeanContext context = new BeanContext();
+        OS os = context.get(OS.class, host, port, username, password);
         testoscommand(os);
 
         boolean existsIp = false;
@@ -36,9 +37,9 @@ public class OSTest {
         }
         assertTrue(existsIp);
 
-        testoscommand(BeanFactory.get(OS.class, host, username, password));
-        testoscommand(BeanFactory.get(OS.class, Settings.getUserName()));
-        testoscommand(BeanFactory.get(OS.class));
+        testoscommand(context.get(OS.class, host, username, password));
+        testoscommand(context.get(OS.class, Settings.getUserName()));
+        testoscommand(context.get(OS.class));
     }
 
     private void testoscommand(OS os) {

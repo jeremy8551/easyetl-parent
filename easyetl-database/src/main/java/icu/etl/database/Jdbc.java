@@ -33,7 +33,8 @@ import icu.etl.database.logger.DataSourceLogger;
 import icu.etl.database.logger.DataSourceLoggerProxy;
 import icu.etl.database.pool.PoolConnection;
 import icu.etl.database.pool.SimpleDatasource;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.STD;
 import icu.etl.os.OSConnectCommand;
@@ -72,14 +73,15 @@ public class Jdbc {
      * 解析 jdbc.properties 资源配置文件内容 <br>
      * 资源配置文件中应该存在jdbc连接参数
      *
+     * @param context  容器上下文信息
      * @param filepath 文件绝对路径
      * @return
      * @throws IOException
      */
-    public static Properties loadJdbcFile(String filepath) throws IOException {
+    public static Properties loadJdbcFile(BeanContext context, String filepath) throws IOException {
         Properties p = FileUtils.loadProperties(filepath);
         if (Jdbc.existsJdbcConfiguration(p)) {
-            BeanFactory.get(DatabaseConfigurationContainer.class).add(p);
+            context.get(DatabaseConfigurationContainer.class).add(p);
         }
         return p;
     }
@@ -101,12 +103,13 @@ public class Jdbc {
     /**
      * 解析数据库 JDBC URL 字符串
      *
+     * @param context
      * @param conn
      * @return
      * @throws SQLException
      */
-    public static DatabaseURL parseJdbcUrl(Connection conn) throws SQLException {
-        DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, conn);
+    public static DatabaseURL parseJdbcUrl(EasyetlContext context, Connection conn) throws SQLException {
+        DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
         DatabaseMetaData metaData = conn.getMetaData();
         String url = metaData.getURL();
         List<DatabaseURL> list = dialect.parseJdbcUrl(url);
@@ -143,10 +146,11 @@ public class Jdbc {
     /**
      * 打开数据库连接
      *
-     * @param p 数据库连接JDBC配置
+     * @param context 容器上下文信息
+     * @param p       数据库连接JDBC配置
      * @return 有效的数据库连接
      */
-    public static Connection getConnection(Properties p) {
+    public static Connection getConnection(EasyetlContext context, Properties p) {
         if (p == null) {
             throw new NullPointerException();
         }
@@ -159,7 +163,7 @@ public class Jdbc {
         if (StringUtils.isBlank(driver)) {
             return Jdbc.getConnection(url, username, password);
         } else {
-            return Jdbc.getConnection(driver, url, username, password);
+            return Jdbc.getConnection(context, driver, url, username, password);
         }
     }
 
@@ -167,17 +171,18 @@ public class Jdbc {
      * 返回一个数据库连接 <br>
      * 事务策略：不自动提交事务 <br>
      *
+     * @param context  容器上下文信息
      * @param driver   驱动类名
      * @param url      JDBC连接URL
      * @param username 用户
      * @param password 密码
      * @return
      */
-    public static Connection getConnection(String driver, String url, String username, String password) {
+    public static Connection getConnection(EasyetlContext context, String driver, String url, String username, String password) {
         ClassUtils.loadClass(driver); // TODO 更换了方法需要重新测试
         Connection conn = getConnection(url, username, password);
         if (conn != null) {
-            DatabaseConfigurationContainer container = BeanFactory.get(DatabaseConfigurationContainer.class);
+            DatabaseConfigurationContainer container = context.get(DatabaseConfigurationContainer.class);
             container.add(new StandardDatabaseConfiguration(null, driver, url, username, password, null, null, null, null, null));
         }
         return conn;
@@ -213,20 +218,6 @@ public class Jdbc {
             }
         } catch (SQLException e) {
             throw new DatabaseException(ResourcesUtils.getDatabaseMessage(28, url, username, password), e);
-        }
-    }
-
-    /**
-     * 根据配置信息生成数据库连接池
-     *
-     * @param catalog JDBC 配置信息
-     * @return
-     */
-    public static DataSource getDataSource(Properties catalog) {
-        if (catalog.containsKey(Jdbc.url)) {
-            return Jdbc.getDataSourceLogger(new SimpleDatasource(catalog));
-        } else {
-            throw new DatabaseException(ResourcesUtils.getDatabaseMessage(25, Jdbc.driverClassName, Jdbc.url, OSConnectCommand.username, OSConnectCommand.password, StringUtils.toString(catalog)));
         }
     }
 
@@ -320,11 +311,12 @@ public class Jdbc {
      * 测试数据库连接是否可用 <br>
      * 测试内容包括创建表, 删除表, 新增记录, 修改记录, 删除记录 <br>
      *
+     * @param context 容器上下文信息
      * @param conn    数据库连接
      * @param dialect 数据库方言, 可为null
      * @return true-数据库连接可用
      */
-    public static boolean testConnection(Connection conn, DatabaseDialect dialect) {
+    public static boolean testConnection(EasyetlContext context, Connection conn, DatabaseDialect dialect) {
         if (conn == null) {
             return false;
         }
@@ -345,7 +337,7 @@ public class Jdbc {
             Savepoint savepoint = supportSavepoint ? connection.setSavepoint() : null;
             try {
                 if (dialect == null) {
-                    dialect = BeanFactory.get(DatabaseDialect.class, connection);
+                    dialect = context.get(DatabaseDialect.class, connection);
                 }
 
                 String catalog = dialect.getCatalog(conn);

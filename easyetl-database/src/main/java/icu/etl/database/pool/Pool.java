@@ -1,5 +1,6 @@
 package icu.etl.database.pool;
 
+import java.io.Closeable;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Iterator;
@@ -11,7 +12,7 @@ import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseException;
 import icu.etl.database.Jdbc;
 import icu.etl.io.OutputStreamLogger;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.STD;
 import icu.etl.os.OSAccount;
 import icu.etl.util.IO;
@@ -25,7 +26,7 @@ import icu.etl.util.TimeWatch;
  * @author jeremy8551@qq.com
  * @createtime 2012-03-13
  */
-public class Pool implements java.io.Closeable {
+public class Pool implements Closeable {
 
     /** 活动数据库连接 */
     protected PoolConnectionList actives;
@@ -51,17 +52,30 @@ public class Pool implements java.io.Closeable {
     /** 计时器 */
     private TimeWatch watch;
 
+    protected EasyetlContext context;
+
     /**
      * 初始化
+     *
+     * @context 容器上下文信息
      */
-    public Pool() {
+    public Pool(EasyetlContext context) {
         super();
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        this.context = context;
         this.watch = new TimeWatch();
         this.out = new PrintWriter(new OutputStreamLogger(STD.out, StringUtils.CHARSET));
         this.actives = new PoolConnectionList();
         this.idles = new PoolConnectionList();
         this.isClose = true;
         this.timeout = 0;
+    }
+
+    public EasyetlContext getContext() {
+        return context;
     }
 
     /**
@@ -136,7 +150,7 @@ public class Pool implements java.io.Closeable {
                         pc.close();
                     }
                 } catch (Throwable e) {
-                    if (Jdbc.testConnection(conn, this.dialect)) {
+                    if (Jdbc.testConnection(context, conn, this.dialect)) {
                         this.actives.push(pc);
                         this.out.println(ResourcesUtils.getDataSourceMessage(5, pc.toString()));
                         return pc.getProxy();
@@ -167,12 +181,12 @@ public class Pool implements java.io.Closeable {
             if (StringUtils.isBlank(driver)) {
                 return Jdbc.getConnection(url, username, password);
             } else {
-                return Jdbc.getConnection(driver, url, username, password);
+                return Jdbc.getConnection(this.context, driver, url, username, password);
             }
         } else {
             while (this.watch.useSeconds() <= this.timeout) {
                 try {
-                    return Jdbc.getConnection(driver, url, username, password);
+                    return Jdbc.getConnection(this.context, driver, url, username, password);
                 } catch (Throwable e) {
                     continue;
                 }
@@ -304,8 +318,8 @@ public class Pool implements java.io.Closeable {
             throw new IllegalArgumentException(url);
         }
 
-        this.dialect = BeanFactory.get(DatabaseDialect.class, url);
-        this.jdbc = BeanFactory.get(DatabaseConfigurationContainer.class).add(config).clone();
+        this.dialect = this.context.get(DatabaseDialect.class, url);
+        this.jdbc = this.context.get(DatabaseConfigurationContainer.class).add(config).clone();
     }
 
 }

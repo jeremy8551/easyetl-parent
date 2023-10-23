@@ -15,7 +15,8 @@ import icu.etl.annotation.EasyBeanClass;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.expression.DataUnitExpression;
 import icu.etl.io.BufferedLineReader;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.os.OS;
 import icu.etl.os.OSCommand;
 import icu.etl.os.OSCommandStdouts;
@@ -52,7 +53,7 @@ import icu.etl.util.StringUtils;
  * 远程 linux 操作系统的接口实现类
  */
 @EasyBeanClass(kind = "linux", mode = "remote", major = "", minor = "", type = OS.class)
-public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwork {
+public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwork, EasyetlContextAware {
 
     protected OSSecureShellCommand cmd;
     protected OSFtpCommand sftp;
@@ -69,6 +70,8 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
     protected List<OSUserGroup> groups = new ArrayList<OSUserGroup>();
     protected List<LinuxEtcService> services = new ArrayList<LinuxEtcService>();
 
+    protected EasyetlContext context;
+
     /**
      * 初始化
      *
@@ -81,6 +84,10 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
         Ensure.isTrue(this.connect(host, port, username, password), host, port, username, password);
     }
 
+    public void set(EasyetlContext context) {
+        this.context = context;
+    }
+
     /**
      * 登录服务器
      *
@@ -91,7 +98,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
      * @return
      */
     public boolean connect(String host, int port, String username, String password) {
-        this.cmd = BeanFactory.get(OSSecureShellCommand.class, "linux", "ssh");
+        this.cmd = this.context.get(OSSecureShellCommand.class, "linux", "ssh");
         if (this.cmd.connect(host, port, username, password)) {
             try {
                 this.host = host;
@@ -188,7 +195,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
 
     public synchronized boolean enableOSCommand() {
         if (this.cmd == null) {
-            this.cmd = BeanFactory.get(OSSecureShellCommand.class);
+            this.cmd = this.context.get(OSSecureShellCommand.class);
         }
 
         if (this.cmd.isConnected()) {
@@ -211,7 +218,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
      */
     public boolean needDisableOSCommand() {
         if (this.cmd == null) {
-            this.cmd = BeanFactory.get(OSSecureShellCommand.class);
+            this.cmd = this.context.get(OSSecureShellCommand.class);
         }
 
         if (this.cmd.isConnected()) {
@@ -438,7 +445,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
 
     public boolean enableOSFileCommand() {
         if (this.sftp == null) {
-            this.sftp = BeanFactory.get(OSFtpCommand.class, "sftp");
+            this.sftp = this.context.get(OSFtpCommand.class, "sftp");
         }
 
         if (this.sftp.isConnected()) {
@@ -461,7 +468,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
      */
     protected boolean needDisableOSFileCommand() {
         if (this.sftp == null) {
-            this.sftp = BeanFactory.get(OSFtpCommand.class, "sftp");
+            this.sftp = this.context.get(OSFtpCommand.class, "sftp");
         }
 
         if (this.sftp.isConnected()) {

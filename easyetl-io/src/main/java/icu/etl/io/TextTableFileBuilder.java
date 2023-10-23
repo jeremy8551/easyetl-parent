@@ -4,15 +4,15 @@ import java.nio.charset.StandardCharsets;
 
 import icu.etl.annotation.EasyBeanClass;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanContext;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.ioc.Codepage;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.Attribute;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
 
 /**
- * 使用 {@linkplain BeanFactory#get(Class, Object...)} 语句返回一个 {@linkplain TextTableFile} 表格型文件对象 <br>
+ * 从容器上下文信息 {@linkplain EasyetlContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象 <br>
  * 第一参数必须是 {@linkplain TextTableFile} <br>
  * 第二个参数必须是文件类型，详见表格型文件类上的 {@linkplain EasyBeanClass#type()} 属性值 <br>
  * 第三个参数必须是 {@linkplain Attribute} 对象的引用，属性集合中可以设置 charset，codepage，chardel，rowdel，coldel，escape，column，colname
@@ -21,8 +21,16 @@ import icu.etl.util.StringUtils;
  */
 public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
 
+    public TextTableFile build(EasyetlContext context, Object... array) throws Exception {
+        TextTableFile file = this.create(context, array);
+        if (file instanceof EasyetlContextAware) {
+            ((EasyetlContextAware) file).set(context);
+        }
+        return file;
+    }
+
     @SuppressWarnings("unchecked")
-    public TextTableFile build(BeanContext context, Object... array) throws Exception {
+    private TextTableFile create(EasyetlContext context, Object[] array) {
         Class<TextTableFile> cls = context.getImplement(TextTableFile.class, array);
         TextTableFile file = ClassUtils.newInstance(cls);
 
@@ -30,20 +38,19 @@ public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
         for (Object obj : array) {
             if (obj instanceof Attribute) {
                 Attribute<String> attribute = (Attribute<String>) obj;
-                this.setProperty(file, attribute);
+                this.setProperty(context, file, attribute);
             }
         }
-
         return file;
     }
 
-    public void setProperty(TextTableFile file, Attribute<String> attribute) {
+    public void setProperty(EasyetlContext context, TextTableFile file, Attribute<String> attribute) {
         if (attribute.contains("charset") && attribute.contains("codepage")) {
             throw new IllegalArgumentException();
         } else if (attribute.contains("charset")) {
             file.setCharsetName(attribute.getAttribute("charset"));
         } else if (attribute.contains("codepage")) {
-            file.setCharsetName(BeanFactory.get(Codepage.class).get(attribute.getAttribute("codepage")));
+            file.setCharsetName(context.get(Codepage.class).get(attribute.getAttribute("codepage")));
         }
 
         if (attribute.contains("chardel")) {

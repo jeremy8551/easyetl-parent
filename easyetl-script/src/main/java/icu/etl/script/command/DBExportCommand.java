@@ -12,7 +12,6 @@ import icu.etl.database.export.ExtracterContext;
 import icu.etl.database.export.UserListener;
 import icu.etl.database.internal.StandardJdbcConverterMapper;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -103,6 +102,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
                 stdout.println(analysis.replaceShellVariable(session, context, this.command, true, true, true, false));
             }
 
+            this.executor.set(context.getFactory().getContext());
             this.executor.run();
             return (this.executor.alreadyError() || this.executor.isTerminate()) ? UniversalScriptCommand.TERMINATE : 0;
         } else {
@@ -123,7 +123,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             this.executor.getLogger().setStderr(stderr);
 
             UniversalScriptAnalysis analysis = session.getAnalysis();
-            TextTableFile format = BeanFactory.get(TextTableFile.class, this.dataType, this.attrs);
+            TextTableFile format = context.getFactory().getContext().get(TextTableFile.class, this.dataType, this.attrs);
             File msgfile = FileUtils.createFile(this.attrs.getAttribute("message"), 3, "messagefile", "export");
             JdbcConverterMapper mapper = new StandardJdbcConverterMapper(this.attrs.getAttribute("convert"), String.valueOf(analysis.getSegment()), String.valueOf(analysis.getMapdel()));
             UserListenerList listeners = new UserListenerList(this.attrs.getAttribute("listener"));

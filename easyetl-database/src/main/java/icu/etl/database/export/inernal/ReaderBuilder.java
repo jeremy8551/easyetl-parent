@@ -3,7 +3,7 @@ package icu.etl.database.export.inernal;
 import icu.etl.database.export.ExtractReader;
 import icu.etl.database.export.ExtracterContext;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
@@ -16,7 +16,7 @@ import icu.etl.util.StringUtils;
  */
 public class ReaderBuilder implements BeanBuilder<ExtractReader> {
 
-    public ExtractReader build(BeanContext context, Object... array) throws Exception {
+    public ExtractReader build(EasyetlContext context, Object... array) throws Exception {
         ExtracterContext cxt = ArrayUtils.indexOf(array, ExtracterContext.class, 0);
         String source = cxt.getSource();
 

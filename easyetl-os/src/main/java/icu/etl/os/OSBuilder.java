@@ -3,7 +3,8 @@ package icu.etl.os;
 import java.io.IOException;
 
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.os.linux.LinuxLocalOS;
 import icu.etl.os.linux.LinuxRemoteOS;
 import icu.etl.os.macos.MacOS;
@@ -28,9 +29,17 @@ public class OSBuilder implements BeanBuilder<OS> {
      *              192.168.1.2 username <br>
      *              <br>
      *              参数为空时，返回本地操作系统的接口
-     * @return
+     * @return 实例对象
      */
-    public OS build(BeanContext context, Object... array) throws Exception {
+    public OS build(EasyetlContext context, Object... array) throws Exception {
+        OS os = this.create(array);
+        if (os instanceof EasyetlContextAware) {
+            ((EasyetlContextAware) os).set(context);
+        }
+        return os;
+    }
+
+    private OS create(Object[] array) throws IOException {
         String host = null, username = null, password = null; // 服务器host 用户名 密码
         int port = -1; // 访问端口号
 

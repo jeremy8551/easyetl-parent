@@ -11,22 +11,26 @@
     </parent>
 
     <artifactId>easyetl</artifactId>
+    <version>${easyetl.project.version}-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-tool</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -43,7 +47,7 @@
                         <id>generate-jar</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>sources</goal>
                         </goals>
                     </execution>
                     <execution>
@@ -77,4 +81,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

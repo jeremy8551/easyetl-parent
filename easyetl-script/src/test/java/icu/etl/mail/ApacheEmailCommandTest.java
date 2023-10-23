@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import icu.etl.TestEnv;
+import icu.etl.ioc.BeanContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
@@ -16,6 +17,7 @@ public class ApacheEmailCommandTest {
 
     @Test
     public void test1() throws IOException {
+        BeanContext context = new BeanContext();
 //		LogFactory.setLoggerLevel("info");
         ApacheEmailCommand cmd = new ApacheEmailCommand();
         cmd.setHost(TestEnv.getMailHost());
@@ -40,11 +42,12 @@ public class ApacheEmailCommandTest {
         File txt1 = new File(FileUtils.getTempDir(ApacheEmailCommandTest.class), "testsetest.txt");
         FileUtils.write(txt1, StringUtils.CHARSET, false, msg);
 
-        cmd.drafts("imap", 0, true, "etl@foxmail.com", ArrayUtils.asList("410336929@qq.com"), "测试单统计信息-" + Dates.currentTimeStamp(), msg, new MailFile(txt1, "tt1.txt", "file"));
+        cmd.drafts("imap", 0, true, "etl@foxmail.com", ArrayUtils.asList("410336929@qq.com"), "测试单统计信息-" + Dates.currentTimeStamp(), msg, new MailFile(context, txt1, "tt1.txt", "file"));
     }
 
     //	@Test
     public void test3() throws IOException {
+        BeanContext context = new BeanContext();
 //		LogFactory.setLoggerLevel("info");
         ApacheEmailCommand cmd = new ApacheEmailCommand();
         cmd.setHost(TestEnv.getMailHost());
@@ -66,7 +69,7 @@ public class ApacheEmailCommandTest {
         File f1 = new File(dir, "test测试.txt");
         FileUtils.write(f1, StringUtils.CHARSET, false, msg);
 
-        cmd.send(null, 0, true, "测试 etl@foxmail.com", ArrayUtils.asList("410336929@qq.com"), "测试单统计信息-" + Dates.currentTimeStamp(), msg, new MailFile(txt, "tt1.txt", "file"), new MailFile(txt, "tttt.txt", "file"), new MailFile(txt), new MailFile(dir));
+        cmd.send(null, 0, true, "测试 etl@foxmail.com", ArrayUtils.asList("410336929@qq.com"), "测试单统计信息-" + Dates.currentTimeStamp(), msg, new MailFile(context, txt, "tt1.txt", "file"), new MailFile(context, txt, "tttt.txt", "file"), new MailFile(context, txt), new MailFile(context, dir));
     }
 
     //	@Test

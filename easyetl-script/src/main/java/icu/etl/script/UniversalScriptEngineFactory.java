@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Set;
 import javax.script.ScriptEngineFactory;
 
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
@@ -32,14 +33,40 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /** 关键字集合 */
     protected Set<String> keywords;
 
+    /** 系统容器的上下文 */
+    protected EasyetlContext context;
+
     /**
      * 初始化
      */
     public UniversalScriptEngineFactory() {
+        this(new BeanContext());
+    }
+
+    /**
+     * 初始化
+     *
+     * @param context
+     */
+    public UniversalScriptEngineFactory(EasyetlContext context) {
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        this.context = context;
         this.stdout = LogFactory.getLog(UniversalScriptEngine.class, System.out, System.err);
         this.stderr = LogFactory.getLog(UniversalScriptEngine.class, System.err, System.err);
-        this.config = BeanFactory.get(UniversalScriptConfiguration.class);
+        this.config = this.context.get(UniversalScriptConfiguration.class);
         this.keywords = this.config.getKeywords();
+    }
+
+    /**
+     * 返回组件的容器上下文信息
+     *
+     * @return 容器上下文信息
+     */
+    public EasyetlContext getContext() {
+        return context;
     }
 
     public String getEngineName() {
@@ -171,7 +198,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptSessionFactory buildSessionFactory() {
         String flag = StringUtils.defaultString(this.config.getSessionFactory(), "default");
-        return BeanFactory.get(UniversalScriptSessionFactory.class, flag);
+        return this.context.get(UniversalScriptSessionFactory.class, flag);
     }
 
     /**
@@ -181,7 +208,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptCompiler buildCompiler() {
         String flag = StringUtils.defaultString(this.config.getCompiler(), "default");
-        return BeanFactory.get(UniversalScriptCompiler.class, flag);
+        return this.context.get(UniversalScriptCompiler.class, flag);
     }
 
     /**
@@ -191,7 +218,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptFormatter buildFormatter() {
         String flag = StringUtils.defaultString(this.config.getConverter(), "default");
-        return BeanFactory.get(UniversalScriptFormatter.class, flag);
+        return this.context.get(UniversalScriptFormatter.class, flag);
     }
 
     /**
@@ -201,7 +228,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptChecker buildChecker() {
         String flag = StringUtils.defaultString(this.config.getChecker(), "default");
-        UniversalScriptChecker obj = BeanFactory.get(UniversalScriptChecker.class, flag);
+        UniversalScriptChecker obj = this.context.get(UniversalScriptChecker.class, flag);
         obj.setScriptEngineKeywords(this.getKeywords());
         return obj;
     }

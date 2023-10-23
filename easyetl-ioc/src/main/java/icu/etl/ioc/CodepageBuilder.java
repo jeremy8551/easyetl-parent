@@ -28,7 +28,7 @@ public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEve
         this.addAll();
     }
 
-    public Codepage build(BeanContext context, Object... array) throws Exception {
+    public Codepage build(EasyetlContext context, Object... array) throws Exception {
         if (this.notInit) {
             this.notInit = false;
             List<BeanConfig> list = context.getImplements(Codepage.class);

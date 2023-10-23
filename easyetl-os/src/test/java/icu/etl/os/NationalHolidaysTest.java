@@ -7,7 +7,6 @@ import icu.etl.annotation.EasyBeanClass;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.ioc.BeanConfig;
 import icu.etl.ioc.BeanContext;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Dates;
@@ -22,6 +21,7 @@ public class NationalHolidaysTest {
 
     @Test
     public void test() throws IOException {
+        BeanContext context = new BeanContext();
         File javadir = FileUtils.getTempDir(NationalHolidaysTest.class);
         Ensure.isTrue(FileUtils.createDirectory(javadir));
 
@@ -46,12 +46,12 @@ public class NationalHolidaysTest {
         FileUtils.delete(classfile);
         System.out.println("classes path: " + classfile.getAbsolutePath());
 
-        NationalHoliday bean = BeanFactory.get(NationalHoliday.class);
+        NationalHoliday bean = context.get(NationalHoliday.class);
         Ensure.isTrue(!bean.getRestDays().contains(Dates.parse("2021-12-24")));
         Ensure.isTrue(!bean.getWorkDays().contains(Dates.parse("2021-12-24")));
 
         // 编译 java 源文件
-        OS os = BeanFactory.get(OS.class);
+        OS os = context.get(OS.class);
         try {
             assertTrue(os.enableOSCommand());
             OSCommand cmd = os.getOSCommand();
@@ -72,7 +72,7 @@ public class NationalHolidaysTest {
         Class<? extends NationalHoliday> cls = ClassUtils.loadClass(fullName);
 
         EasyBeanClass anno = cls.getAnnotation(EasyBeanClass.class);
-        BeanFactory.getContext().add(new BeanConfig(anno.type(), cls, anno), null);
+        context.add(new BeanConfig(anno.type(), cls, anno), null);
         Ensure.isTrue(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
         Ensure.isTrue(!bean.getRestDays().contains(Dates.parse("2021-12-24")));
     }

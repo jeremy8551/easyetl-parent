@@ -10,7 +10,7 @@ import icu.etl.expression.OrderByExpression;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTableFile;
 import icu.etl.ioc.BeanConfig;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -66,17 +66,18 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
         it.assertNext("by");
         boolean asc = (it.isLast("asc") || it.isLast("desc")) ? analysis.equals("asc", it.last()) : true; // 默认排序方式
 
+        EasyetlContext ioccxt = context.getFactory().getContext();
         String position = it.readOther();
         String[] array = StringUtils.split(StringUtils.trimBlank(position), analysis.getSegment()); // int(1) desc,2, 4,5
         OrderByExpression[] orders = new OrderByExpression[array.length];
         for (int i = 0; i < array.length; i++) {
-            orders[i] = new OrderByExpression(analysis, array[i], asc);
+            orders[i] = new OrderByExpression(ioccxt, analysis, array[i], asc);
         }
         return new SortTableFileCommand(this, orginalScript, filepath, filetype, orders, attrs);
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) { // 查找接口对应的的实现类
-        List<BeanConfig> list = BeanFactory.getContext().getImplements(TextTableFile.class);
+        List<BeanConfig> list = context.getFactory().getContext().getImplements(TextTableFile.class);
         CharTable table = new CharTable(context.getCharsetName());
         table.addTitle("");
         table.addTitle("");

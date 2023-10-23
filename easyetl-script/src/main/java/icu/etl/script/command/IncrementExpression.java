@@ -17,7 +17,6 @@ import icu.etl.database.JdbcDao;
 import icu.etl.expression.WordIterator;
 import icu.etl.increment.IncrementReplace;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
@@ -32,6 +31,7 @@ import icu.etl.util.StringUtils;
  */
 public class IncrementExpression implements Attribute<String> {
 
+    private UniversalScriptContext context;
     private UniversalScriptAnalysis analysis;
     private Map<String, String> attributes;
     private Set<String> kinds;
@@ -59,6 +59,7 @@ public class IncrementExpression implements Attribute<String> {
      */
     public IncrementExpression(UniversalScriptSession session, UniversalScriptContext context, String str) throws IOException, SQLException {
         this.analysis = session.getAnalysis();
+        this.context = context;
         this.attributes = new CaseSensitivMap<String>();
         this.newchg = new ArrayList<IncrementReplace>();
         this.updchg = new ArrayList<IncrementReplace>();
@@ -160,10 +161,10 @@ public class IncrementExpression implements Attribute<String> {
         // 如果设置了数据库名表
         if (this.attributes.containsKey("table")) {
             ScriptDataSource dataSource = ScriptDataSource.get(context);
-            JdbcDao dao = new JdbcDao();
+            JdbcDao dao = new JdbcDao(context.getFactory().getContext());
             try {
                 if (this.attributes.containsKey("catalog")) { // 使用指定数据库连接
-                    dao.setConnection(Jdbc.getConnection(context.getCatalog(this.attributes.get("catalog"))), true);
+                    dao.setConnection(Jdbc.getConnection(context.getFactory().getContext(), context.getCatalog(this.attributes.get("catalog"))), true);
                 } else { // 使用默认数据库连接
                     dao.setConnection(dataSource.getDao().getConnection(), false);
                 }
@@ -199,17 +200,17 @@ public class IncrementExpression implements Attribute<String> {
 
                 // 替换字段
                 for (int i = 0; i < newchg.length; i++) {
-                    this.newchg.add(BeanFactory.get(IncrementReplace.class, columns, newchg[i], this.analysis));
+                    this.newchg.add(context.getFactory().getContext().get(IncrementReplace.class, columns, newchg[i], this.analysis));
                 }
 
                 // 替换字段
                 for (int i = 0; i < updchg.length; i++) {
-                    this.updchg.add(BeanFactory.get(IncrementReplace.class, columns, updchg[i], this.analysis));
+                    this.updchg.add(context.getFactory().getContext().get(IncrementReplace.class, columns, updchg[i], this.analysis));
                 }
 
                 // 替换字段
                 for (int i = 0; i < delchg.length; i++) {
-                    this.delchg.add(BeanFactory.get(IncrementReplace.class, columns, delchg[i], this.analysis));
+                    this.delchg.add(context.getFactory().getContext().get(IncrementReplace.class, columns, delchg[i], this.analysis));
                 }
             } finally {
                 dao.rollback();
@@ -230,17 +231,17 @@ public class IncrementExpression implements Attribute<String> {
 
             // 替换字段
             for (int i = 0; i < newchg.length; i++) {
-                this.newchg.add(BeanFactory.get(IncrementReplace.class, newchg[i], this.analysis));
+                this.newchg.add(this.context.getFactory().getContext().get(IncrementReplace.class, newchg[i], this.analysis));
             }
 
             // 替换字段
             for (int i = 0; i < updchg.length; i++) {
-                this.updchg.add(BeanFactory.get(IncrementReplace.class, updchg[i], this.analysis));
+                this.updchg.add(this.context.getFactory().getContext().get(IncrementReplace.class, updchg[i], this.analysis));
             }
 
             // 替换字段
             for (int i = 0; i < delchg.length; i++) {
-                this.delchg.add(BeanFactory.get(IncrementReplace.class, delchg[i], this.analysis));
+                this.delchg.add(this.context.getFactory().getContext().get(IncrementReplace.class, delchg[i], this.analysis));
             }
         }
     }
@@ -287,7 +288,7 @@ public class IncrementExpression implements Attribute<String> {
      * @return
      */
     public TextTableFile createTableFile(String filetype) {
-        TextTableFile file = BeanFactory.get(TextTableFile.class, filetype, this);
+        TextTableFile file = this.context.getFactory().getContext().get(TextTableFile.class, filetype, this);
         if (file == null) {
             throw new UnsupportedOperationException(filetype);
         } else {

@@ -4,8 +4,10 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,7 +22,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-public class BeanContext implements BeanRegister {
+public class BeanContext implements EasyetlContext {
 
     /** 类加载器 */
     private ClassLoader classLoader;
@@ -39,6 +41,8 @@ public class BeanContext implements BeanRegister {
 
     /** true 表示发生变化时可以通知 {@linkplain BeanEventListener} 对象 */
     private AtomicBoolean notice;
+
+    private Map<String, Object> map;
 
     /**
      * 上下文信息
@@ -59,15 +63,35 @@ public class BeanContext implements BeanRegister {
      * @param args   参数数组
      */
     public BeanContext(ClassLoader loader, String... args) {
-        BeanFactory.setContext(this);
         this.impls = new LinkedHashMap<Class<?>, List<BeanConfig>>();
         this.builders = new LinkedHashMap<Class<?>, BeanBuilder<?>>();
+        this.map = new Hashtable<String, Object>(50);
         this.notice = new AtomicBoolean(false);
         this.creators = new Vector<BeanCreator>();
         this.creators.add(new StandardBeanCreator(this));
         this.classLoader = loader;
         this.args = args;
         new BeanContextInit().load(this);
+    }
+
+    public <E> E get(String key) {
+        return (E) this.map.get(key);
+    }
+
+    public <E> E put(String key, Object value) {
+        return (E) this.map.put(key, value);
+    }
+
+    public <E> E get(Class<E> clazz, Object... array) {
+        List<BeanCreator> creators = this.getCreators();
+
+        E obj;
+        for (BeanCreator c : creators) {
+            if ((obj = c.getBean(clazz, array)) != null) {
+                return obj;
+            }
+        }
+        return null;
     }
 
     /**

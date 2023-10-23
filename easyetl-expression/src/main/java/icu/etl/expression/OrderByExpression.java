@@ -3,7 +3,7 @@ package icu.etl.expression;
 import java.util.Comparator;
 import java.util.List;
 
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.StringComparator;
 import icu.etl.util.StringUtils;
 
@@ -18,10 +18,12 @@ public class OrderByExpression {
     private int position;
     private Comparator<String> comparator;
     private boolean asc;
+    protected EasyetlContext context;
 
     /**
      * 排序字段表达式
      *
+     * @param context
      * @param analysis   语句分析器
      * @param expression 排序表达式
      *                   1 表示排序第一个字段
@@ -32,7 +34,15 @@ public class OrderByExpression {
      *                   false表示倒序
      */
     @SuppressWarnings("unchecked")
-    public OrderByExpression(Analysis analysis, String expression, boolean asc) {
+    public OrderByExpression(EasyetlContext context, Analysis analysis, String expression, boolean asc) {
+        if (context == null) {
+            throw new NullPointerException();
+        }
+        if (analysis == null) {
+            throw new NullPointerException();
+        }
+
+        this.context = context;
         expression = StringUtils.trimBlank(expression);
         List<String> list = analysis.split(expression);
         if (list.size() != 1 && list.size() != 2) {
@@ -42,7 +52,7 @@ public class OrderByExpression {
         FieldExpression field = new FieldExpression(analysis, list.get(0));
         if (field.containParenthes()) {
             this.position = Integer.parseInt(field.getParameter());
-            this.comparator = BeanFactory.get(Comparator.class, StringUtils.defaultString(field.getName(), "default"));
+            this.comparator = this.context.get(Comparator.class, StringUtils.defaultString(field.getName(), "default"));
             if (this.comparator == null) {
                 throw new UnsupportedOperationException(field.getName());
             }

@@ -12,11 +12,13 @@ import icu.etl.database.export.ExtracterContext;
 import icu.etl.io.TableLine;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBeanClass(kind = "local", mode = "filepath", major = "", minor = "", description = "卸载数据到本地文件", type = ExtractWriter.class)
-public class ExtractFileWriter implements ExtractWriter {
+public class ExtractFileWriter implements ExtractWriter, EasyetlContextAware {
 
     /** 文件路径 */
     private String filepath;
@@ -50,6 +52,12 @@ public class ExtractFileWriter implements ExtractWriter {
 
     /** 消息信息 */
     private ExtractMessage message;
+
+    protected EasyetlContext ioccxt;
+
+    public void set(EasyetlContext context) {
+        this.ioccxt = context;
+    }
 
     /**
      * 初始化
@@ -105,7 +113,7 @@ public class ExtractFileWriter implements ExtractWriter {
         // 写入列标题信息
         if (this.context.isTitle()) {
             if (this.title == null) {
-                this.title = new TableTitle(this.context);
+                this.title = new TableTitle(this.context, this.ioccxt);
             }
             this.write(this.title);
         }

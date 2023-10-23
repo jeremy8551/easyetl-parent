@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import icu.etl.database.Jdbc;
+import icu.etl.ioc.BeanContext;
 import icu.etl.log.STD;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.util.ClassUtils;
@@ -21,6 +22,9 @@ public class TestEnv {
     public static final String envmode = TestEnv.class.getPackage().getName() + ".test.mode";
 
     private static Properties p = new Properties();
+
+    /** 容器上下文信息 */
+    private static BeanContext context = new BeanContext();
 
     static {
         if (p.isEmpty()) {
@@ -58,7 +62,7 @@ public class TestEnv {
      * @return
      */
     public static final Connection getConnection() {
-        return Jdbc.getConnection(getDBDriver(), getDBUrl(), getDBAdmin(), getDBAdminpw());
+        return Jdbc.getConnection(context, getDBDriver(), getDBUrl(), getDBAdmin(), getDBAdminpw());
     }
 
     /**

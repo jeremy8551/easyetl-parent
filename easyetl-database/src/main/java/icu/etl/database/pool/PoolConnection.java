@@ -78,7 +78,7 @@ public class PoolConnection implements InvocationHandler {
     public PoolConnection(Connection conn, Pool pool) {
         this();
 
-        this.attributes = new ConnectionAttributes(conn);
+        this.attributes = new ConnectionAttributes(pool.getContext(), conn);
         this.id = getSerialNo();
         this.conn = conn;
         this.pool = pool;

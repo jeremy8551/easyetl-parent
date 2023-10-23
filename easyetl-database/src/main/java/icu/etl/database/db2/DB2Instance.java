@@ -1,6 +1,7 @@
 package icu.etl.database.db2;
 
 import java.io.IOException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import icu.etl.database.JdbcDao;
+import icu.etl.database.Jdbc;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.log.STD;
 import icu.etl.os.OS;
@@ -744,21 +745,22 @@ public class DB2Instance {
      */
     public boolean forceApplication(Connection conn, String applicationHandle) throws SQLException {
         OSUser user = this.getOS().getUser();
-        JdbcDao dao = new JdbcDao();
+        String url = conn.getMetaData().getURL();
+        String username = user.getName();
+        String password = user.getPassword();
+
+        // 实现逻辑: 要启动一个新线程连接数据库，在新连接上执行关闭数据库连接的命令
+        Connection newconn = Jdbc.getConnection(url, username, password);
         try {
-            String url = conn.getMetaData().getURL();
-            String username = user.getName();
-            String password = user.getPassword();
-            Ensure.isTrue(dao.connect(url, -1, username, password), url, username, password);
-            dao.callProcedureByJdbc("call SYSPROC.ADMIN_CMD('force application (" + applicationHandle + ")')");
-            dao.commit();
+            CallableStatement statement = newconn.prepareCall("call SYSPROC.ADMIN_CMD('force application (" + applicationHandle + ")')");
+            statement.execute();
+            newconn.commit();
             return true;
         } catch (Exception e) {
-            dao.rollback();
+            newconn.rollback();
             return false;
         } finally {
-            dao.commitQuiet();
-            dao.close();
+            newconn.close();
         }
     }
 

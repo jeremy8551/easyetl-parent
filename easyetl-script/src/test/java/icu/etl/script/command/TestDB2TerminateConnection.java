@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import icu.etl.TestEnv;
 import icu.etl.database.DatabaseDialect;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.time.Timer;
 import icu.etl.util.TimeWatch;
 import org.junit.Test;
@@ -17,9 +17,10 @@ public class TestDB2TerminateConnection {
 
     @Test
     public void test() throws SQLException {
+        BeanContext cxt = new BeanContext();
         Connection conn = TestEnv.getConnection();
         try {
-            DatabaseDialect dialect = BeanFactory.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = cxt.get(DatabaseDialect.class, conn);
 
 //			System.out.println(conn);
 //			com.ibm.db2.jcc.t4.b c = (com.ibm.db2.jcc.t4.b) conn;

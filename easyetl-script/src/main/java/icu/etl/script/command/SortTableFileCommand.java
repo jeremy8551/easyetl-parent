@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import icu.etl.expression.OrderByExpression;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
@@ -65,7 +64,7 @@ public class SortTableFileCommand extends AbstractTraceCommand {
             cxt.setWriterBuffer(this.map.getIntAttribute("writebuf"));
         }
 
-        TextTableFile file = BeanFactory.get(TextTableFile.class, this.filetype, this.map);
+        TextTableFile file = context.getFactory().getContext().get(TextTableFile.class, this.filetype, this.map);
         file.setAbsolutePath(this.filepath);
 
         this.tfs = new TableFileSorter(cxt);

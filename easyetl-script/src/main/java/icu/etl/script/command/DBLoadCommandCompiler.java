@@ -22,7 +22,6 @@ import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTable;
 import icu.etl.io.TextTableFile;
 import icu.etl.ioc.BeanConfig;
-import icu.etl.ioc.BeanFactory;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -302,7 +301,7 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
         // 查找接口对应的的实现类
-        List<BeanConfig> list1 = BeanFactory.getContext().getImplements(TextTableFile.class);
+        List<BeanConfig> list1 = context.getFactory().getContext().getImplements(TextTableFile.class);
         CharTable ct1 = new CharTable(context.getCharsetName());
         ct1.addTitle("");
         ct1.addTitle("");

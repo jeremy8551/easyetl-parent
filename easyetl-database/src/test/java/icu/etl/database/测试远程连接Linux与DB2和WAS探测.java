@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import icu.etl.database.db2.DB2Instance;
-import icu.etl.ioc.BeanFactory;
+import icu.etl.ioc.BeanContext;
 import icu.etl.os.OS;
 import icu.etl.os.OSCpu;
 import icu.etl.os.OSDisk;
@@ -32,7 +32,8 @@ public class 测试远程连接Linux与DB2和WAS探测 {
         password = "xxx";
 
         TimeWatch watch = new TimeWatch();
-        OS os = BeanFactory.get(OS.class, host, port, username, password);
+        BeanContext context = new BeanContext();
+        OS os = context.get(OS.class, host, port, username, password);
         try {
             System.out.println();
             System.out.println();
