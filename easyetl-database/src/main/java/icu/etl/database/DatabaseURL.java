@@ -12,7 +12,7 @@ public interface DatabaseURL extends Cloneable {
     String getType();
 
     /**
-     * 返回数据库名, 如: UDSFDB 等
+     * 返回数据库名
      *
      * @return
      */

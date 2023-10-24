@@ -1752,40 +1752,40 @@ fi
 
 step 第一步
 
-declare global udsfdb  catalog configuration use file ${jdbcfilepath}
+declare global testdb  catalog configuration use file ${jdbcfilepath}
 
 echo . ${pwd}/test2.sql
 . ${pwd}/test2.sql
 
-declare  global udsfdb1  catalog configuration use driver $databaseDriverName url '${databaseUrl}' username ${username} password $password
+declare  global testdb1  catalog configuration use driver $databaseDriverName url '${databaseUrl}' username ${username} password $password
 
 declare  uddb  catalog configuration use driver ${$databaseDriverName} url '${databaseUrl}' username  ${username} password ${$password}
 
-declare udsf0 catalog configuration use file ${jdbcfilepath}
+declare test0 catalog configuration use file ${jdbcfilepath}
 
 
 
 # 异常处理
 declare exit handler for exception begin
-  db connect to udsfdb
+  db connect to testdb
   echo deal exception ${exception}
-  #update BHC_FINISH set step_id = '重建数据库表索引', task_file_path = '/home/udsf/rpt/testsys/BHC_LOADFEX.sql' where task_name = '接口批量任务' and file_data='2020-03-23';
+  #update BHC_FINISH set step_id = '重建数据库表索引', task_file_path = '/home/user/rpt/testsys/BHC_LOADFEX.sql' where task_name = '接口批量任务' and file_data='2020-03-23';
   db connect reset
 end
 
 # 非正确退出处理
 declare exit handler for exitcode != 0 begin
-  db connect to udsfdb
+  db connect to testdb
   echo exit with no 0!
-  #update BHC_FINISH set step_id = '重建数据库表索引', task_file_path = '/home/udsf/rpt/testsys/BHC_LOADFEX.sql' where task_name = '接口批量任务' and file_data='2020-03-23';
+  #update BHC_FINISH set step_id = '重建数据库表索引', task_file_path = '/home/user/rpt/testsys/BHC_LOADFEX.sql' where task_name = '接口批量任务' and file_data='2020-03-23';
   db connect reset
 end
 
 # 正确退出处理
 declare exit handler for exitcode == 0 begin
-  db connect to udsfdb
+  db connect to testdb
   echo exit with 0!
-  #update BHC_FINISH set step_id = '重建数据库表索引', task_file_path = '/home/udsf/rpt/testsys/BHC_LOADFEX.sql' where task_name = '接口批量任务' and file_data='2020-03-23';
+  #update BHC_FINISH set step_id = '重建数据库表索引', task_file_path = '/home/user/rpt/testsys/BHC_LOADFEX.sql' where task_name = '接口批量任务' and file_data='2020-03-23';
   db connect reset
 end
 
@@ -1808,11 +1808,11 @@ if ${KSC_INT} != 1 then
 fi
 
 
-db connect to udsfdb
+db connect to testdb
 db connect reset
 
-declare udsfdb1 catalog configuration use file ${jdbcfilepath}
-db connect to udsfdb1
+declare testdb1 catalog configuration use file ${jdbcfilepath}
+db connect to testdb1
 
 
 

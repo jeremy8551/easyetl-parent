@@ -15,12 +15,12 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2023/10/5
  */
-public class BeanContextInit {
+public class BeanClassLoader {
 
     /**
      * 初始化
      */
-    public BeanContextInit() {
+    public BeanClassLoader() {
     }
 
     /**
@@ -28,7 +28,7 @@ public class BeanContextInit {
      *
      * @param context 上下文信息
      */
-    public void load(BeanContext context) {
+    public void load(EasyetlContext context) {
         String[] args = context.getArgument();
         List<String> list = new ArrayList<String>(args.length + 10);
         for (String str : args) {
@@ -69,7 +69,7 @@ public class BeanContextInit {
      * @param packageNames 包名表达式, 例如: java.lang.String,org.test,!org.test.String
      *                     在包名前面使用符号 ! 表示扫描类时会排除掉这个包名下的所有类
      */
-    protected void load(BeanContext context, String[] packageNames) {
+    protected void load(EasyetlContext context, String[] packageNames) {
         if (packageNames.length == 0) { // 取默认值
             String value = System.getProperty(ClassScanner.PROPERTY_SCANNPKG, "");
             packageNames = StringUtils.removeBlank(StringUtils.split(value, ','));
@@ -105,7 +105,7 @@ public class BeanContextInit {
      * @param includePackageNames 需要扫描的JAVA包名: java.lang, 为null或空白字符串时，表示扫描所有JAVA包下的类信息
      * @param excludepackageNames 扫描时需要排除的包名
      */
-    protected void load(BeanContext context, List<String> includePackageNames, List<String> excludepackageNames) {
+    protected void load(EasyetlContext context, List<String> includePackageNames, List<String> excludepackageNames) {
         String groupId = Settings.getGroupID();
         includePackageNames.remove(groupId);
         includePackageNames.add(0, groupId); // 保证首先扫描本工程中的包

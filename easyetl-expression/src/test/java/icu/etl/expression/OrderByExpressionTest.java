@@ -13,7 +13,6 @@ public class OrderByExpressionTest {
 
     @Before
     public void before() {
-        BeanContext context = new BeanContext();
     }
 
     @Test

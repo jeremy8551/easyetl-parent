@@ -155,7 +155,7 @@ public class StandardScriptAnalysisTest {
                 return args1;
             }
         };
-        assertTrue(obj.replaceShellSpecialVariable(session, "call UDSFADM.$1('2017-07-31', ?); $# $0", false).equals("call UDSFADM.PROC_QYZX_SBC_BAOHANS('2017-07-31', ?); 1 funcs"));
+        assertTrue(obj.replaceShellSpecialVariable(session, "call TESTADM.$1('2017-07-31', ?); $# $0", false).equals("call TESTADM.PROC_QYZX_SBC_BAOHANS('2017-07-31', ?); 1 funcs"));
 
         session = new ScriptSession(new ScriptSessionFactory()) {
 
@@ -182,7 +182,7 @@ public class StandardScriptAnalysisTest {
                 return args1;
             }
         };
-        assertTrue(obj.replaceShellSpecialVariable(session, "call UDSFADM.$1('2017-07-31', ?); $# $0 $?", true).equals("call UDSFADM.PROC_QYZX_SBC_BAOHANS('2017-07-31', ?); 1 funcs -1"));
+        assertTrue(obj.replaceShellSpecialVariable(session, "call TESTADM.$1('2017-07-31', ?); $# $0 $?", true).equals("call TESTADM.PROC_QYZX_SBC_BAOHANS('2017-07-31', ?); 1 funcs -1"));
 
         session = new ScriptSession(new ScriptSessionFactory()) {
 
@@ -209,7 +209,7 @@ public class StandardScriptAnalysisTest {
                 return args1;
             }
         };
-        assertTrue(obj.replaceShellSpecialVariable(session, "call 'UDSFADM.$1(2017-07-31, ?)'; $# $0 $?", true).equals("call 'UDSFADM.$1(2017-07-31, ?)'; 1 funcs -1"));
+        assertTrue(obj.replaceShellSpecialVariable(session, "call 'TESTADM.$1(2017-07-31, ?)'; $# $0 $?", true).equals("call 'TESTADM.$1(2017-07-31, ?)'; 1 funcs -1"));
 
         session = new ScriptSession(new ScriptSessionFactory()) {
 

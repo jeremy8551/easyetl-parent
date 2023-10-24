@@ -1,6 +1,5 @@
 package icu.etl.database;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -24,25 +23,17 @@ import javax.sql.DataSource;
 
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.collection.CaseSensitivSet;
-import icu.etl.database.internal.StandardDatabaseConfiguration;
 import icu.etl.database.internal.StandardDatabaseType;
 import icu.etl.database.internal.StandardDatabaseTypes;
-import icu.etl.database.internal.StandardDatabaseURL;
-import icu.etl.database.logger.ConnectionLogger;
 import icu.etl.database.logger.DataSourceLogger;
 import icu.etl.database.logger.DataSourceLoggerProxy;
 import icu.etl.database.pool.PoolConnection;
 import icu.etl.database.pool.SimpleDatasource;
-import icu.etl.ioc.BeanContext;
-import icu.etl.ioc.EasyetlContext;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.STD;
-import icu.etl.os.OSConnectCommand;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CharTable;
 import icu.etl.util.ClassUtils;
-import icu.etl.util.CollUtils;
-import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Property;
 import icu.etl.util.ResourcesUtils;
@@ -70,132 +61,13 @@ public class Jdbc {
     }
 
     /**
-     * 解析 jdbc.properties 资源配置文件内容 <br>
-     * 资源配置文件中应该存在jdbc连接参数
-     *
-     * @param context  容器上下文信息
-     * @param filepath 文件绝对路径
-     * @return
-     * @throws IOException
-     */
-    public static Properties loadJdbcFile(BeanContext context, String filepath) throws IOException {
-        Properties p = FileUtils.loadProperties(filepath);
-        if (Jdbc.existsJdbcConfiguration(p)) {
-            context.get(DatabaseConfigurationContainer.class).add(p);
-        }
-        return p;
-    }
-
-    /**
-     * 读取 URL 字符串
-     *
-     * @param conn
-     * @return
-     */
-    public static String getUrl(Connection conn) {
-        try {
-            return conn.getMetaData().getURL();
-        } catch (SQLException e) {
-            throw new DatabaseException("getUrl()", e);
-        }
-    }
-
-    /**
-     * 解析数据库 JDBC URL 字符串
-     *
-     * @param context
-     * @param conn
-     * @return
-     * @throws SQLException
-     */
-    public static DatabaseURL parseJdbcUrl(EasyetlContext context, Connection conn) throws SQLException {
-        DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
-        DatabaseMetaData metaData = conn.getMetaData();
-        String url = metaData.getURL();
-        List<DatabaseURL> list = dialect.parseJdbcUrl(url);
-        if (list.isEmpty()) {
-            throw new IllegalArgumentException(url);
-        }
-
-        DatabaseURL obj = list.get(0);
-        if (obj instanceof StandardDatabaseURL) {
-            String username = metaData.getUserName();
-            ((StandardDatabaseURL) obj).setUsername(username);
-        }
-        return obj;
-    }
-
-    /**
-     * 从 DataSource 返回一个数据库连接
-     *
-     * @param dataSource 数据库连接池
-     * @return
-     */
-    public static Connection getConnection(DataSource dataSource) {
-        if (dataSource == null) {
-            throw new NullPointerException();
-        }
-
-        try {
-            return dataSource.getConnection();
-        } catch (SQLException e) {
-            throw new DatabaseException(StringUtils.toString(dataSource), e);
-        }
-    }
-
-    /**
-     * 打开数据库连接
-     *
-     * @param context 容器上下文信息
-     * @param p       数据库连接JDBC配置
-     * @return 有效的数据库连接
-     */
-    public static Connection getConnection(EasyetlContext context, Properties p) {
-        if (p == null) {
-            throw new NullPointerException();
-        }
-
-        String driver = p.getProperty(Jdbc.driverClassName);
-        String url = p.getProperty(Jdbc.url);
-        String username = p.getProperty(OSConnectCommand.username);
-        String password = p.getProperty(OSConnectCommand.password);
-
-        if (StringUtils.isBlank(driver)) {
-            return Jdbc.getConnection(url, username, password);
-        } else {
-            return Jdbc.getConnection(context, driver, url, username, password);
-        }
-    }
-
-    /**
-     * 返回一个数据库连接 <br>
-     * 事务策略：不自动提交事务 <br>
-     *
-     * @param context  容器上下文信息
-     * @param driver   驱动类名
-     * @param url      JDBC连接URL
-     * @param username 用户
-     * @param password 密码
-     * @return
-     */
-    public static Connection getConnection(EasyetlContext context, String driver, String url, String username, String password) {
-        ClassUtils.loadClass(driver); // TODO 更换了方法需要重新测试
-        Connection conn = getConnection(url, username, password);
-        if (conn != null) {
-            DatabaseConfigurationContainer container = context.get(DatabaseConfigurationContainer.class);
-            container.add(new StandardDatabaseConfiguration(null, driver, url, username, password, null, null, null, null, null));
-        }
-        return conn;
-    }
-
-    /**
      * 返回一个数据库连接 <br>
      * 事务策略：不自动提交事务 <br>
      *
      * @param url      JDBC URL
      * @param username 用户
      * @param password 密码
-     * @return
+     * @return 数据库连接
      */
     public static Connection getConnection(String url, String username, String password) {
         if (StringUtils.isBlank(url)) {
@@ -225,7 +97,7 @@ public class Jdbc {
      * 返回一个数据库连接池日志代理对象（用于打印访问数据库的关键操作信息）
      *
      * @param dataSource 数据库连接池
-     * @return
+     * @return 数据库连接池
      */
     public static DataSource getDataSourceLogger(DataSource dataSource) {
         if (dataSource != null && Boolean.parseBoolean(StringUtils.trimBlank(System.getProperty(PROPERTY_DBLOG))) && !(dataSource instanceof DataSourceLoggerProxy)) {
@@ -233,32 +105,6 @@ public class Jdbc {
         } else {
             return dataSource;
         }
-    }
-
-    /**
-     * 返回一个代理数据库连接
-     *
-     * @param conn        数据库连接
-     * @param warnTimeout 超时警告时间，单位秒
-     * @return
-     */
-    public static Connection getConnection(Connection conn, int warnTimeout) {
-        return new ConnectionLogger(conn, warnTimeout).getProxy();
-    }
-
-    /**
-     * 资源类中存在数据库连接参数
-     *
-     * @param p jdbc属性集
-     * @return
-     */
-    public static boolean existsJdbcConfiguration(Properties p) {
-        return p != null //
-                && p.containsKey(Jdbc.driverClassName) //
-                && p.containsKey(Jdbc.url) //
-                && p.containsKey(OSConnectCommand.username) //
-                && p.containsKey(OSConnectCommand.password) //
-                ;
     }
 
     /**
@@ -293,30 +139,17 @@ public class Jdbc {
     }
 
     /**
-     * 检查 jdbc 配置是否正确, 如果正确返回一个副本 <br>
-     * 参数 p 中必须存在参数 {@linkplain Jdbc#driverClassName} {@linkplain Jdbc#url} {@linkplain OSConnectCommand#username} {@linkplain OSConnectCommand#password}
-     *
-     * @param p jdbc属性集
-     * @return 副本
-     */
-    public static Properties cloneJdbcConfiguration(Properties p) {
-        if (Jdbc.existsJdbcConfiguration(p)) {
-            return CollUtils.cloneProperties(p, new Properties());
-        } else {
-            throw new DatabaseException(ResourcesUtils.getDatabaseMessage(25, Jdbc.driverClassName, Jdbc.url, OSConnectCommand.username, OSConnectCommand.password, StringUtils.toString(p)));
-        }
-    }
-
-    /**
      * 测试数据库连接是否可用 <br>
      * 测试内容包括创建表, 删除表, 新增记录, 修改记录, 删除记录 <br>
      *
-     * @param context 容器上下文信息
      * @param conn    数据库连接
      * @param dialect 数据库方言, 可为null
      * @return true-数据库连接可用
      */
-    public static boolean testConnection(EasyetlContext context, Connection conn, DatabaseDialect dialect) {
+    public static boolean testConnection(Connection conn, DatabaseDialect dialect) {
+        if (dialect == null) {
+            throw new NullPointerException();
+        }
         if (conn == null) {
             return false;
         }
@@ -336,10 +169,6 @@ public class Jdbc {
             boolean supportSavepoint = metaData.supportsSavepoints();
             Savepoint savepoint = supportSavepoint ? connection.setSavepoint() : null;
             try {
-                if (dialect == null) {
-                    dialect = context.get(DatabaseDialect.class, connection);
-                }
-
                 String catalog = dialect.getCatalog(conn);
                 String schema = dialect.getSchema(conn);
                 String tableName = getTableNameNoRepeat(connection, dialect, catalog, schema, "POOL_TEST_TABLE");
@@ -443,27 +272,13 @@ public class Jdbc {
             throw new DatabaseException("canUse(" + conn + ")", e);
         }
     }
-//	
-//	/**
-//	 * 判断数据库处理程序是否可用
-//	 * 
-//	 * @param statement
-//	 * @return
-//	 */
-//	public static boolean canUse(Statement statement) {
-//		try {
-//			return statement != null && !statement.isClosed();
-//		} catch (SQLException e) {
-//			throw new DatabaseException("canUse(" + statement + ")", e);
-//		}
-//	}
 
     /**
      * 判断数据库连接是否可用<br>
      * 如果数据库连接为null 返回 false <br>
      * 如果数据库连接已经关闭，返回 false <br>
      *
-     * @param conn
+     * @param conn 数据库连接
      * @return
      */
     public static boolean canUseQuietly(Connection conn) {
@@ -488,126 +303,6 @@ public class Jdbc {
                 return JavaDialectFactory.getDialect().isStatementClosed(statement);
             } catch (Throwable e) {
                 return false;
-            }
-        }
-    }
-
-//	/**
-//	 * 返回 true 表示SQL字段类型是否为字符型
-//	 * 
-//	 * @param sqltype
-//	 *            字段类型编号
-//	 * @return
-//	 */
-//	public static boolean isChar(int sqltype) {
-//		return Numbers.inArray(sqltype //
-//				, java.sql.Types.CHAR //
-//				, java.sql.Types.NCHAR //
-//				, java.sql.Types.NVARCHAR //
-//				, java.sql.Types.VARCHAR //
-//				, java.sql.Types.LONGVARCHAR //
-//				, java.sql.Types.LONGNVARCHAR //
-//				, java.sql.Types.CLOB //
-//				, java.sql.Types.NCLOB //
-//				, java.sql.Types.DATE //
-//				, java.sql.Types.TIME //
-//				, java.sql.Types.TIMESTAMP //
-//				, java.sql.Types.SQLXML //
-//		);
-//	}
-//	
-//	/**
-//	 * 返回 true 表示SQL字段类型中只能有一个参数
-//	 * 
-//	 * @param sqltype
-//	 * @return
-//	 */
-//	public static boolean containsOneParameter(int sqltype) {
-//		return Numbers.inArray(sqltype //
-//				, java.sql.Types.CHAR //
-//				, java.sql.Types.NCHAR //
-//				, java.sql.Types.NVARCHAR //
-//				, java.sql.Types.VARCHAR //
-//				, java.sql.Types.LONGVARCHAR //
-//				, java.sql.Types.LONGNVARCHAR //
-//				, java.sql.Types.BLOB //
-//				, java.sql.Types.CLOB //
-//				, java.sql.Types.NCLOB //
-//				, java.sql.Types.INTEGER //
-//				, java.sql.Types.TINYINT //
-//				, java.sql.Types.BIGINT //
-//				, java.sql.Types.SMALLINT //
-//				, java.sql.Types.BINARY //
-//				, java.sql.Types.VARBINARY //
-//				, java.sql.Types.LONGVARBINARY //
-//				, java.sql.Types.ARRAY //
-//				, java.sql.Types.BIT //
-//				, java.sql.Types.BOOLEAN //
-//		);
-//	}
-//	
-//	/**
-//	 * 返回 true 表示SQL字段类型中只能有二个参数
-//	 * 
-//	 * @param sqltype
-//	 * @return
-//	 */
-//	public static boolean containsTwoParameter(int sqltype) {
-//		return Numbers.inArray(sqltype //
-//				, java.sql.Types.DECIMAL //
-//				, java.sql.Types.NUMERIC //
-//				, java.sql.Types.DOUBLE //
-//				, java.sql.Types.FLOAT //
-//				, java.sql.Types.REAL //
-//		);
-//	}
-//	
-//	/**
-//	 * 返回 true 表示SQL字段类型中没有参数
-//	 * 
-//	 * @param sqltype
-//	 * @return
-//	 */
-//	public static boolean containsNotParameter(int sqltype) {
-//		return Numbers.inArray(sqltype //
-//				, java.sql.Types.DATE //
-//				, java.sql.Types.TIME //
-//				, java.sql.Types.TIMESTAMP //
-//				, java.sql.Types.REF //
-//		);
-//	}
-
-    /**
-     * 设置事务策略<br>
-     * 屏蔽异常信息
-     *
-     * @param conn       数据库连接
-     * @param autoCommit 是否自动提交
-     */
-    public static void setCommitQuiet(Connection conn, boolean autoCommit) {
-        if (conn != null) {
-            try {
-                conn.setAutoCommit(autoCommit);
-            } catch (Throwable e) {
-                if (STD.out.isErrorEnabled()) {
-                    STD.out.error(ResourcesUtils.getDatabaseMessage(29), e);
-                }
-            }
-        }
-    }
-
-    /**
-     * 设置事务策略<br>
-     * 屏蔽异常信息
-     *
-     * @param conn       数据库连接
-     * @param autoCommit 是否自动提交
-     */
-    public static void setCommitQuietly(Connection conn, boolean autoCommit) {
-        if (conn != null) {
-            try {
-                conn.setAutoCommit(autoCommit);
-            } catch (Throwable e) {
             }
         }
     }
@@ -714,41 +409,6 @@ public class Jdbc {
         if (conn != null) {
             try {
                 conn.rollback();
-            } catch (Throwable e) {
-            }
-        }
-    }
-
-    /**
-     * 回滚查询结果集中更新的数据，如果发生异常会打印错误信息但不会抛出异常信息
-     *
-     * @param result
-     */
-    public static void rollbackQuiet(ResultSet result) {
-        if (result != null) {
-            try {
-                if (ResultSet.CONCUR_UPDATABLE == result.getConcurrency()) {
-                    result.cancelRowUpdates();
-                }
-            } catch (Throwable e) {
-                if (STD.out.isErrorEnabled()) {
-                    STD.out.error(ResourcesUtils.getDatabaseMessage(31), e);
-                }
-            }
-        }
-    }
-
-    /**
-     * 回滚查询结果集中更新的数据，如果发生异常不会打印错误信息也不会抛出异常信息
-     *
-     * @param result
-     */
-    public static void rollbackQuietly(ResultSet result) {
-        if (result != null) {
-            try {
-                if (ResultSet.CONCUR_UPDATABLE == result.getConcurrency()) {
-                    result.cancelRowUpdates();
-                }
             } catch (Throwable e) {
             }
         }

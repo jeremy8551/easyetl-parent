@@ -5,11 +5,8 @@ import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
-import icu.etl.ioc.BeanContext;
-import icu.etl.ioc.NationalHoliday;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Dates;
@@ -57,9 +54,9 @@ public class ChinaUtils {
      * 读取配置信息集合
      *
      * @param nameOrType 参数名或参数类型值, 相见 china.xml 中的 {@literal <item name="xxx" type="xxx"> }
-     * @return
+     * @return 属性集合
      */
-    public static List<Property> getPropertys(String nameOrType) {
+    public static List<Property> getProperties(String nameOrType) {
         if (StringUtils.isBlank(nameOrType)) {
             throw new IllegalArgumentException(nameOrType);
         }
@@ -129,7 +126,7 @@ public class ChinaUtils {
      * 校验18位身份证号
      *
      * @param idCard 18位身份证号
-     * @return
+     * @return 返回true表示合法身份证
      */
     public static boolean isIdCard18(String idCard) {
         if (idCard == null || idCard.length() != 18) {
@@ -624,50 +621,6 @@ public class ChinaUtils {
             }
         }
         return negative ? -v : v;
-    }
-
-    /**
-     * 是否为休息日(周末和法定假日, 不包含法定补休日) <br>
-     *
-     * @param context 容器上下文信息
-     * @param date    日期
-     * @return
-     */
-    public static boolean isRestDay(BeanContext context, Date date) {
-        if (date == null) {
-            return false;
-        }
-
-        NationalHoliday holidays = context.get(NationalHoliday.class);
-        if (holidays.getWorkDays().contains(date)) {
-            return false;
-        } else if (holidays.getRestDays().contains(date)) {
-            return true;
-        } else {
-            return Dates.isWeekend(date);
-        }
-    }
-
-    /**
-     * 是否为工作日(不包含周末和法定假日, 包含法定补休日)
-     *
-     * @param context 容器上下文信息
-     * @param date    日期
-     * @return
-     */
-    public static boolean isWorkDay(BeanContext context, Date date) {
-        if (date == null) {
-            return false;
-        }
-
-        NationalHoliday holidays = context.get(NationalHoliday.class);
-        if (holidays.getWorkDays().contains(date)) {
-            return true;
-        } else if (holidays.getRestDays().contains(date)) {
-            return false;
-        } else {
-            return !Dates.isWeekend(date);
-        }
     }
 
 }

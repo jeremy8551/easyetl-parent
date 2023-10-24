@@ -96,14 +96,15 @@ public class DatabaseDialectTest {
 
     public static void main2(String[] args) throws SQLException {
         BeanContext context = new BeanContext();
-        Connection conn = Jdbc.getConnection(context, "oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@ //110.1.5.37:1521/dadb", "lhbb", "lhbb");
-        // Connection conn = UDSFDB.getConnection();
+        ClassUtils.loadClass("oracle.jdbc.driver.OracleDriver");
+        Connection conn = Jdbc.getConnection("jdbc:oracle:thin:@ //110.1.5.37:1521/dadb", "lhbb", "lhbb");
+        // Connection conn = TESTDB.getConnection();
         try {
             DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
             // System.out.println(JT.getDatabaseTypeInfo(conn));
 
             DatabaseProcedure p = dialect.getProcedureForceOne(conn, null, "LHBB", "CUSTAUM_APPEND");
-            // DatabaseProcedure p = dialect.getDatabaseProcedureForceOne(conn, null, "UDSFADM", "PROC_QYZX_SBC_LOAN");
+            // DatabaseProcedure p = dialect.getDatabaseProcedureForceOne(conn, null, "TESTADM", "PROC_QYZX_SBC_LOAN");
             System.out.println(Dates.format21(p.getCreateTime()));
             System.out.println(StringUtils.toString(p));
 
@@ -120,9 +121,9 @@ public class DatabaseDialectTest {
 
     public static void main1(String[] args) {
         DatabaseDialect d = new DB2Dialect();
-        System.out.println(StringUtils.toString(d.parseJdbcUrl("jdbc:db2://130.1.10.103:50001/UDSFDB:currentSchema=HYCS;")));
-        System.out.println(StringUtils.toString(d.parseJdbcUrl("jdbc:db2://130.1.10.103/UDSFDB:currentSchema=HYCS;")));
-        System.out.println(StringUtils.toString(d.parseJdbcUrl("jdbc:db2:UDSFDB")));
+        System.out.println(StringUtils.toString(d.parseJdbcUrl("jdbc:db2://130.1.10.103:50001/TESTDB:currentSchema=HYCS;")));
+        System.out.println(StringUtils.toString(d.parseJdbcUrl("jdbc:db2://130.1.10.103/TESTDB:currentSchema=HYCS;")));
+        System.out.println(StringUtils.toString(d.parseJdbcUrl("jdbc:db2:TESTDB")));
 
         d = new MysqlDialect();
         System.out.println(StringUtils.toString(d.parseJdbcUrl("jdbc:mysql://localhost:3306/test?user=root&password=&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false")));

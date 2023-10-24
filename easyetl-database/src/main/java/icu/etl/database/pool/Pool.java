@@ -11,10 +11,12 @@ import icu.etl.database.DatabaseConfigurationContainer;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseException;
 import icu.etl.database.Jdbc;
+import icu.etl.database.internal.StandardDatabaseConfiguration;
 import icu.etl.io.OutputStreamLogger;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.STD;
 import icu.etl.os.OSAccount;
+import icu.etl.util.ClassUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -52,6 +54,7 @@ public class Pool implements Closeable {
     /** 计时器 */
     private TimeWatch watch;
 
+    /** 容器上下文信息 */
     protected EasyetlContext context;
 
     /**
@@ -150,7 +153,7 @@ public class Pool implements Closeable {
                         pc.close();
                     }
                 } catch (Throwable e) {
-                    if (Jdbc.testConnection(context, conn, this.dialect)) {
+                    if (Jdbc.testConnection(conn, this.dialect)) {
                         this.actives.push(pc);
                         this.out.println(ResourcesUtils.getDataSourceMessage(5, pc.toString()));
                         return pc.getProxy();
@@ -181,12 +184,20 @@ public class Pool implements Closeable {
             if (StringUtils.isBlank(driver)) {
                 return Jdbc.getConnection(url, username, password);
             } else {
-                return Jdbc.getConnection(this.context, driver, url, username, password);
+                ClassUtils.loadClass(driver); // TODO 更换了方法需要重新测试
+                Connection conn = Jdbc.getConnection(url, username, password);
+                DatabaseConfigurationContainer container = this.context.get(DatabaseConfigurationContainer.class);
+                container.add(new StandardDatabaseConfiguration(null, driver, url, username, password, null, null, null, null, null));
+                return conn;
             }
         } else {
             while (this.watch.useSeconds() <= this.timeout) {
                 try {
-                    return Jdbc.getConnection(this.context, driver, url, username, password);
+                    ClassUtils.loadClass(driver); // TODO 更换了方法需要重新测试
+                    Connection conn = Jdbc.getConnection(url, username, password);
+                    DatabaseConfigurationContainer container = context.get(DatabaseConfigurationContainer.class);
+                    container.add(new StandardDatabaseConfiguration(null, driver, url, username, password, null, null, null, null, null));
+                    return conn;
                 } catch (Throwable e) {
                     continue;
                 }

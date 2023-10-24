@@ -6,7 +6,6 @@ import icu.etl.annotation.EasyBeanClass;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.Codepage;
 import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.Attribute;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
@@ -22,15 +21,6 @@ import icu.etl.util.StringUtils;
 public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
 
     public TextTableFile build(EasyetlContext context, Object... array) throws Exception {
-        TextTableFile file = this.create(context, array);
-        if (file instanceof EasyetlContextAware) {
-            ((EasyetlContextAware) file).set(context);
-        }
-        return file;
-    }
-
-    @SuppressWarnings("unchecked")
-    private TextTableFile create(EasyetlContext context, Object[] array) {
         Class<TextTableFile> cls = context.getImplement(TextTableFile.class, array);
         TextTableFile file = ClassUtils.newInstance(cls);
 

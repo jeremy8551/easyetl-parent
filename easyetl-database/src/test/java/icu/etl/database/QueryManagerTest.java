@@ -13,7 +13,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 public class QueryManagerTest {
-    public final static String tableName = "UDSFADM.test_table_name_temp".toUpperCase();
+    public final static String tableName = "TEST.test_table_name_temp".toUpperCase();
 
     @Before
     public void setUp() throws Exception {

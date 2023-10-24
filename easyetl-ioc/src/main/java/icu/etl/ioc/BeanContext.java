@@ -42,6 +42,7 @@ public class BeanContext implements EasyetlContext {
     /** true 表示发生变化时可以通知 {@linkplain BeanEventListener} 对象 */
     private AtomicBoolean notice;
 
+    /** 属性集合 */
     private Map<String, Object> map;
 
     /**
@@ -71,7 +72,7 @@ public class BeanContext implements EasyetlContext {
         this.creators.add(new StandardBeanCreator(this));
         this.classLoader = loader;
         this.args = args;
-        new BeanContextInit().load(this);
+        new BeanClassLoader().load(this);
     }
 
     public <E> E get(String key) {
@@ -82,54 +83,26 @@ public class BeanContext implements EasyetlContext {
         return (E) this.map.put(key, value);
     }
 
-    public <E> E get(Class<E> clazz, Object... array) {
-        List<BeanCreator> creators = this.getCreators();
-
+    public <E> E get(Class<E> cls, Object... array) {
         E obj;
-        for (BeanCreator c : creators) {
-            if ((obj = c.getBean(clazz, array)) != null) {
+        for (BeanCreator c : this.creators) {
+            if ((obj = c.getBean(cls, array)) != null) {
                 return obj;
             }
         }
         return null;
     }
 
-    /**
-     * 返回类加载器
-     *
-     * @return 类加载器
-     */
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
 
-    /**
-     * 返回启动参数
-     *
-     * @return 启动参数数组
-     */
     public String[] getArgument() {
         String[] array = new String[args.length];
         System.arraycopy(this.args, 0, array, 0, this.args.length);
         return array;
     }
 
-    /**
-     * 返回组件工厂集合
-     *
-     * @return 组件工厂集合
-     */
-    public List<BeanCreator> getCreators() {
-        return this.creators;
-    }
-
-    /**
-     * 保存接口信息与工厂类的映射关系
-     *
-     * @param type    接口信息
-     * @param builder 接口的工厂类
-     * @return 返回true表示添加成功 false表示未添加
-     */
     public synchronized boolean addBuilder(Class<?> type, BeanBuilder<?> builder) {
         if (type == null) {
             throw new NullPointerException();
@@ -147,42 +120,18 @@ public class BeanContext implements EasyetlContext {
         }
     }
 
-    /**
-     * 返回所有组件工厂的类信息（按组件添加的顺序）
-     *
-     * @return 返回组件工程集合
-     */
     public Set<Class<?>> getBuilderClass() {
         return Collections.unmodifiableSet(this.builders.keySet());
     }
 
-    /**
-     * 查询接口信息对应的工厂
-     *
-     * @param type 接口信息
-     * @return 组件工厂的类信息
-     */
     public BeanBuilder<?> getBuilder(Class<?> type) {
         return this.builders.get(type);
     }
 
-    /**
-     * 删除接口信息对应的工厂
-     *
-     * @param type 接口信息
-     * @return 组件工厂实例
-     */
     public synchronized BeanBuilder<?> removeBuilder(Class<?> type) {
         return this.builders.remove(type);
     }
 
-    /**
-     * 判断接口的实现类是否存在
-     *
-     * @param type 接口信息
-     * @param impl 接口的实现信息
-     * @return true表示存在组件实现类
-     */
     public boolean containsImplement(Class<?> type, Class<?> impl) {
         List<BeanConfig> list = this.impls.get(type);
         if (list != null) {
@@ -195,12 +144,6 @@ public class BeanContext implements EasyetlContext {
         return false;
     }
 
-    /**
-     * 删除接口信息对应的实现类集合
-     *
-     * @param type 组件信息
-     * @return 组件实现类的集合
-     */
     public synchronized List<BeanConfig> removeImplement(Class<?> type) {
         List<BeanConfig> list = this.impls.remove(type);
         BeanBuilder<?> builder = this.builders.get(type);
@@ -254,21 +197,10 @@ public class BeanContext implements EasyetlContext {
         }
     }
 
-    /**
-     * 返回所有组件类信息（按组件添加的顺序）
-     *
-     * @return 组件种类的集合
-     */
     public Set<Class<?>> getImplements() {
         return Collections.unmodifiableSet(this.impls.keySet());
     }
 
-    /**
-     * 查找类信息对应的实现类集合
-     *
-     * @param type 类信息
-     * @return 组件对应的所有实现类
-     */
     public List<BeanConfig> getImplements(Class<?> type) {
         List<BeanConfig> list = this.impls.get(type);
         if (list == null) {
@@ -278,18 +210,6 @@ public class BeanContext implements EasyetlContext {
         }
     }
 
-    /**
-     * 查询接口信息对应的实现类
-     *
-     * @param type 接口信息
-     * @param args 查询参数 <br>
-     *             数组中第一个字符串对应 {@linkplain EasyBeanClass#kind()} <br>
-     *             数组中第二个字符串对应 {@linkplain EasyBeanClass#mode()} <br>
-     *             数组中第三个字符串对应 {@linkplain EasyBeanClass#major()} <br>
-     *             数组中第四个字符串对应 {@linkplain EasyBeanClass#minor()} <br>
-     * @param <E>  组件类信息
-     * @return 组件的实现类
-     */
     public <E> Class<E> getImplement(Class<E> type, Object... args) {
         if (type == null) {
             throw new NullPointerException();

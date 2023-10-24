@@ -541,7 +541,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         List<OSAccount> accounts = config.getAccounts();
         Ensure.isTrue(!accounts.isEmpty(), table);
 
-        DatabaseURL url = Jdbc.parseJdbcUrl(this.context, connection);
+        DatabaseURL url = this.getDatabaseURL(connection);
         int port = Integer.parseInt(url.getPort());
         String name = url.getDatabaseName();
 
@@ -588,6 +588,29 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         } finally {
             os.close();
         }
+    }
+
+    /**
+     * 解析数据库 JDBC URL 字符串
+     *
+     * @param conn 数据库连接
+     * @return 数据库URL对象
+     * @throws SQLException 数据库错误
+     */
+    public DatabaseURL getDatabaseURL(Connection conn) throws SQLException {
+        DatabaseMetaData metaData = conn.getMetaData();
+        String url = metaData.getURL();
+        List<DatabaseURL> list = this.parseJdbcUrl(url);
+        if (list.isEmpty()) {
+            throw new UnsupportedOperationException(url);
+        }
+
+        DatabaseURL obj = list.get(0);
+        if (obj instanceof StandardDatabaseURL) {
+            String username = metaData.getUserName();
+            ((StandardDatabaseURL) obj).setUsername(username);
+        }
+        return obj;
     }
 
     protected StringBuilder toDDL(DatabaseTable table) {

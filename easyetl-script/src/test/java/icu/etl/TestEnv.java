@@ -62,7 +62,8 @@ public class TestEnv {
      * @return
      */
     public static final Connection getConnection() {
-        return Jdbc.getConnection(context, getDBDriver(), getDBUrl(), getDBAdmin(), getDBAdminpw());
+        ClassUtils.loadClass(getDBDriver());
+        return Jdbc.getConnection(getDBUrl(), getDBAdmin(), getDBAdminpw());
     }
 
     /**

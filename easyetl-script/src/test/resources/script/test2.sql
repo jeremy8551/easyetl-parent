@@ -1,5 +1,5 @@
 
-db connect to udsfdb
+db connect to testdb
 
 db connect reset
 

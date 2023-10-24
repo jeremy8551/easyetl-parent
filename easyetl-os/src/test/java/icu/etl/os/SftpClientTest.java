@@ -136,7 +136,7 @@ public class SftpClientTest {
         Ensure.isTrue(ftp.rm(newdir + "/" + tempDir.getName()));
         Ensure.isTrue(ftp.rm(newdir), newdir);
 
-        List<OSFile> ls2 = ftp.ls("/home/udsf/shell/qyzx/r_file");
+        List<OSFile> ls2 = ftp.ls("/home/user/shell/qyzx/r_file");
         for (OSFile f : ls2) {
             System.out.println(f);
         }

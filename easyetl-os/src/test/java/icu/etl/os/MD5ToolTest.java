@@ -104,7 +104,7 @@ public class MD5ToolTest {
         // 27763e3a87c331b150c27ea4ba9fce2d
 //
 //		try {
-//			SecureShell.executeCommand("130.1.10.10", 22, "etl@udsf@130.1.10.104", "xxx", ". ~/.bashrc && . ~/.profile && md5sum -b /home/udsf/shell/qyzx/ECCD_FINISH.dat ");
+//			SecureShell.executeCommand("130.1.10.10", 22, "etl@user@130.1.10.104", "xxx", ". ~/.bashrc && . ~/.profile && md5sum -b /home/user/shell/qyzx/ECCD_FINISH.dat ");
 //		} catch (SecureShellException e) { // 如果发生异常自动打印
 //			e.printStackTrace();
 //		}

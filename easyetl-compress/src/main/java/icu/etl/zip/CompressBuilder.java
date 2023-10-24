@@ -18,7 +18,7 @@ import icu.etl.util.StringUtils;
 public class CompressBuilder implements BeanBuilder<Compress> {
 
     public Compress build(EasyetlContext context, Object... array) throws Exception {
-        String suffix = null;
+        String suffix;
         File file = ArrayUtils.indexOf(array, File.class, 0);
         if (file == null) {
             suffix = StringUtils.join(array, "");

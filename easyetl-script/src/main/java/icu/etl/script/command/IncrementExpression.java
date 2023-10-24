@@ -1,28 +1,34 @@
 package icu.etl.script.command;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.collection.CaseSensitivSet;
+import icu.etl.database.DatabaseConfigurationContainer;
 import icu.etl.database.DatabaseTable;
 import icu.etl.database.DatabaseTableColumn;
 import icu.etl.database.DatabaseTableColumnList;
 import icu.etl.database.Jdbc;
 import icu.etl.database.JdbcDao;
+import icu.etl.database.internal.StandardDatabaseConfiguration;
 import icu.etl.expression.WordIterator;
 import icu.etl.increment.IncrementReplace;
 import icu.etl.io.TextTableFile;
+import icu.etl.os.OSConnectCommand;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.internal.ScriptDataSource;
 import icu.etl.sort.TableFileSortContext;
 import icu.etl.util.Attribute;
+import icu.etl.util.ClassUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -164,7 +170,22 @@ public class IncrementExpression implements Attribute<String> {
             JdbcDao dao = new JdbcDao(context.getFactory().getContext());
             try {
                 if (this.attributes.containsKey("catalog")) { // 使用指定数据库连接
-                    dao.setConnection(Jdbc.getConnection(context.getFactory().getContext(), context.getCatalog(this.attributes.get("catalog"))), true);
+                    Properties p = context.getCatalog(this.attributes.get("catalog"));
+                    String driver = p.getProperty(Jdbc.driverClassName);
+                    String url = p.getProperty(Jdbc.url);
+                    String username = p.getProperty(OSConnectCommand.username);
+                    String password = p.getProperty(OSConnectCommand.password);
+
+                    if (StringUtils.isBlank(driver)) {
+                        Connection conn = Jdbc.getConnection(url, username, password);
+                        dao.setConnection(conn, true);
+                    } else {
+                        ClassUtils.loadClass(driver); // TODO 更换了方法需要重新测试
+                        Connection conn = Jdbc.getConnection(url, username, password);
+                        DatabaseConfigurationContainer container = context.getFactory().getContext().get(DatabaseConfigurationContainer.class);
+                        container.add(new StandardDatabaseConfiguration(null, driver, url, username, password, null, null, null, null, null));
+                        dao.setConnection(conn, true);
+                    }
                 } else { // 使用默认数据库连接
                     dao.setConnection(dataSource.getDao().getConnection(), false);
                 }

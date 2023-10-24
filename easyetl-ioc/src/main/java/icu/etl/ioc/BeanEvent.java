@@ -15,7 +15,7 @@ public interface BeanEvent {
      *
      * @return 上下文信息
      */
-    BeanContext getContext();
+    EasyetlContext getContext();
 
     /**
      * 此时事件相关的实现类信息

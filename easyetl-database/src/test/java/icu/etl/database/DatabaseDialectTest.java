@@ -19,16 +19,16 @@ public class DatabaseDialectTest {
     @Test
     public void test1() {
         DatabaseDialect d = new DB2Dialect();
-        List<DatabaseURL> list = d.parseJdbcUrl("jdbc:db2://130.1.10.103:50001/UDSFDB:currentSchema=HYCS;");
+        List<DatabaseURL> list = d.parseJdbcUrl("jdbc:db2://130.1.10.103:50001/TESTDB:currentSchema=HYCS;");
         assertTrue(list.size() == 1);
         DatabaseURL u = list.get(0);
         assertEquals(u.getHostname(), "130.1.10.103");
-        assertEquals(u.getDatabaseName(), "UDSFDB");
+        assertEquals(u.getDatabaseName(), "TESTDB");
         assertEquals(u.getType(), "db2");
         assertEquals(u.getPort(), "50001");
         assertEquals(u.getSchema(), "HYCS");
 
-        List<DatabaseURL> l = d.parseJdbcUrl("jdbc:db2:UDSFDB");
+        List<DatabaseURL> l = d.parseJdbcUrl("jdbc:db2:TESTDB");
         assertTrue(l.size() == 1);
         System.out.println(StringUtils.toString(l.get(0).toProperties()));
 

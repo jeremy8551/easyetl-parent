@@ -7,9 +7,9 @@ import icu.etl.annotation.EasyBeanClass;
 
 public interface EasyetlContext extends BeanRegister {
 
-    public <E> E get(String key);
+    <E> E get(String key);
 
-    public <E> E put(String key, Object value);
+    <E> E put(String key, Object value);
 
     /**
      * 创建指定类型的实例对象
@@ -23,21 +23,21 @@ public interface EasyetlContext extends BeanRegister {
      *              第四个参数对应 {@link EasyBeanClass#minor()} 属性，表示小版本号，可以为空 <br>
      * @return 实例对象
      */
-    public <E> E get(Class<E> clazz, Object... array);
+    <E> E get(Class<E> clazz, Object... array);
 
     /**
      * 返回类加载器
      *
      * @return 类加载器
      */
-    public ClassLoader getClassLoader();
+    ClassLoader getClassLoader();
 
     /**
      * 返回启动参数
      *
      * @return 启动参数数组
      */
-    public String[] getArgument();
+    String[] getArgument();
 
     /**
      * 保存接口信息与工厂类的映射关系
@@ -46,14 +46,14 @@ public interface EasyetlContext extends BeanRegister {
      * @param builder 接口的工厂类
      * @return 返回true表示添加成功 false表示未添加
      */
-    public boolean addBuilder(Class<?> type, BeanBuilder<?> builder);
+    boolean addBuilder(Class<?> type, BeanBuilder<?> builder);
 
     /**
      * 返回所有组件工厂的类信息（按组件添加的顺序）
      *
      * @return 返回组件工程集合
      */
-    public Set<Class<?>> getBuilderClass();
+    Set<Class<?>> getBuilderClass();
 
     /**
      * 查询接口信息对应的工厂
@@ -61,7 +61,7 @@ public interface EasyetlContext extends BeanRegister {
      * @param type 接口信息
      * @return 组件工厂的类信息
      */
-    public BeanBuilder<?> getBuilder(Class<?> type);
+    BeanBuilder<?> getBuilder(Class<?> type);
 
     /**
      * 删除接口信息对应的工厂
@@ -69,7 +69,7 @@ public interface EasyetlContext extends BeanRegister {
      * @param type 接口信息
      * @return 组件工厂实例
      */
-    public BeanBuilder<?> removeBuilder(Class<?> type);
+    BeanBuilder<?> removeBuilder(Class<?> type);
 
     /**
      * 判断接口的实现类是否存在
@@ -78,7 +78,7 @@ public interface EasyetlContext extends BeanRegister {
      * @param impl 接口的实现信息
      * @return true表示存在组件实现类
      */
-    public boolean containsImplement(Class<?> type, Class<?> impl);
+    boolean containsImplement(Class<?> type, Class<?> impl);
 
     /**
      * 删除接口信息对应的实现类集合
@@ -86,12 +86,35 @@ public interface EasyetlContext extends BeanRegister {
      * @param type 组件信息
      * @return 组件实现类的集合
      */
-    public List<BeanConfig> removeImplement(Class<?> type);
+    List<BeanConfig> removeImplement(Class<?> type);
 
-    public Set<Class<?>> getImplements();
+    /**
+     * 返回所有组件类信息（按组件添加的顺序）
+     *
+     * @return 组件种类的集合
+     */
+    Set<Class<?>> getImplements();
 
-    public List<BeanConfig> getImplements(Class<?> type);
+    /**
+     * 查找类信息对应的实现类集合
+     *
+     * @param type 类信息
+     * @return 组件对应的所有实现类
+     */
+    List<BeanConfig> getImplements(Class<?> type);
 
-    public <E> Class<E> getImplement(Class<E> type, Object... args);
+    /**
+     * 查询接口信息对应的实现类
+     *
+     * @param type 接口信息
+     * @param args 查询参数 <br>
+     *             数组中第一个字符串对应 {@linkplain EasyBeanClass#kind()} <br>
+     *             数组中第二个字符串对应 {@linkplain EasyBeanClass#mode()} <br>
+     *             数组中第三个字符串对应 {@linkplain EasyBeanClass#major()} <br>
+     *             数组中第四个字符串对应 {@linkplain EasyBeanClass#minor()} <br>
+     * @param <E>  组件类信息
+     * @return 组件的实现类
+     */
+    <E> Class<E> getImplement(Class<E> type, Object... args);
 
 }

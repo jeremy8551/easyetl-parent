@@ -1,4 +1,4 @@
-package icu.etl.compress;
+package icu.etl.zip;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,10 +8,6 @@ import icu.etl.ioc.BeanContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
-import icu.etl.zip.Compress;
-import icu.etl.zip.GzipCompress;
-import icu.etl.zip.TarCompress;
-import icu.etl.zip.ZipUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

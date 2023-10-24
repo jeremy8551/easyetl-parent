@@ -8,14 +8,14 @@ import icu.etl.util.ResourcesUtils;
 public class StandardBeanCreator implements BeanCreator {
 
     /** 上下文信息 */
-    private BeanContext context;
+    private EasyetlContext context;
 
     /**
      * 初始化
      *
      * @param context 上下文信息
      */
-    public StandardBeanCreator(BeanContext context) {
+    public StandardBeanCreator(EasyetlContext context) {
         if (context == null) {
             throw new NullPointerException();
         }
@@ -25,15 +25,6 @@ public class StandardBeanCreator implements BeanCreator {
 
     @SuppressWarnings("unchecked")
     public <E> E getBean(Class<E> cls, Object... array) {
-        E obj = this.build(cls, array);
-        if (obj instanceof EasyetlContextAware) {
-            ((EasyetlContextAware) obj).set(this.context);
-        }
-        return obj;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <E> E build(Class<E> cls, Object[] array) {
         // 优先使用接口工厂生成实例对象
         BeanBuilder<?> obj = this.context.getBuilder(cls);
         if (obj != null) {

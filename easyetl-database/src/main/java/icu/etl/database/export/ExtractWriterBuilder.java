@@ -11,7 +11,6 @@ import icu.etl.expression.LoginExpression;
 import icu.etl.expression.StandardAnalysis;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
@@ -25,11 +24,7 @@ import icu.etl.util.StringUtils;
 public class ExtractWriterBuilder implements BeanBuilder<ExtractWriter> {
 
     public ExtractWriter build(EasyetlContext context, Object... array) throws IOException, SQLException {
-        ExtractWriter out = this.create(context, array);
-        if (out instanceof EasyetlContextAware) {
-            ((EasyetlContextAware) out).set(context);
-        }
-        return out;
+        return this.create(context, array);
     }
 
     private ExtractWriter create(EasyetlContext context, Object[] array) throws IOException, SQLException {

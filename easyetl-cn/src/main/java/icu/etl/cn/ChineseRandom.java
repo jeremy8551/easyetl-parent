@@ -349,10 +349,12 @@ public class ChineseRandom {
      */
     public String nextIdCard(Date start, Date end) {
         if (this.areacodes.isEmpty()) {
-            List<Property> list = ChinaUtils.getPropertys("5527"); // 行政区划
+            List<Property> list = ChinaUtils.getProperties("5527"); // 行政区划
+            List<String> areas = new ArrayList<String>();
             for (Property p : list) {
-                this.areacodes.add(p.getKey());
+                areas.add(p.getKey());
             }
+            this.setAreas(areas);
         }
 
         StringBuilder buf = new StringBuilder(18);

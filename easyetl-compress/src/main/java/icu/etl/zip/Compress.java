@@ -83,7 +83,7 @@ public interface Compress extends java.io.Closeable {
      *
      * @param file
      */
-    public void setFile(File file);
+    void setFile(File file);
 
     /**
      * 把文件或目录压缩添加到压缩文件的指定目录（默认使用file.encoding字符集作为默认字符集）
@@ -94,7 +94,7 @@ public interface Compress extends java.io.Closeable {
      *             字符串的第一个字符不能是 ‘/’ 符号 <br>
      * @throws IOException
      */
-    public void archiveFile(File file, String dir) throws IOException;
+    void archiveFile(File file, String dir) throws IOException;
 
     /**
      * 添加文件到压缩包中指定目录
@@ -106,7 +106,7 @@ public interface Compress extends java.io.Closeable {
      * @param charset 文件的字符集编码
      * @throws IOException
      */
-    public void archiveFile(File file, String dir, String charset) throws IOException;
+    void archiveFile(File file, String dir, String charset) throws IOException;
 
     /**
      * 解压压缩包到指定目录
@@ -115,7 +115,7 @@ public interface Compress extends java.io.Closeable {
      * @param charsetName zip文件字符编码(如： UTF-8等)
      * @throws IOException
      */
-    public void extract(String outputDir, String charsetName) throws IOException;
+    void extract(String outputDir, String charsetName) throws IOException;
 
     /**
      * 解压压缩包到指定目录
@@ -125,7 +125,7 @@ public interface Compress extends java.io.Closeable {
      * @param entryName   entry名（如：zipfile/test.txt）
      * @throws IOException
      */
-    public void extract(String outputDir, String charsetName, String entryName) throws IOException;
+    void extract(String outputDir, String charsetName, String entryName) throws IOException;
 
     /**
      * 在压缩包中搜索指定文件
@@ -135,7 +135,7 @@ public interface Compress extends java.io.Closeable {
      * @param ignoreCase  true忽略文件名的大小写
      * @return
      */
-    public List<?> getEntrys(String charsetName, String filename, boolean ignoreCase);
+    List<?> getEntrys(String charsetName, String filename, boolean ignoreCase);
 
     /**
      * 删除压缩包中的文件
@@ -145,18 +145,18 @@ public interface Compress extends java.io.Closeable {
      * @return
      * @throws IOException
      */
-    public boolean removeEntry(String charsetName, String... entryName) throws IOException;
+    boolean removeEntry(String charsetName, String... entryName) throws IOException;
 
     /**
      * 终止压缩文件或解压文件操作
      */
-    public void terminate();
+    void terminate();
 
     /**
      * 返回 true 表示已终止操作
      *
      * @return
      */
-    public boolean isTerminate();
+    boolean isTerminate();
 
 }

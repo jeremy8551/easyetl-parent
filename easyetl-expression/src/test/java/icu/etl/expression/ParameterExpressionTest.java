@@ -10,7 +10,7 @@ public class ParameterExpressionTest {
 
     @Test
     public void test() {
-        String expr = " -d 20170102 -f /home/udsf/shell/qyzx/m_file/test.del -c true -p /home/udsf/shell/qyzx/m_file/txt.del -dd -u -s 'this is params ' parameter1 ";
+        String expr = " -d 20170102 -f /home/user/shell/qyzx/m_file/test.del -c true -p /home/user/shell/qyzx/m_file/txt.del -dd -u -s 'this is params ' parameter1 ";
         ArgumentExpression param = new ArgumentExpression(expr);
         assertEquals(expr.trim(), param.toString());
 
@@ -31,15 +31,15 @@ public class ParameterExpressionTest {
         assertTrue("-c".equals(names[2]));
 
         assertTrue("this is params ".equals(param.getOption("-s")));
-        assertTrue("-d 20170102 -f /home/udsf/shell/qyzx/m_file/test.del -c true -p /home/udsf/shell/qyzx/m_file/txt.del -dd -u -s 'this is params ' parameter1 -key yusdf".equals(param.toString()));
+        assertTrue("-d 20170102 -f /home/user/shell/qyzx/m_file/test.del -c true -p /home/user/shell/qyzx/m_file/txt.del -dd -u -s 'this is params ' parameter1 -key yusdf".equals(param.toString()));
 
         assertTrue("yusdf".equals(param.removeOption("-key")));
-        assertTrue("-d 20170102 -f /home/udsf/shell/qyzx/m_file/test.del -c true -p /home/udsf/shell/qyzx/m_file/txt.del -dd -u -s 'this is params ' parameter1".equals(param.toString()));
+        assertTrue("-d 20170102 -f /home/user/shell/qyzx/m_file/test.del -c true -p /home/user/shell/qyzx/m_file/txt.del -dd -u -s 'this is params ' parameter1".equals(param.toString()));
 
         ArgumentExpression clone = new ArgumentExpression();
         clone.addOption("-x", "11");
         clone.addOption(param);
-        assertTrue("-x 11 -d 20170102 -f /home/udsf/shell/qyzx/m_file/test.del -c true -p /home/udsf/shell/qyzx/m_file/txt.del -dd -u -s 'this is params ' parameter1".equals(clone.toString()));
+        assertTrue("-x 11 -d 20170102 -f /home/user/shell/qyzx/m_file/test.del -c true -p /home/user/shell/qyzx/m_file/txt.del -dd -u -s 'this is params ' parameter1".equals(clone.toString()));
     }
 
 }

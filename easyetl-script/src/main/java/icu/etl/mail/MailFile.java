@@ -2,12 +2,13 @@ package icu.etl.mail;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import icu.apache.mail.common.EmailAttachment;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
-import icu.etl.zip.ZipUtils;
+import icu.etl.zip.Compress;
 
 /**
  * 用于描述邮件文件
@@ -43,12 +44,50 @@ public class MailFile {
         if (file.exists() && file.isDirectory()) {
             File compressFile = FileUtils.getFileNoRepeat(FileUtils.getTempDir(MailFile.class), FileUtils.changeFilenameExt(file.getName(), "zip"));
             FileUtils.createFile(compressFile);
-            ZipUtils.compress(context, file, compressFile, StringUtils.CHARSET, false);
+            this.compress(context, file, compressFile, StringUtils.CHARSET, false);
             this.file = compressFile;
             this.name = FileUtils.changeFilenameExt(file.getName(), "zip");
             this.description = file.getName();
         } else {
             this.file = file;
+        }
+    }
+
+    /**
+     * 将文件或目录参数 fileOrDir 压缩到参数 compressFile 文件中
+     *
+     * @param context      容器上下文信息
+     * @param fileOrDir    文件或目录
+     * @param compressFile 压缩文件（依据压缩文件后缀rar, zip, tar, gz等自动选择压缩算法）
+     * @param charsetName  压缩文件字符集（为空时默认使用UTF-8）
+     * @param delete       true表示文件全部压缩成功后自动删除 {@code fileOrDir}
+     * @throws IOException
+     */
+    public void compress(EasyetlContext context, File fileOrDir, File compressFile, String charsetName, boolean delete) throws IOException {
+        Compress compress = context.get(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
+        try {
+            compress.setFile(compressFile);
+            compress.archiveFile(fileOrDir, null, StringUtils.defaultString(charsetName, StandardCharsets.UTF_8.name()));
+        } finally {
+            compress.close();
+        }
+
+        if (delete) {
+            if (fileOrDir.isFile()) {
+                if (FileUtils.deleteFile(fileOrDir)) {
+                    return;
+                } else {
+                    throw new RuntimeException("compress(" + fileOrDir + ", " + compressFile + ", " + charsetName + ", " + delete + ")");
+                }
+            }
+
+            if (fileOrDir.isDirectory()) {
+                if (FileUtils.clearDirectory(fileOrDir) && fileOrDir.delete()) {
+                    return;
+                } else {
+                    throw new RuntimeException("compress(" + fileOrDir + ", " + compressFile + ", " + charsetName + ", " + delete + ")");
+                }
+            }
         }
     }
 

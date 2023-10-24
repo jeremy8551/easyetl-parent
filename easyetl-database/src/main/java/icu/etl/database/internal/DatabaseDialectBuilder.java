@@ -2,6 +2,7 @@ package icu.etl.database.internal;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import javax.sql.DataSource;
@@ -9,13 +10,11 @@ import javax.sql.DataSource;
 import icu.etl.annotation.EasyBeanClass;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DatabaseDialect;
-import icu.etl.database.Jdbc;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.BeanConfig;
 import icu.etl.ioc.BeanEvent;
 import icu.etl.ioc.BeanEventListener;
 import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.log.STD;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.IO;
@@ -47,21 +46,13 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
         this.init(context);
         String[] parameters = this.toParameters(array);
         Class<DatabaseDialect> cls = context.getImplement(DatabaseDialect.class, parameters[0], parameters[1], parameters[2], parameters[3]);
-        if (cls == null) {
-            return null;
-        }
-
-        DatabaseDialect dialect = ClassUtils.newInstance(cls);
-        if (dialect instanceof EasyetlContextAware) {
-            ((EasyetlContextAware) dialect).set(context);
-        }
-        return dialect;
+        return cls == null ? null : ClassUtils.newInstance(cls);
     }
 
     /**
      * 加载所有数据库方言实现类信息
      *
-     * @param context
+     * @param context 容器上下文信息
      */
     private void init(EasyetlContext context) {
         if (this.notinit) {
@@ -84,7 +75,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
      * @param array
      * @return
      */
-    private String[] toParameters(Object... array) {
+    private String[] toParameters(Object... array) throws SQLException {
         // 返回数据库连接对应的实现类参数
         String[] parameters = null;
         for (int i = 0; i < array.length; i++) {
@@ -94,7 +85,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
                 Connection conn = (Connection) obj;
                 parameters = this.toParameters(conn);
             } else if (obj instanceof DataSource) {
-                Connection conn = Jdbc.getConnection((DataSource) obj);
+                Connection conn = ((DataSource) obj).getConnection();
                 try {
                     parameters = this.toParameters(conn);
                 } finally {

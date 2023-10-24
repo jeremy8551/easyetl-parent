@@ -598,11 +598,10 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteCreateTableConnectionDatabaseDialectDatabaseTableInfoBoolean() {
-        BeanContext cxt = new BeanContext();
         JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Connection conn = dao.getConnection();
-            DatabaseDialect dialect = cxt.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
             List<DatabaseTable> list = dialect.getTable(conn, dao.getCatalog(), dao.getSchema(), Jdbc.removeSchema(tableName));
             if (list.size() > 1) {
                 throw new RuntimeException();
@@ -624,11 +623,10 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteCreateTableConnectionDatabaseDialectDatabaseTableInfoBooleanBooleanBoolean() {
-        BeanContext cxt = new BeanContext();
         JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
             Connection conn = dao.getConnection();
-            DatabaseDialect dialect = cxt.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
             List<DatabaseTable> list = dialect.getTable(conn, null, dao.getSchema(), Jdbc.removeSchema(tableName));
             if (list.size() > 1) {
                 throw new RuntimeException();

@@ -14,7 +14,7 @@ public class StandardBeanEvent implements BeanEvent {
     private Annotation anno;
 
     /** 组件工厂上下文信息 */
-    private BeanContext context;
+    private EasyetlContext context;
 
     /**
      * 组件变化事件
@@ -23,7 +23,7 @@ public class StandardBeanEvent implements BeanEvent {
      * @param cls     类信息
      * @param anno    注解
      */
-    public StandardBeanEvent(BeanContext context, Class<?> cls, Annotation anno) {
+    public StandardBeanEvent(EasyetlContext context, Class<?> cls, Annotation anno) {
         this.context = context;
         this.cls = cls;
         this.anno = anno;
@@ -38,7 +38,7 @@ public class StandardBeanEvent implements BeanEvent {
         return anno;
     }
 
-    public BeanContext getContext() {
+    public EasyetlContext getContext() {
         return context;
     }
 

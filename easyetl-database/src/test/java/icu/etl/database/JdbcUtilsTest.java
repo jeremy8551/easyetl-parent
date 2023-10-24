@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import icu.etl.collection.ByteBuffer;
 import icu.etl.collection.CaseSensitivSet;
@@ -17,10 +16,8 @@ import icu.etl.database.db2.DB2ExportFile;
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.oracle.OracleDialect;
 import icu.etl.ioc.BeanContext;
-import icu.etl.os.OSConnectCommand;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Dates;
-import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -130,13 +127,13 @@ public class JdbcUtilsTest {
 
 //	@Test
 //	public void test5() {
-//		Connection conn = UDSFDB.getConnection();
+//		Connection conn = TESTDB.getConnection();
 //		try {
 //			DatabaseDialect dialect = DatabaseDialectFactory.getDialect(conn);
 //			String schema = dialect.getSchema(conn);
 //			DatabaseTableInfo table = dialect.getDatabaseTableInfoForceOne(conn, null, schema, "ECC_ENSURECONTRACTS_R"); // 创建测试表
 //			assertTrue(table.matchTableName("", "ECC_ENSURECONTRACTS_R"));
-//			assertTrue(table.matchTableName("UDSFADM", "ECC_ENSURECONTRACTS_R"));
+//			assertTrue(table.matchTableName("TESTADM", "ECC_ENSURECONTRACTS_R"));
 //			assertTrue(table.matchTableName("1", "ECC_ENSURECONTRACTS_R") == false);
 //			Jdbcs.rollback(conn);
 //		} catch (Exception e) {
@@ -160,7 +157,7 @@ public class JdbcUtilsTest {
 
 //	@Test
 //	public void test7() {
-//		Connection conn = UDSFDB.getConnection();
+//		Connection conn = TESTDB.getConnection();
 //		try {
 //			DatabaseDialect dialect = DatabaseDialectFactory.getDialect(conn);
 //			String schema = dialect.getSchema(conn);
@@ -296,28 +293,6 @@ public class JdbcUtilsTest {
                 dao.close();
             }
         }
-    }
-
-    @Test
-    public void testStoreProperties() throws IOException {
-        BeanContext context = new BeanContext();
-        Properties p = new Properties();
-        p.put(Jdbc.driverClassName, "com.ibm.db2.jcc.DB2Driver");
-        p.put(Jdbc.url, "jdbc:db2://130.1.10.103:50000/UDSFDB");
-        p.put(OSConnectCommand.username, "udsfadm");
-        p.put(OSConnectCommand.password, "udsfadm");
-        p.put(Jdbc.schema, "UDSF");
-
-        File pf = new File(getFile().getParentFile(), "jdbc.txt");
-        FileUtils.delete(pf);
-        File jdbcFile = FileUtils.storeProperties(p, pf);
-
-        Properties jdbc = Jdbc.loadJdbcFile(context, jdbcFile.getAbsolutePath());
-        Ensure.isTrue(jdbc.getProperty(Jdbc.driverClassName).equals("com.ibm.db2.jcc.DB2Driver"));
-        Ensure.isTrue(jdbc.getProperty(Jdbc.url).equals("jdbc:db2://130.1.10.103:50000/UDSFDB"));
-        Ensure.isTrue(jdbc.getProperty(OSConnectCommand.username).equals("udsfadm"));
-        Ensure.isTrue(jdbc.getProperty(OSConnectCommand.password).equals("udsfadm"));
-        Ensure.isTrue(jdbc.getProperty(Jdbc.schema).equals("UDSF"));
     }
 
     /**

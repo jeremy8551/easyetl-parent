@@ -1,6 +1,7 @@
 package icu.etl.database;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import icu.etl.annotation.EasyBean;
@@ -49,7 +50,8 @@ public interface DatabaseConfigurationContainer {
      *
      * @param conn 数据库连接
      * @return 数据库配置信息
+     * @throws SQLException 数据库错误
      */
-    DatabaseConfiguration get(Connection conn);
+    DatabaseConfiguration get(Connection conn) throws SQLException;
 
 }

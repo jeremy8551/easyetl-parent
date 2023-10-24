@@ -1,6 +1,7 @@
 package icu.etl.database.internal;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -70,8 +71,8 @@ public class StandardDatabaseConfigurationContainer implements DatabaseConfigura
         }
     }
 
-    public DatabaseConfiguration get(Connection conn) {
-        String url = Jdbc.getUrl(conn);
+    public DatabaseConfiguration get(Connection conn) throws SQLException {
+        String url = conn.getMetaData().getURL();
         DatabaseDialect dialect = this.context.get(DatabaseDialect.class, url);
         List<DatabaseURL> list = dialect.parseJdbcUrl(url);
         for (DatabaseURL obj : list) {

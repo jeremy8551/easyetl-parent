@@ -54,7 +54,7 @@ public class DefaultClassScanRule implements ClassScanRule {
             EasyBean anno = cls.getAnnotation(EasyBean.class);
             try {
                 BeanBuilder<?> builder = ClassUtils.newInstance(anno.builder());
-                BeanContext context = (BeanContext) register;
+                EasyetlContext context = (EasyetlContext) register;
 
                 if (context.addBuilder(cls, builder)) {
                     success = true;

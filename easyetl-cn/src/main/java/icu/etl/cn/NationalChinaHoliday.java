@@ -452,4 +452,32 @@ public class NationalChinaHoliday implements NationalHoliday {
         return this.works;
     }
 
+    public boolean isRestDay(Date date) {
+        if (date == null) {
+            return false;
+        }
+
+        if (this.getWorkDays().contains(date)) {
+            return false;
+        } else if (this.getRestDays().contains(date)) {
+            return true;
+        } else {
+            return Dates.isWeekend(date);
+        }
+    }
+
+    public boolean isWorkDay(Date date) {
+        if (date == null) {
+            return false;
+        }
+
+        if (this.getWorkDays().contains(date)) {
+            return true;
+        } else if (this.getRestDays().contains(date)) {
+            return false;
+        } else {
+            return !Dates.isWeekend(date);
+        }
+    }
+
 }

@@ -6,7 +6,6 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import javax.sql.DataSource;
 
-import icu.etl.database.Jdbc;
 import icu.etl.util.ArrayUtils;
 
 public class DataSourceLogger implements InvocationHandler {
@@ -47,7 +46,7 @@ public class DataSourceLogger implements InvocationHandler {
 
         Object value = method.invoke(this.dataSource, args); // 执行方法
         if ((value instanceof Connection) && "getConnection".equals(method.getName()) && args.length == 0) { // 从连接池中返回一个数据库连接，并对数据库连接进行代理
-            return Jdbc.getConnection((Connection) value, 0);
+            return new ConnectionLogger((Connection) value, 0).getProxy();
         } else {
             return value;
         }

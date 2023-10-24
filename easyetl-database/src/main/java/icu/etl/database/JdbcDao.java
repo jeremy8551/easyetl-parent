@@ -113,7 +113,7 @@ public class JdbcDao implements OSConnectCommand {
      * @return
      */
     public boolean testConnection() {
-        return Jdbc.testConnection(context, this.getConnection(), this.getDialect());
+        return Jdbc.testConnection(this.getConnection(), this.getDialect());
     }
 
     /**
@@ -175,7 +175,7 @@ public class JdbcDao implements OSConnectCommand {
      * @throws SQLException
      */
     public void connect(DataSource pool) throws SQLException {
-        Connection conn = Jdbc.getConnection(pool);
+        Connection conn = pool.getConnection();
         this.setConnection(conn, true);
     }
 
@@ -1141,11 +1141,11 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param pool 数据库连接池
      * @param sql  SQL语句
-     * @return
-     * @throws SQLException
+     * @return 查询结果
+     * @throws SQLException 数据库错误
      */
     public static Integer queryCountByJdbc(DataSource pool, String sql) throws SQLException {
-        Connection conn = Jdbc.getConnection(pool);
+        Connection conn = pool.getConnection();
         Statement statement = null;
         ResultSet resultSet = null;
         try {
