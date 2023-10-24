@@ -18,12 +18,15 @@ import icu.etl.util.StringUtils;
 public class CompressBuilder implements BeanBuilder<Compress> {
 
     public Compress build(EasyetlContext context, Object... array) throws Exception {
-        String suffix;
+        String suffix = null;
+
         File file = ArrayUtils.indexOf(array, File.class, 0);
-        if (file == null) {
-            suffix = StringUtils.join(array, "");
-        } else {
-            suffix = FileUtils.getFilenameSuffix(file.getName());
+        if (file != null) {
+            suffix = FileUtils.getFilenameExt(file.getName());
+        }
+
+        if (StringUtils.isBlank(suffix)) {
+            suffix = ArrayUtils.indexOf(array, String.class, 0);
         }
 
         // 设置默认值
@@ -32,7 +35,11 @@ public class CompressBuilder implements BeanBuilder<Compress> {
         }
 
         Class<Compress> cls = context.getImplement(Compress.class, suffix);
-        return ClassUtils.newInstance(cls);
+        if (cls == null) {
+            throw new UnsupportedOperationException(suffix);
+        } else {
+            return ClassUtils.newInstance(cls);
+        }
     }
 
 }

@@ -333,7 +333,6 @@ public class TarCompress implements Compress {
                 if (this.terminate) {
                     break;
                 }
-
                 fos.write(buffer, 0, s);
             }
             return true;
