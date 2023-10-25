@@ -7,25 +7,21 @@ import java.util.Properties;
 import java.util.Set;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.annotation.EasyBeanClass;
-import icu.etl.database.internal.DatabaseDialectBuilder;
 
 /**
  * 数据库方言接口 <br>
  * <br>
  * 实现类注解的填写规则: <br>
- * {@linkplain EasyBeanClass#kind()} 属性表示数据库缩写, 如: db2 <br>
- * {@linkplain EasyBeanClass#mode()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBeanClass#major()} 属性填数据库的大版本号（且只能是整数），如： 11 <br>
- * {@linkplain EasyBeanClass#minor()} 属性填数据库的小版本号（且只能是整数），如： 5 <br>
- * {@linkplain EasyBeanClass#description()} 属性表示描述信息 <br>
- * {@linkplain EasyBeanClass#type()} 属性必须填写 {@linkplain DatabaseDialect}.class <br>
+ * {@linkplain EasyBean#kind()} 属性表示数据库缩写, 如: db2 <br>
+ * {@linkplain EasyBean#mode()} 属性未使用, 填空字符串 <br>
+ * {@linkplain EasyBean#major()} 属性填数据库的大版本号（且只能是整数），如： 11 <br>
+ * {@linkplain EasyBean#minor()} 属性填数据库的小版本号（且只能是整数），如： 5 <br>
+ * {@linkplain EasyBean#description()} 属性表示描述信息 <br>
  * <br>
  *
  * @author jeremy8551@qq.com
  * @createtime 2012-03-06
  */
-@EasyBean(builder = DatabaseDialectBuilder.class)
 public interface DatabaseDialect {
 
     /**

@@ -17,7 +17,7 @@ import java.util.zip.ZipException;
 import icu.apache.ant.zip.ZipEntry;
 import icu.apache.ant.zip.ZipFile;
 import icu.apache.ant.zip.ZipOutputStream;
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.log.STD;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -29,7 +29,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2014-07-23 16:16:03
  */
-@EasyBeanClass(kind = "zip", mode = "", major = "", minor = "", type = Compress.class)
+@EasyBean(kind = "zip", mode = "", major = "", minor = "")
 public class ZipCompress implements Compress {
 
     private volatile boolean terminate = false;

@@ -7,6 +7,6 @@ public interface EasyetlContextAware {
      *
      * @param context 容器上下文信息
      */
-    public void set(EasyetlContext context);
+    void setContext(EasyetlContext context);
 
 }

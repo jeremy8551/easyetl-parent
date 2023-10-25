@@ -14,14 +14,14 @@ import java.util.zip.GZIPOutputStream;
 import icu.apache.ant.tar.TarEntry;
 import icu.apache.ant.tar.TarInputStream;
 import icu.apache.ant.tar.TarOutputStream;
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.log.STD;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Numbers;
 import icu.etl.util.StringUtils;
 
-@EasyBeanClass(kind = "tar", mode = "", major = "", minor = "", type = Compress.class)
+@EasyBean(kind = "tar", mode = "", major = "", minor = "")
 public class TarCompress implements Compress {
 
     private volatile boolean terminate = false;

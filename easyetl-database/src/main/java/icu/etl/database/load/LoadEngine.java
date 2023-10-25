@@ -34,7 +34,7 @@ public class LoadEngine extends Executor implements EasyetlContextAware {
         this.context = new StandardLoadEngineContext();
     }
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.ioccxt = context;
     }
 

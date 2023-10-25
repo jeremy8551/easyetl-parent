@@ -39,7 +39,7 @@ public class BeanAnnotationList extends ArrayList<BeanConfig> {
         if (this.size() == 0) {
             return null;
         } else {
-            return this.get(0).getImplementClass();
+            return this.get(0).getBeanClass();
         }
     }
 

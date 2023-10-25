@@ -2,7 +2,7 @@ package icu.etl.os;
 
 import java.util.Iterator;
 
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.util.Settings;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class OSTest {
         String password = TestEnv.getSSHPassword();
         System.out.println(username + "@" + host + ":" + port + "?password=" + password);
 
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         OS os = context.get(OS.class, host, port, username, password);
         testoscommand(os);
 

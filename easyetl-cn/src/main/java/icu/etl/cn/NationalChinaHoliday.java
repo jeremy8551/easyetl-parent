@@ -4,11 +4,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.Dates;
 
-@EasyBeanClass(kind = "zh", mode = "cn", major = "", minor = "", description = "2013-2023中国法定节假日", type = NationalHoliday.class)
+@EasyBean(kind = "zh", mode = "cn", major = "", minor = "", description = "2013-2023中国法定节假日")
 public class NationalChinaHoliday implements NationalHoliday {
 
     private Set<Date> reset;

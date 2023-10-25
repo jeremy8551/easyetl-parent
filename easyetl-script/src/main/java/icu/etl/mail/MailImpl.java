@@ -3,13 +3,13 @@ package icu.etl.mail;
 import java.util.Date;
 import java.util.List;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.util.Dates;
 
 /**
  * 邮件的接口实现类
  */
-@EasyBeanClass(type = Mail.class)
+@EasyBean
 public class MailImpl implements Mail {
     private MailFolder folder;
     private String id;

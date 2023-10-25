@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import icu.etl.database.internal.StandardDatabaseIndex;
 import icu.etl.database.internal.StandardDatabaseProcedureParameter;
 import icu.etl.database.pool.SimpleDatasource;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.log.LogFactory;
 import icu.etl.log.STD;
 import icu.etl.util.ArrayUtils;
@@ -28,7 +28,7 @@ public class JdbcDaoTest {
 
     public final static String tableName = "test_table_name_temp".toUpperCase();
 
-    public final static BeanContext context = new BeanContext();
+    public final static AnnotationEasyetlContext context = new AnnotationEasyetlContext();
 
     @Before
     public void setUp() throws Exception {
@@ -778,7 +778,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testQueryCountByJdbcDataSourceString() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         DataSource dataSource = new SimpleDatasource(context, TestEnv.getJdbcconfig());
         try {
             assertTrue(JdbcDao.queryCountByJdbc(dataSource, "select count(*) from " + tableName) == 2);

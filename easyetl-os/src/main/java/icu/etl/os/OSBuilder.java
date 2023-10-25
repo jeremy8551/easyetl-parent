@@ -2,6 +2,7 @@ package icu.etl.os;
 
 import java.io.IOException;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.os.linux.LinuxLocalOS;
@@ -13,6 +14,7 @@ import icu.etl.util.OSUtils;
 import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
 
+@EasyBean
 public class OSBuilder implements BeanBuilder<OS> {
 
     /**

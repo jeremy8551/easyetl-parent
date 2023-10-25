@@ -1,8 +1,8 @@
 package icu.etl.database.db2;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 
-@EasyBeanClass(kind = "db2", mode = "linux", major = "", minor = "", description = "", type = DB2Command.class)
+@EasyBean(kind = "db2", mode = "linux", major = "", minor = "", description = "")
 public class DB2LinuxCommand implements DB2Command {
 
     public String getTableCommand(String databaseName, String schema, String tableName, String username, String password) {

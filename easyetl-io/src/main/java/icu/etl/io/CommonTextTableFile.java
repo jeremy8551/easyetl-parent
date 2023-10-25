@@ -6,7 +6,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.FileUtils;
@@ -19,7 +19,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2017-02-22
  */
-@EasyBeanClass(kind = "txt", mode = "file", major = "", minor = "", description = "文本文件, 逗号分隔，无转义字符，无字符串限定符", type = TextTableFile.class)
+@EasyBean(kind = "txt", mode = "file", major = "", minor = "", description = "文本文件, 逗号分隔，无转义字符，无字符串限定符")
 public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
 
     /** 表格数据文件 */
@@ -49,6 +49,7 @@ public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
     /** 列名集合 */
     protected List<String> columnNames;
 
+    /** 容器上下文信息 */
     protected EasyetlContext context;
 
     /**
@@ -66,7 +67,7 @@ public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
         this.columnNames = new ArrayList<String>();
     }
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.context = context;
     }
 
@@ -196,6 +197,10 @@ public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
      * @param obj
      */
     public void clone(TextTableFile obj) {
+        if (obj instanceof EasyetlContextAware) {
+            ((EasyetlContextAware) obj).setContext(this.context);
+        }
+
         obj.setAbsolutePath(this.getAbsolutePath());
         obj.setCharsetName(this.getCharsetName());
         obj.setColumn(this.getColumn());

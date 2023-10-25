@@ -3,16 +3,17 @@ package icu.etl.os;
 import java.io.File;
 import java.io.IOException;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.ioc.BeanConfig;
-import icu.etl.ioc.BeanContext;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -21,13 +22,13 @@ public class NationalHolidaysTest {
 
     @Test
     public void test() throws IOException {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         File javadir = FileUtils.getTempDir(NationalHolidaysTest.class);
         Ensure.isTrue(FileUtils.createDirectory(javadir));
 
         String charsetName = "utf-8";
         String className = "USHolidays";
-        String uri = "/" + NationalHolidaysTest.class.getPackage().getName().replace('.', '/') + "/" + className + ".txt";
+        String uri = "/bean/" + className + ".txt";
         System.out.println(uri);
         String source = new ByteBuffer().append(ClassUtils.getResourceAsStream(uri)).toString();
 
@@ -36,7 +37,7 @@ public class NationalHolidaysTest {
         javafile.delete();
         Ensure.isTrue(FileUtils.write(javafile, StringUtils.CHARSET, false, source), source);
 
-        String classesDir = ClassUtils.getClasspath(BeanContext.class);
+        String classesDir = ClassUtils.getClasspath(AnnotationEasyetlContext.class);
         System.out.println("class dir: " + classesDir);
 
         String testClassesDir = ClassUtils.getClasspath(NationalHolidaysTest.class);
@@ -47,8 +48,8 @@ public class NationalHolidaysTest {
         System.out.println("classes path: " + classfile.getAbsolutePath());
 
         NationalHoliday bean = context.get(NationalHoliday.class);
-        Ensure.isTrue(!bean.getRestDays().contains(Dates.parse("2021-12-24")));
-        Ensure.isTrue(!bean.getWorkDays().contains(Dates.parse("2021-12-24")));
+        Assert.assertFalse(bean.getRestDays().contains(Dates.parse("2021-12-24")));
+        Assert.assertFalse(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
 
         // 编译 java 源文件
         OS os = context.get(OS.class);
@@ -61,7 +62,7 @@ public class NationalHolidaysTest {
             if (cmd.execute("javac -d " + testClassesDir + " -cp " + classesDir + " " + javafile.getAbsolutePath()) != 0) {
                 System.out.println(cmd.getStdout(charsetName));
                 System.out.println(cmd.getStderr(charsetName));
-                assertTrue(false);
+                Assert.fail();
             }
         } finally {
             os.close();
@@ -71,8 +72,8 @@ public class NationalHolidaysTest {
         String fullName = NationalHolidaysTest.class.getPackage().getName() + "." + className;
         Class<? extends NationalHoliday> cls = ClassUtils.loadClass(fullName);
 
-        EasyBeanClass anno = cls.getAnnotation(EasyBeanClass.class);
-        context.add(new BeanConfig(anno.type(), cls, anno), null);
+        EasyBean anno = cls.getAnnotation(EasyBean.class);
+        context.add(new BeanConfig(cls, anno), null);
         Ensure.isTrue(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
         Ensure.isTrue(!bean.getRestDays().contains(Dates.parse("2021-12-24")));
     }

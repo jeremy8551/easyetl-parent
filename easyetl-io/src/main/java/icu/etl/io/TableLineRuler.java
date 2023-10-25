@@ -2,15 +2,12 @@ package icu.etl.io;
 
 import java.util.List;
 
-import icu.etl.annotation.EasyBean;
-
 /**
  * 文本字符串分隔与拼接规则
  *
  * @author jeremy8551@qq.com
  * @createtime 2021-05-31
  */
-@EasyBean(builder = TableLineRulerBuilder.class)
 public interface TableLineRuler {
 
     /**

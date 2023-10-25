@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.DatabaseException;
 import icu.etl.database.db2.format.DB2DecimalFormat;
 import icu.etl.database.db2.format.DB2DoubleFormat;
@@ -30,7 +30,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "del", mode = "export", major = "", minor = "", description = "DB2数据库export命令导出文件格式, 逗号分隔，双引号转义字符，双引号是字符串限定符", type = TextTableFile.class)
+@EasyBean(kind = "del", mode = "export", major = "", minor = "", description = "DB2数据库export命令导出文件格式, 逗号分隔，双引号转义字符，双引号是字符串限定符")
 public class DB2ExportFile extends CommonTextTableFile implements TextTableFile {
 
     public DB2ExportFile() {

@@ -14,7 +14,7 @@ import icu.apache.net.telnet.SuppressGAOptionHandler;
 import icu.apache.net.telnet.TelnetClient;
 import icu.apache.net.telnet.TelnetNotificationHandler;
 import icu.apache.net.telnet.TerminalTypeOptionHandler;
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.log.Log;
@@ -36,7 +36,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2022-01-13
  */
-@EasyBeanClass(kind = "telnet", mode = "apache", major = "1", minor = "0", description = "apache-net", type = OSShellCommand.class)
+@EasyBean(kind = "telnet", mode = "apache", major = "1", minor = "0", description = "apache-net")
 public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShellCommand {
 
     private static Log log = LogFactory.getLog(TelnetCommand.class);

@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.util.IO;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class QueryManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         Connection conn = TestEnv.getConnection();
         try {
             DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);

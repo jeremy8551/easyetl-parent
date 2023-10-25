@@ -15,7 +15,7 @@ import icu.etl.collection.CaseSensitivSet;
 import icu.etl.database.db2.DB2ExportFile;
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.oracle.OracleDialect;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
@@ -185,7 +185,7 @@ public class JdbcUtilsTest {
 
     @Test
     public void test8() throws SQLException {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         String tablename = "";
         JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
@@ -224,7 +224,7 @@ public class JdbcUtilsTest {
 
     @Test
     public void test9() throws SQLException {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         String tablename = "";
         JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {
@@ -260,7 +260,7 @@ public class JdbcUtilsTest {
 
     @Test
     public void test10() throws Exception {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         String tablename = "";
         JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());
         try {

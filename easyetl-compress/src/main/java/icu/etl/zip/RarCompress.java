@@ -9,13 +9,13 @@ import java.util.List;
 import icu.apache.ant.unrar.Archive;
 import icu.apache.ant.unrar.exception.RarException;
 import icu.apache.ant.unrar.rarfile.FileHeader;
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.log.STD;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 
-@EasyBeanClass(kind = "rar", mode = "", major = "", minor = "", type = Compress.class)
+@EasyBean(kind = "rar", mode = "", major = "", minor = "")
 public class RarCompress implements Compress {
 
     private volatile boolean terminate = false;

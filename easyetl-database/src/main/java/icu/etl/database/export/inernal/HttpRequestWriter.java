@@ -6,7 +6,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.ExtractMessage;
 import icu.etl.database.export.ExtractWriter;
 import icu.etl.io.TableLine;
@@ -14,7 +14,7 @@ import icu.etl.io.TableWriter;
 import icu.etl.io.TextTable;
 import icu.etl.util.NetUtils;
 
-@EasyBeanClass(kind = "http", mode = "download", major = "", minor = "", description = "卸载数据到用户浏览器", type = ExtractWriter.class)
+@EasyBean(kind = "http", mode = "download", major = "", minor = "", description = "卸载数据到用户浏览器")
 public class HttpRequestWriter implements ExtractWriter {
 
     /** HTTP 响应信息输出接口 */

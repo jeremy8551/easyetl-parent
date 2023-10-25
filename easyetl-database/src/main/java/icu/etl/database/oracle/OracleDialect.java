@@ -8,9 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.DatabaseDDL;
-import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseException;
 import icu.etl.database.DatabaseIndex;
 import icu.etl.database.DatabaseProcedure;
@@ -41,7 +40,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "oracle", mode = "", major = "", minor = "", description = "Oracle 数据库方言模版", type = DatabaseDialect.class)
+@EasyBean(kind = "oracle", mode = "", major = "", minor = "", description = "Oracle 数据库方言模版")
 public class OracleDialect extends AbstractDialect {
 
     public OracleDialect() {

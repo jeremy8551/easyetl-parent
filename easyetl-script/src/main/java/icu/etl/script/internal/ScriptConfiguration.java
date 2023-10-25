@@ -7,13 +7,13 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import javax.script.ScriptEngine;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivSet;
 import icu.etl.script.UniversalScriptConfiguration;
 import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
-@EasyBeanClass(type = UniversalScriptConfiguration.class)
+@EasyBean
 public class ScriptConfiguration implements UniversalScriptConfiguration {
     public final static Object[] EMPTY = new Object[0];
 

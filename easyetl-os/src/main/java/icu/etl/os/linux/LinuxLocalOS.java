@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.expression.DataUnitExpression;
 import icu.etl.io.BufferedLineReader;
@@ -49,7 +49,7 @@ import icu.etl.util.StringUtils;
 /**
  * Linux 本地操作系统的接口实现类
  */
-@EasyBeanClass(kind = "linux", mode = "local", major = "", minor = "", type = OS.class)
+@EasyBean(kind = "linux", mode = "local", major = "", minor = "")
 public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
 
     /** unix 系统保留的文件名 */

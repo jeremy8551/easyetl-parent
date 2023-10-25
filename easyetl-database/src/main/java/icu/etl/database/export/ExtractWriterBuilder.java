@@ -3,6 +3,7 @@ package icu.etl.database.export;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.inernal.ExtractFileWriter;
 import icu.etl.database.export.inernal.FtpFileWriter;
 import icu.etl.database.export.inernal.HttpRequestWriter;
@@ -21,6 +22,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-18
  */
+@EasyBean
 public class ExtractWriterBuilder implements BeanBuilder<ExtractWriter> {
 
     public ExtractWriter build(EasyetlContext context, Object... array) throws IOException, SQLException {

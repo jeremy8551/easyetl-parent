@@ -3,7 +3,7 @@ package icu.etl.ioc;
 import java.util.List;
 import java.util.Set;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 
 public interface EasyetlContext extends BeanRegister {
 
@@ -17,10 +17,10 @@ public interface EasyetlContext extends BeanRegister {
      * @param <E>   类型
      * @param clazz 接口信息 或 模版类信息
      * @param array 如果存在多个实现类时，会根据参数数组 array 中的值判断使用那个实现类 <br>
-     *              第一个参数对应 {@link EasyBeanClass#kind()} 属性，表示一级分类 <br>
-     *              第二个参数对应 {@link EasyBeanClass#mode()} 属性，表示一级分类下的子分类信息 <br>
-     *              第三个参数对应 {@link EasyBeanClass#major()} 属性，表示大版本号，可以为空 <br>
-     *              第四个参数对应 {@link EasyBeanClass#minor()} 属性，表示小版本号，可以为空 <br>
+     *              第一个参数对应 {@link EasyBean#kind()} 属性，表示一级分类 <br>
+     *              第二个参数对应 {@link EasyBean#mode()} 属性，表示一级分类下的子分类信息 <br>
+     *              第三个参数对应 {@link EasyBean#major()} 属性，表示大版本号，可以为空 <br>
+     *              第四个参数对应 {@link EasyBean#minor()} 属性，表示小版本号，可以为空 <br>
      * @return 实例对象
      */
     <E> E get(Class<E> clazz, Object... array);
@@ -38,15 +38,6 @@ public interface EasyetlContext extends BeanRegister {
      * @return 启动参数数组
      */
     String[] getArgument();
-
-    /**
-     * 保存接口信息与工厂类的映射关系
-     *
-     * @param type    接口信息
-     * @param builder 接口的工厂类
-     * @return 返回true表示添加成功 false表示未添加
-     */
-    boolean addBuilder(Class<?> type, BeanBuilder<?> builder);
 
     /**
      * 返回所有组件工厂的类信息（按组件添加的顺序）
@@ -108,10 +99,10 @@ public interface EasyetlContext extends BeanRegister {
      *
      * @param type 接口信息
      * @param args 查询参数 <br>
-     *             数组中第一个字符串对应 {@linkplain EasyBeanClass#kind()} <br>
-     *             数组中第二个字符串对应 {@linkplain EasyBeanClass#mode()} <br>
-     *             数组中第三个字符串对应 {@linkplain EasyBeanClass#major()} <br>
-     *             数组中第四个字符串对应 {@linkplain EasyBeanClass#minor()} <br>
+     *             数组中第一个字符串对应 {@linkplain EasyBean#kind()} <br>
+     *             数组中第二个字符串对应 {@linkplain EasyBean#mode()} <br>
+     *             数组中第三个字符串对应 {@linkplain EasyBean#major()} <br>
+     *             数组中第四个字符串对应 {@linkplain EasyBean#minor()} <br>
      * @param <E>  组件类信息
      * @return 组件的实现类
      */

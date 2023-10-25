@@ -10,7 +10,7 @@ import javax.script.ScriptEngineManager;
 import icu.etl.TestEnv;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseURL;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.os.OS;
 import icu.etl.os.OSUser;
 import icu.etl.util.ClassUtils;
@@ -31,7 +31,7 @@ public class 测试脚本引擎 {
     public void test() throws IOException {
         System.setProperty("tls.logger", "sout");
         System.setProperty("tls.includes", "icu.etl,atom.jar");
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
 
         // 测试外部资源文件
         String filename = "script_res.properties";

@@ -11,7 +11,7 @@ import icu.etl.io.CommonTextTableFileReaderListener;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
@@ -187,7 +187,7 @@ public class TextTableFileTest {
 
     @Test
     public void testSort() throws IOException {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         CommonTextTableFile file = new CommonTextTableFile();
         file.setDelimiter(",");
         file.setCharsetName(StringUtils.CHARSET);
@@ -275,7 +275,7 @@ public class TextTableFileTest {
      */
     @Test
     public void test1() throws IOException {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         CommonTextTableFile file = new CommonTextTableFile();
         file.setDelimiter(",");
         file.setCharsetName(StringUtils.CHARSET);

@@ -1,6 +1,6 @@
 package icu.etl.expression;
 
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.ioc.StrAsIntComparator;
 import icu.etl.ioc.StrAsNumberComparator;
 import icu.etl.util.StringComparator;
@@ -17,7 +17,7 @@ public class OrderByExpressionTest {
 
     @Test
     public void test() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         Analysis a = new XmlAnalysis();
         OrderByExpression o = new OrderByExpression(context, a, "1 asc", false);
         assertEquals(o.getPosition(), 1);
@@ -27,7 +27,7 @@ public class OrderByExpressionTest {
 
     @Test
     public void test1() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         Analysis a = new XmlAnalysis();
         OrderByExpression o = new OrderByExpression(context, a, "1", false);
         assertEquals(o.getPosition(), 1);
@@ -37,7 +37,7 @@ public class OrderByExpressionTest {
 
     @Test
     public void test2() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         Analysis a = new XmlAnalysis();
         OrderByExpression o = new OrderByExpression(context, a, "int(1) asc", false);
         assertEquals(o.getPosition(), 1);
@@ -47,7 +47,7 @@ public class OrderByExpressionTest {
 
     @Test
     public void test3() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         Analysis a = new XmlAnalysis();
         OrderByExpression o = new OrderByExpression(context, a, "int(1) desc", true);
         assertEquals(o.getPosition(), 1);
@@ -57,7 +57,7 @@ public class OrderByExpressionTest {
 
     @Test
     public void test4() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         Analysis a = new XmlAnalysis();
         OrderByExpression o = new OrderByExpression(context, a, "number(11) desc", true);
         assertEquals(o.getPosition(), 11);

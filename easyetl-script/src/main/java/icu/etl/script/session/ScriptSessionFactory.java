@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptSessionFactory;
 import icu.etl.util.IO;
@@ -13,7 +13,7 @@ import icu.etl.util.IO;
 /**
  * 脚本引擎用户会话信息集合
  */
-@EasyBeanClass(type = UniversalScriptSessionFactory.class, kind = "default", mode = "", major = "", minor = "", description = "")
+@EasyBean(kind = "default", mode = "", major = "", minor = "", description = "脚本引擎用户会话信息集合")
 public class ScriptSessionFactory implements UniversalScriptSessionFactory {
 
     /** 用户会话编号与用户会话信息的映射关系 */

@@ -1,5 +1,6 @@
 package icu.etl.database.export.inernal;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.ExtractReader;
 import icu.etl.database.export.ExtracterContext;
 import icu.etl.ioc.BeanBuilder;
@@ -14,6 +15,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-18
  */
+@EasyBean
 public class ReaderBuilder implements BeanBuilder<ExtractReader> {
 
     public ExtractReader build(EasyetlContext context, Object... array) throws Exception {

@@ -2,7 +2,7 @@ package icu.etl.ioc;
 
 import java.lang.annotation.Annotation;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 
 /**
  * 组件的配置信息
@@ -14,44 +14,27 @@ import icu.etl.annotation.EasyBeanClass;
 public class BeanConfig<E> {
 
     /** 组件类 */
-    private Class<E> type;
+    private Class<E> cls;
 
-    /** 组件实现类 */
-    private Class<E> impl;
-
-    /** 组件实现类上的注解 */
+    /** 组件类上的注解 */
     private Annotation annotation;
 
     /**
      * 初始化
      *
-     * @param type       组件类
-     * @param impl       组件实现类
+     * @param cls        组件实现类
      * @param annotation 组件实现类上的注解
      */
-    public BeanConfig(Class<E> type, Class<E> impl, Annotation annotation) {
-        if (type == null) {
-            throw new NullPointerException();
-        }
-        if (impl == null) {
+    public BeanConfig(Class<E> cls, Annotation annotation) {
+        if (cls == null) {
             throw new NullPointerException();
         }
         if (annotation == null) {
             throw new NullPointerException();
         }
 
-        this.type = type;
-        this.impl = impl;
+        this.cls = cls;
         this.annotation = annotation;
-    }
-
-    /**
-     * 组件类
-     *
-     * @return 类信息
-     */
-    public Class<?> getType() {
-        return type;
     }
 
     /**
@@ -59,8 +42,8 @@ public class BeanConfig<E> {
      *
      * @return 类信息
      */
-    public Class<E> getImplementClass() {
-        return this.impl;
+    public Class<E> getBeanClass() {
+        return this.cls;
     }
 
     /**
@@ -77,9 +60,9 @@ public class BeanConfig<E> {
      *
      * @return 组件实现类
      */
-    public EasyBeanClass getAnnotationAsImplement() {
-        if (this.annotation instanceof EasyBeanClass) {
-            return (EasyBeanClass) this.annotation;
+    public EasyBean getAnnotationAsImplement() {
+        if (this.annotation instanceof EasyBean) {
+            return (EasyBean) this.annotation;
         } else {
             return null;
         }

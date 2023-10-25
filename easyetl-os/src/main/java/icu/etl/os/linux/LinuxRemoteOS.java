@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.expression.DataUnitExpression;
 import icu.etl.io.BufferedLineReader;
@@ -52,7 +52,7 @@ import icu.etl.util.StringUtils;
 /**
  * 远程 linux 操作系统的接口实现类
  */
-@EasyBeanClass(kind = "linux", mode = "remote", major = "", minor = "", type = OS.class)
+@EasyBean(kind = "linux", mode = "remote", major = "", minor = "")
 public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwork, EasyetlContextAware {
 
     protected OSSecureShellCommand cmd;
@@ -84,7 +84,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
         Ensure.isTrue(this.connect(host, port, username, password), host, port, username, password);
     }
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.context = context;
     }
 

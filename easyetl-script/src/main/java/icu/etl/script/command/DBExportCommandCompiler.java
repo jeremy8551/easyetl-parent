@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.database.JdbcObjectConverter;
 import icu.etl.database.export.ExtractWriter;
@@ -81,10 +81,10 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
         ct1.addTitle("");
         ct1.addTitle("");
         for (BeanConfig anno : list1) {
-            EasyBeanClass annotation = anno.getAnnotationAsImplement();
+            EasyBean annotation = anno.getAnnotationAsImplement();
             ct1.addCell(annotation.kind());
             ct1.addCell(annotation.description());
-            ct1.addCell(anno.getImplementClass().getName());
+            ct1.addCell(anno.getBeanClass().getName());
         }
 
         // 查找接口对应的的实现类
@@ -94,15 +94,15 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
         ct2.addTitle("");
         ct2.addTitle("");
         for (BeanConfig anno : list2) {
-            EasyBeanClass annotation = anno.getAnnotationAsImplement();
+            EasyBean annotation = anno.getAnnotationAsImplement();
             ct2.addCell(annotation.kind());
             ct2.addCell(annotation.description());
-            ct2.addCell(anno.getImplementClass().getName());
+            ct2.addCell(anno.getBeanClass().getName());
         }
 
         out.println(new ScriptUsage(this.getClass() //
                 , TextTable.class.getName() // 0
-                , EasyBeanClass.class.getName() // 1
+                , EasyBean.class.getName() // 1
                 , UserListener.class.getName() // 2
                 , JdbcObjectConverter.class.getName() // 3
                 , ExtractWriter.class.getName() // 4

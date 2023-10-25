@@ -37,7 +37,7 @@ public class Extracter extends Executor implements EasyetlContextAware {
         this.listener = new ExtractListener(this.context);
     }
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.ioccxt = context;
     }
 

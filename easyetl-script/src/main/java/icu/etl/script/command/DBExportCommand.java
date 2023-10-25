@@ -102,7 +102,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
                 stdout.println(analysis.replaceShellVariable(session, context, this.command, true, true, true, false));
             }
 
-            this.executor.set(context.getFactory().getContext());
+            this.executor.setContext(context.getFactory().getContext());
             this.executor.run();
             return (this.executor.alreadyError() || this.executor.isTerminate()) ? UniversalScriptCommand.TERMINATE : 0;
         } else {

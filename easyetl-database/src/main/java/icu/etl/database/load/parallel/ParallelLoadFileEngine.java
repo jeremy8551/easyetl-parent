@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.concurrent.ExecutorContainer;
 import icu.etl.database.JdbcDao;
 import icu.etl.database.load.LoadEngineContext;
@@ -19,7 +19,7 @@ import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
-@EasyBeanClass(kind = "replace", mode = "file", major = "", minor = "", type = Loader.class)
+@EasyBean(kind = "replace", mode = "file", major = "", minor = "")
 public class ParallelLoadFileEngine implements Loader, EasyetlContextAware {
 
     /** 上下文信息 */
@@ -35,7 +35,7 @@ public class ParallelLoadFileEngine implements Loader, EasyetlContextAware {
         super();
     }
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.ioccxt = context;
     }
 

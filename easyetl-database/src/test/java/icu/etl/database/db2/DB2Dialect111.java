@@ -1,6 +1,6 @@
 package icu.etl.database.db2;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.DatabaseDialect;
 
 /**
@@ -8,6 +8,6 @@ import icu.etl.database.DatabaseDialect;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "db2", mode = "", major = "11", minor = "1", description = "", type = DatabaseDialect.class)
+@EasyBean(kind = "db2", mode = "", major = "11", minor = "1", description = "")
 public class DB2Dialect111 extends DB2Dialect implements DatabaseDialect {
 }

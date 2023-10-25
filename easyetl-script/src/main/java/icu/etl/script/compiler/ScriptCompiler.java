@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -24,7 +24,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "default", mode = "", major = "1", minor = "0", description = "即时编译器", type = UniversalScriptCompiler.class)
+@EasyBean(kind = "default", mode = "", major = "1", minor = "0", description = "即时编译器")
 public class ScriptCompiler implements UniversalScriptCompiler {
 
     /** 脚本命令编译器集合 */

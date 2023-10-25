@@ -4,11 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import icu.etl.annotation.EasyBean;
-import icu.etl.database.internal.StandardDatabaseConfigurationContainer;
 import icu.etl.os.OSConnectCommand;
 
-@EasyBean(builder = StandardDatabaseConfigurationContainer.class)
 public interface DatabaseConfigurationContainer {
 
     /**

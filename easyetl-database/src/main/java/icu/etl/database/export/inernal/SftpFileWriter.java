@@ -6,7 +6,7 @@ import java.io.Writer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.ExtractMessage;
 import icu.etl.database.export.ExtractWriter;
 import icu.etl.database.export.ExtracterContext;
@@ -18,7 +18,7 @@ import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.os.OSFtpCommand;
 import icu.etl.util.Ensure;
 
-@EasyBeanClass(kind = "sftp", mode = "", major = "", minor = "", description = "卸载数据到远程sftp服务器", type = ExtractWriter.class)
+@EasyBean(kind = "sftp", mode = "", major = "", minor = "", description = "卸载数据到远程sftp服务器")
 public class SftpFileWriter implements ExtractWriter, EasyetlContextAware {
 
     protected String target;
@@ -36,7 +36,7 @@ public class SftpFileWriter implements ExtractWriter, EasyetlContextAware {
 
     protected EasyetlContext context;
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.context = context;
     }
 

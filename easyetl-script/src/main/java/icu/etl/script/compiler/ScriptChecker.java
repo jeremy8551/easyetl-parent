@@ -2,7 +2,7 @@ package icu.etl.script.compiler;
 
 import java.util.Set;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.script.UniversalScriptChecker;
 import icu.etl.util.StringUtils;
 
@@ -11,7 +11,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "default", mode = "", major = "", minor = "", description = "", type = UniversalScriptChecker.class)
+@EasyBean(kind = "default", mode = "", major = "", minor = "", description = "")
 public class ScriptChecker implements UniversalScriptChecker {
 
     /** 数据库的关键字 */

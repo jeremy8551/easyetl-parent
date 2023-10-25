@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import javax.script.ScriptEngineFactory;
 
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
@@ -40,7 +40,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      * 初始化
      */
     public UniversalScriptEngineFactory() {
-        this(new BeanContext());
+        this(new AnnotationEasyetlContext());
     }
 
     /**

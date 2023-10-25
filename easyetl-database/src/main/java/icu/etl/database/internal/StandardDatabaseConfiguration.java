@@ -58,7 +58,7 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration, Eas
         this.add(ipAddress, driverClassName, url, username, password, adminUsername, adminPassword, sshUser, sshUserPw, sshPort);
     }
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.context = context;
     }
 

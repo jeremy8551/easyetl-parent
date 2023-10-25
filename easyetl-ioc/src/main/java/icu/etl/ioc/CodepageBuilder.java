@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
 
+@EasyBean
 public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEventListener {
 
     /** codepage 与 charset 的映射关系 */
@@ -33,7 +34,7 @@ public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEve
             this.notInit = false;
             List<BeanConfig> list = context.getImplements(Codepage.class);
             for (BeanConfig bean : list) {
-                Class<Codepage> type = bean.getImplementClass();
+                Class<Codepage> type = bean.getBeanClass();
                 Codepage obj = ClassUtils.newInstance(type);
                 this.map.putAll(obj.getAll());
             }
@@ -43,7 +44,7 @@ public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEve
 
     public void addImplement(BeanEvent event) {
         Annotation anno = event.getAnnotation();
-        if (anno instanceof EasyBeanClass) {
+        if (anno instanceof EasyBean) {
             Codepage obj = ClassUtils.newInstance(event.getImplementClass());
             this.map.putAll(obj.getAll());
         }

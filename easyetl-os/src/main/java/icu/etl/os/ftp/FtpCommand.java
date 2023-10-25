@@ -14,7 +14,7 @@ import java.util.List;
 
 import icu.apache.net.ftp.FTPClient;
 import icu.apache.net.ftp.parser.FTPFileEntryParserFactory;
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.expression.GPatternExpression;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.log.STD;
@@ -36,7 +36,7 @@ import icu.etl.util.StringUtils;
 /**
  * FTP协议的实现类
  */
-@EasyBeanClass(kind = "ftp", mode = "", major = "2", minor = "2", type = OSFtpCommand.class)
+@EasyBean(kind = "ftp", mode = "", major = "2", minor = "2")
 public class FtpCommand implements OSFtpCommand {
 
     /** parameters name */

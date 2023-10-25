@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.database.Jdbc;
 import icu.etl.database.JdbcObjectConverter;
@@ -307,15 +307,15 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
         ct1.addTitle("");
         ct1.addTitle("");
         for (BeanConfig anno : list1) {
-            EasyBeanClass annotation = anno.getAnnotationAsImplement();
+            EasyBean annotation = anno.getAnnotationAsImplement();
             ct1.addCell(annotation.kind());
             ct1.addCell(annotation.description());
-            ct1.addCell(anno.getImplementClass().getName());
+            ct1.addCell(anno.getBeanClass().getName());
         }
 
         out.println(new ScriptUsage(this.getClass() //
                 , TextTable.class.getName() // 0
-                , EasyBeanClass.class.getName() // 1
+                , EasyBean.class.getName() // 1
                 , UserListener.class.getName() // 2
                 , JdbcObjectConverter.class.getName() // 3
                 , ExtractWriter.class.getName() // 4

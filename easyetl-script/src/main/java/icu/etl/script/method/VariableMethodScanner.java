@@ -48,7 +48,7 @@ public class VariableMethodScanner {
         // 显示所有已加载的变量方法
         List<BeanConfig> beans = cxt.getImplements(UniversalScriptVariableMethod.class);
         for (BeanConfig obj : beans) {
-            Class<? extends UniversalScriptVariableMethod> cls = obj.getImplementClass();
+            Class<? extends UniversalScriptVariableMethod> cls = obj.getBeanClass();
             this.loadVariableMethod(cls);
         }
 
@@ -113,8 +113,7 @@ public class VariableMethodScanner {
             return;
         }
 
-        boolean exists = cls.isAnnotationPresent(ScriptVariableFunction.class);
-        if (exists) {
+        if (cls.isAnnotationPresent(ScriptVariableFunction.class)) {
             ScriptVariableFunction anno = cls.getAnnotation(ScriptVariableFunction.class);
             String name = StringUtils.trimBlank(anno.name());
             if (StringUtils.isBlank(name)) {

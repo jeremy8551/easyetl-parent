@@ -4,11 +4,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.Dates;
 
-@EasyBeanClass(kind = "zh", mode = "cn", type = NationalHoliday.class)
+@EasyBean(kind = "zh", mode = "cn")
 public class ConstructorTypeHoliday implements NationalHoliday {
 
     Set<Date> set1 = new HashSet<Date>();

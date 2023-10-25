@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.expression.DataUnitExpression;
 import icu.etl.expression.Expression;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.log.STD;
-import icu.etl.os.OS;
 import icu.etl.os.OSCommandStdouts;
 import icu.etl.os.OSCpu;
 import icu.etl.os.OSDisk;
@@ -31,7 +30,7 @@ import icu.etl.util.StringUtils;
 /**
  * Apple Mac OS 操作系统的接口实现类
  */
-@EasyBeanClass(kind = "macos", mode = "local", major = "18", minor = "7", type = OS.class)
+@EasyBean(kind = "macos", mode = "local", major = "18", minor = "7")
 public class MacOS extends LinuxLocalOS {
 
     public MacOS() throws IOException {

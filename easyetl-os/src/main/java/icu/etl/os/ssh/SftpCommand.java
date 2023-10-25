@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.expression.GPatternExpression;
 import icu.etl.log.STD;
 import icu.etl.os.OSException;
@@ -42,7 +42,7 @@ import icu.jsch.SftpProgressMonitor;
  * @author jeremy8551@qq.com
  * @createtime 2018-08-10
  */
-@EasyBeanClass(kind = "sftp", mode = "java", major = "0", minor = "1", description = "jsch-0.1.51", type = OSFtpCommand.class)
+@EasyBean(kind = "sftp", mode = "java", major = "0", minor = "1", description = "jsch-0.1.51")
 public class SftpCommand implements OSFtpCommand {
 
     /** username@host:port */

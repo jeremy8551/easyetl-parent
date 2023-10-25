@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.DatabaseConfiguration;
 import icu.etl.database.DatabaseConfigurationContainer;
 import icu.etl.database.DatabaseDDL;
@@ -82,7 +82,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "db2", mode = "", major = "", minor = "", description = "IBM DB2 数据库方言模版", type = DatabaseDialect.class)
+@EasyBean(kind = "db2", mode = "", major = "", minor = "", description = "IBM DB2 数据库方言模版")
 public class DB2Dialect extends AbstractDialect implements DatabaseDialect, EasyetlContextAware {
 
     /** 进程编号名 */
@@ -450,7 +450,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         this.keyword.add("YEARS");
     }
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.context = context;
     }
 

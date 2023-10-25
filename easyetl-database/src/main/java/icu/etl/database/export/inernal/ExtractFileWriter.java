@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.SQL;
 import icu.etl.database.export.ExtractMessage;
 import icu.etl.database.export.ExtractWriter;
@@ -17,7 +17,7 @@ import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 
-@EasyBeanClass(kind = "local", mode = "filepath", major = "", minor = "", description = "卸载数据到本地文件", type = ExtractWriter.class)
+@EasyBean(kind = "local", mode = "filepath", major = "", minor = "", description = "卸载数据到本地文件")
 public class ExtractFileWriter implements ExtractWriter, EasyetlContextAware {
 
     /** 文件路径 */
@@ -55,7 +55,7 @@ public class ExtractFileWriter implements ExtractWriter, EasyetlContextAware {
 
     protected EasyetlContext ioccxt;
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.ioccxt = context;
     }
 

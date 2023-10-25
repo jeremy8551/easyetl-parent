@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.DatabaseTable;
 import icu.etl.database.JdbcDao;
 import icu.etl.database.load.LoadEngine;
@@ -32,7 +32,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "serial", mode = "", major = "", minor = "", type = Loader.class)
+@EasyBean(kind = "serial", mode = "", major = "", minor = "")
 public class SerialLoadFileEngine implements Loader, EasyetlContextAware {
 
     /** true表示终止任务 */
@@ -48,7 +48,7 @@ public class SerialLoadFileEngine implements Loader, EasyetlContextAware {
         this.running = true;
     }
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.context = context;
     }
 

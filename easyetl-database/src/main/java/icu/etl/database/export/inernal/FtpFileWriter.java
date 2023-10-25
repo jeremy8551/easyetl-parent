@@ -2,7 +2,7 @@ package icu.etl.database.export.inernal;
 
 import java.io.IOException;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.ExtractMessage;
 import icu.etl.database.export.ExtractWriter;
 import icu.etl.database.export.ExtracterContext;
@@ -11,12 +11,12 @@ import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.os.OSFtpCommand;
 import icu.etl.util.Ensure;
 
-@EasyBeanClass(kind = "ftp", mode = "", major = "", minor = "", description = "卸载数据到远程ftp服务器", type = ExtractWriter.class)
+@EasyBean(kind = "ftp", mode = "", major = "", minor = "", description = "卸载数据到远程ftp服务器")
 public class FtpFileWriter extends SftpFileWriter implements ExtractWriter, EasyetlContextAware {
 
     protected EasyetlContext context;
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.context = context;
     }
 

@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.log.STD;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
@@ -22,6 +22,7 @@ import icu.etl.util.Dates;
  * @author jeremy8551@qq.com
  * @createtime 2021-04-15
  */
+@EasyBean
 public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, NationalHoliday, BeanEventListener {
 
     /** 工作日 */
@@ -81,8 +82,8 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
     protected void load(EasyetlContext context) {
         List<BeanConfig> list = context.getImplements(NationalHoliday.class);
         for (BeanConfig bean : list) { // 判断语言和国家信息是否相等
-            Class<NationalHoliday> cls = bean.getImplementClass();
-            EasyBeanClass anno = bean.getAnnotationAsImplement();
+            Class<NationalHoliday> cls = bean.getBeanClass();
+            EasyBean anno = bean.getAnnotationAsImplement();
             this.add(cls, anno);
         }
     }
@@ -93,7 +94,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
      * @param cls  国家法定假日类信息
      * @param anno 注解
      */
-    protected void add(Class<NationalHoliday> cls, EasyBeanClass anno) {
+    protected void add(Class<NationalHoliday> cls, EasyBean anno) {
         if (anno != null //
                 && anno.kind().equalsIgnoreCase(this.locale.getLanguage()) //
                 && anno.mode().equalsIgnoreCase(this.locale.getCountry()) //
@@ -150,9 +151,9 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
 
     public void addImplement(BeanEvent event) {
         Annotation anno = event.getAnnotation();
-        if (anno instanceof EasyBeanClass) {
+        if (anno instanceof EasyBean) {
             Class<NationalHoliday> cls = event.getImplementClass();
-            this.add(cls, (EasyBeanClass) anno);
+            this.add(cls, (EasyBean) anno);
         }
     }
 

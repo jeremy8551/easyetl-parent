@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.annotation.EasyBeanClass;
 
 /**
  * 压缩接口 <br>
@@ -39,18 +38,16 @@ import icu.etl.annotation.EasyBeanClass;
  * <br>
  * <br>
  * 实现类注解的填写规则: <br>
- * {@linkplain EasyBeanClass#kind()} 属性表示语言, 如: gz, zip, rar <br>
- * {@linkplain EasyBeanClass#mode()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBeanClass#major()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBeanClass#minor()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBeanClass#description()} 属性表示描述信息 <br>
- * {@linkplain EasyBeanClass#type()} 属性必须填写 {@linkplain Compress}.class <br>
+ * {@linkplain EasyBean#kind()} 属性表示语言, 如: gz, zip, rar <br>
+ * {@linkplain EasyBean#mode()} 属性未使用, 填空字符串 <br>
+ * {@linkplain EasyBean#major()} 属性未使用, 填空字符串 <br>
+ * {@linkplain EasyBean#minor()} 属性未使用, 填空字符串 <br>
+ * {@linkplain EasyBean#description()} 属性表示描述信息 <br>
  * <br>
  *
  * @author jeremy8551@qq.com
  * @createtime 2014-07-23 16:21:38
  */
-@EasyBean(builder = CompressBuilder.class)
 public interface Compress extends java.io.Closeable {
 
     /**

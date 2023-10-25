@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import icu.etl.TestEnv;
 import icu.etl.database.DatabaseDialect;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.time.Timer;
 import icu.etl.util.TimeWatch;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class TestDB2TerminateConnection {
 
     @Test
     public void test() throws SQLException {
-        BeanContext cxt = new BeanContext();
+        AnnotationEasyetlContext cxt = new AnnotationEasyetlContext();
         Connection conn = TestEnv.getConnection();
         try {
             DatabaseDialect dialect = cxt.get(DatabaseDialect.class, conn);

@@ -9,7 +9,7 @@ import javax.script.ScriptException;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.io.CommonTextTableFile;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -54,7 +54,7 @@ public class TableFileDeduplicateSorterTest {
 
     @Test
     public void test() throws IOException, ScriptException {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
 //        File dir = new File("/Users/user/Desktop/test");
         CommonTextTableFile file = new CommonTextTableFile();
         file.setDelimiter(",");

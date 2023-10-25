@@ -1,6 +1,6 @@
 package icu.etl.cn;
 
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.Dates;
 import org.junit.Test;
@@ -12,14 +12,14 @@ public class NationalChinaHolidayTest {
 
     @Test
     public void testIsChinaRestDay() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         assertFalse(context.get(NationalHoliday.class).isRestDay(Dates.parse("2019-08-30")));
         assertTrue(context.get(NationalHoliday.class).isRestDay(Dates.parse("20191001")));
     }
 
     @Test
     public void testIsChinaWorkDay() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         assertTrue(context.get(NationalHoliday.class).isWorkDay(Dates.parse("2019-08-30")));
         assertFalse(context.get(NationalHoliday.class).isWorkDay(Dates.parse("2019-08-31")));
     }
@@ -40,25 +40,25 @@ public class NationalChinaHolidayTest {
 
     @Test
     public void testReloadLegalHolidays() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         assertTrue(context.get(NationalHoliday.class).getRestDays().size() > 0);
     }
 
     @Test
     public void testGetLegalRestDay() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         assertTrue(context.get(NationalHoliday.class).getRestDays().size() > 0);
     }
 
     @Test
     public void testGetLegalWorkDay() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         assertTrue(context.get(NationalHoliday.class).getWorkDays().size() > 0);
     }
 
     @Test
     public void testIsChinaLegalRestDay() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         assertTrue(context.get(NationalHoliday.class).getRestDays().contains(Dates.parse("2019-10-01")));
         assertFalse(context.get(NationalHoliday.class).getRestDays().contains(Dates.parse("2019-08-31")));
         assertFalse(context.get(NationalHoliday.class).getRestDays().contains(null));
@@ -66,7 +66,7 @@ public class NationalChinaHolidayTest {
 
     @Test
     public void testIsChinaLegalWorkDay() {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         assertTrue(context.get(NationalHoliday.class).getWorkDays().contains(Dates.parse("2017-02-04")));
         assertFalse(context.get(NationalHoliday.class).getWorkDays().contains(Dates.parse("2017-02-05")));
     }

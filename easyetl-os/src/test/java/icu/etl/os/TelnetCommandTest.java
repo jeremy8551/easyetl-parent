@@ -1,6 +1,6 @@
 package icu.etl.os;
 
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 
 /**
  * TELNET 协议操作接口
@@ -11,7 +11,7 @@ import icu.etl.ioc.BeanContext;
 public class TelnetCommandTest {
 
     public static void main(String[] args) throws Exception {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         OSShellCommand telnet = context.get(OSShellCommand.class, "telnet");
         telnet.connect("130.1.10.10", 23, "user", "xxx");
         telnet.execute("pwd", 2000);

@@ -2,10 +2,12 @@ package icu.etl.io;
 
 import java.util.List;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.StringUtils;
 
+@EasyBean
 public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
 
     public TableLineRuler build(EasyetlContext context, Object... array) throws Exception {

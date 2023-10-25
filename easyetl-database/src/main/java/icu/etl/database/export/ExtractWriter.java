@@ -5,7 +5,6 @@ import java.io.Flushable;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.annotation.EasyBean;
 import icu.etl.io.TableLine;
 
 /**
@@ -14,7 +13,6 @@ import icu.etl.io.TableLine;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-18
  */
-@EasyBean(builder = ExtractWriterBuilder.class)
 public interface ExtractWriter extends Flushable, Closeable {
 
     /**

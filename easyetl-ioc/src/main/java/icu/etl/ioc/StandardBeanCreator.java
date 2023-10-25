@@ -19,17 +19,16 @@ public class StandardBeanCreator implements BeanCreator {
         if (context == null) {
             throw new NullPointerException();
         }
-
         this.context = context;
     }
 
     @SuppressWarnings("unchecked")
     public <E> E getBean(Class<E> cls, Object... array) {
         // 优先使用接口工厂生成实例对象
-        BeanBuilder<?> obj = this.context.getBuilder(cls);
-        if (obj != null) {
+        BeanBuilder<?> factory = this.context.getBuilder(cls);
+        if (factory != null) {
             try {
-                return (E) obj.build(this.context, array);
+                return (E) factory.build(this.context, array);
             } catch (Throwable e) {
                 throw new RuntimeException(ResourcesUtils.getClassMessage(12, cls.getName()), e);
             }
@@ -52,18 +51,14 @@ public class StandardBeanCreator implements BeanCreator {
      * @return 实例对象
      */
     private <E> E newInstance(Class<E> cls) {
-        if (cls == null) {
-            return null;
-        } else {
-            try {
-                return cls.newInstance();
-            } catch (Throwable e) {
-                E obj = this.createByConstructor(cls);
-                if (obj != null) {
-                    return obj;
-                }
+        try {
+            return cls.newInstance();
+        } catch (Throwable e) {
+            E obj = this.createByConstructor(cls);
+            if (obj == null) {
                 throw new IllegalArgumentException(ResourcesUtils.getClassMessage(12, cls.getName()), e);
             }
+            return obj;
         }
     }
 

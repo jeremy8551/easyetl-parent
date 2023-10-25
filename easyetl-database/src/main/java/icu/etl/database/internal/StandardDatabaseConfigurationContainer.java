@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DatabaseConfiguration;
 import icu.etl.database.DatabaseConfigurationContainer;
@@ -23,6 +24,7 @@ import icu.etl.os.OSShellCommand;
  *
  * @author jeremy8551@qq.com
  */
+@EasyBean
 public class StandardDatabaseConfigurationContainer implements DatabaseConfigurationContainer, BeanBuilder<DatabaseConfigurationContainer> {
 
     private CaseSensitivMap<DatabaseConfiguration> map;

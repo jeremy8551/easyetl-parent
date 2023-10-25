@@ -2,15 +2,12 @@ package icu.etl.ioc;
 
 import java.util.Map;
 
-import icu.etl.annotation.EasyBean;
-
 /**
  * 代码页
  *
  * @author jeremy8551@qq.com
  * @createtime 2021-05-18
  */
-@EasyBean(builder = CodepageBuilder.class)
 public interface Codepage {
 
     /**

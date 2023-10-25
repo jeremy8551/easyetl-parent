@@ -11,7 +11,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import icu.apache.ant.tar.TarEntry;
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.log.STD;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -26,7 +26,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2017-11-30
  */
-@EasyBeanClass(kind = "gz", mode = "", major = "", minor = "", type = Compress.class)
+@EasyBean(kind = "gz", mode = "", major = "", minor = "")
 public class GzipCompress implements Compress {
 
     /** true 表示已终止压缩或解压 */

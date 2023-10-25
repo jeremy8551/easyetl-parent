@@ -2,6 +2,7 @@ package icu.etl.zip;
 
 import java.io.File;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.ArrayUtils;
@@ -15,6 +16,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-09
  */
+@EasyBean
 public class CompressBuilder implements BeanBuilder<Compress> {
 
     public Compress build(EasyetlContext context, Object... array) throws Exception {

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TableColumnComparator;
@@ -64,10 +64,10 @@ public class IncrementCommandCompiler extends AbstractTraceCommandCompiler {
         table.addTitle("");
         table.addTitle("");
         for (BeanConfig anno : list) {
-            EasyBeanClass annotation = anno.getAnnotationAsImplement();
+            EasyBean annotation = anno.getAnnotationAsImplement();
             table.addCell(annotation.kind());
             table.addCell(annotation.description());
-            table.addCell(anno.getImplementClass().getName());
+            table.addCell(anno.getBeanClass().getName());
         }
 
         out.println(new ScriptUsage(this.getClass(), table.toSimpleShape().ltrim().toString(), TableColumnComparator.class.getName()));

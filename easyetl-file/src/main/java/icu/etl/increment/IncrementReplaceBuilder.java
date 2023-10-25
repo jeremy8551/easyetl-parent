@@ -2,6 +2,7 @@ package icu.etl.increment;
 
 import java.util.Date;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.database.DatabaseTableColumn;
 import icu.etl.database.DatabaseTableColumnList;
 import icu.etl.expression.Analysis;
@@ -12,6 +13,7 @@ import icu.etl.util.ClassUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.StringUtils;
 
+@EasyBean
 public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
 
     public IncrementReplace build(EasyetlContext context, Object... array) throws Exception {

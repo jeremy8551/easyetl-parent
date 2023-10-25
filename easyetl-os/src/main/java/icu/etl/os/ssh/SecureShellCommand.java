@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.log.Log;
@@ -37,7 +37,7 @@ import icu.jsch.UserInfo;
 /**
  * SSH 协议的终端实现类
  */
-@EasyBeanClass(kind = "ssh", mode = "jsch", major = "0", minor = "1", description = "jsch-0.1.51", type = OSSecureShellCommand.class)
+@EasyBean(kind = "ssh", mode = "jsch", major = "0", minor = "1", description = "jsch-0.1.51")
 public class SecureShellCommand implements OSSecureShellCommand {
 
     public final static String charset = "charset";

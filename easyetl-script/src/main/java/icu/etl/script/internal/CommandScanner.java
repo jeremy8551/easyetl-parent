@@ -151,9 +151,9 @@ public class CommandScanner {
 
         // 显示所有已加载的脚本引擎命令
         EasyetlContext cxt = context.getFactory().getContext();
-        List<BeanConfig> annos = cxt.getImplements(UniversalCommandCompiler.class);
-        for (BeanConfig bean : annos) {
-            Class<? extends UniversalCommandCompiler> cls = bean.getImplementClass();
+        List<BeanConfig> beanList = cxt.getImplements(UniversalCommandCompiler.class);
+        for (BeanConfig bean : beanList) {
+            Class<? extends UniversalCommandCompiler> cls = bean.getBeanClass();
             try {
                 this.loadScriptCommand(cls);
             } catch (Throwable e) {
@@ -164,7 +164,7 @@ public class CommandScanner {
         }
 
         // 如果类扫描器未扫描到脚本引擎默认命令，则自动加载所有命令
-        if (annos.isEmpty()) {
+        if (beanList.isEmpty()) {
             this.loadCommandBuilder();
         }
     }
@@ -179,8 +179,7 @@ public class CommandScanner {
             return;
         }
 
-        boolean exists = cls.isAnnotationPresent(ScriptCommand.class);
-        if (exists) {
+        if (cls.isAnnotationPresent(ScriptCommand.class)) {
             ScriptCommand anno = cls.getAnnotation(ScriptCommand.class);
             String[] names = StringUtils.trimBlank(anno.name());
             String[] words = StringUtils.trimBlank(anno.keywords());

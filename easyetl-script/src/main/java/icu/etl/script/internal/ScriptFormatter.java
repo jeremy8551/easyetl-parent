@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.STD;
@@ -31,7 +31,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "default", mode = "", type = UniversalScriptFormatter.class)
+@EasyBean(kind = "default", mode = "")
 public class ScriptFormatter extends UniversalScriptFormatter {
     private final static long serialVersionUID = 1L;
 

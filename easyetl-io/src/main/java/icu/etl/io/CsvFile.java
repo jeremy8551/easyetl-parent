@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -21,7 +21,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBeanClass(kind = "csv", mode = "file", major = "", minor = "", description = "CSV格式文件", type = TextTableFile.class)
+@EasyBean(kind = "csv", mode = "file", major = "", minor = "", description = "CSV格式文件")
 public class CsvFile extends CommonTextTableFile implements TextTableFile {
 
     public CsvFile() {

@@ -7,7 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import icu.etl.database.Jdbc;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.log.STD;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.util.ClassUtils;
@@ -24,7 +24,7 @@ public class TestEnv {
     private static Properties p = new Properties();
 
     /** 容器上下文信息 */
-    private static BeanContext context = new BeanContext();
+    private static AnnotationEasyetlContext context = new AnnotationEasyetlContext();
 
     static {
         if (p.isEmpty()) {

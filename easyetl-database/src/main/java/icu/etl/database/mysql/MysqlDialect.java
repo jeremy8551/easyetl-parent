@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivSet;
 import icu.etl.database.DatabaseDDL;
-import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseIndex;
 import icu.etl.database.DatabaseProcedure;
 import icu.etl.database.DatabaseTableColumn;
@@ -20,7 +19,7 @@ import icu.etl.database.internal.AbstractDialect;
 import icu.etl.database.internal.StandardDatabaseURL;
 import icu.etl.util.StringUtils;
 
-@EasyBeanClass(kind = "mysql", mode = "", major = "", minor = "", description = "Mysql 数据库方言模版", type = DatabaseDialect.class)
+@EasyBean(kind = "mysql", mode = "", major = "", minor = "", description = "Mysql 数据库方言模版")
 public class MysqlDialect extends AbstractDialect {
 
     /**

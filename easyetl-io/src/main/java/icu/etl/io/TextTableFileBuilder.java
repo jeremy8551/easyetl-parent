@@ -2,7 +2,7 @@ package icu.etl.io;
 
 import java.nio.charset.StandardCharsets;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.Codepage;
 import icu.etl.ioc.EasyetlContext;
@@ -13,11 +13,12 @@ import icu.etl.util.StringUtils;
 /**
  * 从容器上下文信息 {@linkplain EasyetlContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象 <br>
  * 第一参数必须是 {@linkplain TextTableFile} <br>
- * 第二个参数必须是文件类型，详见表格型文件类上的 {@linkplain EasyBeanClass#type()} 属性值 <br>
+ * 第二个参数必须是文件类型 <br>
  * 第三个参数必须是 {@linkplain Attribute} 对象的引用，属性集合中可以设置 charset，codepage，chardel，rowdel，coldel，escape，column，colname
  *
  * @author jeremy8551@qq.com
  */
+@EasyBean
 public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
 
     public TextTableFile build(EasyetlContext context, Object... array) throws Exception {

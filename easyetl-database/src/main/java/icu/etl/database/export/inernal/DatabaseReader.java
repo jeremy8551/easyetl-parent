@@ -61,7 +61,7 @@ public class DatabaseReader implements ExtractReader, EasyetlContextAware {
     /** 容器上下文信息 */
     protected EasyetlContext context;
 
-    public void set(EasyetlContext context) {
+    public void setContext(EasyetlContext context) {
         this.context = context;
     }
 

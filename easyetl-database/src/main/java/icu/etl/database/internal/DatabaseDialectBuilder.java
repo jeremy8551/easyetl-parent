@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.sql.DataSource;
 
-import icu.etl.annotation.EasyBeanClass;
+import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.ioc.BeanBuilder;
@@ -26,6 +26,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2012-03-06
  */
+@EasyBean
 public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, BeanEventListener {
 
     /** true 表示不支持 */
@@ -58,7 +59,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
         if (this.notinit) {
             List<BeanConfig> list = context.getImplements(DatabaseDialect.class);
             for (BeanConfig obj : list) {
-                EasyBeanClass anno = obj.getAnnotationAsImplement();
+                EasyBean anno = obj.getAnnotationAsImplement();
                 if (anno != null) {
                     String kind = StringUtils.trimBlank(anno.kind());
                     String mode = StringUtils.trimBlank(anno.mode());
@@ -151,7 +152,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
     }
 
     public void addImplement(BeanEvent event) {
-        EasyBeanClass anno = (EasyBeanClass) event.getAnnotation();
+        EasyBean anno = (EasyBean) event.getAnnotation();
         String kind = StringUtils.trimBlank(anno.kind());
         String mode = StringUtils.trimBlank(anno.mode());
         this.dialectMap.put(kind, mode);

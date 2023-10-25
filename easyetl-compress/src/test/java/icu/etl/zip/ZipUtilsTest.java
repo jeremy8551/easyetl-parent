@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import icu.apache.ant.zip.ZipFile;
-import icu.etl.ioc.BeanContext;
+import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -44,7 +44,7 @@ public class ZipUtilsTest {
 
     @Test
     public void testCompress() throws IOException {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         File f = getFile();
         FileUtils.createDirectory(f);
 
@@ -73,7 +73,7 @@ public class ZipUtilsTest {
 
     @Test
     public void testUncompress() throws IOException {
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         File f = getFile();
         FileUtils.createDirectory(f);
 
@@ -109,7 +109,7 @@ public class ZipUtilsTest {
         File f2 = getFile();
         FileUtils.createFile(f2);
 
-        BeanContext context = new BeanContext();
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         Compress c = context.get(Compress.class, FileUtils.getFilenameSuffix(file.getName()));
         c.setFile(file);
         c.archiveFile(f1, null);
