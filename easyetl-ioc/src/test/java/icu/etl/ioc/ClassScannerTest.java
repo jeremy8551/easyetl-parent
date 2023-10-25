@@ -13,10 +13,10 @@ public class ClassScannerTest {
     @Test
     public void test() {
         AnnotationEasyetlContext context = new AnnotationEasyetlContext("sout:debug,!org.apache,!icu.etl.test.impl.sec1,");
-        List<AnnotationBeanClass> list = context.getBeanClassList(TestLoader.class);
+        List<BeanClass> list = context.getBeanClassList(TestLoader.class);
         boolean exists = false;
         boolean exists1 = false;
-        for (AnnotationBeanClass anno : list) {
+        for (BeanClass anno : list) {
             if (anno.getBeanClass().equals(TestLoader2.class)) {
                 exists = true;
             }
