@@ -52,7 +52,7 @@ public class ExecuteOSCommand extends AbstractTraceCommand implements UniversalS
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
         this.terminal = SSHClientMap.get(context).last(); // 优先使用 declare ssh2 client 语句定义的客户端
         if (this.terminal == null) {
-            OS os = context.getFactory().getContext().get(OS.class);
+            OS os = context.getFactory().getContext().getBean(OS.class);
             this.terminal = os.getOSCommand();
         }
 

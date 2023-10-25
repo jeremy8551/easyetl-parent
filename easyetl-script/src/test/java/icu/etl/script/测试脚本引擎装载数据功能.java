@@ -25,7 +25,7 @@ public class 测试脚本引擎装载数据功能 {
         AnnotationEasyetlContext cxt = new AnnotationEasyetlContext();
 
         // 新文件
-        OS os = cxt.get(OS.class);
+        OS os = cxt.getBean(OS.class);
         OSUser user = os.getUser();
         File delfile = new File(user.getHome(), "bhc_finish.del");
 

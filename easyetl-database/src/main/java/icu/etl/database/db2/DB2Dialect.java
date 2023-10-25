@@ -536,7 +536,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         int minor = metaData.getDatabaseMinorVersion();
 
         // 读取 JDBC 配置信息
-        DatabaseConfigurationContainer container = this.context.get(DatabaseConfigurationContainer.class);
+        DatabaseConfigurationContainer container = this.context.getBean(DatabaseConfigurationContainer.class);
         DatabaseConfiguration config = container.get(connection);
         List<OSAccount> accounts = config.getAccounts();
         Ensure.isTrue(!accounts.isEmpty(), table);
@@ -546,7 +546,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         String name = url.getDatabaseName();
 
         // 生成实例
-        OS os = this.context.get(OS.class);
+        OS os = this.context.getBean(OS.class);
         try {
             OSAccount acct;
             DB2Instance inst = DB2Instance.get(os, port, name);
@@ -559,7 +559,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
 
                     // 如果登陆操作系统发生错误，继续尝试下一个用户与密码
                     try {
-                        os = this.context.get(OS.class, config);
+                        os = this.context.getBean(OS.class, config);
                     } catch (Throwable e) {
                         continue;
                     }
@@ -569,7 +569,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                     OSCommand cmd = os.getOSCommand();
 
                     // 执行 db2look 命令
-                    DB2Command builder = this.context.get(DB2Command.class, "db2", os.getName(), major, minor);
+                    DB2Command builder = this.context.getBean(DB2Command.class, "db2", os.getName(), major, minor);
                     if (builder == null) {
                         throw new NullPointerException();
                     }
@@ -1116,7 +1116,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         }
 
         String applicationHandle = config.getProperty(DB2Dialect.APPLICATION_HANDLE);
-        DatabaseConfigurationContainer container = this.context.get(DatabaseConfigurationContainer.class);
+        DatabaseConfigurationContainer container = this.context.getBean(DatabaseConfigurationContainer.class);
         DatabaseConfiguration jdbc = container.get(conn);
         if (jdbc == null) {
             throw new NullPointerException();
@@ -1198,9 +1198,9 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         int major = metaData.getDatabaseMajorVersion();
         int minor = metaData.getDatabaseMinorVersion();
 
-        OS os = this.context.get(OS.class, config);
+        OS os = this.context.getBean(OS.class, config);
         try {
-            DB2Command builder = this.context.get(DB2Command.class, "db2", os.getName(), major, minor);
+            DB2Command builder = this.context.getBean(DB2Command.class, "db2", os.getName(), major, minor);
             if (builder == null) {
                 throw new NullPointerException();
             }

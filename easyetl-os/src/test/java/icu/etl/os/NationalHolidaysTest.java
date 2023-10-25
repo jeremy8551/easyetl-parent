@@ -3,10 +3,9 @@ package icu.etl.os;
 import java.io.File;
 import java.io.IOException;
 
-import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
+import icu.etl.ioc.AnnotationBeanClass;
 import icu.etl.ioc.AnnotationEasyetlContext;
-import icu.etl.ioc.BeanConfig;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Dates;
@@ -28,7 +27,7 @@ public class NationalHolidaysTest {
 
         String charsetName = "utf-8";
         String className = "USHolidays";
-        String uri = "/bean/" + className + ".txt";
+        String uri = "/icu/etl/bean/" + className + ".txt";
         System.out.println(uri);
         String source = new ByteBuffer().append(ClassUtils.getResourceAsStream(uri)).toString();
 
@@ -47,12 +46,12 @@ public class NationalHolidaysTest {
         FileUtils.delete(classfile);
         System.out.println("classes path: " + classfile.getAbsolutePath());
 
-        NationalHoliday bean = context.get(NationalHoliday.class);
+        NationalHoliday bean = context.getBean(NationalHoliday.class);
         Assert.assertFalse(bean.getRestDays().contains(Dates.parse("2021-12-24")));
         Assert.assertFalse(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
 
         // 编译 java 源文件
-        OS os = context.get(OS.class);
+        OS os = context.getBean(OS.class);
         try {
             assertTrue(os.enableOSCommand());
             OSCommand cmd = os.getOSCommand();
@@ -72,9 +71,8 @@ public class NationalHolidaysTest {
         String fullName = NationalHolidaysTest.class.getPackage().getName() + "." + className;
         Class<? extends NationalHoliday> cls = ClassUtils.loadClass(fullName);
 
-        EasyBean anno = cls.getAnnotation(EasyBean.class);
-        context.add(new BeanConfig(cls, anno), null);
-        Ensure.isTrue(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
-        Ensure.isTrue(!bean.getRestDays().contains(Dates.parse("2021-12-24")));
+        Assert.assertTrue(context.addBean(new AnnotationBeanClass(cls), null));
+        Assert.assertTrue(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
+        Assert.assertFalse(bean.getRestDays().contains(Dates.parse("2021-12-24")));
     }
 }

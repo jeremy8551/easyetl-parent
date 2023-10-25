@@ -123,7 +123,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             this.executor.getLogger().setStderr(stderr);
 
             UniversalScriptAnalysis analysis = session.getAnalysis();
-            TextTableFile format = context.getFactory().getContext().get(TextTableFile.class, this.dataType, this.attrs);
+            TextTableFile format = context.getFactory().getContext().getBean(TextTableFile.class, this.dataType, this.attrs);
             File msgfile = FileUtils.createFile(this.attrs.getAttribute("message"), 3, "messagefile", "export");
             JdbcConverterMapper mapper = new StandardJdbcConverterMapper(this.attrs.getAttribute("convert"), String.valueOf(analysis.getSegment()), String.valueOf(analysis.getMapdel()));
             UserListenerList listeners = new UserListenerList(this.attrs.getAttribute("listener"));

@@ -12,7 +12,7 @@ import icu.etl.database.export.UserListener;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTable;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanConfig;
+import icu.etl.ioc.BeanClass;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -75,29 +75,29 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
         // 查找接口对应的的实现类
-        List<BeanConfig> list1 = context.getFactory().getContext().getImplements(TextTableFile.class);
+        List<BeanClass> list1 = context.getFactory().getContext().getBeanClassList(TextTableFile.class);
         CharTable ct1 = new CharTable(context.getCharsetName());
         ct1.addTitle("");
         ct1.addTitle("");
         ct1.addTitle("");
-        for (BeanConfig anno : list1) {
-            EasyBean annotation = anno.getAnnotationAsImplement();
+        for (BeanClass anno : list1) {
+            EasyBean annotation = anno.getAnnotation();
             ct1.addCell(annotation.kind());
             ct1.addCell(annotation.description());
             ct1.addCell(anno.getBeanClass().getName());
         }
 
         // 查找接口对应的的实现类
-        List<BeanConfig> list2 = context.getFactory().getContext().getImplements(ExtractWriter.class);
+        List<BeanClass> list2 = context.getFactory().getContext().getBeanClassList(ExtractWriter.class);
         CharTable ct2 = new CharTable(context.getCharsetName());
         ct2.addTitle("");
         ct2.addTitle("");
         ct2.addTitle("");
-        for (BeanConfig anno : list2) {
-            EasyBean annotation = anno.getAnnotationAsImplement();
-            ct2.addCell(annotation.kind());
-            ct2.addCell(annotation.description());
-            ct2.addCell(anno.getBeanClass().getName());
+        for (BeanClass beanConfig : list2) {
+            EasyBean anno = beanConfig.getAnnotation();
+            ct2.addCell(anno.kind());
+            ct2.addCell(anno.description());
+            ct2.addCell(beanConfig.getBeanClass().getName());
         }
 
         out.println(new ScriptUsage(this.getClass() //

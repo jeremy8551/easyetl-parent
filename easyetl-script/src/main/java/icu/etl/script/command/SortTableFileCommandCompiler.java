@@ -9,7 +9,7 @@ import icu.etl.annotation.ScriptCommand;
 import icu.etl.expression.OrderByExpression;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanConfig;
+import icu.etl.ioc.BeanClass;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
@@ -77,19 +77,19 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) { // 查找接口对应的的实现类
-        List<BeanConfig> list = context.getFactory().getContext().getImplements(TextTableFile.class);
-        CharTable table = new CharTable(context.getCharsetName());
-        table.addTitle("");
-        table.addTitle("");
-        table.addTitle("");
-        for (BeanConfig anno : list) {
-            EasyBean annotation = anno.getAnnotationAsImplement();
-            table.addCell(annotation.kind());
-            table.addCell(annotation.description());
-            table.addCell(anno.getBeanClass().getName());
+        List<BeanClass> list = context.getFactory().getContext().getBeanClassList(TextTableFile.class);
+        CharTable ct = new CharTable(context.getCharsetName());
+        ct.addTitle("");
+        ct.addTitle("");
+        ct.addTitle("");
+        for (BeanClass beanConfig : list) {
+            EasyBean anno = beanConfig.getAnnotation();
+            ct.addCell(anno.kind());
+            ct.addCell(anno.description());
+            ct.addCell(beanConfig.getBeanClass().getName());
         }
 
-        out.println(new ScriptUsage(this.getClass(), table.toSimpleShape().ltrim().toString()));
+        out.println(new ScriptUsage(this.getClass(), ct.toSimpleShape().ltrim().toString()));
     }
 
 }

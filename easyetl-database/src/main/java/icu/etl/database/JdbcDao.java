@@ -163,7 +163,7 @@ public class JdbcDao implements OSConnectCommand {
      */
     public DatabaseDialect getDialect() {
         if (this.dialect == null && this.existsConnection()) {
-            this.dialect = this.context.get(DatabaseDialect.class, this.getConnection());
+            this.dialect = this.context.getBean(DatabaseDialect.class, this.getConnection());
         }
         return this.dialect;
     }

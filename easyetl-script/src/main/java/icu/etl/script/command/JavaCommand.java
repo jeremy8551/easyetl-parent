@@ -74,7 +74,7 @@ public class JavaCommand extends AbstractTraceCommand implements UniversalScript
         }
 
         // 初始化
-        Class<? extends AbstractJavaCommand> cls = ClassUtils.forName(this.className);
+        Class<? extends AbstractJavaCommand> cls = ClassUtils.forName(this.className, true, context.getFactory().getContext().getClassLoader());
         if (cls == null) {
             throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(94, this.command, className, AbstractJavaCommand.class.getName()));
         } else {

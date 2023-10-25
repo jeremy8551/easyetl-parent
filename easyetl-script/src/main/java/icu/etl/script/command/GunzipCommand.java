@@ -50,7 +50,7 @@ public class GunzipCommand extends AbstractFileCommand implements UniversalScrip
             stdout.println("gunzip " + file.getAbsolutePath());
         }
 
-        this.c = context.getFactory().getContext().get(Compress.class, "gz");
+        this.c = context.getFactory().getContext().getBean(Compress.class, "gz");
         try {
             this.c.setFile(file);
             this.c.extract(file.getParent(), Settings.getFileEncoding());

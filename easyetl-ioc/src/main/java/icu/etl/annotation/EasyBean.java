@@ -19,6 +19,27 @@ import java.lang.annotation.Target;
 public @interface EasyBean {
 
     /**
+     * 组件管理模式
+     *
+     * @return 详见 {@linkplain EasyBean#singleton()}
+     */
+    boolean value() default false;
+
+    /**
+     * 组件管理模式
+     *
+     * @return true表示组件是单例模式，false表示是原型模式（每次生成的组件都是新的）
+     */
+    boolean singleton() default false;
+
+    /**
+     * 是否使用延迟加载模式
+     *
+     * @return true表示单例组件使用延迟加载模式
+     */
+    boolean lazy() default true;
+
+    /**
      * 种类信息, 用于区分相同接口的不同实现类
      *
      * @return 种类信息

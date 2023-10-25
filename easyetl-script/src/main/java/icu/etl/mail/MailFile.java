@@ -64,7 +64,7 @@ public class MailFile {
      * @throws IOException
      */
     public void compress(EasyetlContext context, File fileOrDir, File compressFile, String charsetName, boolean delete) throws IOException {
-        Compress compress = context.get(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
+        Compress compress = context.getBean(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
         try {
             compress.setFile(compressFile);
             compress.archiveFile(fileOrDir, null, StringUtils.defaultString(charsetName, StandardCharsets.UTF_8.name()));

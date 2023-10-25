@@ -8,7 +8,7 @@ import icu.etl.ioc.EasyetlContext;
 import icu.etl.os.linux.LinuxLocalOS;
 import icu.etl.os.linux.LinuxRemoteOS;
 import icu.etl.os.macos.MacOS;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.NetUtils;
 import icu.etl.util.OSUtils;
 import icu.etl.util.Settings;
@@ -71,7 +71,7 @@ public class OSBuilder implements BeanBuilder<OS> {
                 }
 
                 // 默认使用最高账号登录
-                OSAccount acct = CollUtils.firstElement(config.getAccounts());
+                OSAccount acct = CollectionUtils.firstElement(config.getAccounts());
                 if (acct != null) {
                     username = acct.getUsername();
                     password = acct.getPassword();

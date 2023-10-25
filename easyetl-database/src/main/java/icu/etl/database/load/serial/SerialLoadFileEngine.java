@@ -123,7 +123,7 @@ public class SerialLoadFileEngine implements Loader, EasyetlContextAware {
             List<String> files = context.getFiles(); // 按顺序逐个加载文件中的内容
             for (int i = 0; this.running && i < files.size(); i++) {
                 String filepath = files.get(i);
-                TextTableFile file = this.context.get(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
+                TextTableFile file = this.context.getBean(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
                 file.setAbsolutePath(filepath);
 
                 try {

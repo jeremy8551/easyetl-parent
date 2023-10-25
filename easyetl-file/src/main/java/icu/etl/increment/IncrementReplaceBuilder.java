@@ -32,7 +32,7 @@ public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
             return new UUIDReplace(columns, field);
         } else { // 自定义
             Object[] beans = StringUtils.split(value, '/');
-            Class<IncrementReplace> cls = context.getImplement(IncrementReplace.class, beans);
+            Class<IncrementReplace> cls = context.getBeanClass(IncrementReplace.class, beans);
             if (cls == null) {
                 return new StandardReplace(columns, field, value);
             } else {

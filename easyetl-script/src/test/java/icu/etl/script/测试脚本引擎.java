@@ -41,7 +41,7 @@ public class 测试脚本引擎 {
         System.out.println(pf.getAbsolutePath());
 
         // 新文件
-        OS os = context.get(OS.class);
+        OS os = context.getBean(OS.class);
         OSUser user = os.getUser();
         File delfile = new File(user.getHome(), "bhc_finish.del");
 
@@ -59,7 +59,7 @@ public class 测试脚本引擎 {
 
         String url = TestEnv.getDBUrl();
 
-        DatabaseDialect dialect = context.get(DatabaseDialect.class, url);
+        DatabaseDialect dialect = context.getBean(DatabaseDialect.class, url);
         List<DatabaseURL> config = dialect.parseJdbcUrl(url);
         DatabaseURL p = config.get(0);
         String host = p.getHostname();

@@ -33,7 +33,7 @@ public class CompressTest {
     public void test() throws IOException {
         File file = this.createfile("txt.tar.gz");
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        Compress compress = context.get(Compress.class, file);
+        Compress compress = context.getBean(Compress.class, file);
         Assert.assertEquals(GzipCompress.class, compress.getClass());
     }
 
@@ -41,7 +41,7 @@ public class CompressTest {
     public void test1() throws IOException {
         File file = this.createfile("tar.rar");
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        Compress compress = context.get(Compress.class, file);
+        Compress compress = context.getBean(Compress.class, file);
         Assert.assertEquals(RarCompress.class, compress.getClass());
     }
 
@@ -49,7 +49,7 @@ public class CompressTest {
     public void test2() throws IOException {
         File file = this.createfile("tar");
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        Compress compress = context.get(Compress.class, file);
+        Compress compress = context.getBean(Compress.class, file);
         Assert.assertEquals(TarCompress.class, compress.getClass());
     }
 
@@ -57,7 +57,7 @@ public class CompressTest {
     public void test3() throws IOException {
         File file = this.createfile("zip");
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        Compress compress = context.get(Compress.class, file);
+        Compress compress = context.getBean(Compress.class, file);
         Assert.assertEquals(ZipCompress.class, compress.getClass());
     }
 
@@ -89,7 +89,7 @@ public class CompressTest {
         FileUtils.write(f3, "utf-8", false, ext + " " + f3.getAbsolutePath());
         FileUtils.write(f4, "utf-8", false, ext + " 测试中文 " + f4.getAbsolutePath());
 
-        Compress c = context.get(Compress.class, compressfile);
+        Compress c = context.getBean(Compress.class, compressfile);
         c.setFile(compressfile);
         c.archiveFile(f1, null, "utf-8");
         c.archiveFile(f2, "", "utf-8");
@@ -146,7 +146,7 @@ public class CompressTest {
         FileUtils.write(f3, "utf-8", false, ext + " " + f3.getAbsolutePath());
         FileUtils.write(f4, "utf-8", false, ext + " 测试中文 " + f4.getAbsolutePath());
 
-        Compress c = context.get(Compress.class, compressfile);
+        Compress c = context.getBean(Compress.class, compressfile);
         c.setFile(compressfile);
         c.archiveFile(f1, null, "utf-8");
         c.archiveFile(f2, "", "utf-8");
@@ -168,7 +168,7 @@ public class CompressTest {
         Assert.assertFalse(f4.exists());
         Assert.assertFalse(parentfile.exists());
 
-        c = context.get(Compress.class, compressfile);
+        c = context.getBean(Compress.class, compressfile);
         c.setFile(compressfile);
         c.removeEntry("utf-8", "dir/cdir");
         c.close();
@@ -212,7 +212,7 @@ public class CompressTest {
         FileUtils.write(f3, "utf-8", false, ext + " " + f3.getAbsolutePath());
         FileUtils.write(f4, "utf-8", false, ext + " 测试中文 " + f4.getAbsolutePath());
 
-        Compress c = context.get(Compress.class, compressfile);
+        Compress c = context.getBean(Compress.class, compressfile);
         c.setFile(compressfile);
         c.archiveFile(f1, null, "utf-8");
         c.archiveFile(f2, "", "utf-8");

@@ -8,7 +8,7 @@ public class CodepageTest {
     @Test
     public void test() {
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        Codepage bean = context.get(Codepage.class);
+        Codepage bean = context.getBean(Codepage.class);
         Ensure.isTrue("utf-8".equalsIgnoreCase(bean.get("1208")));
         Ensure.isTrue("utf-8".equalsIgnoreCase(bean.get(1208)));
         Ensure.isTrue("GBK".equalsIgnoreCase(bean.get(1386)));

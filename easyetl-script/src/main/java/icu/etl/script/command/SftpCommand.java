@@ -62,7 +62,7 @@ public class SftpCommand extends FtpCommand implements UniversalScriptInputStrea
             stdout.println("sftp " + this.username + "@" + this.host + ":" + this.port + "?password=" + this.password);
         }
 
-        OSFtpCommand ftp = context.getFactory().getContext().get(OSFtpCommand.class, "sftp");
+        OSFtpCommand ftp = context.getFactory().getContext().getBean(OSFtpCommand.class, "sftp");
         if (!ftp.connect(this.host, Integer.parseInt(this.port), this.username, this.password)) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(38, "sftp"));
             return UniversalScriptCommand.COMMAND_ERROR;

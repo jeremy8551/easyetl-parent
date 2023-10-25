@@ -40,7 +40,7 @@ public class LoadEngine extends Executor implements EasyetlContextAware {
 
     public void execute() throws Exception {
         String mode = this.context.getAttributes().contains("thread") ? "parallel" : "serial";
-        this.loader = this.ioccxt.get(Loader.class, mode);
+        this.loader = this.ioccxt.getBean(Loader.class, mode);
         this.loader.execute(this.context);
     }
 

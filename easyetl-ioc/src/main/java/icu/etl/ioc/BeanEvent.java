@@ -23,7 +23,7 @@ public interface BeanEvent {
      * @param <E> 组件实现类
      * @return 组件实现类
      */
-    <E> Class<E> getImplementClass();
+    <E> Class<E> getBeanClass();
 
     /**
      * 此次事件相关的实现类上的注解信息

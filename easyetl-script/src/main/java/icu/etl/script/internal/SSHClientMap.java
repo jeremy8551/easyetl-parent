@@ -6,7 +6,7 @@ import java.util.Set;
 import icu.etl.os.OSSecureShellCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptProgram;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.IO;
 
 /**
@@ -73,7 +73,7 @@ public class SSHClientMap implements UniversalScriptProgram {
         if (set.isEmpty()) {
             return null;
         } else {
-            return this.get(CollUtils.lastElement(set));
+            return this.get(CollectionUtils.lastElement(set));
         }
     }
 

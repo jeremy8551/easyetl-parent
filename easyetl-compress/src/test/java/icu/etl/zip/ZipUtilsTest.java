@@ -110,7 +110,7 @@ public class ZipUtilsTest {
         FileUtils.createFile(f2);
 
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        Compress c = context.get(Compress.class, FileUtils.getFilenameSuffix(file.getName()));
+        Compress c = context.getBean(Compress.class, FileUtils.getFilenameSuffix(file.getName()));
         c.setFile(file);
         c.archiveFile(f1, null);
         c.archiveFile(f2, null);

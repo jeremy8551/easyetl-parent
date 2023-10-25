@@ -5,7 +5,8 @@ import java.util.Comparator;
 
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.annotation.ScriptVariableFunction;
-import icu.etl.ioc.BeanConfig;
+import icu.etl.ioc.AnnotationBeanClass;
+import icu.etl.ioc.BeanClass;
 import icu.etl.ioc.BeanRegister;
 import icu.etl.ioc.ClassScanRule;
 import icu.etl.log.STD;
@@ -20,7 +21,7 @@ import icu.etl.util.ResourcesUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class ScriptClassScanRule implements ClassScanRule, Comparator<BeanConfig> {
+public class ScriptClassScanRule implements ClassScanRule, Comparator<BeanClass> {
 
     /**
      * 初始化，扫描类路径中所有被注解标记的类信息
@@ -37,32 +38,30 @@ public class ScriptClassScanRule implements ClassScanRule, Comparator<BeanConfig
 
         // 脚本引擎命令的实现类
         if (cls.isAnnotationPresent(ScriptCommand.class) && UniversalCommandCompiler.class.isAssignableFrom(cls) && !Modifier.isAbstract(cls.getModifiers())) {
-            ScriptCommand anno = cls.getAnnotation(ScriptCommand.class);
-            BeanConfig bean = new BeanConfig(cls, anno);
-
             if (STD.out.isDebugEnabled()) {
                 STD.out.debug(ResourcesUtils.getClassMessage(9, cls.getName()));
             }
-            register.add(bean, this);
-            load = true;
+
+            if (register.addBean(new AnnotationBeanClass(cls), this)) {
+                load = true;
+            }
         }
 
         // 脚本引擎变量方法的实现类
         if (cls.isAnnotationPresent(ScriptVariableFunction.class) && UniversalScriptVariableMethod.class.isAssignableFrom(cls) && !Modifier.isAbstract(cls.getModifiers())) {
-            ScriptVariableFunction anno = cls.getAnnotation(ScriptVariableFunction.class);
-            BeanConfig bean = new BeanConfig(cls, anno);
-
             if (STD.out.isDebugEnabled()) {
                 STD.out.debug(ResourcesUtils.getClassMessage(20, cls.getName()));
             }
-            register.add(bean, this);
-            load = true;
+
+            if (register.addBean(new AnnotationBeanClass(cls), this)) {
+                load = true;
+            }
         }
 
         return load;
     }
 
-    public int compare(BeanConfig o1, BeanConfig o2) {
+    public int compare(BeanClass o1, BeanClass o2) {
         return o1.getBeanClass().equals(o2.getBeanClass()) ? 0 : 1;
     }
 

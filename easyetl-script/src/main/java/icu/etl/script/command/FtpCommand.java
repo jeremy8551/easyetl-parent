@@ -71,7 +71,7 @@ public class FtpCommand extends AbstractFileCommand implements UniversalScriptIn
             stdout.println("ftp " + this.username + "@" + this.host + ":" + this.port + "?password=" + this.password);
         }
 
-        OSFtpCommand ftp = context.getFactory().getContext().get(OSFtpCommand.class, "ftp");
+        OSFtpCommand ftp = context.getFactory().getContext().getBean(OSFtpCommand.class, "ftp");
         if (!ftp.connect(this.host, Integer.parseInt(this.port), this.username, this.password)) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(38, "ftp"));
             return UniversalScriptCommand.COMMAND_ERROR;

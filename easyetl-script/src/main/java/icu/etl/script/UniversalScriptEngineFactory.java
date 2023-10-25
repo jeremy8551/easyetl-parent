@@ -56,7 +56,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
         this.context = context;
         this.stdout = LogFactory.getLog(UniversalScriptEngine.class, System.out, System.err);
         this.stderr = LogFactory.getLog(UniversalScriptEngine.class, System.err, System.err);
-        this.config = this.context.get(UniversalScriptConfiguration.class);
+        this.config = this.context.getBean(UniversalScriptConfiguration.class);
         this.keywords = this.config.getKeywords();
     }
 
@@ -198,7 +198,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptSessionFactory buildSessionFactory() {
         String flag = StringUtils.defaultString(this.config.getSessionFactory(), "default");
-        return this.context.get(UniversalScriptSessionFactory.class, flag);
+        return this.context.getBean(UniversalScriptSessionFactory.class, flag);
     }
 
     /**
@@ -208,7 +208,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptCompiler buildCompiler() {
         String flag = StringUtils.defaultString(this.config.getCompiler(), "default");
-        return this.context.get(UniversalScriptCompiler.class, flag);
+        return this.context.getBean(UniversalScriptCompiler.class, flag);
     }
 
     /**
@@ -218,7 +218,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptFormatter buildFormatter() {
         String flag = StringUtils.defaultString(this.config.getConverter(), "default");
-        return this.context.get(UniversalScriptFormatter.class, flag);
+        return this.context.getBean(UniversalScriptFormatter.class, flag);
     }
 
     /**
@@ -228,7 +228,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptChecker buildChecker() {
         String flag = StringUtils.defaultString(this.config.getChecker(), "default");
-        UniversalScriptChecker obj = this.context.get(UniversalScriptChecker.class, flag);
+        UniversalScriptChecker obj = this.context.getBean(UniversalScriptChecker.class, flag);
         obj.setScriptEngineKeywords(this.getKeywords());
         return obj;
     }

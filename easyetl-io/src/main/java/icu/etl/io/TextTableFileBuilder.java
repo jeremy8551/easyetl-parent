@@ -22,7 +22,7 @@ import icu.etl.util.StringUtils;
 public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
 
     public TextTableFile build(EasyetlContext context, Object... array) throws Exception {
-        Class<TextTableFile> cls = context.getImplement(TextTableFile.class, array);
+        Class<TextTableFile> cls = context.getBeanClass(TextTableFile.class, array);
         TextTableFile file = ClassUtils.newInstance(cls);
 
         // 设置数据类型的属性
@@ -41,7 +41,7 @@ public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
         } else if (attribute.contains("charset")) {
             file.setCharsetName(attribute.getAttribute("charset"));
         } else if (attribute.contains("codepage")) {
-            file.setCharsetName(context.get(Codepage.class).get(attribute.getAttribute("codepage")));
+            file.setCharsetName(context.getBean(Codepage.class).get(attribute.getAttribute("codepage")));
         }
 
         if (attribute.contains("chardel")) {

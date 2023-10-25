@@ -73,7 +73,7 @@ public class ConnectionAttributes implements Cloneable {
                 this.schema = conn.getSchema();
                 this.hasSchema = true;
             } catch (Throwable e) {
-                DatabaseDialect dialect = this.context.get(DatabaseDialect.class, conn);
+                DatabaseDialect dialect = this.context.getBean(DatabaseDialect.class, conn);
                 this.schema = dialect.getSchema(conn);
                 this.hasSchema = true;
             }
@@ -151,7 +151,7 @@ public class ConnectionAttributes implements Cloneable {
                 try {
                     conn.setSchema(this.schema);
                 } catch (Throwable e) {
-                    DatabaseDialect dialect = this.context.get(DatabaseDialect.class, conn);
+                    DatabaseDialect dialect = this.context.getBean(DatabaseDialect.class, conn);
                     dialect.setSchema(conn, this.schema);
                 }
             }

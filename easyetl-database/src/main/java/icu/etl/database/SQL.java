@@ -9,7 +9,7 @@ import java.util.List;
 import icu.etl.expression.ScriptAnalysis;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.util.ArrayUtils;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Property;
 import icu.etl.util.StringUtils;
@@ -293,7 +293,7 @@ public class SQL {
         if (sql == null) {
             return;
         }
-        if (CollUtils.isEmpty(delimiter)) {
+        if (CollectionUtils.isEmpty(delimiter)) {
             throw new IllegalArgumentException("split(\"" + sql + "\", " + StringUtils.toString(delimiter) + ", " + ignoreCase + ", " + StringUtils.toString(list) + ")");
         }
         for (String del : delimiter) { // 遍历分隔符集合

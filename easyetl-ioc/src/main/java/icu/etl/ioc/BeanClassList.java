@@ -9,7 +9,7 @@ import java.util.Comparator;
  * @author jeremy8551@qq.com
  * @createtime 2023/10/24
  */
-public class BeanConfigList extends ArrayList<BeanConfig> {
+public class BeanClassList extends ArrayList<BeanClass> {
 
     /**
      * 判断组件信息集合中是否已添加了参数 {@code beanConfig}
@@ -18,9 +18,9 @@ public class BeanConfigList extends ArrayList<BeanConfig> {
      * @param c          组件信息的排序规则
      * @return 返回true表示已添加
      */
-    public boolean contains(BeanConfig beanConfig, Comparator<BeanConfig> c) {
+    public boolean contains(BeanClass beanConfig, Comparator<BeanClass> c) {
         for (int i = 0, size = this.size(); i < size; i++) {
-            BeanConfig bean = this.get(i);
+            BeanClass bean = this.get(i);
 
             if (c == null) {
                 if (beanConfig.getBeanClass().equals(bean.getBeanClass())) {

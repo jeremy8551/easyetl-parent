@@ -32,8 +32,8 @@ public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEve
     public Codepage build(EasyetlContext context, Object... array) throws Exception {
         if (this.notInit) {
             this.notInit = false;
-            List<BeanConfig> list = context.getImplements(Codepage.class);
-            for (BeanConfig bean : list) {
+            List<BeanClass> list = context.getBeanClassList(Codepage.class);
+            for (BeanClass bean : list) {
                 Class<Codepage> type = bean.getBeanClass();
                 Codepage obj = ClassUtils.newInstance(type);
                 this.map.putAll(obj.getAll());
@@ -42,15 +42,15 @@ public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEve
         return this;
     }
 
-    public void addImplement(BeanEvent event) {
+    public void addBean(BeanEvent event) {
         Annotation anno = event.getAnnotation();
         if (anno instanceof EasyBean) {
-            Codepage obj = ClassUtils.newInstance(event.getImplementClass());
+            Codepage obj = ClassUtils.newInstance(event.getBeanClass());
             this.map.putAll(obj.getAll());
         }
     }
 
-    public void removeImplement(BeanEvent event) {
+    public void removeBean(BeanEvent event) {
     }
 
     public String get(String key) {

@@ -100,7 +100,7 @@ public class DatabaseDialectTest {
         Connection conn = Jdbc.getConnection("jdbc:oracle:thin:@ //110.1.5.37:1521/dadb", "lhbb", "lhbb");
         // Connection conn = TESTDB.getConnection();
         try {
-            DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = context.getBean(DatabaseDialect.class, conn);
             // System.out.println(JT.getDatabaseTypeInfo(conn));
 
             DatabaseProcedure p = dialect.getProcedureForceOne(conn, null, "LHBB", "CUSTAUM_APPEND");

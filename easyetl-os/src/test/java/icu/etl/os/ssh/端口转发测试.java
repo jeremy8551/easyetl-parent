@@ -20,7 +20,7 @@ public class 端口转发测试 {
 
     public static void testSSH() throws Exception {
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        OSFtpCommand client = context.get(OSFtpCommand.class, "sftp");
+        OSFtpCommand client = context.getBean(OSFtpCommand.class, "sftp");
         try {
             Ensure.isTrue(client.connect(localHost, localPort, "HEBYH_TEST_1", "7vs54b%)e1vw5l"));
             System.out.println("pwd " + client.pwd());
@@ -38,7 +38,7 @@ public class 端口转发测试 {
 
     public static void main(String[] args) throws Exception {
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        OSSecureShellCommand server = context.get(OSSecureShellCommand.class);
+        OSSecureShellCommand server = context.getBean(OSSecureShellCommand.class);
         try {
             Ensure.isTrue(server.connect("130.1.16.54", 22, "root", "passw0rd"));
             localPort = server.localPortForward(0, remoteHost, remotePort);

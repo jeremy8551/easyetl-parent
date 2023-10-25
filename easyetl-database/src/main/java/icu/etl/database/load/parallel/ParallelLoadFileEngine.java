@@ -60,7 +60,7 @@ public class ParallelLoadFileEngine implements Loader, EasyetlContextAware {
             try {
                 List<String> sources = context.getFiles();
                 for (String filepath : sources) {
-                    TextTableFile file = this.ioccxt.get(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
+                    TextTableFile file = this.ioccxt.getBean(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
                     file.setAbsolutePath(filepath);
                     this.execute(dao, factory, file);
                 }

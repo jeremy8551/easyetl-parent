@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import icu.etl.annotation.ScriptCommand;
-import icu.etl.ioc.BeanConfig;
+import icu.etl.ioc.BeanClass;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.Log;
 import icu.etl.script.UniversalCommandCompiler;
@@ -151,8 +151,8 @@ public class CommandScanner {
 
         // 显示所有已加载的脚本引擎命令
         EasyetlContext cxt = context.getFactory().getContext();
-        List<BeanConfig> beanList = cxt.getImplements(UniversalCommandCompiler.class);
-        for (BeanConfig bean : beanList) {
+        List<BeanClass> beanList = cxt.getBeanClassList(UniversalCommandCompiler.class);
+        for (BeanClass bean : beanList) {
             Class<? extends UniversalCommandCompiler> cls = bean.getBeanClass();
             try {
                 this.loadScriptCommand(cls);

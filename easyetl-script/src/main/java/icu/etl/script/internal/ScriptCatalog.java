@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Set;
 
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.StringUtils;
 
 public class ScriptCatalog extends Hashtable<String, Properties> {
@@ -27,7 +27,7 @@ public class ScriptCatalog extends Hashtable<String, Properties> {
             Set<String> names = catalog.keySet();
             for (String name : names) {
                 Properties src = catalog.get(name);
-                Properties copy = CollUtils.cloneProperties(src, new Properties());
+                Properties copy = CollectionUtils.cloneProperties(src, new Properties());
                 this.put(name, copy);
             }
         }

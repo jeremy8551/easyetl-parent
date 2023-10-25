@@ -31,7 +31,7 @@ public class ZipUtils {
      * @throws IOException
      */
     public static void compress(EasyetlContext context, File fileOrDir, File compressFile, String charsetName, boolean delete) throws IOException {
-        Compress compress = context.get(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
+        Compress compress = context.getBean(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
         try {
             compress.setFile(compressFile);
             compress.archiveFile(fileOrDir, null, StringUtils.defaultString(charsetName, StandardCharsets.UTF_8.name()));
@@ -69,7 +69,7 @@ public class ZipUtils {
      * @throws IOException
      */
     public static void uncompress(EasyetlContext context, File file, File dir, String charsetName, boolean delete) throws IOException {
-        Compress compress = context.get(Compress.class, FileUtils.getFilenameSuffix(file.getName()));
+        Compress compress = context.getBean(Compress.class, FileUtils.getFilenameSuffix(file.getName()));
         try {
             compress.setFile(file);
             compress.extract(dir.getAbsolutePath(), StringUtils.defaultString(charsetName, StandardCharsets.UTF_8.name()));

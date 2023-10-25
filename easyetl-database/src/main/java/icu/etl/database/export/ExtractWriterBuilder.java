@@ -37,7 +37,7 @@ public class ExtractWriterBuilder implements BeanBuilder<ExtractWriter> {
         // bean://kind/mode/major/minor
         if (StringUtils.startsWith(target, "bean://", 0, true, true)) {
             Object[] list = StringUtils.split(target.substring("bean://".length()), '/');
-            Class<ExtractWriter> cls = context.getImplement(ExtractWriter.class, list);
+            Class<ExtractWriter> cls = context.getBeanClass(ExtractWriter.class, list);
             return ClassUtils.newInstance(cls);
         }
 

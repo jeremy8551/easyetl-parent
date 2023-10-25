@@ -18,7 +18,7 @@ import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.script.internal.CommandList;
 import icu.etl.script.internal.FunctionSet;
 import icu.etl.script.session.ScriptMainProcess;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.ResourcesUtils;
 
 public class ExecuteFunctionCommand extends AbstractTraceCommand implements NohupCommandSupported {
@@ -41,7 +41,7 @@ public class ExecuteFunctionCommand extends AbstractTraceCommand implements Nohu
         for (int i = 0; i < list.size(); i++) {
             list.set(i, analysis.unQuotation(list.get(i)));
         }
-        String[] args = str == null ? null : CollUtils.toArray(list);
+        String[] args = str == null ? null : CollectionUtils.toArray(list);
         String name = args[0];
         boolean reverse = name.startsWith("!");
 

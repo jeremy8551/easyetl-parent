@@ -20,7 +20,7 @@ public class TestDB2TerminateConnection {
         AnnotationEasyetlContext cxt = new AnnotationEasyetlContext();
         Connection conn = TestEnv.getConnection();
         try {
-            DatabaseDialect dialect = cxt.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = cxt.getBean(DatabaseDialect.class, conn);
 
 //			System.out.println(conn);
 //			com.ibm.db2.jcc.t4.b c = (com.ibm.db2.jcc.t4.b) conn;

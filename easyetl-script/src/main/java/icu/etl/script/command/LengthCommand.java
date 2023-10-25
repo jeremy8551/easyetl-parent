@@ -23,7 +23,7 @@ import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.script.internal.FtpList;
 import icu.etl.script.io.ScriptFile;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
@@ -88,7 +88,7 @@ public class LengthCommand extends AbstractTraceCommand implements UniversalScri
                 stderr.println(ResourcesUtils.getScriptStderrMessage(50, filepath));
                 return UniversalScriptCommand.COMMAND_ERROR;
             } else if (ftp.isFile(filepath)) { // expression is remote file path
-                OSFile file = CollUtils.firstElement(ftp.ls(filepath));
+                OSFile file = CollectionUtils.firstElement(ftp.ls(filepath));
                 if (file == null) {
                     throw new NullPointerException();
                 }

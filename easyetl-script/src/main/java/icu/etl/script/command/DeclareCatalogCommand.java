@@ -12,7 +12,7 @@ import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -42,7 +42,7 @@ public class DeclareCatalogCommand extends AbstractGlobalCommand {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String name = analysis.trim(analysis.replaceShellVariable(session, context, this.name, true, true, false, false), 0, 0);
 
-        Set<String> keys = CollUtils.stringPropertyNames(this.catalog);
+        Set<String> keys = CollectionUtils.stringPropertyNames(this.catalog);
         for (String key : keys) {
             String value = analysis.replaceShellVariable(session, context, this.catalog.getProperty(key), true, true, true, true);
             this.catalog.setProperty(key, value);

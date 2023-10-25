@@ -80,10 +80,10 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
      * @param context 容器上下文信息
      */
     protected void load(EasyetlContext context) {
-        List<BeanConfig> list = context.getImplements(NationalHoliday.class);
-        for (BeanConfig bean : list) { // 判断语言和国家信息是否相等
+        List<BeanClass> list = context.getBeanClassList(NationalHoliday.class);
+        for (BeanClass bean : list) { // 判断语言和国家信息是否相等
             Class<NationalHoliday> cls = bean.getBeanClass();
-            EasyBean anno = bean.getAnnotationAsImplement();
+            EasyBean anno = bean.getAnnotation();
             this.add(cls, anno);
         }
     }
@@ -149,15 +149,15 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
         }
     }
 
-    public void addImplement(BeanEvent event) {
+    public void addBean(BeanEvent event) {
         Annotation anno = event.getAnnotation();
         if (anno instanceof EasyBean) {
-            Class<NationalHoliday> cls = event.getImplementClass();
+            Class<NationalHoliday> cls = event.getBeanClass();
             this.add(cls, (EasyBean) anno);
         }
     }
 
-    public void removeImplement(BeanEvent event) {
+    public void removeBean(BeanEvent event) {
         // 不需要做删除操作
     }
 

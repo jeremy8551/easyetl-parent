@@ -52,7 +52,7 @@ public class OrderByExpression {
         FieldExpression field = new FieldExpression(analysis, list.get(0));
         if (field.containParenthes()) {
             this.position = Integer.parseInt(field.getParameter());
-            this.comparator = this.context.get(Comparator.class, StringUtils.defaultString(field.getName(), "default"));
+            this.comparator = this.context.getBean(Comparator.class, StringUtils.defaultString(field.getName(), "default"));
             if (this.comparator == null) {
                 throw new UnsupportedOperationException(field.getName());
             }

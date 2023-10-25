@@ -11,7 +11,7 @@ import icu.etl.util.StringComparator;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanConfig> {
+public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanClass> {
 
     /**
      * 初始化，扫描类路径中所有被注解标记的类信息
@@ -26,16 +26,14 @@ public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanConfi
 
         // 如果类上配置了注解
         if (cls.isAnnotationPresent(EasyBean.class)) {
-            EasyBean anno = cls.getAnnotation(EasyBean.class);
-            register.add(new BeanConfig(cls, anno), this);
-            return true;
+            return register.addBean(new AnnotationBeanClass(cls), this);
         }
         return false;
     }
 
-    public int compare(BeanConfig o1, BeanConfig o2) {
-        EasyBean b1 = o1.getAnnotationAsImplement();
-        EasyBean b2 = o2.getAnnotationAsImplement();
+    public int compare(BeanClass o1, BeanClass o2) {
+        EasyBean b1 = o1.getAnnotation();
+        EasyBean b2 = o2.getAnnotation();
 
         if (StringComparator.compareTo(b2.kind(), b1.kind()) == 0 //
                 && StringComparator.compareTo(b2.mode(), b1.mode()) == 0 //

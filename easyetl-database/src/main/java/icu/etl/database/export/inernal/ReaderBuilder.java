@@ -24,14 +24,14 @@ public class ReaderBuilder implements BeanBuilder<ExtractReader> {
 
         if (StringUtils.startsWith(source, "select", 0, true, true)) {
             return new DatabaseReader(cxt);
-        } else if (ClassUtils.forName(source) != null) {
+        } else if (ClassUtils.forName(source, false, context.getClassLoader()) != null) {
             return (ExtractReader) ClassUtils.newInstance(source);
         }
 
         // 解析 http://xxx/xxx/xxx 格式
         String[] split = StringUtils.split(source, "://");
         if (split.length > 0) {
-            Class<ExtractReader> cls = context.getImplement(ExtractReader.class, split[0]);
+            Class<ExtractReader> cls = context.getBeanClass(ExtractReader.class, split[0]);
             if (cls != null) {
                 return ClassUtils.newInstance(cls);
             }

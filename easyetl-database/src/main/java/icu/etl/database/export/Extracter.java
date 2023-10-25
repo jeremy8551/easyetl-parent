@@ -96,9 +96,9 @@ public class Extracter extends Executor implements EasyetlContextAware {
         this.message.setBytes(0); // 在输出流中设置
         this.message.setTarget(""); // 在输出流中设置
 
-        ExtractReader in = this.ioccxt.get(ExtractReader.class, context);
+        ExtractReader in = this.ioccxt.getBean(ExtractReader.class, context);
         try {
-            ExtractWriter out = this.ioccxt.get(ExtractWriter.class, context, this.message);
+            ExtractWriter out = this.ioccxt.getBean(ExtractWriter.class, context, this.message);
             try {
                 while (in.hasLine()) {
                     if (this.terminate) {

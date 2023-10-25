@@ -31,7 +31,7 @@ import icu.etl.database.SQL;
 import icu.etl.log.STD;
 import icu.etl.time.Timer;
 import icu.etl.util.ClassUtils;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Property;
@@ -238,7 +238,7 @@ public abstract class AbstractDialect implements DatabaseDialect {
             return (String) ClassUtils.executeMethod(conn, "getSchema", new Object[0]);
 //			return conn.getSchema();
         } catch (Exception e) {
-            Property p = CollUtils.firstElement(Jdbc.getSchemas(conn));
+            Property p = CollectionUtils.firstElement(Jdbc.getSchemas(conn));
             return p == null ? null : p.getKey();
         }
     }

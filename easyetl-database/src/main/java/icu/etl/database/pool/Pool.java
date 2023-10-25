@@ -186,7 +186,7 @@ public class Pool implements Closeable {
             } else {
                 ClassUtils.loadClass(driver); // TODO 更换了方法需要重新测试
                 Connection conn = Jdbc.getConnection(url, username, password);
-                DatabaseConfigurationContainer container = this.context.get(DatabaseConfigurationContainer.class);
+                DatabaseConfigurationContainer container = this.context.getBean(DatabaseConfigurationContainer.class);
                 container.add(new StandardDatabaseConfiguration(null, driver, url, username, password, null, null, null, null, null));
                 return conn;
             }
@@ -195,7 +195,7 @@ public class Pool implements Closeable {
                 try {
                     ClassUtils.loadClass(driver); // TODO 更换了方法需要重新测试
                     Connection conn = Jdbc.getConnection(url, username, password);
-                    DatabaseConfigurationContainer container = context.get(DatabaseConfigurationContainer.class);
+                    DatabaseConfigurationContainer container = context.getBean(DatabaseConfigurationContainer.class);
                     container.add(new StandardDatabaseConfiguration(null, driver, url, username, password, null, null, null, null, null));
                     return conn;
                 } catch (Throwable e) {
@@ -329,8 +329,8 @@ public class Pool implements Closeable {
             throw new IllegalArgumentException(url);
         }
 
-        this.dialect = this.context.get(DatabaseDialect.class, url);
-        this.jdbc = this.context.get(DatabaseConfigurationContainer.class).add(config).clone();
+        this.dialect = this.context.getBean(DatabaseDialect.class, url);
+        this.jdbc = this.context.getBean(DatabaseConfigurationContainer.class).add(config).clone();
     }
 
 }

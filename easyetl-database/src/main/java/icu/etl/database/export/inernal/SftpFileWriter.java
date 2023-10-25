@@ -79,7 +79,7 @@ public class SftpFileWriter implements ExtractWriter, EasyetlContextAware {
      * @param remotepath
      */
     protected void open(String host, String port, String username, String password, String remotepath) {
-        this.ftp = this.context.get(OSFtpCommand.class, "sftp");
+        this.ftp = this.context.getBean(OSFtpCommand.class, "sftp");
         Ensure.isTrue(this.ftp.connect(host, Integer.parseInt(port), username, password), host, port, username, password);
         this.target = "sftp://" + username + "@" + host + ":" + port + "?password=" + password;
     }

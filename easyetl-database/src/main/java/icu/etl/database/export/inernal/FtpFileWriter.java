@@ -25,7 +25,7 @@ public class FtpFileWriter extends SftpFileWriter implements ExtractWriter, Easy
     }
 
     protected void open(String host, String port, String username, String password, String remotepath) {
-        this.ftp = this.context.get(OSFtpCommand.class, "ftp");
+        this.ftp = this.context.getBean(OSFtpCommand.class, "ftp");
         Ensure.isTrue(this.ftp.connect(host, Integer.parseInt(port), username, password), host, port, username, password);
         this.target = "ftp://" + username + "@" + host + ":" + port + "?password=" + password;
     }

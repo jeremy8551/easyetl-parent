@@ -33,7 +33,7 @@ public class 测试远程连接Linux与DB2和WAS探测 {
 
         TimeWatch watch = new TimeWatch();
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        OS os = context.get(OS.class, host, port, username, password);
+        OS os = context.getBean(OS.class, host, port, username, password);
         try {
             System.out.println();
             System.out.println();

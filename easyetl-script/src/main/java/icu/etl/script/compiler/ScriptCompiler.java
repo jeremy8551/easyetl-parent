@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import icu.etl.annotation.EasyBean;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -25,7 +27,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  */
 @EasyBean(kind = "default", mode = "", major = "1", minor = "0", description = "即时编译器")
-public class ScriptCompiler implements UniversalScriptCompiler {
+public class ScriptCompiler implements UniversalScriptCompiler, EasyetlContextAware {
 
     /** 脚本命令编译器集合 */
     protected CommandRepository map;
@@ -37,7 +39,7 @@ public class ScriptCompiler implements UniversalScriptCompiler {
     protected volatile boolean terminate;
 
     /** 语句分析器 */
-    protected ScriptAnalysis analysis;
+    protected UniversalScriptAnalysis analysis;
 
     /** 词法分析器 */
     protected ScriptReader reader;
@@ -48,21 +50,27 @@ public class ScriptCompiler implements UniversalScriptCompiler {
     /** 起始行数 */
     protected long startLineNumber;
 
+    /** 容器上下文信息 */
+    protected EasyetlContext context;
+
     /**
      * 初始化
      */
     public ScriptCompiler() {
         this.cache = new PriorityQueue<UniversalScriptCommand>(10, new Comparator<UniversalScriptCommand>() {
-
             public int compare(UniversalScriptCommand o1, UniversalScriptCommand o2) {
                 return 0;
             }
         });
 
-        this.analysis = new ScriptAnalysis();
+        this.analysis = this.context.getBean(UniversalScriptAnalysis.class);
         this.map = new CommandRepository(this.analysis);
         this.terminate = false;
         this.startLineNumber = 0;
+    }
+
+    public void setContext(EasyetlContext context) {
+        this.context = context;
     }
 
     public UniversalScriptCompiler buildCompiler() {
@@ -78,7 +86,7 @@ public class ScriptCompiler implements UniversalScriptCompiler {
         this.map.clear();
         this.map.load(context);
         if (this.map.getDefault() == null) { // 设置脚本引擎默认命令
-            String script = context.getFactory().getContext().get(UniversalScriptConfiguration.class).getDefaultCommand(); // 读取配置信息中的默认脚本语句
+            String script = context.getFactory().getContext().getBean(UniversalScriptConfiguration.class).getDefaultCommand(); // 读取配置信息中的默认脚本语句
             if (StringUtils.isNotBlank(script)) {
                 UniversalCommandCompiler compiler = this.map.get(script);
                 this.map.setDefault(compiler);

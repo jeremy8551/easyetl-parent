@@ -38,7 +38,7 @@ import icu.etl.os.internal.OSMemoryImpl;
 import icu.etl.os.internal.OSNetworkCardImpl;
 import icu.etl.os.internal.OSProcessorImpl;
 import icu.etl.util.ArrayUtils;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
@@ -583,9 +583,9 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
                 String[] array = StringUtils.splitByBlank(line);
                 if (array.length < length) {
                     line = line + in.next();
-                    array = CollUtils.toArray(StringUtils.splitByBlank(line, length));
+                    array = CollectionUtils.toArray(StringUtils.splitByBlank(line, length));
                 } else if (array.length > length) {
-                    array = CollUtils.toArray(StringUtils.splitByBlank(line, length));
+                    array = CollectionUtils.toArray(StringUtils.splitByBlank(line, length));
                 }
 
                 Ensure.isTrue(array.length == length, line, titles);

@@ -1,9 +1,10 @@
 package icu.etl.ioc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,8 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     /** 组件工厂集合 */
     private Vector<BeanCreator> creators;
 
-    /** 组件接口（或类）与实现类的映射关系 */
-    private LinkedHashMap<Class<?>, BeanConfigList> beans;
+    /** 组件（接口或类）与实现类的映射关系 */
+    private LinkedHashMap<Class<?>, BeanClassList> beanMap;
 
     /** 组件接口与组件工厂类映射关系 */
     private LinkedHashMap<Class<?>, BeanBuilder<?>> builders;
@@ -43,8 +44,8 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     /** true 表示发生变化时可以通知 {@linkplain BeanEventListener} 对象 */
     private AtomicBoolean notice;
 
-    /** 属性集合 */
-    private Map<String, Object> map;
+    /** 容器 */
+    private Map<String, Object> ioc;
 
     /**
      * 上下文信息
@@ -65,29 +66,43 @@ public class AnnotationEasyetlContext implements EasyetlContext {
      * @param args   参数数组
      */
     public AnnotationEasyetlContext(ClassLoader loader, String... args) {
-        this.beans = new LinkedHashMap<Class<?>, BeanConfigList>();
+        this.classLoader = loader == null ? ClassUtils.getDefaultClassLoader() : loader;
+        this.args = args;
+        this.beanMap = new LinkedHashMap<Class<?>, BeanClassList>();
         this.builders = new LinkedHashMap<Class<?>, BeanBuilder<?>>();
-        this.map = new Hashtable<String, Object>(50);
+        this.ioc = Collections.synchronizedMap(new LinkedHashMap<String, Object>(50));
         this.notice = new AtomicBoolean(false);
         this.creators = new Vector<BeanCreator>();
         this.creators.add(new StandardBeanCreator(this));
-        this.classLoader = loader;
-        this.args = args;
         new BeanClassLoader().load(this);
     }
 
-    public <E> E get(String key) {
-        return (E) this.map.get(key);
+    public <E> List<E> getAttribute(Class<E> cls) {
+        Collection<Object> values = this.ioc.values();
+        List<E> list = new ArrayList<E>(values.size());
+        for (Iterator<Object> it = values.iterator(); it.hasNext(); ) {
+            Object obj = it.next();
+            Class<?> objClass = obj.getClass();
+
+            // 判断接口
+            if (cls.isInterface() && ClassUtils.isInterfacePresent(objClass, cls)) {
+                list.add((E) obj);
+                continue;
+            }
+
+            // 判断类名
+            if (ClassUtils.isExtendClass(objClass, cls)) {
+                list.add((E) obj);
+                continue;
+            }
+        }
+        return list;
     }
 
-    public <E> E put(String key, Object value) {
-        return (E) this.map.put(key, value);
-    }
-
-    public <E> E get(Class<E> cls, Object... array) {
+    public <E> E getBean(Class<E> type, Object... args) {
         E obj;
         for (BeanCreator c : this.creators) {
-            if ((obj = c.getBean(cls, array)) != null) {
+            if ((obj = c.getBean(type, args)) != null) {
                 if (obj instanceof EasyetlContextAware) {
                     ((EasyetlContextAware) obj).setContext(this);
                 }
@@ -107,22 +122,22 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         return array;
     }
 
-    public Set<Class<?>> getBuilderClass() {
+    public Set<Class<?>> getBeanBuilderClass() {
         return Collections.unmodifiableSet(this.builders.keySet());
     }
 
-    public BeanBuilder<?> getBuilder(Class<?> type) {
+    public BeanBuilder<?> getBeanBuilder(Class<?> type) {
         return this.builders.get(type);
     }
 
-    public synchronized BeanBuilder<?> removeBuilder(Class<?> type) {
+    public synchronized BeanBuilder<?> removeBeanBuilder(Class<?> type) {
         return this.builders.remove(type);
     }
 
-    public boolean containsImplement(Class<?> type, Class<?> impl) {
-        List<BeanConfig> list = this.beans.get(type);
+    public boolean containsBeanClass(Class<?> type, Class<?> impl) {
+        List<BeanClass> list = this.beanMap.get(type);
         if (list != null) {
-            for (BeanConfig obj : list) {
+            for (BeanClass obj : list) {
                 if (obj.getBeanClass().equals(impl)) {
                     return true;
                 }
@@ -131,14 +146,14 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         return false;
     }
 
-    public synchronized List<BeanConfig> removeImplement(Class<?> type) {
-        List<BeanConfig> list = this.beans.remove(type);
+    public synchronized List<BeanClass> removeBeanClass(Class<?> type) {
+        List<BeanClass> list = this.beanMap.remove(type);
         BeanBuilder<?> builder = this.builders.get(type);
 
         if (list != null && builder != null && this.notice.get() && (builder instanceof BeanEventListener)) {
             BeanEventListener listener = (BeanEventListener) builder;
-            for (BeanConfig bean : list) {
-                listener.removeImplement(new StandardBeanEvent(this, bean.getBeanClass(), bean.getAnnotation()));
+            for (BeanClass bean : list) {
+                listener.removeBean(new StandardBeanEvent(this, bean.getBeanClass(), bean.getAnnotation()));
             }
         }
         return list;
@@ -170,24 +185,24 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     /**
      * 查询类实现的所有接口，添加所有接口与实现类的映射关系
      *
-     * @param anno       组件信息
+     * @param beanclass  组件信息
      * @param comparator 排序规则（不能重复添加组件）
      */
-    public synchronized void add(BeanConfig anno, Comparator<BeanConfig> comparator) {
-        if (anno == null) {
-            return;
+    public synchronized boolean addBean(BeanClass beanclass, Comparator<BeanClass> comparator) {
+        if (beanclass == null) {
+            return false;
         }
 
-        Class<?> cls = anno.getBeanClass();
+        Class<?> cls = beanclass.getBeanClass();
         List<Class<?>> interfaces = ClassUtils.getAllInterface(cls, null);
 
         // 判断是否是工厂类
         for (Class<?> interfaceCls : interfaces) {
             if (interfaceCls.getName().equals(BeanBuilder.class.getName())) {
-                Class<?>[] generics = ClassUtils.getInterfaceGenerics(cls, BeanBuilder.class);
+                String[] generics = ClassUtils.getInterfaceGenerics(cls, BeanBuilder.class);
                 if (generics.length == 1) {
-                    this.addBuilder(generics[0], ClassUtils.newInstance(cls));
-                    return;
+                    Class<Object> type = ClassUtils.forName(generics[0], true, this.getClassLoader());
+                    return this.addBuilder(type, ClassUtils.newInstance(cls));
                 }
             }
         }
@@ -195,7 +210,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         // 添加类和父类 与实现类的映射关系
         Class supercls = cls;
         while (supercls != null) {
-            this.add(supercls, anno, comparator);
+            this.addBean(supercls, beanclass, comparator);
             supercls = supercls.getSuperclass();
             if (supercls.equals(Object.class)) {
                 break;
@@ -204,20 +219,21 @@ public class AnnotationEasyetlContext implements EasyetlContext {
 
         // 添加接口与实现类的映射关系
         for (Class<?> type : interfaces) {
-//            System.out.println("add " + type.getName() + " " + anno.getImplementClass() + " " + anno.getAnnotationAsImplement());
-            this.add(type, anno, comparator);
+//            System.out.println("add " + type.getName() + " " + beanclass.getImplementClass() + " " + beanclass.getAnnotationAsImplement());
+            this.addBean(type, beanclass, comparator);
         }
+        return true;
     }
 
-    private void add(Class<?> type, BeanConfig beanConfig, Comparator<BeanConfig> comparator) {
+    private void addBean(Class<?> type, BeanClass beanConfig, Comparator<BeanClass> comparator) {
         if (STD.out.isDebugEnabled()) {
             STD.out.debug(ResourcesUtils.getClassMessage(21, type.getName(), beanConfig.getBeanClass().getName()));
         }
 
-        BeanConfigList list = this.beans.get(type);
+        BeanClassList list = this.beanMap.get(type);
         if (list == null) {
-            list = new BeanConfigList();
-            this.beans.put(type, list);
+            list = new BeanClassList();
+            this.beanMap.put(type, list);
         }
 
         if (!list.contains(beanConfig, comparator)) {
@@ -226,18 +242,18 @@ public class AnnotationEasyetlContext implements EasyetlContext {
             if (this.notice.get()) { // 使用监听器通知
                 BeanBuilder<?> obj = this.builders.get(type);
                 if (obj instanceof BeanEventListener) {
-                    ((BeanEventListener) obj).addImplement(new StandardBeanEvent(this, beanConfig.getBeanClass(), beanConfig.getAnnotation()));
+                    ((BeanEventListener) obj).addBean(new StandardBeanEvent(this, beanConfig.getBeanClass(), beanConfig.getAnnotation()));
                 }
             }
         }
     }
 
-    public Set<Class<?>> getImplements() {
-        return Collections.unmodifiableSet(this.beans.keySet());
+    public Set<Class<?>> getBeanClasses() {
+        return Collections.unmodifiableSet(this.beanMap.keySet());
     }
 
-    public List<BeanConfig> getImplements(Class<?> type) {
-        BeanConfigList list = this.beans.get(type);
+    public List<BeanClass> getBeanClassList(Class<?> type) {
+        BeanClassList list = this.beanMap.get(type);
         if (list == null) {
             return Collections.emptyList();
         } else {
@@ -245,7 +261,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         }
     }
 
-    public <E> Class<E> getImplement(Class<E> type, Object... args) {
+    public <E> Class<E> getBeanClass(Class<E> type, Object... args) {
         if (type == null) {
             throw new NullPointerException();
         }
@@ -285,7 +301,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
      * @return 组件的实现类
      */
     private <E> Class<E> getImplement(Class<E> type, String kind, String mode, String major, String minor) {
-        BeanConfigList list = this.beans.get(type);
+        BeanClassList list = this.beanMap.get(type);
 
         // 没有任何实现类
         if (list == null || list.size() == 0) {
@@ -298,60 +314,60 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         }
 
         // kind 属性相同
-        BeanAnnotationList beans = new BeanAnnotationList(list.size());
-        for (BeanConfig bean : list) {
-            EasyBean anno = bean.getAnnotationAsImplement();
+        BeanClassCache buffer = new BeanClassCache(list.size());
+        for (BeanClass bean : list) {
+            EasyBean anno = bean.getAnnotation();
             if (anno != null && StringComparator.compareTo(kind, anno.kind()) == 0) {
-                beans.add(bean);
+                buffer.add(bean);
             }
         }
 
-        if (beans.onlyOne()) {
-            return beans.getOnlyOne();
+        if (buffer.onlyOne()) {
+            return buffer.getOnlyOne();
         }
 
         // 过滤 mode 不同的类
         if (StringUtils.isNotBlank(mode)) {
-            for (int i = 0; i < beans.size(); i++) {
-                BeanConfig bean = beans.get(i);
-                EasyBean anno = bean.getAnnotationAsImplement();
+            for (int i = 0; i < buffer.size(); i++) {
+                BeanClass bean = buffer.get(i);
+                EasyBean anno = bean.getAnnotation();
                 if (anno != null && StringComparator.compareTo(mode, anno.mode()) != 0) {
-                    beans.remove(i--);
+                    buffer.remove(i--);
                 }
             }
 
-            if (beans.onlyOne()) {
-                return beans.getOnlyOne();
+            if (buffer.onlyOne()) {
+                return buffer.getOnlyOne();
             }
         }
 
         // 过滤大版本号不同的类
-        for (int i = 0; i < beans.size(); i++) {
-            BeanConfig bean = beans.get(i);
-            EasyBean anno = bean.getAnnotationAsImplement();
+        for (int i = 0; i < buffer.size(); i++) {
+            BeanClass bean = buffer.get(i);
+            EasyBean anno = bean.getAnnotation();
             if (anno != null && StringComparator.compareTo(major, anno.major()) != 0) {
-                beans.remove(i--);
+                buffer.remove(i--);
             }
         }
 
-        if (beans.onlyOne()) {
-            return beans.getOnlyOne();
+        if (buffer.onlyOne()) {
+            return buffer.getOnlyOne();
         }
 
         // 过滤小版本号不同的类
-        for (int i = 0; i < beans.size(); i++) {
-            BeanConfig bean = beans.get(i);
-            EasyBean anno = bean.getAnnotationAsImplement();
+        for (int i = 0; i < buffer.size(); i++) {
+            BeanClass bean = buffer.get(i);
+            EasyBean anno = bean.getAnnotation();
             if (anno != null && StringComparator.compareTo(minor, anno.minor()) != 0) {
-                beans.remove(i--);
+                buffer.remove(i--);
             }
         }
 
-        if (beans.onlyOne()) {
-            return beans.getOnlyOne();
+        if (buffer.onlyOne()) {
+            return buffer.getOnlyOne();
         } else { // 对应多个
             StringBuilder buf = new StringBuilder();
-            for (BeanConfig obj : beans) {
+            for (BeanClass obj : buffer) {
                 buf.append(obj.getBeanClass().getName()).append(" ");
             }
             String msg = buf.toString().trim();

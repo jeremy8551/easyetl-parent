@@ -21,7 +21,7 @@ import icu.etl.expression.DataUnitExpression;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTable;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanConfig;
+import icu.etl.ioc.BeanClass;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -202,7 +202,7 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
                 // 设置启动条件
                 if (analysis.equals(key, "launch")) {
                     String expr = StringUtils.trimBlank(analysis.unQuotation(value));
-                    Class<LoadEngineLaunch> cls = ClassUtils.forName(expr);
+                    Class<LoadEngineLaunch> cls = ClassUtils.forName(expr, true, context.getFactory().getContext().getClassLoader());
                     if (cls == null) {
                         cmd.setRule(expr);
                     } else {
@@ -301,13 +301,13 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
         // 查找接口对应的的实现类
-        List<BeanConfig> list1 = context.getFactory().getContext().getImplements(TextTableFile.class);
+        List<BeanClass> list1 = context.getFactory().getContext().getBeanClassList(TextTableFile.class);
         CharTable ct1 = new CharTable(context.getCharsetName());
         ct1.addTitle("");
         ct1.addTitle("");
         ct1.addTitle("");
-        for (BeanConfig anno : list1) {
-            EasyBean annotation = anno.getAnnotationAsImplement();
+        for (BeanClass anno : list1) {
+            EasyBean annotation = anno.getAnnotation();
             ct1.addCell(annotation.kind());
             ct1.addCell(annotation.description());
             ct1.addCell(anno.getBeanClass().getName());

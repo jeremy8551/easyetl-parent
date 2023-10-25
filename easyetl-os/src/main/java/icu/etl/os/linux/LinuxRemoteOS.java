@@ -41,7 +41,7 @@ import icu.etl.os.internal.OSMemoryImpl;
 import icu.etl.os.internal.OSNetworkCardImpl;
 import icu.etl.os.internal.OSProcessorImpl;
 import icu.etl.util.ArrayUtils;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
@@ -98,7 +98,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
      * @return
      */
     public boolean connect(String host, int port, String username, String password) {
-        this.cmd = this.context.get(OSSecureShellCommand.class, "linux", "ssh");
+        this.cmd = this.context.getBean(OSSecureShellCommand.class, "linux", "ssh");
         if (this.cmd.connect(host, port, username, password)) {
             try {
                 this.host = host;
@@ -195,7 +195,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
 
     public synchronized boolean enableOSCommand() {
         if (this.cmd == null) {
-            this.cmd = this.context.get(OSSecureShellCommand.class);
+            this.cmd = this.context.getBean(OSSecureShellCommand.class);
         }
 
         if (this.cmd.isConnected()) {
@@ -218,7 +218,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
      */
     public boolean needDisableOSCommand() {
         if (this.cmd == null) {
-            this.cmd = this.context.get(OSSecureShellCommand.class);
+            this.cmd = this.context.getBean(OSSecureShellCommand.class);
         }
 
         if (this.cmd.isConnected()) {
@@ -445,7 +445,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
 
     public boolean enableOSFileCommand() {
         if (this.sftp == null) {
-            this.sftp = this.context.get(OSFtpCommand.class, "sftp");
+            this.sftp = this.context.getBean(OSFtpCommand.class, "sftp");
         }
 
         if (this.sftp.isConnected()) {
@@ -468,7 +468,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
      */
     protected boolean needDisableOSFileCommand() {
         if (this.sftp == null) {
-            this.sftp = this.context.get(OSFtpCommand.class, "sftp");
+            this.sftp = this.context.getBean(OSFtpCommand.class, "sftp");
         }
 
         if (this.sftp.isConnected()) {
@@ -640,7 +640,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
         try {
             this.cmd.execute("ps -p " + pid + " -fl ");
             List<Map<String, String>> listmap = OSCommandUtils.splitPSCmdStdout(this.cmd.getStdout());
-            Map<String, String> map = CollUtils.onlyOne(listmap);
+            Map<String, String> map = CollectionUtils.onlyOne(listmap);
             if (map == null) {
                 return null;
             }
@@ -871,9 +871,9 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
                     String[] array = StringUtils.splitByBlank(line);
                     if (array.length < length) {
                         line = line + in.next();
-                        array = CollUtils.toArray(StringUtils.splitByBlank(line, length));
+                        array = CollectionUtils.toArray(StringUtils.splitByBlank(line, length));
                     } else if (array.length > length) {
-                        array = CollUtils.toArray(StringUtils.splitByBlank(line, length));
+                        array = CollectionUtils.toArray(StringUtils.splitByBlank(line, length));
                     }
 
                     Ensure.isTrue(array.length == length, line, titles);

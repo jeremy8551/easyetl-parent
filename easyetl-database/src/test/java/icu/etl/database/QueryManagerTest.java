@@ -20,7 +20,7 @@ public class QueryManagerTest {
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
         Connection conn = TestEnv.getConnection();
         try {
-            DatabaseDialect dialect = context.get(DatabaseDialect.class, conn);
+            DatabaseDialect dialect = context.getBean(DatabaseDialect.class, conn);
             if (dialect.containsTable(conn, null, Jdbc.getSchema(tableName), Jdbc.removeSchema(tableName))) {
                 JdbcDao.executeByJdbc(conn, "drop table " + tableName);
             }

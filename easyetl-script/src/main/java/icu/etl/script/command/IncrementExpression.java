@@ -182,7 +182,7 @@ public class IncrementExpression implements Attribute<String> {
                     } else {
                         ClassUtils.loadClass(driver); // TODO 更换了方法需要重新测试
                         Connection conn = Jdbc.getConnection(url, username, password);
-                        DatabaseConfigurationContainer container = context.getFactory().getContext().get(DatabaseConfigurationContainer.class);
+                        DatabaseConfigurationContainer container = context.getFactory().getContext().getBean(DatabaseConfigurationContainer.class);
                         container.add(new StandardDatabaseConfiguration(null, driver, url, username, password, null, null, null, null, null));
                         dao.setConnection(conn, true);
                     }
@@ -221,17 +221,17 @@ public class IncrementExpression implements Attribute<String> {
 
                 // 替换字段
                 for (int i = 0; i < newchg.length; i++) {
-                    this.newchg.add(context.getFactory().getContext().get(IncrementReplace.class, columns, newchg[i], this.analysis));
+                    this.newchg.add(context.getFactory().getContext().getBean(IncrementReplace.class, columns, newchg[i], this.analysis));
                 }
 
                 // 替换字段
                 for (int i = 0; i < updchg.length; i++) {
-                    this.updchg.add(context.getFactory().getContext().get(IncrementReplace.class, columns, updchg[i], this.analysis));
+                    this.updchg.add(context.getFactory().getContext().getBean(IncrementReplace.class, columns, updchg[i], this.analysis));
                 }
 
                 // 替换字段
                 for (int i = 0; i < delchg.length; i++) {
-                    this.delchg.add(context.getFactory().getContext().get(IncrementReplace.class, columns, delchg[i], this.analysis));
+                    this.delchg.add(context.getFactory().getContext().getBean(IncrementReplace.class, columns, delchg[i], this.analysis));
                 }
             } finally {
                 dao.rollback();
@@ -252,17 +252,17 @@ public class IncrementExpression implements Attribute<String> {
 
             // 替换字段
             for (int i = 0; i < newchg.length; i++) {
-                this.newchg.add(this.context.getFactory().getContext().get(IncrementReplace.class, newchg[i], this.analysis));
+                this.newchg.add(this.context.getFactory().getContext().getBean(IncrementReplace.class, newchg[i], this.analysis));
             }
 
             // 替换字段
             for (int i = 0; i < updchg.length; i++) {
-                this.updchg.add(this.context.getFactory().getContext().get(IncrementReplace.class, updchg[i], this.analysis));
+                this.updchg.add(this.context.getFactory().getContext().getBean(IncrementReplace.class, updchg[i], this.analysis));
             }
 
             // 替换字段
             for (int i = 0; i < delchg.length; i++) {
-                this.delchg.add(this.context.getFactory().getContext().get(IncrementReplace.class, delchg[i], this.analysis));
+                this.delchg.add(this.context.getFactory().getContext().getBean(IncrementReplace.class, delchg[i], this.analysis));
             }
         }
     }
@@ -309,7 +309,7 @@ public class IncrementExpression implements Attribute<String> {
      * @return
      */
     public TextTableFile createTableFile(String filetype) {
-        TextTableFile file = this.context.getFactory().getContext().get(TextTableFile.class, filetype, this);
+        TextTableFile file = this.context.getFactory().getContext().getBean(TextTableFile.class, filetype, this);
         if (file == null) {
             throw new UnsupportedOperationException(filetype);
         } else {

@@ -160,7 +160,7 @@ public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
     }
 
     public TableLineRuler getRuler() {
-        return this.context.get(TableLineRuler.class, this);
+        return this.context.getBean(TableLineRuler.class, this);
     }
 
     public TextTableFileReader getReader(int cache) throws IOException {

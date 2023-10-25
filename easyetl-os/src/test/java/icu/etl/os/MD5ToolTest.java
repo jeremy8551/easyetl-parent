@@ -27,7 +27,7 @@ public class MD5ToolTest {
             System.out.println("MD5Encrypt.encrypt value is " + md5);
 
             AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-            OSSecureShellCommand shell = context.get(OSSecureShellCommand.class);
+            OSSecureShellCommand shell = context.getBean(OSSecureShellCommand.class);
             try {
                 shell.connect(TestEnv.getSSHHost(), TestEnv.getSSHPort(), TestEnv.getSSHUsername(), TestEnv.getSSHPassword());
                 shell.execute("echo -n " + str + " | md5sum "); // 判断md5值与linux上是否一致
@@ -86,7 +86,7 @@ public class MD5ToolTest {
             e.eval("bye");
 
             AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-            OSSecureShellCommand shell = context.get(OSSecureShellCommand.class);
+            OSSecureShellCommand shell = context.getBean(OSSecureShellCommand.class);
             try {
                 shell.connect(host, port, username, password);
                 shell.execute("md5sum `pwd`/" + filename); // 判断md5值与linux上是否一致

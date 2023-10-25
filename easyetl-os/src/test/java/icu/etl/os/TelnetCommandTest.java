@@ -12,7 +12,7 @@ public class TelnetCommandTest {
 
     public static void main(String[] args) throws Exception {
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        OSShellCommand telnet = context.get(OSShellCommand.class, "telnet");
+        OSShellCommand telnet = context.getBean(OSShellCommand.class, "telnet");
         telnet.connect("130.1.10.10", 23, "user", "xxx");
         telnet.execute("pwd", 2000);
         System.out.println(telnet.getStdout());

@@ -54,7 +54,7 @@ public class EmailSendCommand extends AbstractTraceCommand {
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
-        MailCommand mail = context.getFactory().getContext().get(MailCommand.class);
+        MailCommand mail = context.getFactory().getContext().getBean(MailCommand.class);
         mail.setHost(this.host);
         mail.setUser(this.username, this.password);
         mail.setCharsetName(this.charset);

@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import icu.etl.io.TextTableFile;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -143,7 +143,7 @@ public class LoadFileRange {
 
         });
 
-        LoadFileRange range = CollUtils.lastElement(list);
+        LoadFileRange range = CollectionUtils.lastElement(list);
         long length = file.getFile().length();
         if (range == null || range.getEnd() != length) { // 文件范围跟文件实际大小不一致时，从新生成数据加载范围集合
             long size = (length == 0 || thread == 0) ? 0 : (length / thread);

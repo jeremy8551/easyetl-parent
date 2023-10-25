@@ -23,7 +23,7 @@ import icu.etl.database.DatabaseDialect;
 import icu.etl.database.Jdbc;
 import icu.etl.database.internal.AbstractDialect;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanConfig;
+import icu.etl.ioc.BeanClass;
 import icu.etl.ioc.ClassScanRule;
 import icu.etl.ioc.ClassScanner;
 import icu.etl.ioc.EasyetlContext;
@@ -56,7 +56,7 @@ import icu.etl.script.internal.CommandCompilerContext;
 import icu.etl.script.method.VariableMethodRepository;
 import icu.etl.util.CharTable;
 import icu.etl.util.ClassUtils;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.Settings;
@@ -115,7 +115,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                     , AbstractDialect.class.getName() // 18
                     , EasyBean.class.getName() // 19
                     , ClassScanner.PROPERTY_SCANNPKG // 20
-                    , CollUtils.firstElement(context.getFactory().getExtensions()) // 21
+                    , CollectionUtils.firstElement(context.getFactory().getExtensions()) // 21
                     , "" // 22
                     , "" // 23
                     , Settings.getGroupID() // 24
@@ -210,9 +210,9 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             }
 
             // 读取大版本号
-            List<BeanConfig> list = context.getFactory().getContext().getImplements(JavaDialect.class);
-            for (BeanConfig anno : list) {
-                String name = "JDK" + anno.getAnnotationAsImplement().major();
+            List<BeanClass> list = context.getFactory().getContext().getBeanClassList(JavaDialect.class);
+            for (BeanClass anno : list) {
+                String name = "JDK" + anno.getAnnotation().major();
                 set.add(name);
             }
 
@@ -228,7 +228,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
     public String toAllImplements(UniversalScriptContext scriptContext) {
         StringBuilder buf = new StringBuilder();
         EasyetlContext context = scriptContext.getFactory().getContext();
-        Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getImplements());
+        Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getBeanClasses());
 
         // 以下这些接口的实现类已在帮助说明中删除
         setes.remove(UniversalScriptVariableMethod.class);
@@ -236,18 +236,18 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         setes.remove(DatabaseDialect.class);
 
         for (Class<?> cls : setes) {
-            if (context.getBuilder(cls) != null) {
+            if (context.getBeanBuilder(cls) != null) {
                 continue;
             }
 
             buf.append("* ").append(cls.getName()).append(FileUtils.lineSeparator);
-            List<BeanConfig> list = context.getImplements(cls);
+            List<BeanClass> list = context.getBeanClassList(cls);
             CharTable ct = new CharTable();
             ct.addTitle("");
             ct.addTitle("");
-            for (BeanConfig anno : list) {
+            for (BeanClass anno : list) {
                 ct.addCell(anno.getBeanClass().getName());
-                EasyBean easyBean = anno.getAnnotationAsImplement();
+                EasyBean easyBean = anno.getAnnotation();
                 ct.addCell(easyBean == null ? "" : easyBean.description());
             }
             buf.append(ct.toSimpleShape().ltrim().toString());
@@ -255,21 +255,21 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             buf.append(FileUtils.lineSeparator);
         }
 
-        Set<Class<?>> beanClses = new LinkedHashSet<Class<?>>(context.getBuilderClass());
+        Set<Class<?>> beanClses = new LinkedHashSet<Class<?>>(context.getBeanBuilderClass());
         beanClses.remove(UniversalScriptVariableMethod.class);
         beanClses.remove(UniversalCommandCompiler.class);
         beanClses.remove(DatabaseDialect.class);
         for (Class<?> cls : beanClses) {
-            BeanBuilder<?> beanBuilder = context.getBuilder(cls);
+            BeanBuilder<?> beanBuilder = context.getBeanBuilder(cls);
             buf.append("* ").append(cls.getName()).append(" -> ").append(beanBuilder.getClass().getName()).append(FileUtils.lineSeparator);
 
-            List<BeanConfig> list = context.getImplements(cls);
+            List<BeanClass> list = context.getBeanClassList(cls);
             CharTable ct = new CharTable();
             ct.addTitle("");
             ct.addTitle("");
-            for (BeanConfig bi : list) {
+            for (BeanClass bi : list) {
                 ct.addCell(bi.getBeanClass().getName());
-                ct.addCell(bi.getAnnotationAsImplement().description());
+                ct.addCell(bi.getAnnotation().description());
             }
             buf.append(ct.toSimpleShape().ltrim().toString());
             buf.append(FileUtils.lineSeparator);
@@ -286,12 +286,12 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
      * @return
      */
     public String supportedDatabase(UniversalScriptContext context) {
-        List<BeanConfig> list = new ArrayList<BeanConfig>(context.getFactory().getContext().getImplements(DatabaseDialect.class));
-        java.util.Collections.sort(list, new Comparator<BeanConfig>() {
+        List<BeanClass> list = new ArrayList<BeanClass>(context.getFactory().getContext().getBeanClassList(DatabaseDialect.class));
+        java.util.Collections.sort(list, new Comparator<BeanClass>() {
 
-            public int compare(BeanConfig o1, BeanConfig o2) {
-                EasyBean a1 = o1.getAnnotationAsImplement();
-                EasyBean a2 = o2.getAnnotationAsImplement();
+            public int compare(BeanClass o1, BeanClass o2) {
+                EasyBean a1 = o1.getAnnotation();
+                EasyBean a2 = o2.getAnnotation();
                 if (a1 == null && a2 == null) {
                     return 0;
                 } else if (a1 == null) {
@@ -310,18 +310,18 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         table.addTitle(array[1], CharTable.ALIGN_LEFT);
         table.addTitle(array[2], CharTable.ALIGN_RIGHT);
 
-        for (BeanConfig impl : list) {
-            EasyBean annotation = impl.getAnnotationAsImplement();
-            String kind = annotation.kind();
+        for (BeanClass impl : list) {
+            EasyBean anno = impl.getAnnotation();
+            String kind = anno.kind();
             String version = "";
-            if (StringUtils.isNotBlank(annotation.major()) || StringUtils.isNotBlank(annotation.minor())) {
-                String major = StringUtils.defaultString(annotation.major(), "0");
-                String minor = StringUtils.defaultString(annotation.minor(), "0");
+            if (StringUtils.isNotBlank(anno.major()) || StringUtils.isNotBlank(anno.minor())) {
+                String major = StringUtils.defaultString(anno.major(), "0");
+                String minor = StringUtils.defaultString(anno.minor(), "0");
                 version = " " + major + "." + minor;
             }
 
             String database = kind + version;
-            String description = annotation.description() + "     ";
+            String description = anno.description() + "     ";
             String className = "          " + impl.getBeanClass().getName();
 
             table.addCell(database);
@@ -391,7 +391,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             table.addCell(titles[10]);
             table.addCell(factory.getMethodCallSyntax("obj", "split", new String[]{"':'", "'\\'"}));
 
-            String name = CollUtils.firstElement(factory.getNames());
+            String name = CollectionUtils.firstElement(factory.getNames());
             ScriptEngine engine = manager.getEngineByName(name);
             table.addCell(titles[13]);
             table.addCell(engine == null ? "" : engine.getClass().getName());

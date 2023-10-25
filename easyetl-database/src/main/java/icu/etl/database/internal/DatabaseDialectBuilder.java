@@ -1,5 +1,6 @@
 package icu.etl.database.internal;
 
+import java.lang.annotation.Annotation;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -11,7 +12,7 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanConfig;
+import icu.etl.ioc.BeanClass;
 import icu.etl.ioc.BeanEvent;
 import icu.etl.ioc.BeanEventListener;
 import icu.etl.ioc.EasyetlContext;
@@ -46,7 +47,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
     public DatabaseDialect build(EasyetlContext context, Object... array) throws Exception {
         this.init(context);
         String[] parameters = this.toParameters(array);
-        Class<DatabaseDialect> cls = context.getImplement(DatabaseDialect.class, parameters[0], parameters[1], parameters[2], parameters[3]);
+        Class<DatabaseDialect> cls = context.getBeanClass(DatabaseDialect.class, parameters[0], parameters[1], parameters[2], parameters[3]);
         return cls == null ? null : ClassUtils.newInstance(cls);
     }
 
@@ -57,9 +58,9 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
      */
     private void init(EasyetlContext context) {
         if (this.notinit) {
-            List<BeanConfig> list = context.getImplements(DatabaseDialect.class);
-            for (BeanConfig obj : list) {
-                EasyBean anno = obj.getAnnotationAsImplement();
+            List<BeanClass> list = context.getBeanClassList(DatabaseDialect.class);
+            for (BeanClass obj : list) {
+                EasyBean anno = obj.getAnnotation();
                 if (anno != null) {
                     String kind = StringUtils.trimBlank(anno.kind());
                     String mode = StringUtils.trimBlank(anno.mode());
@@ -151,14 +152,17 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
         throw new UnsupportedOperationException(url);
     }
 
-    public void addImplement(BeanEvent event) {
-        EasyBean anno = (EasyBean) event.getAnnotation();
-        String kind = StringUtils.trimBlank(anno.kind());
-        String mode = StringUtils.trimBlank(anno.mode());
-        this.dialectMap.put(kind, mode);
+    public void addBean(BeanEvent event) {
+        Annotation anno = event.getAnnotation();
+        if (anno instanceof EasyBean) {
+            EasyBean easybean = (EasyBean) event.getAnnotation();
+            String kind = StringUtils.trimBlank(easybean.kind());
+            String mode = StringUtils.trimBlank(easybean.mode());
+            this.dialectMap.put(kind, mode);
+        }
     }
 
-    public void removeImplement(BeanEvent event) {
+    public void removeBean(BeanEvent event) {
     }
 
 }

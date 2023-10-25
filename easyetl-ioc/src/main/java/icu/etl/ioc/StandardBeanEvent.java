@@ -30,7 +30,7 @@ public class StandardBeanEvent implements BeanEvent {
     }
 
     @SuppressWarnings("unchecked")
-    public Class<?> getImplementClass() {
+    public Class<?> getBeanClass() {
         return cls;
     }
 

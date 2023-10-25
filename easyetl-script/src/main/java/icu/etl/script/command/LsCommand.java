@@ -25,7 +25,7 @@ import icu.etl.script.internal.FtpList;
 import icu.etl.script.io.ScriptFile;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CharTable;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
@@ -50,7 +50,7 @@ public class LsCommand extends AbstractFileCommand implements UniversalScriptInp
     }
 
     public void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws IOException {
-        if (CollUtils.isEmpty(this.filepathList)) {
+        if (CollectionUtils.isEmpty(this.filepathList)) {
             String expression = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
             this.filepathList = analysis.split(expression);
         } else {

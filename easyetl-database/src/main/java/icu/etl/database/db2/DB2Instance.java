@@ -25,7 +25,7 @@ import icu.etl.os.OSFileCommand;
 import icu.etl.os.OSService;
 import icu.etl.os.OSUser;
 import icu.etl.os.OSUserGroup;
-import icu.etl.util.CollUtils;
+import icu.etl.util.CollectionUtils;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -466,7 +466,7 @@ public class DB2Instance {
         String db2profile = this.getDB2profile();
         String profile = this.existsSourceDB2profile(os, profiles, db2profile);
         if (StringUtils.isBlank(profile)) {
-            String filepath = CollUtils.lastElement(profiles);
+            String filepath = CollectionUtils.lastElement(profiles);
 
             StringBuilder env = new StringBuilder();
             env.append(lineSeperator);

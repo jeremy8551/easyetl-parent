@@ -64,7 +64,7 @@ public class SortTableFileCommand extends AbstractTraceCommand {
             cxt.setWriterBuffer(this.map.getIntAttribute("writebuf"));
         }
 
-        TextTableFile file = context.getFactory().getContext().get(TextTableFile.class, this.filetype, this.map);
+        TextTableFile file = context.getFactory().getContext().getBean(TextTableFile.class, this.filetype, this.map);
         file.setAbsolutePath(this.filepath);
 
         this.tfs = new TableFileSorter(cxt);

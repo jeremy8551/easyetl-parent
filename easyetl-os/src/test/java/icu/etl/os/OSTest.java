@@ -23,7 +23,7 @@ public class OSTest {
         System.out.println(username + "@" + host + ":" + port + "?password=" + password);
 
         AnnotationEasyetlContext context = new AnnotationEasyetlContext();
-        OS os = context.get(OS.class, host, port, username, password);
+        OS os = context.getBean(OS.class, host, port, username, password);
         testoscommand(os);
 
         boolean existsIp = false;
@@ -37,9 +37,9 @@ public class OSTest {
         }
         assertTrue(existsIp);
 
-        testoscommand(context.get(OS.class, host, username, password));
-        testoscommand(context.get(OS.class, Settings.getUserName()));
-        testoscommand(context.get(OS.class));
+        testoscommand(context.getBean(OS.class, host, username, password));
+        testoscommand(context.getBean(OS.class, Settings.getUserName()));
+        testoscommand(context.getBean(OS.class));
     }
 
     private void testoscommand(OS os) {

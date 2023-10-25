@@ -36,7 +36,7 @@ public class CompressBuilder implements BeanBuilder<Compress> {
             suffix = "zip";
         }
 
-        Class<Compress> cls = context.getImplement(Compress.class, suffix);
+        Class<Compress> cls = context.getBeanClass(Compress.class, suffix);
         if (cls == null) {
             throw new UnsupportedOperationException(suffix);
         } else {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.expression.ExpressionException;
 import icu.etl.expression.WordIterator;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -24,6 +25,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
+@EasyBean
 public class ScriptAnalysis implements UniversalScriptAnalysis {
 
     /** 语句分隔符 */
@@ -1140,7 +1142,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
      * @param ignoreQuote true表示不会替换单引号中的命令
      * @return
      */
-    private String replaceSubCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, String script, boolean ignoreQuote) {
+    public String replaceSubCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, String script, boolean ignoreQuote) {
         if (script == null) {
             return null;
         }

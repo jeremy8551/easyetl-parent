@@ -3,12 +3,12 @@ package icu.etl.ioc;
 import java.util.ArrayList;
 
 /**
- * 实现类集合
+ * 实现类的缓存
  *
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class BeanAnnotationList extends ArrayList<BeanConfig> {
+public class BeanClassCache extends ArrayList<BeanClass> {
     private final static long serialVersionUID = 1L;
 
     /**
@@ -16,7 +16,7 @@ public class BeanAnnotationList extends ArrayList<BeanConfig> {
      *
      * @param size 集合的容量
      */
-    public BeanAnnotationList(int size) {
+    public BeanClassCache(int size) {
         super(size);
     }
 
