@@ -152,8 +152,8 @@ public class CommandScanner {
         // 显示所有已加载的脚本引擎命令
         EasyetlContext cxt = context.getFactory().getContext();
         List<BeanInfo> beanList = cxt.getBeanInfoList(UniversalCommandCompiler.class);
-        for (BeanInfo bean : beanList) {
-            Class<? extends UniversalCommandCompiler> cls = bean.getType();
+        for (BeanInfo beanInfo : beanList) {
+            Class<? extends UniversalCommandCompiler> cls = beanInfo.getType();
             try {
                 this.loadScriptCommand(cls);
             } catch (Throwable e) {

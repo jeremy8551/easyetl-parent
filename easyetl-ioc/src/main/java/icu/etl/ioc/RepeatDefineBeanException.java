@@ -16,9 +16,9 @@ public class RepeatDefineBeanException extends RuntimeException {
     /**
      * 重复定义组件错误
      *
-     * @param type 组件的类信息
+     * @param type 组件类
      * @param name 组件名
-     * @param list 重复组件信息
+     * @param list 重复的组件
      */
     public RepeatDefineBeanException(Class<?> type, String name, List<?> list) {
         super(ResourcesUtils.getClassMessage(13, name, type == null ? "" : " " + type.getName() + " ", toBeanInfoList(list)));

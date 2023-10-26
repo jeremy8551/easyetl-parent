@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import icu.etl.util.ClassUtils;
 
@@ -33,9 +32,6 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     /** 组件构造方法的工具 */
     private BeanConstructor factory;
 
-    /** true 表示发生变化时可以通知 {@linkplain BeanEventListener} 对象 */
-    private AtomicBoolean notice;
-
     /**
      * 上下文信息
      *
@@ -59,9 +55,8 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         this.args = args;
         this.iocs = new EasyetlIocManager(this);
         this.factory = new BeanConstructor(this);
-        this.beans = new BeanInfoManager();
+        this.beans = new BeanInfoManager(this);
         this.builders = new BeanBuilderManager(this);
-        this.notice = new AtomicBoolean(false);
         this.refresh();
     }
 
@@ -73,6 +68,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         this.builders.clear();
         new BeanClassLoader().load(this);
         this.beans.refresh();
+        this.beans.addListener(this.builders.getListeners()); // 将组件工厂中的监听器添加到组件管理器中,实现组件变化自动通知
         List<BeanInfo> list = this.beans.getNolazyBeanInfoList();
         for (BeanInfo beanInfo : list) {
             this.createBean(beanInfo.getType());
@@ -126,21 +122,8 @@ public class AnnotationEasyetlContext implements EasyetlContext {
 
         boolean add = false;
         Class<?> cls = beanInfo.getType();
-
-        List<Class<?>> interfaces = ClassUtils.getAllInterface(cls, null);
-        for (Class<?> incls : interfaces) {
-            // 添加组件工厂
-            if (ClassUtils.equals(BeanBuilder.class, incls)) {
-                if (this.builders.add(cls)) {
-                    add = true;
-                }
-            }
-
-            // 添加监听器
-            if (ClassUtils.equals(BeanEventListener.class, incls)) {
-                this.beans.addListener(this.createBean(cls));
-                add = true;
-            }
+        if (this.builders.add(cls)) {
+            add = true;
         }
 
         // 添加类和父类 与实现类的映射关系
@@ -153,6 +136,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         }
 
         // 添加接口与实现类的映射关系
+        List<Class<?>> interfaces = ClassUtils.getAllInterface(cls, null);
         for (Class<?> type : interfaces) {
             if (this.beans.get(type).add(beanInfo, comparator)) {
                 add = true;
@@ -177,7 +161,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         if (type == null) {
             throw new NullPointerException();
         }
-        return Collections.unmodifiableList(this.beans.get(type).indexOf(name));
+        return this.beans.get(type).indexOf(name);
     }
 
     public List<Class<?>> getTypes() {

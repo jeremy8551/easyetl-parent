@@ -14,14 +14,17 @@ import java.util.Set;
  */
 public class BeanInfoManager {
 
+    private EasyetlContext context;
+
     /** 组件（接口或类）与实现类的映射关系 */
     private final LinkedHashMap<Class<?>, BeanInfoList> map;
 
     private final List<BeanEventListener> listeners;
 
-    public BeanInfoManager() {
+    public BeanInfoManager(EasyetlContext context) {
         this.map = new LinkedHashMap<Class<?>, BeanInfoList>(50);
         this.listeners = new ArrayList<BeanEventListener>();
+        this.context = context;
     }
 
     public void clear() {
@@ -59,19 +62,19 @@ public class BeanInfoManager {
         return this.map.keySet();
     }
 
-    public void addListener(BeanEventListener listener) {
-        this.listeners.add(listener);
+    public void addListener(List<BeanEventListener> listeners) {
+        this.listeners.addAll(listeners);
     }
 
     public void addBeanEvent(BeanInfo beanInfo) {
         for (BeanEventListener listener : this.listeners) {
-            listener.addBean(new StandardBeanEvent(beanInfo));
+            listener.addBean(new StandardBeanEvent(this.context, beanInfo));
         }
     }
 
     public void removeBeanEvent(BeanInfo beanInfo) {
         for (BeanEventListener listener : this.listeners) {
-            listener.removeBean(new StandardBeanEvent(beanInfo));
+            listener.removeBean(new StandardBeanEvent(this.context, beanInfo));
         }
     }
 

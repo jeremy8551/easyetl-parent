@@ -8,7 +8,6 @@ import java.util.PriorityQueue;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -27,7 +26,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  */
 @EasyBean(name = "default", description = "即时编译器")
-public class ScriptCompiler implements UniversalScriptCompiler, EasyetlContextAware {
+public class ScriptCompiler implements UniversalScriptCompiler {
 
     /** 脚本命令编译器集合 */
     protected CommandRepository map;
@@ -56,7 +55,8 @@ public class ScriptCompiler implements UniversalScriptCompiler, EasyetlContextAw
     /**
      * 初始化
      */
-    public ScriptCompiler() {
+    public ScriptCompiler(EasyetlContext context) {
+        this.context = context;
         this.cache = new PriorityQueue<UniversalScriptCommand>(10, new Comparator<UniversalScriptCommand>() {
             public int compare(UniversalScriptCommand o1, UniversalScriptCommand o2) {
                 return 0;
@@ -69,12 +69,8 @@ public class ScriptCompiler implements UniversalScriptCompiler, EasyetlContextAw
         this.startLineNumber = 0;
     }
 
-    public void setContext(EasyetlContext context) {
-        this.context = context;
-    }
-
     public UniversalScriptCompiler buildCompiler() {
-        ScriptCompiler obj = new ScriptCompiler();
+        ScriptCompiler obj = new ScriptCompiler(this.context);
         obj.getRepository().setDefault(this.map.getDefault()); // 设置子编译器的默认命令
         if (this.reader != null) { // 设置起始行数
             obj.startLineNumber = this.reader.getLineNumber() - 1; // 设置子编译器其实行数

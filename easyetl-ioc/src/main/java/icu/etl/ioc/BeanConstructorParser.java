@@ -17,9 +17,9 @@ public class BeanConstructorParser {
 
     private BeanArgument argument;
 
-    private Constructor<?> match;
+    private Constructor<?> argsConstrucetor;
 
-    private Constructor<?> noparam;
+    private Constructor<?> baseConstructor;
 
     public BeanConstructorParser(Class<?> type, BeanArgument argument) {
         Constructor<?>[] array = type.getConstructors();
@@ -30,26 +30,25 @@ public class BeanConstructorParser {
 
     public void parse(Constructor<?>[] array) {
         for (Constructor<?> c : array) {
-            Class<?>[] types = c.getParameterTypes(); // 构造方法的参数类信息
-
             // 必须是public修饰的构造方法
             if (c.getModifiers() != Modifier.PUBLIC) {
+                continue;
+            }
+
+            // 无参构造方法
+            Class<?>[] types = c.getParameterTypes(); // 构造方法的参数类信息
+            if (types.length == 0) {
+                this.baseConstructor = c;
                 continue;
             }
 
             // 外部参数与构造方法中的参数匹配
             if (types.length == this.argument.size()) {
                 if (this.match(types)) {
-                    this.match = c;
+                    this.argsConstrucetor = c;
                 } else {
                     this.list.add(0, c); // 参数个数匹配的优先级高
                 }
-                continue;
-            }
-
-            // 无参构造方法
-            if (types.length == 0) {
-                this.noparam = c;
                 continue;
             }
 
@@ -78,11 +77,11 @@ public class BeanConstructorParser {
     }
 
     public Constructor<?> getMatchConstructor() {
-        return match;
+        return argsConstrucetor;
     }
 
     public Constructor<?> getBaseConstructor() {
-        return noparam;
+        return baseConstructor;
     }
 
     public List<Constructor<?>> getConstructors() {

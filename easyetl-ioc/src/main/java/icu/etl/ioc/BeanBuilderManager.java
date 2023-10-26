@@ -1,6 +1,8 @@
 package icu.etl.ioc;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import icu.etl.util.ClassUtils;
@@ -12,17 +14,25 @@ import icu.etl.util.ResourcesUtils;
  */
 public class BeanBuilderManager {
 
-    /** 组件接口与组件工厂类映射关系 */
-    private LinkedHashMap<Class<?>, BeanBuilder<?>> map;
-
     private EasyetlContext context;
+
+    /** 组件接口与组件工厂类映射关系 */
+    private final LinkedHashMap<Class<?>, BeanBuilder<?>> map;
+
+    private final List<BeanEventListener> listeners;
 
     public BeanBuilderManager(EasyetlContext context) {
         this.map = new LinkedHashMap<Class<?>, BeanBuilder<?>>();
+        this.listeners = new ArrayList<BeanEventListener>();
         this.context = context;
     }
 
     public boolean add(Class<?> cls) {
+        /** 如果没有实现 {@linkplain BeanBuilder} 接口 **/
+        if (!BeanBuilder.class.isAssignableFrom(cls)) {
+            return false;
+        }
+
         String[] generics = ClassUtils.getInterfaceGenerics(cls, BeanBuilder.class);
         if (generics.length == 1) {
             String className = generics[0]; // BeanBuilder 类的范型
@@ -53,6 +63,11 @@ public class BeanBuilderManager {
                 Ioc.out.debug(ResourcesUtils.getClassMessage(19, type.getName(), builder.getClass().getName()));
             }
             this.map.put(type, builder);
+
+            // 如果组件工厂实现了监听接口
+            if (builder instanceof BeanEventListener) {
+                this.listeners.add((BeanEventListener) builder);
+            }
             return true;
         }
     }
@@ -69,8 +84,13 @@ public class BeanBuilderManager {
         return this.map.keySet();
     }
 
+    public List<BeanEventListener> getListeners() {
+        return listeners;
+    }
+
     public void clear() {
         this.map.clear();
+        this.listeners.clear();
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class BeanClassCache<E> extends ArrayList<E> {
+public class BeanInfoCache<E> extends ArrayList<E> {
     private final static long serialVersionUID = 1L;
 
     /**
@@ -16,7 +16,7 @@ public class BeanClassCache<E> extends ArrayList<E> {
      *
      * @param size 集合的容量
      */
-    public BeanClassCache(int size) {
+    public BeanInfoCache(int size) {
         super(size);
     }
 

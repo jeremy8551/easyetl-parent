@@ -3,20 +3,16 @@ package icu.etl.database.internal;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import javax.sql.DataSource;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.collection.CaseSensitivSet;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanClassCache;
 import icu.etl.ioc.BeanEvent;
 import icu.etl.ioc.BeanEventListener;
 import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.RepeatDefineBeanException;
 import icu.etl.log.STD;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -30,18 +26,15 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, BeanEventListener {
 
-    /** 数据库方言组件名的集合 */
-    private CaseSensitivSet beanNames;
+    /** 数据库方言管理类 */
+    private final DialectManager manager;
 
     /**
      * 初始化
      */
     public DatabaseDialectBuilder(EasyetlContext context) {
-        this.beanNames = new CaseSensitivSet();
         List<BeanInfo> list = context.getBeanInfoList(DatabaseDialect.class);
-        for (BeanInfo beanInfo : list) {
-            this.beanNames.add(beanInfo.getName());
-        }
+        this.manager = new DialectManager(context, list);
     }
 
     public DatabaseDialect getBean(EasyetlContext context, Object... args) throws Exception {
@@ -49,21 +42,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
         String name = parameters[0];
         String major = parameters[1];
         String minor = parameters[2];
-
-        List<BeanInfo> beanInfoList = context.getBeanInfoList(DatabaseDialect.class, name);
-        BeanClassCache<DatabaseDialect> list = new BeanClassCache<DatabaseDialect>(beanInfoList.size());
-        for (BeanInfo beanInfo : beanInfoList) {
-            DatabaseDialect dialect = context.getBean(beanInfo.getType());
-            if (dialect.getDatabaseMajorVersion().equals(major) && dialect.getDatabaseMinorVersion().equals(minor)) {
-                list.add(dialect);
-            }
-        }
-
-        if (list.onlyOne()) {
-            return list.getOnlyOne();
-        } else {
-            throw new RepeatDefineBeanException(DatabaseDialect.class, name, list);
-        }
+        return context.createBean(this.manager.getDialectClass(name, major, minor));
     }
 
     /**
@@ -105,7 +84,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
         }
 
         String[] array = new String[3];
-        array[0] = this.parseName(StringUtils.join(args, " "));
+        array[0] = this.manager.parse(StringUtils.join(args, " "));
         array[1] = "";
         array[2] = "";
         return array;
@@ -121,7 +100,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
         try {
             DatabaseMetaData metaData = conn.getMetaData();
             String[] array = new String[3];
-            array[0] = this.parseName(metaData.getURL());
+            array[0] = manager.parse(metaData.getURL());
             array[1] = String.valueOf(metaData.getDatabaseMajorVersion());
             array[2] = String.valueOf(metaData.getDatabaseMinorVersion());
             return array;
@@ -131,25 +110,11 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
         }
     }
 
-    /**
-     * 从 JDBC URL 中提取数据库名
-     *
-     * @param str 字符串
-     * @return 组件名, 如：db2 oracle mysql
-     */
-    private String parseName(String str) {
-        String lower = str.toLowerCase();
-        for (Iterator<String> it = this.beanNames.iterator(); it.hasNext(); ) {
-            String name = it.next();
-            if (lower.contains(name.toLowerCase())) {
-                return name;
-            }
-        }
-        throw new UnsupportedOperationException(str);
-    }
-
     public void addBean(BeanEvent event) {
-        this.beanNames.add(event.getBeanInfo().getName());
+        BeanInfo beanInfo = event.getBeanInfo();
+        if (DatabaseDialect.class.isAssignableFrom(beanInfo.getType())) {
+            this.manager.add(event.getContext(), beanInfo);
+        }
     }
 
     public void removeBean(BeanEvent event) {

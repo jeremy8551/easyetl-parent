@@ -13,7 +13,6 @@ import icu.etl.expression.StandardAnalysis;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.ArrayUtils;
-import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
 
 /**
@@ -33,8 +32,7 @@ public class ExtractWriterBuilder implements BeanBuilder<ExtractWriter> {
         // bean://kind/mode/major/minor
         if (StringUtils.startsWith(target, "bean://", 0, true, true)) {
             String[] array = StringUtils.split(target.substring("bean://".length()), '/');
-            Class<ExtractWriter> cls = context.getBeanInfo(ExtractWriter.class, array[0]).getType();
-            return ClassUtils.newInstance(cls);
+            return context.getBean(ExtractWriter.class, array);
         }
 
         // http://download/filename

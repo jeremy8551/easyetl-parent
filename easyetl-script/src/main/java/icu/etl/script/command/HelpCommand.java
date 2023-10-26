@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -284,9 +283,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
      * @return
      */
     public String supportedDatabase(UniversalScriptContext context) {
-        List<BeanInfo> list = new ArrayList<BeanInfo>(context.getFactory().getContext().getBeanInfoList(DatabaseDialect.class));
+        List<BeanInfo> list = context.getFactory().getContext().getBeanInfoList(DatabaseDialect.class);
         java.util.Collections.sort(list, new Comparator<BeanInfo>() {
-
             public int compare(BeanInfo o1, BeanInfo o2) {
                 return o1.getName().compareTo(o2.getName());
             }
@@ -298,13 +296,11 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         table.addTitle(array[1], CharTable.ALIGN_LEFT);
         table.addTitle(array[2], CharTable.ALIGN_RIGHT);
 
-        for (BeanInfo beaninfo : list) {
-            DatabaseDialect dialect = context.getFactory().getContext().getBean(beaninfo.getType());
-            table.addCell(beaninfo.getName() + " " + dialect.getDatabaseMajorVersion() + "." + dialect.getDatabaseMinorVersion());
-            table.addCell(beaninfo.getDescription() + "     ");
-            table.addCell("          " + beaninfo.getType().getName());
+        for (BeanInfo beanInfo : list) {
+            table.addCell(beanInfo.getName());
+            table.addCell(beanInfo.getDescription() + "     ");
+            table.addCell("          " + beanInfo.getType().getName());
         }
-
         return StringUtils.addLinePrefix(table.toStandardShape().ltrim().toString(), "\t");
     }
 

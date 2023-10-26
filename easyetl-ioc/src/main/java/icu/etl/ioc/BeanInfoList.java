@@ -43,12 +43,10 @@ public class BeanInfoList extends ArrayList<BeanInfo> implements Comparator<Bean
         return !this.contains(beanInfo, comparator) && this.add(beanInfo);
     }
 
-    /**
-     * 注册组件信息
-     *
-     * @param beanInfo 组件信息
-     * @return 当前对象
-     */
+    public void push(BeanInfo beanInfo) {
+        super.add(beanInfo);
+    }
+
     public boolean add(BeanInfo beanInfo) {
         super.add(beanInfo);
         this.manager.addBeanEvent(beanInfo);
@@ -132,7 +130,19 @@ public class BeanInfoList extends ArrayList<BeanInfo> implements Comparator<Bean
         for (int i = 0; i < size; i++) {
             BeanInfo beanInfo = this.get(i);
             if (beanInfo.equals(name)) {
-                list.add(beanInfo);
+                list.push(beanInfo);
+            }
+        }
+        return list;
+    }
+
+    public BeanInfoList indexOf(BeanFilter filter) {
+        int size = this.size();
+        BeanInfoList list = new BeanInfoList(this.manager, this.type);
+        for (int i = 0; i < size; i++) {
+            BeanInfo beanInfo = this.get(i);
+            if (filter.accept(beanInfo)) {
+                list.push(beanInfo);
             }
         }
         return list;
@@ -164,13 +174,6 @@ public class BeanInfoList extends ArrayList<BeanInfo> implements Comparator<Bean
         }
     }
 
-    /**
-     * 按 {@linkplain EasyBean#level()} 倒序进行排序
-     *
-     * @param o1 组件信息
-     * @param o2 组件信息
-     * @return 组件信息的差值
-     */
     public int compare(BeanInfo o1, BeanInfo o2) {
         int val = o1.getName().compareTo(o2.getName());
         if (val == 0) {
@@ -185,6 +188,28 @@ public class BeanInfoList extends ArrayList<BeanInfo> implements Comparator<Bean
      */
     public void sortByDesc() {
         Collections.sort(this, this);
+    }
+
+    /**
+     * 判断类信息是否唯一
+     *
+     * @return 返回true表示集合中元素为1或0
+     */
+    public boolean onlyOne() {
+        return this.size() <= 1;
+    }
+
+    /**
+     * 返回唯一的实现类信息
+     *
+     * @return 返回第一个元素
+     */
+    public BeanInfo getOnlyOne() {
+        if (this.size() == 0) {
+            return null;
+        } else {
+            return this.get(0);
+        }
     }
 
 }

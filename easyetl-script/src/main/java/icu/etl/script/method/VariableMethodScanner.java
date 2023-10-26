@@ -43,17 +43,16 @@ public class VariableMethodScanner {
         this.repository = repository;
 
         // 组件工厂上下文信息
-        EasyetlContext cxt = this.factory.getContext();
+        EasyetlContext ioccxt = this.factory.getContext();
 
         // 显示所有已加载的变量方法
-        List<BeanInfo> beans = cxt.getBeanInfoList(UniversalScriptVariableMethod.class);
-        for (BeanInfo obj : beans) {
-            Class<? extends UniversalScriptVariableMethod> cls = obj.getType();
-            this.loadVariableMethod(cls);
+        List<BeanInfo> list = ioccxt.getBeanInfoList(UniversalScriptVariableMethod.class);
+        for (BeanInfo beanInfo : list) {
+            this.loadVariableMethod(ioccxt.createBean(beanInfo.getType()));
         }
 
         // 如果类扫描器未扫描到脚本引擎默认变量方法，则自动加载所有变量方法
-        if (beans.isEmpty()) {
+        if (list.isEmpty()) {
             this.loadVariableMethodBuilder();
         }
 

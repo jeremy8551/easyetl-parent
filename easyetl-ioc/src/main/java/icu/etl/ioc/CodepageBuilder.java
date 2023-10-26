@@ -6,11 +6,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBean
-public class CodepageBuilder implements Codepage, BeanEventListener {
+public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEventListener {
 
     /** codepage 与 charset 的映射关系 */
     private Map<String, String> map;
@@ -22,10 +21,14 @@ public class CodepageBuilder implements Codepage, BeanEventListener {
         this.map = new HashMap<String, String>();
     }
 
+    public Codepage getBean(EasyetlContext context, Object... args) throws Exception {
+        return this;
+    }
+
     public void addBean(BeanEvent event) {
-        Class<Object> type = event.getBeanInfo().getType();
+        Class<?> type = event.getBeanInfo().getType();
         if (Codepage.class.isAssignableFrom(type)) {
-            Codepage obj = ClassUtils.newInstance(type);
+            Codepage obj = event.getContext().createBean(type);
             this.map.putAll(obj.values());
         }
     }
@@ -48,8 +51,7 @@ public class CodepageBuilder implements Codepage, BeanEventListener {
     }
 
     public String get(int codepage) {
-        String key = String.valueOf(codepage);
-        return this.map.get(key);
+        return this.map.get(String.valueOf(codepage));
     }
 
     public Map<String, String> values() {

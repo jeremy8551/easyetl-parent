@@ -40,11 +40,12 @@ public class BeanConstructor {
     }
 
     @SuppressWarnings("unchecked")
-    private <E> E create(Class<?> type, BeanArgument argument) {
+    protected <E> E create(Class<?> type, BeanArgument argument) {
         BeanConstructorParser parser = new BeanConstructorParser(type, argument);
 
         // 优先使用参数匹配的构造方法
         if (parser.getMatchConstructor() != null) {
+            System.out.println(type.getName() + " Constructor size: " + parser.getMatchConstructor().getParameterTypes().length);
             try {
                 return (E) parser.getMatchConstructor().newInstance(argument.getArgs());
             } catch (Throwable e) {
@@ -55,10 +56,10 @@ public class BeanConstructor {
         }
 
         // 使用无参构造方法
-        if (parser.getBaseConstructor() == null) {
-            System.out.println("注意类 " + type.getName() + " 中没有无参构造方法!");
+        if (parser.getBaseConstructor() != null) {
+            System.out.println(type.getName() + " base Constructor size: " + parser.getBaseConstructor().getParameterTypes().length);
             try {
-                return (E) type.newInstance();
+                return (E) parser.getBaseConstructor().newInstance();
             } catch (Throwable e) {
                 if (Ioc.out.isDebugEnabled()) {
                     Ioc.out.debug(e.getLocalizedMessage(), e);
@@ -70,6 +71,7 @@ public class BeanConstructor {
         List<Constructor<?>> others = parser.getConstructors();
         for (Constructor<?> c : others) {
             Object[] parameters = this.toArgs(c.getParameterTypes(), argument.getArgs());
+            System.out.println(type.getName() + " Constructor size o: " + c.getParameterTypes().length);
             try {
                 return (E) c.newInstance(parameters);
             } catch (Throwable e) {

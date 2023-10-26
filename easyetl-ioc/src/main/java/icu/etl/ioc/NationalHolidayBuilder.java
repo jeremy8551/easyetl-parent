@@ -143,11 +143,13 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
     }
 
     public void addBean(BeanEvent event) {
-        this.add(event.getBeanInfo());
+        BeanInfo beanInfo = event.getBeanInfo();
+        if (NationalHoliday.class.isAssignableFrom(beanInfo.getType())) {
+            this.add(beanInfo);
+        }
     }
 
     public void removeBean(BeanEvent event) {
-        // 不需要做删除操作
     }
 
 }

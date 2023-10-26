@@ -9,6 +9,13 @@ package icu.etl.ioc;
 public interface BeanEvent {
 
     /**
+     * 返回容器上下文信息
+     *
+     * @return 容器上下文信息
+     */
+    EasyetlContext getContext();
+
+    /**
      * 此时事件相关的实现类信息
      *
      * @param <E> 组件实现类
