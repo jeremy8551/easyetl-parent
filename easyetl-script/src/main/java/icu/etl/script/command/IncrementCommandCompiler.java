@@ -5,12 +5,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TableColumnComparator;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanClass;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -58,16 +57,15 @@ public class IncrementCommandCompiler extends AbstractTraceCommandCompiler {
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) { // 查找接口对应的的实现类
-        List<BeanClass> list = context.getFactory().getContext().getBeanClassList(TextTableFile.class);
+        List<BeanInfo> list = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
         CharTable table = new CharTable(context.getCharsetName());
         table.addTitle("");
         table.addTitle("");
         table.addTitle("");
-        for (BeanClass anno : list) {
-            EasyBean annotation = anno.getAnnotation();
-            table.addCell(annotation.kind());
-            table.addCell(annotation.description());
-            table.addCell(anno.getBeanClass().getName());
+        for (BeanInfo beanInfo : list) {
+            table.addCell(beanInfo.getName());
+            table.addCell(beanInfo.getDescription());
+            table.addCell(beanInfo.getType().getName());
         }
 
         out.println(new ScriptUsage(this.getClass(), table.toSimpleShape().ltrim().toString(), TableColumnComparator.class.getName()));

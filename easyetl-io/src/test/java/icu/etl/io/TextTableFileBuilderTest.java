@@ -10,7 +10,7 @@ public class TextTableFileBuilderTest {
     public void test() throws Exception {
         AnnotationEasyetlContext cxt = new AnnotationEasyetlContext("sout:debug");
         TextTableFileBuilder builder = new TextTableFileBuilder();
-        Assert.assertNotNull(builder.build(cxt, "csv"));
+        Assert.assertNotNull(builder.getBean(cxt, "csv"));
     }
 
 }

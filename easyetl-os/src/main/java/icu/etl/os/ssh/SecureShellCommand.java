@@ -37,7 +37,7 @@ import icu.jsch.UserInfo;
 /**
  * SSH 协议的终端实现类
  */
-@EasyBean(kind = "ssh", mode = "jsch", major = "0", minor = "1", description = "jsch-0.1.51")
+@EasyBean(name = "ssh", description = "jsch-0.1.51")
 public class SecureShellCommand implements OSSecureShellCommand {
 
     public final static String charset = "charset";

@@ -10,8 +10,8 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
 
-    public TableLineRuler build(EasyetlContext context, Object... array) throws Exception {
-        TextTable file = this.indexOf(array, TextTable.class, 0);
+    public TableLineRuler getBean(EasyetlContext context, Object... args) throws Exception {
+        TextTable file = this.indexOf(args, TextTable.class, 0);
         if (file != null) {
             String coldel = file.getDelimiter();
             if (coldel.length() == 1) {
@@ -29,11 +29,11 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
             }
         }
 
-        throw new UnsupportedOperationException(StringUtils.toString(array));
+        throw new UnsupportedOperationException(StringUtils.toString(args));
     }
 
     @SuppressWarnings("unchecked")
-    <E> E indexOf(Object[] array, Class<E> cls, int offset) {
+    public <E> E indexOf(Object[] array, Class<E> cls, int offset) {
         for (int i = offset; i < array.length; i++) {
             Object obj = array[i];
             if (obj != null && cls.isAssignableFrom(obj.getClass())) {

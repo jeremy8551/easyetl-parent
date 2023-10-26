@@ -11,7 +11,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "default", mode = "", major = "", minor = "", description = "")
+@EasyBean(name = "default", description = "")
 public class ScriptChecker implements UniversalScriptChecker {
 
     /** 数据库的关键字 */

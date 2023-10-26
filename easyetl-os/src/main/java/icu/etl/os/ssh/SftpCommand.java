@@ -42,7 +42,7 @@ import icu.jsch.SftpProgressMonitor;
  * @author jeremy8551@qq.com
  * @createtime 2018-08-10
  */
-@EasyBean(kind = "sftp", mode = "java", major = "0", minor = "1", description = "jsch-0.1.51")
+@EasyBean(name = "sftp", description = "jsch-0.1.51")
 public class SftpCommand implements OSFtpCommand {
 
     /** username@host:port */

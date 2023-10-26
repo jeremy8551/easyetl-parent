@@ -7,6 +7,7 @@ import icu.etl.database.DatabaseTableColumn;
 import icu.etl.database.DatabaseTableColumnList;
 import icu.etl.expression.Analysis;
 import icu.etl.ioc.BeanBuilder;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
@@ -16,10 +17,10 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
 
-    public IncrementReplace build(EasyetlContext context, Object... array) throws Exception {
-        Analysis analysis = ArrayUtils.indexOf(array, Analysis.class, 0);
-        String str = ArrayUtils.indexOf(array, String.class, 0); // 1:date-
-        DatabaseTableColumnList columns = ArrayUtils.indexOf(array, DatabaseTableColumnList.class, 0);
+    public IncrementReplace getBean(EasyetlContext context, Object... args) throws Exception {
+        Analysis analysis = ArrayUtils.indexOf(args, Analysis.class, 0);
+        String str = ArrayUtils.indexOf(args, String.class, 0); // 1:date-
+        DatabaseTableColumnList columns = ArrayUtils.indexOf(args, DatabaseTableColumnList.class, 0);
 
         char mapdel = (analysis == null) ? ':' : analysis.getMapdel();
         String[] attributes = StringUtils.split(str, mapdel);
@@ -31,12 +32,12 @@ public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
         } else if (value.equalsIgnoreCase("uuid")) {
             return new UUIDReplace(columns, field);
         } else { // 自定义
-            Object[] beans = StringUtils.split(value, '/');
-            Class<IncrementReplace> cls = context.getBeanClass(IncrementReplace.class, beans);
-            if (cls == null) {
+            String[] beans = StringUtils.split(value, '/');
+            BeanInfo beanInfo = context.getBeanInfo(IncrementReplace.class, beans[0]);
+            if (beanInfo == null) {
                 return new StandardReplace(columns, field, value);
             } else {
-                return ClassUtils.newInstance(cls);
+                return ClassUtils.newInstance(beanInfo.getType());
             }
         }
     }

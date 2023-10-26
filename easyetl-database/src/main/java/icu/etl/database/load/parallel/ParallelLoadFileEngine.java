@@ -19,7 +19,7 @@ import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
-@EasyBean(kind = "replace", mode = "file", major = "", minor = "")
+@EasyBean(name = "replace")
 public class ParallelLoadFileEngine implements Loader, EasyetlContextAware {
 
     /** 上下文信息 */

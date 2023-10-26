@@ -26,7 +26,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "default", mode = "", major = "1", minor = "0", description = "即时编译器")
+@EasyBean(name = "default", description = "即时编译器")
 public class ScriptCompiler implements UniversalScriptCompiler, EasyetlContextAware {
 
     /** 脚本命令编译器集合 */

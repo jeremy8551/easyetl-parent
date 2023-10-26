@@ -12,6 +12,7 @@ import icu.etl.database.export.ExtracterContext;
 import icu.etl.database.export.UserListener;
 import icu.etl.database.internal.StandardJdbcConverterMapper;
 import icu.etl.io.TextTableFile;
+import icu.etl.ioc.EasyetlContext;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -126,7 +127,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             TextTableFile format = context.getFactory().getContext().getBean(TextTableFile.class, this.dataType, this.attrs);
             File msgfile = FileUtils.createFile(this.attrs.getAttribute("message"), 3, "messagefile", "export");
             JdbcConverterMapper mapper = new StandardJdbcConverterMapper(this.attrs.getAttribute("convert"), String.valueOf(analysis.getSegment()), String.valueOf(analysis.getMapdel()));
-            UserListenerList listeners = new UserListenerList(this.attrs.getAttribute("listener"));
+            UserListenerList listeners = new UserListenerList(context.getFactory().getContext(), this.attrs.getAttribute("listener"));
 
             // 保存属性
             ExtracterContext cxt = this.executor.getContext();
@@ -175,17 +176,16 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
     private class UserListenerList extends ArrayList<UserListener> {
         private final static long serialVersionUID = 1L;
 
-        public UserListenerList(String listeners) {
+        public UserListenerList(EasyetlContext context, String listeners) {
             super();
-            this.parse(listeners);
+            this.parse(context, listeners);
         }
 
-        public void parse(String listeners) {
+        public void parse(EasyetlContext context, String listeners) {
             String[] array = StringUtils.split(StringUtils.trimBlank(listeners), ',');
             for (String className : array) {
                 if (StringUtils.isNotBlank(className)) {
-                    UserListener obj = ClassUtils.newInstance(className);
-                    this.add(obj);
+                    this.add(ClassUtils.newInstance(className, context.getClassLoader()));
                 }
             }
         }

@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import icu.etl.annotation.EasyBean;
-
 /**
  * 压缩接口 <br>
  * <br>
@@ -34,16 +32,6 @@ import icu.etl.annotation.EasyBean;
  * <br>
  * <b>关闭并释放所有资源</b> <br>
  * jc.close(); <br>
- *
- * <br>
- * <br>
- * 实现类注解的填写规则: <br>
- * {@linkplain EasyBean#kind()} 属性表示语言, 如: gz, zip, rar <br>
- * {@linkplain EasyBean#mode()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBean#major()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBean#minor()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBean#description()} 属性表示描述信息 <br>
- * <br>
  *
  * @author jeremy8551@qq.com
  * @createtime 2014-07-23 16:21:38

@@ -14,7 +14,7 @@ import icu.etl.io.TableWriter;
 import icu.etl.io.TextTable;
 import icu.etl.util.NetUtils;
 
-@EasyBean(kind = "http", mode = "download", major = "", minor = "", description = "卸载数据到用户浏览器")
+@EasyBean(name = "http", description = "卸载数据到用户浏览器")
 public class HttpRequestWriter implements ExtractWriter {
 
     /** HTTP 响应信息输出接口 */

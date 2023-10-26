@@ -3,7 +3,7 @@ package icu.etl.script.method;
 import java.util.List;
 
 import icu.etl.annotation.ScriptVariableFunction;
-import icu.etl.ioc.BeanClass;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.Log;
 import icu.etl.script.UniversalScriptContext;
@@ -46,9 +46,9 @@ public class VariableMethodScanner {
         EasyetlContext cxt = this.factory.getContext();
 
         // 显示所有已加载的变量方法
-        List<BeanClass> beans = cxt.getBeanClassList(UniversalScriptVariableMethod.class);
-        for (BeanClass obj : beans) {
-            Class<? extends UniversalScriptVariableMethod> cls = obj.getBeanClass();
+        List<BeanInfo> beans = cxt.getBeanInfoList(UniversalScriptVariableMethod.class);
+        for (BeanInfo obj : beans) {
+            Class<? extends UniversalScriptVariableMethod> cls = obj.getType();
             this.loadVariableMethod(cls);
         }
 

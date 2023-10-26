@@ -40,7 +40,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "oracle", mode = "", major = "", minor = "", description = "Oracle 数据库方言模版")
+@EasyBean(name = "oracle")
 public class OracleDialect extends AbstractDialect {
 
     public OracleDialect() {

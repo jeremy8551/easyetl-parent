@@ -49,7 +49,7 @@ import icu.etl.util.StringUtils;
 /**
  * Linux 本地操作系统的接口实现类
  */
-@EasyBean(kind = "linux", mode = "local", major = "", minor = "")
+@EasyBean(name = "linux")
 public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
 
     /** unix 系统保留的文件名 */

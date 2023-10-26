@@ -25,12 +25,15 @@ public class VariableMethodRepository {
     /** 变量方法名与变量方法的映射关系, 变量方法名全部为大写字母 */
     private HashMap<String, UniversalScriptVariableMethod> map;
 
+    private UniversalScriptContext context;
+
     /**
      * 初始化变量方法集合
      *
      * @param context 脚本引擎上下文信息
      */
     public VariableMethodRepository(UniversalScriptContext context) {
+        this.context = context;
         this.map = new HashMap<String, UniversalScriptVariableMethod>();
         new VariableMethodScanner(context, this);
     }
@@ -72,8 +75,7 @@ public class VariableMethodRepository {
         if (method == null) {
             return method;
         } else {
-            String className = method.getClass().getName();
-            return ClassUtils.newInstance(className);
+            return ClassUtils.newInstance(method.getClass().getName(), this.context.getFactory().getContext().getClassLoader());
         }
     }
 

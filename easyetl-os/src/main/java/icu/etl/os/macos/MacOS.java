@@ -30,7 +30,7 @@ import icu.etl.util.StringUtils;
 /**
  * Apple Mac OS 操作系统的接口实现类
  */
-@EasyBean(kind = "macos", mode = "local", major = "18", minor = "7")
+@EasyBean(name = "macos")
 public class MacOS extends LinuxLocalOS {
 
     public MacOS() throws IOException {

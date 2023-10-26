@@ -8,7 +8,7 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.Dates;
 
-@EasyBean(kind = "zh", mode = "cn")
+@EasyBean(name = "zh_cn")
 public class ConstructorTypeHoliday implements NationalHoliday {
 
     Set<Date> set1 = new HashSet<Date>();

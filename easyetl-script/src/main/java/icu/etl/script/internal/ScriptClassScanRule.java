@@ -5,8 +5,8 @@ import java.util.Comparator;
 
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.annotation.ScriptVariableFunction;
-import icu.etl.ioc.AnnotationBeanClass;
-import icu.etl.ioc.BeanClass;
+import icu.etl.ioc.AnnotationBeanInfo;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.BeanRegister;
 import icu.etl.ioc.ClassScanRule;
 import icu.etl.log.STD;
@@ -21,7 +21,7 @@ import icu.etl.util.ResourcesUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class ScriptClassScanRule implements ClassScanRule, Comparator<BeanClass> {
+public class ScriptClassScanRule implements ClassScanRule, Comparator<BeanInfo> {
 
     /**
      * 初始化，扫描类路径中所有被注解标记的类信息
@@ -42,7 +42,7 @@ public class ScriptClassScanRule implements ClassScanRule, Comparator<BeanClass>
                 STD.out.debug(ResourcesUtils.getClassMessage(9, cls.getName()));
             }
 
-            if (register.addBean(new AnnotationBeanClass(cls), this)) {
+            if (register.addBean(new AnnotationBeanInfo(cls), this)) {
                 load = true;
             }
         }
@@ -53,7 +53,7 @@ public class ScriptClassScanRule implements ClassScanRule, Comparator<BeanClass>
                 STD.out.debug(ResourcesUtils.getClassMessage(20, cls.getName()));
             }
 
-            if (register.addBean(new AnnotationBeanClass(cls), this)) {
+            if (register.addBean(new AnnotationBeanInfo(cls), this)) {
                 load = true;
             }
         }
@@ -61,8 +61,8 @@ public class ScriptClassScanRule implements ClassScanRule, Comparator<BeanClass>
         return load;
     }
 
-    public int compare(BeanClass o1, BeanClass o2) {
-        return o1.getBeanClass().equals(o2.getBeanClass()) ? 0 : 1;
+    public int compare(BeanInfo o1, BeanInfo o2) {
+        return o1.getType().equals(o2.getType()) ? 0 : 1;
     }
 
     public boolean equals(Object obj) {

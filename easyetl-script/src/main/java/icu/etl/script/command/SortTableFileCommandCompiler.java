@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.expression.OrderByExpression;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanClass;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
@@ -77,16 +76,15 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) { // 查找接口对应的的实现类
-        List<BeanClass> list = context.getFactory().getContext().getBeanClassList(TextTableFile.class);
+        List<BeanInfo> list = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
         CharTable ct = new CharTable(context.getCharsetName());
         ct.addTitle("");
         ct.addTitle("");
         ct.addTitle("");
-        for (BeanClass beanConfig : list) {
-            EasyBean anno = beanConfig.getAnnotation();
-            ct.addCell(anno.kind());
-            ct.addCell(anno.description());
-            ct.addCell(beanConfig.getBeanClass().getName());
+        for (BeanInfo beanInfo : list) {
+            ct.addCell(beanInfo.getName());
+            ct.addCell(beanInfo.getDescription());
+            ct.addCell(beanInfo.getType().getName());
         }
 
         out.println(new ScriptUsage(this.getClass(), ct.toSimpleShape().ltrim().toString()));

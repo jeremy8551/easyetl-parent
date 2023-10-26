@@ -8,9 +8,9 @@ import icu.apache.net.pop3.POP3Client;
 import icu.apache.net.pop3.POP3MessageInfo;
 import icu.etl.util.IO;
 
-public class Test {
-    public static void main(String[] args) {
+public class POP3ClientSample {
 
+    public static void main(String[] args) {
         POP3Client pop3 = new POP3Client();
         try {
             pop3.setDefaultPort(110);
@@ -55,8 +55,7 @@ public class Test {
         }
     }
 
-    public static final void printMessageInfo(BufferedReader reader, int id) throws IOException {
-
+    public static void printMessageInfo(BufferedReader reader, int id) throws IOException {
         String from = "";
         String subject = "";
         String line;

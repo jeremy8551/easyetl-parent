@@ -4,6 +4,7 @@ import java.io.File;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
@@ -19,16 +20,16 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class CompressBuilder implements BeanBuilder<Compress> {
 
-    public Compress build(EasyetlContext context, Object... array) throws Exception {
+    public Compress getBean(EasyetlContext context, Object... args) throws Exception {
         String suffix = null;
 
-        File file = ArrayUtils.indexOf(array, File.class, 0);
+        File file = ArrayUtils.indexOf(args, File.class, 0);
         if (file != null) {
             suffix = FileUtils.getFilenameExt(file.getName());
         }
 
         if (StringUtils.isBlank(suffix)) {
-            suffix = ArrayUtils.indexOf(array, String.class, 0);
+            suffix = ArrayUtils.indexOf(args, String.class, 0);
         }
 
         // 设置默认值
@@ -36,11 +37,11 @@ public class CompressBuilder implements BeanBuilder<Compress> {
             suffix = "zip";
         }
 
-        Class<Compress> cls = context.getBeanClass(Compress.class, suffix);
-        if (cls == null) {
+        BeanInfo beanInfo = context.getBeanInfo(Compress.class, suffix);
+        if (beanInfo == null) {
             throw new UnsupportedOperationException(suffix);
         } else {
-            return ClassUtils.newInstance(cls);
+            return ClassUtils.newInstance(beanInfo.getType());
         }
     }
 

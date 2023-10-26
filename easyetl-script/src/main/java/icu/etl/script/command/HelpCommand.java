@@ -23,7 +23,7 @@ import icu.etl.database.DatabaseDialect;
 import icu.etl.database.Jdbc;
 import icu.etl.database.internal.AbstractDialect;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanClass;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.ClassScanRule;
 import icu.etl.ioc.ClassScanner;
 import icu.etl.ioc.EasyetlContext;
@@ -210,10 +210,9 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             }
 
             // 读取大版本号
-            List<BeanClass> list = context.getFactory().getContext().getBeanClassList(JavaDialect.class);
-            for (BeanClass anno : list) {
-                String name = "JDK" + anno.getAnnotation().major();
-                set.add(name);
+            List<BeanInfo> list = context.getFactory().getContext().getBeanInfoList(JavaDialect.class);
+            for (BeanInfo anno : list) {
+                set.add(anno.getType().getSimpleName());
             }
 
             // 添加版本号
@@ -228,7 +227,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
     public String toAllImplements(UniversalScriptContext scriptContext) {
         StringBuilder buf = new StringBuilder();
         EasyetlContext context = scriptContext.getFactory().getContext();
-        Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getBeanClasses());
+        Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getTypes());
 
         // 以下这些接口的实现类已在帮助说明中删除
         setes.remove(UniversalScriptVariableMethod.class);
@@ -241,21 +240,20 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             }
 
             buf.append("* ").append(cls.getName()).append(FileUtils.lineSeparator);
-            List<BeanClass> list = context.getBeanClassList(cls);
+            List<BeanInfo> list = context.getBeanInfoList(cls);
             CharTable ct = new CharTable();
             ct.addTitle("");
             ct.addTitle("");
-            for (BeanClass anno : list) {
-                ct.addCell(anno.getBeanClass().getName());
-                EasyBean easyBean = anno.getAnnotation();
-                ct.addCell(easyBean == null ? "" : easyBean.description());
+            for (BeanInfo beanInfo : list) {
+                ct.addCell(beanInfo.getType().getName());
+                ct.addCell(beanInfo.getDescription());
             }
             buf.append(ct.toSimpleShape().ltrim().toString());
             buf.append(FileUtils.lineSeparator);
             buf.append(FileUtils.lineSeparator);
         }
 
-        Set<Class<?>> beanClses = new LinkedHashSet<Class<?>>(context.getBeanBuilderClass());
+        Set<Class<?>> beanClses = new LinkedHashSet<Class<?>>(context.getBeanBuilderType());
         beanClses.remove(UniversalScriptVariableMethod.class);
         beanClses.remove(UniversalCommandCompiler.class);
         beanClses.remove(DatabaseDialect.class);
@@ -263,13 +261,13 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             BeanBuilder<?> beanBuilder = context.getBeanBuilder(cls);
             buf.append("* ").append(cls.getName()).append(" -> ").append(beanBuilder.getClass().getName()).append(FileUtils.lineSeparator);
 
-            List<BeanClass> list = context.getBeanClassList(cls);
+            List<BeanInfo> list = context.getBeanInfoList(cls);
             CharTable ct = new CharTable();
             ct.addTitle("");
             ct.addTitle("");
-            for (BeanClass bi : list) {
-                ct.addCell(bi.getBeanClass().getName());
-                ct.addCell(bi.getAnnotation().description());
+            for (BeanInfo beanInfo : list) {
+                ct.addCell(beanInfo.getType().getName());
+                ct.addCell(beanInfo.getDescription());
             }
             buf.append(ct.toSimpleShape().ltrim().toString());
             buf.append(FileUtils.lineSeparator);
@@ -286,21 +284,11 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
      * @return
      */
     public String supportedDatabase(UniversalScriptContext context) {
-        List<BeanClass> list = new ArrayList<BeanClass>(context.getFactory().getContext().getBeanClassList(DatabaseDialect.class));
-        java.util.Collections.sort(list, new Comparator<BeanClass>() {
+        List<BeanInfo> list = new ArrayList<BeanInfo>(context.getFactory().getContext().getBeanInfoList(DatabaseDialect.class));
+        java.util.Collections.sort(list, new Comparator<BeanInfo>() {
 
-            public int compare(BeanClass o1, BeanClass o2) {
-                EasyBean a1 = o1.getAnnotation();
-                EasyBean a2 = o2.getAnnotation();
-                if (a1 == null && a2 == null) {
-                    return 0;
-                } else if (a1 == null) {
-                    return -1;
-                } else if (a2 == null) {
-                    return 1;
-                } else {
-                    return a1.kind().compareTo(a2.kind());
-                }
+            public int compare(BeanInfo o1, BeanInfo o2) {
+                return o1.getName().compareTo(o2.getName());
             }
         });
 
@@ -310,23 +298,11 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         table.addTitle(array[1], CharTable.ALIGN_LEFT);
         table.addTitle(array[2], CharTable.ALIGN_RIGHT);
 
-        for (BeanClass impl : list) {
-            EasyBean anno = impl.getAnnotation();
-            String kind = anno.kind();
-            String version = "";
-            if (StringUtils.isNotBlank(anno.major()) || StringUtils.isNotBlank(anno.minor())) {
-                String major = StringUtils.defaultString(anno.major(), "0");
-                String minor = StringUtils.defaultString(anno.minor(), "0");
-                version = " " + major + "." + minor;
-            }
-
-            String database = kind + version;
-            String description = anno.description() + "     ";
-            String className = "          " + impl.getBeanClass().getName();
-
-            table.addCell(database);
-            table.addCell(description);
-            table.addCell(className);
+        for (BeanInfo beaninfo : list) {
+            DatabaseDialect dialect = context.getFactory().getContext().getBean(beaninfo.getType());
+            table.addCell(beaninfo.getName() + " " + dialect.getDatabaseMajorVersion() + "." + dialect.getDatabaseMinorVersion());
+            table.addCell(beaninfo.getDescription() + "     ");
+            table.addCell("          " + beaninfo.getType().getName());
         }
 
         return StringUtils.addLinePrefix(table.toStandardShape().ltrim().toString(), "\t");

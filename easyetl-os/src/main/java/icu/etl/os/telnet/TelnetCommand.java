@@ -36,7 +36,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2022-01-13
  */
-@EasyBean(kind = "telnet", mode = "apache", major = "1", minor = "0", description = "apache-net")
+@EasyBean(name = "telnet", description = "apache-net")
 public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShellCommand {
 
     private static Log log = LogFactory.getLog(TelnetCommand.class);

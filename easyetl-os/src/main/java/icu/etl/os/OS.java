@@ -2,19 +2,9 @@ package icu.etl.os;
 
 import java.util.List;
 
-import icu.etl.annotation.EasyBean;
-
 /**
- * 该接口用于描述操作系统的功能 <br>
- * 操作系统可以是本地操作系统，也可以是远程操作系统。可以是 linux，windows，unix，macos <br>
- * <br>
- * 实现类注解的填写规则: <br>
- * {@linkplain EasyBean#kind()} 属性表示操作系统名, 如: linux，windows <br>
- * {@linkplain EasyBean#mode()} 属性表示操作系统类型, 如: remote表示远程操作系统 local表示本地操作系统 <br>
- * {@linkplain EasyBean#major()} 属性表示操作系统大版本号, 只能是整数 <br>
- * {@linkplain EasyBean#minor()} 属性表示操作系统小版本号, 只能是整数 <br>
- * {@linkplain EasyBean#description()} 属性表示描述信息 <br>
- * <br>
+ * 该接口用于描述操作系统的功能
+ * 操作系统可以是本地操作系统，也可以是远程操作系统。可以是 linux，windows，unix，macos
  *
  * @author jeremy8551@qq.com
  * @createtime 2020-09-06

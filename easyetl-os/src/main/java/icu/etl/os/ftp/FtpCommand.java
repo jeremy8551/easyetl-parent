@@ -17,6 +17,8 @@ import icu.apache.net.ftp.parser.FTPFileEntryParserFactory;
 import icu.etl.annotation.EasyBean;
 import icu.etl.expression.GPatternExpression;
 import icu.etl.io.BufferedLineReader;
+import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.log.STD;
 import icu.etl.os.OSFile;
 import icu.etl.os.OSFileCommandException;
@@ -36,8 +38,8 @@ import icu.etl.util.StringUtils;
 /**
  * FTP协议的实现类
  */
-@EasyBean(kind = "ftp", mode = "", major = "2", minor = "2")
-public class FtpCommand implements OSFtpCommand {
+@EasyBean(name = "ftp")
+public class FtpCommand implements OSFtpCommand, EasyetlContextAware {
 
     /** parameters name */
     public final static HashSet<String> PARAM_NAME_LIST = new HashSet<String>(ArrayUtils.asList("DataTimeout", "ControlEncoding", "BufferSize", "FileType", "ParserFactory", "FileStructure", "FileTransferMode", "RemoteVerificationEnabled", "RestartOffset"));
@@ -53,6 +55,13 @@ public class FtpCommand implements OSFtpCommand {
 
     /** username@host:port */
     protected String remoteServerName;
+
+    /** 容器上下文信息 */
+    protected EasyetlContext context;
+
+    public void setContext(EasyetlContext context) {
+        this.context = context;
+    }
 
     public FtpCommand() {
         this.client = new FTPClient();
@@ -107,7 +116,7 @@ public class FtpCommand implements OSFtpCommand {
         }
 
         if (this.params.containsKey("ParserFactory")) {
-            this.client.setParserFactory((FTPFileEntryParserFactory) ClassUtils.newInstance(this.params.get("ParserFactory")));
+            this.client.setParserFactory((FTPFileEntryParserFactory) ClassUtils.newInstance(this.params.get("ParserFactory"), this.context.getClassLoader()));
         }
 
         if (this.params.containsKey("RestartOffset")) {

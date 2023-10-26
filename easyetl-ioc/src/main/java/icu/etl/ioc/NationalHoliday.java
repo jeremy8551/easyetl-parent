@@ -3,17 +3,8 @@ package icu.etl.ioc;
 import java.util.Date;
 import java.util.Set;
 
-import icu.etl.annotation.EasyBean;
-
 /**
  * 国家法定节假日
- * <p>
- * 实现类注解的填写规则:
- * {@linkplain EasyBean#kind()} 属性表示语言, 如: zh
- * {@linkplain EasyBean#mode()} 属性表示国家, 如: cn
- * {@linkplain EasyBean#major()} 属性未使用, 填空字符串
- * {@linkplain EasyBean#minor()} 属性未使用, 填空字符串
- * {@linkplain EasyBean#description()} 属性表示描述信息
  *
  * @author jeremy8551@qq.com
  * @createtime 2021-04-15

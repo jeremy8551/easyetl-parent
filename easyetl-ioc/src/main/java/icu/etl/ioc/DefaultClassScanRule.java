@@ -3,7 +3,6 @@ package icu.etl.ioc;
 import java.util.Comparator;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.util.StringComparator;
 
 /**
  * 类扫描器的扫描规则
@@ -11,7 +10,7 @@ import icu.etl.util.StringComparator;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanClass> {
+public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanInfo> {
 
     /**
      * 初始化，扫描类路径中所有被注解标记的类信息
@@ -26,21 +25,13 @@ public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanClass
 
         // 如果类上配置了注解
         if (cls.isAnnotationPresent(EasyBean.class)) {
-            return register.addBean(new AnnotationBeanClass(cls), this);
+            return register.addBean(new AnnotationBeanInfo(cls), this);
         }
         return false;
     }
 
-    public int compare(BeanClass o1, BeanClass o2) {
-        EasyBean b1 = o1.getAnnotation();
-        EasyBean b2 = o2.getAnnotation();
-
-        if (StringComparator.compareTo(b2.kind(), b1.kind()) == 0 //
-                && StringComparator.compareTo(b2.mode(), b1.mode()) == 0 //
-                && StringComparator.compareTo(b2.major(), b1.major()) == 0 //
-                && StringComparator.compareTo(b2.minor(), b1.minor()) == 0 //
-                && o1.getBeanClass().equals(o2.getBeanClass()) //
-        ) {
+    public int compare(BeanInfo o1, BeanInfo o2) {
+        if (o1.equals(o2.getName()) && o1.equals(o2.getType())) {
             return 0;
         } else {
             return 1;

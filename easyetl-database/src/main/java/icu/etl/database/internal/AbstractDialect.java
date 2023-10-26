@@ -52,6 +52,14 @@ public abstract class AbstractDialect implements DatabaseDialect {
         this.keyword = new CaseSensitivSet();
     }
 
+    public String getDatabaseMajorVersion() {
+        return "";
+    }
+
+    public String getDatabaseMinorVersion() {
+        return "";
+    }
+
     public String dropPrimaryKey(Connection connection, DatabaseIndex index) throws SQLException {
         if (index == null) {
             throw new NullPointerException();

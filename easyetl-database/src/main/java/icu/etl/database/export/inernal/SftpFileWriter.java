@@ -18,7 +18,7 @@ import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.os.OSFtpCommand;
 import icu.etl.util.Ensure;
 
-@EasyBean(kind = "sftp", mode = "", major = "", minor = "", description = "卸载数据到远程sftp服务器")
+@EasyBean(name = "sftp", description = "卸载数据到远程sftp服务器")
 public class SftpFileWriter implements ExtractWriter, EasyetlContextAware {
 
     protected String target;

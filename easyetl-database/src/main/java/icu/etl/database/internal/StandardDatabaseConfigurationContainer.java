@@ -24,7 +24,7 @@ import icu.etl.os.OSShellCommand;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(true)
+@EasyBean(singleton = true)
 public class StandardDatabaseConfigurationContainer implements DatabaseConfigurationContainer {
 
     private CaseSensitivMap<DatabaseConfiguration> map;

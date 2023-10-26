@@ -8,7 +8,7 @@ import icu.etl.test.bean.TestLoader;
 @EasyBean
 public class TestLoaderBuilder implements BeanBuilder<TestLoader> {
     @Override
-    public TestLoader build(EasyetlContext context, Object... array) throws Exception {
+    public TestLoader getBean(EasyetlContext context, Object... args) throws Exception {
         return null;
     }
 }

@@ -3,24 +3,12 @@ package icu.etl.io;
 import java.io.IOException;
 import java.io.Writer;
 
-import icu.etl.annotation.EasyBean;
-import icu.etl.util.Attribute;
+import icu.etl.ioc.EasyetlContext;
 
 /**
  * 表格型数据文件接口 <br>
  * <br>
- * 从容器上下文 {@linkplain icu.etl.ioc.EasyetlContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象 <br>
- * 第一参数必须是 {@linkplain TextTableFile} <br>
- * 第二个参数必须是文件类型 <br>
- * 第三个参数必须是 {@linkplain Attribute} 对象的引用，属性集合中可以设置 charset，codepage，chardel，rowdel，coldel，escape，column，colname <br>
- * <br>
- * 实现类注解的填写规则: <br>
- * {@linkplain EasyBean#kind()} 属性表示语言, 如: txt, del, fex <br>
- * {@linkplain EasyBean#mode()} 属性填写存储类型, 如: file, net <br>
- * {@linkplain EasyBean#major()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBean#minor()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBean#description()} 属性表示描述信息 <br>
- * <br>
+ * 从容器上下文 {@linkplain EasyetlContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象
  *
  * @author jeremy8551@qq.com
  * @createtime 2011-07-18

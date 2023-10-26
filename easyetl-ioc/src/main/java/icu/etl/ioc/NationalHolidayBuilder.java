@@ -1,6 +1,5 @@
 package icu.etl.ioc;
 
-import java.lang.annotation.Annotation;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -60,8 +59,8 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
         this.locale = locale;
     }
 
-    public NationalHoliday build(EasyetlContext context, Object... array) throws Exception {
-        Locale locale = ArrayUtils.indexOf(array, Locale.class, 0);
+    public NationalHoliday getBean(EasyetlContext context, Object... args) throws Exception {
+        Locale locale = ArrayUtils.indexOf(args, Locale.class, 0);
         if (locale == null || locale.equals(this.locale)) { // 返回默认值
             if (!this.init.getAndSet(true)) {
                 this.load(context);
@@ -80,35 +79,29 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
      * @param context 容器上下文信息
      */
     protected void load(EasyetlContext context) {
-        List<BeanClass> list = context.getBeanClassList(NationalHoliday.class);
-        for (BeanClass bean : list) { // 判断语言和国家信息是否相等
-            Class<NationalHoliday> cls = bean.getBeanClass();
-            EasyBean anno = bean.getAnnotation();
-            this.add(cls, anno);
+        List<BeanInfo> list = context.getBeanInfoList(NationalHoliday.class);
+        for (BeanInfo beanInfo : list) { // 判断语言和国家信息是否相等
+            this.add(beanInfo);
         }
     }
 
     /**
      * 添加组件实现类
      *
-     * @param cls  国家法定假日类信息
-     * @param anno 注解
+     * @param beanInfo 组件信息
      */
-    protected void add(Class<NationalHoliday> cls, EasyBean anno) {
-        if (anno != null //
-                && anno.kind().equalsIgnoreCase(this.locale.getLanguage()) //
-                && anno.mode().equalsIgnoreCase(this.locale.getCountry()) //
-        ) {
+    protected void add(BeanInfo beanInfo) {
+        if (beanInfo.equals(this.locale.getLanguage() + "_" + this.locale.getCountry())) {
             if (STD.out.isDebugEnabled()) {
-                STD.out.debug("use " + cls.getName());
+                STD.out.debug("use " + beanInfo.getType().getName());
             }
 
             try {
-                NationalHoliday obj = ClassUtils.newInstance(cls);
+                NationalHoliday obj = ClassUtils.newInstance(beanInfo.getType());
                 this.work.addAll(obj.getWorkDays());
                 this.rest.addAll(obj.getRestDays());
             } catch (Throwable e) {
-                STD.out.warn("load " + cls.getName() + " error!", e);
+                STD.out.warn("load " + beanInfo.getType().getName() + " error!", e);
             }
         }
     }
@@ -150,11 +143,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
     }
 
     public void addBean(BeanEvent event) {
-        Annotation anno = event.getAnnotation();
-        if (anno instanceof EasyBean) {
-            Class<NationalHoliday> cls = event.getBeanClass();
-            this.add(cls, (EasyBean) anno);
-        }
+        this.add(event.getBeanInfo());
     }
 
     public void removeBean(BeanEvent event) {

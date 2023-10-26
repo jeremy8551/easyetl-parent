@@ -26,7 +26,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2017-11-30
  */
-@EasyBean(kind = "gz", mode = "", major = "", minor = "")
+@EasyBean(name = "gz")
 public class GzipCompress implements Compress {
 
     /** true 表示已终止压缩或解压 */

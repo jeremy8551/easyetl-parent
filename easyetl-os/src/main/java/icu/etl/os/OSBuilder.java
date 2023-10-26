@@ -20,23 +20,23 @@ public class OSBuilder implements BeanBuilder<OS> {
     /**
      * 返回操作系统接口
      *
-     * @param array 登录参数，格式如下: <br>
-     *              localhost <br>
-     *              127.0.0.1 <br>
-     *              localhost 22 username password <br>
-     *              localhost username password <br>
-     *              127.0.0.1 22 username password <br>
-     *              192.168.1.2 username password <br>
-     *              192.168.1.2 username <br>
-     *              <br>
-     *              参数为空时，返回本地操作系统的接口
+     * @param args 登录参数，格式如下: <br>
+     *             localhost <br>
+     *             127.0.0.1 <br>
+     *             localhost 22 username password <br>
+     *             localhost username password <br>
+     *             127.0.0.1 22 username password <br>
+     *             192.168.1.2 username password <br>
+     *             192.168.1.2 username <br>
+     *             <br>
+     *             参数为空时，返回本地操作系统的接口
      * @return 实例对象
      */
-    public OS build(EasyetlContext context, Object... array) throws Exception {
+    public OS getBean(EasyetlContext context, Object... args) throws Exception {
         String host = null, username = null, password = null; // 服务器host 用户名 密码
         int port = -1; // 访问端口号
 
-        for (Object obj : array) {
+        for (Object obj : args) {
             if (obj instanceof Integer) { // 识别端口号
                 port = ((Integer) obj).intValue();
                 continue;

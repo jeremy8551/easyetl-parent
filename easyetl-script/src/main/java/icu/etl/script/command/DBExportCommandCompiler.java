@@ -12,7 +12,7 @@ import icu.etl.database.export.UserListener;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTable;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanClass;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -75,29 +75,27 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
         // 查找接口对应的的实现类
-        List<BeanClass> list1 = context.getFactory().getContext().getBeanClassList(TextTableFile.class);
+        List<BeanInfo> list1 = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
         CharTable ct1 = new CharTable(context.getCharsetName());
         ct1.addTitle("");
         ct1.addTitle("");
         ct1.addTitle("");
-        for (BeanClass anno : list1) {
-            EasyBean annotation = anno.getAnnotation();
-            ct1.addCell(annotation.kind());
-            ct1.addCell(annotation.description());
-            ct1.addCell(anno.getBeanClass().getName());
+        for (BeanInfo beanInfo : list1) {
+            ct1.addCell(beanInfo.getName());
+            ct1.addCell(beanInfo.getDescription());
+            ct1.addCell(beanInfo.getType().getName());
         }
 
         // 查找接口对应的的实现类
-        List<BeanClass> list2 = context.getFactory().getContext().getBeanClassList(ExtractWriter.class);
+        List<BeanInfo> list2 = context.getFactory().getContext().getBeanInfoList(ExtractWriter.class);
         CharTable ct2 = new CharTable(context.getCharsetName());
         ct2.addTitle("");
         ct2.addTitle("");
         ct2.addTitle("");
-        for (BeanClass beanConfig : list2) {
-            EasyBean anno = beanConfig.getAnnotation();
-            ct2.addCell(anno.kind());
-            ct2.addCell(anno.description());
-            ct2.addCell(beanConfig.getBeanClass().getName());
+        for (BeanInfo beanConfig : list2) {
+            ct2.addCell(beanConfig.getName());
+            ct2.addCell(beanConfig.getDescription());
+            ct2.addCell(beanConfig.getType().getName());
         }
 
         out.println(new ScriptUsage(this.getClass() //

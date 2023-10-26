@@ -4,6 +4,7 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.ExtractReader;
 import icu.etl.database.export.ExtracterContext;
 import icu.etl.ioc.BeanBuilder;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
@@ -18,22 +19,22 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class ReaderBuilder implements BeanBuilder<ExtractReader> {
 
-    public ExtractReader build(EasyetlContext context, Object... array) throws Exception {
-        ExtracterContext cxt = ArrayUtils.indexOf(array, ExtracterContext.class, 0);
+    public ExtractReader getBean(EasyetlContext context, Object... args) throws Exception {
+        ExtracterContext cxt = ArrayUtils.indexOf(args, ExtracterContext.class, 0);
         String source = cxt.getSource();
 
         if (StringUtils.startsWith(source, "select", 0, true, true)) {
             return new DatabaseReader(cxt);
         } else if (ClassUtils.forName(source, false, context.getClassLoader()) != null) {
-            return (ExtractReader) ClassUtils.newInstance(source);
+            return (ExtractReader) ClassUtils.newInstance(source, context.getClassLoader());
         }
 
         // 解析 http://xxx/xxx/xxx 格式
         String[] split = StringUtils.split(source, "://");
         if (split.length > 0) {
-            Class<ExtractReader> cls = context.getBeanClass(ExtractReader.class, split[0]);
-            if (cls != null) {
-                return ClassUtils.newInstance(cls);
+            BeanInfo beanInfo = context.getBeanInfo(ExtractReader.class, split[0]);
+            if (beanInfo != null) {
+                return ClassUtils.newInstance(beanInfo.getType());
             }
         }
 

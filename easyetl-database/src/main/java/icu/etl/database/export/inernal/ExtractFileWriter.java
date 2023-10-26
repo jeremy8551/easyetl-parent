@@ -17,7 +17,7 @@ import icu.etl.ioc.EasyetlContextAware;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 
-@EasyBean(kind = "local", mode = "filepath", major = "", minor = "", description = "卸载数据到本地文件")
+@EasyBean(name = "local", description = "卸载数据到本地文件")
 public class ExtractFileWriter implements ExtractWriter, EasyetlContextAware {
 
     /** 文件路径 */

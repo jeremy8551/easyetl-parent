@@ -82,7 +82,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "db2", mode = "", major = "", minor = "", description = "IBM DB2 数据库方言模版")
+@EasyBean(name = "db2")
 public class DB2Dialect extends AbstractDialect implements DatabaseDialect, EasyetlContextAware {
 
     /** 进程编号名 */

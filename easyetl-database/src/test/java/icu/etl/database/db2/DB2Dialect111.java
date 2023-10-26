@@ -8,6 +8,14 @@ import icu.etl.database.DatabaseDialect;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "db2", mode = "", major = "11", minor = "1", description = "")
+@EasyBean(name = "db2")
 public class DB2Dialect111 extends DB2Dialect implements DatabaseDialect {
+
+    public String getDatabaseMajorVersion() {
+        return "";
+    }
+
+    public String getDatabaseMinorVersion() {
+        return "1";
+    }
 }

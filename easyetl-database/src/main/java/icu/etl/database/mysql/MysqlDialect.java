@@ -19,7 +19,7 @@ import icu.etl.database.internal.AbstractDialect;
 import icu.etl.database.internal.StandardDatabaseURL;
 import icu.etl.util.StringUtils;
 
-@EasyBean(kind = "mysql", mode = "", major = "", minor = "", description = "Mysql 数据库方言模版")
+@EasyBean(name = "mysql")
 public class MysqlDialect extends AbstractDialect {
 
     /**

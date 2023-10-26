@@ -25,19 +25,15 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class ExtractWriterBuilder implements BeanBuilder<ExtractWriter> {
 
-    public ExtractWriter build(EasyetlContext context, Object... array) throws IOException, SQLException {
-        return this.create(context, array);
-    }
-
-    private ExtractWriter create(EasyetlContext context, Object[] array) throws IOException, SQLException {
-        ExtracterContext cxt = ArrayUtils.indexOf(array, ExtracterContext.class, 0);
-        ExtractMessage message = ArrayUtils.indexOf(array, ExtractMessage.class, 0);
+    public ExtractWriter getBean(EasyetlContext context, Object... args) throws IOException, SQLException {
+        ExtracterContext cxt = ArrayUtils.indexOf(args, ExtracterContext.class, 0);
+        ExtractMessage message = ArrayUtils.indexOf(args, ExtractMessage.class, 0);
         String target = StringUtils.trimBlank(cxt.getTarget());
 
         // bean://kind/mode/major/minor
         if (StringUtils.startsWith(target, "bean://", 0, true, true)) {
-            Object[] list = StringUtils.split(target.substring("bean://".length()), '/');
-            Class<ExtractWriter> cls = context.getBeanClass(ExtractWriter.class, list);
+            String[] array = StringUtils.split(target.substring("bean://".length()), '/');
+            Class<ExtractWriter> cls = context.getBeanInfo(ExtractWriter.class, array[0]).getType();
             return ClassUtils.newInstance(cls);
         }
 

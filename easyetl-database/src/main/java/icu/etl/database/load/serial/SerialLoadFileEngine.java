@@ -32,7 +32,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "serial", mode = "", major = "", minor = "")
+@EasyBean(name = "serial")
 public class SerialLoadFileEngine implements Loader, EasyetlContextAware {
 
     /** true表示终止任务 */

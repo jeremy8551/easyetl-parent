@@ -13,7 +13,7 @@ import icu.etl.util.IO;
 /**
  * 脚本引擎用户会话信息集合
  */
-@EasyBean(kind = "default", mode = "", major = "", minor = "", description = "脚本引擎用户会话信息集合")
+@EasyBean(name = "default", description = "脚本引擎用户会话信息集合")
 public class ScriptSessionFactory implements UniversalScriptSessionFactory {
 
     /** 用户会话编号与用户会话信息的映射关系 */

@@ -15,7 +15,7 @@ import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 
-@EasyBean(kind = "rar", mode = "", major = "", minor = "")
+@EasyBean(name = "rar")
 public class RarCompress implements Compress {
 
     private volatile boolean terminate = false;

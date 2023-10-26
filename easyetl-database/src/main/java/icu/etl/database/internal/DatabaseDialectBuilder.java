@@ -1,6 +1,5 @@
 package icu.etl.database.internal;
 
-import java.lang.annotation.Annotation;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -9,15 +8,16 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.collection.CaseSensitivMap;
+import icu.etl.collection.CaseSensitivSet;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanClass;
+import icu.etl.ioc.BeanClassCache;
 import icu.etl.ioc.BeanEvent;
 import icu.etl.ioc.BeanEventListener;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.RepeatDefineBeanException;
 import icu.etl.log.STD;
-import icu.etl.util.ClassUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 
@@ -30,66 +30,73 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, BeanEventListener {
 
-    /** true 表示不支持 */
-    private volatile boolean notinit;
-
-    /** 支持的所有数据库实现类注解 kind 与 mode 的映射关系 */
-    private CaseSensitivMap<String> dialectMap;
+    /** 数据库方言组件名的集合 */
+    private CaseSensitivSet beanNames;
 
     /**
      * 初始化
      */
-    public DatabaseDialectBuilder() {
-        this.dialectMap = new CaseSensitivMap<String>();
-        this.notinit = true;
+    public DatabaseDialectBuilder(EasyetlContext context) {
+        this.beanNames = new CaseSensitivSet();
+        List<BeanInfo> list = context.getBeanInfoList(DatabaseDialect.class);
+        for (BeanInfo beanInfo : list) {
+            this.beanNames.add(beanInfo.getName());
+        }
     }
 
-    public DatabaseDialect build(EasyetlContext context, Object... array) throws Exception {
-        this.init(context);
-        String[] parameters = this.toParameters(array);
-        Class<DatabaseDialect> cls = context.getBeanClass(DatabaseDialect.class, parameters[0], parameters[1], parameters[2], parameters[3]);
-        return cls == null ? null : ClassUtils.newInstance(cls);
-    }
+    public DatabaseDialect getBean(EasyetlContext context, Object... args) throws Exception {
+        String[] parameters = this.getDatabaseInfo(args);
+        String name = parameters[0];
+        String major = parameters[1];
+        String minor = parameters[2];
 
-    /**
-     * 加载所有数据库方言实现类信息
-     *
-     * @param context 容器上下文信息
-     */
-    private void init(EasyetlContext context) {
-        if (this.notinit) {
-            List<BeanClass> list = context.getBeanClassList(DatabaseDialect.class);
-            for (BeanClass obj : list) {
-                EasyBean anno = obj.getAnnotation();
-                if (anno != null) {
-                    String kind = StringUtils.trimBlank(anno.kind());
-                    String mode = StringUtils.trimBlank(anno.mode());
-                    this.dialectMap.put(kind, mode);
-                }
+        List<BeanInfo> beanInfoList = context.getBeanInfoList(DatabaseDialect.class, name);
+        BeanClassCache<DatabaseDialect> list = new BeanClassCache<DatabaseDialect>(beanInfoList.size());
+        for (BeanInfo beanInfo : beanInfoList) {
+            DatabaseDialect dialect = context.getBean(beanInfo.getType());
+            if (dialect.getDatabaseMajorVersion().equals(major) && dialect.getDatabaseMinorVersion().equals(minor)) {
+                list.add(dialect);
             }
-            this.notinit = false;
+        }
+
+        if (list.onlyOne()) {
+            return list.getOnlyOne();
+        } else {
+            throw new RepeatDefineBeanException(DatabaseDialect.class, name, list);
         }
     }
 
     /**
      * 将参数转为数据库方言实现类注解参数 kind mode major minor 属性
      *
-     * @param array
-     * @return
+     * @param args 外部参数数组
+     * @return 数据库信息数组，第一个元素是数据库简称，第二个元素是数据库大版本号，第三个元素是数据库小版本号
      */
-    private String[] toParameters(Object... array) throws SQLException {
-        // 返回数据库连接对应的实现类参数
-        String[] parameters = null;
-        for (int i = 0; i < array.length; i++) {
-            Object obj = array[i];
+    private String[] getDatabaseInfo(Object[] args) throws SQLException {
+        for (int i = 0; i < args.length; i++) {
+            Object obj = args[i];
 
+            // 数据库连接
             if (obj instanceof Connection) {
                 Connection conn = (Connection) obj;
-                parameters = this.toParameters(conn);
-            } else if (obj instanceof DataSource) {
+                String[] array = this.parse(conn);
+                if (array != null) {
+                    return array;
+                } else {
+                    continue;
+                }
+            }
+
+            // 数据库连接池
+            if (obj instanceof DataSource) {
                 Connection conn = ((DataSource) obj).getConnection();
                 try {
-                    parameters = this.toParameters(conn);
+                    String[] array = this.parse(conn);
+                    if (array != null) {
+                        return array;
+                    } else {
+                        continue;
+                    }
                 } finally {
                     IO.closeQuiet(conn);
                     IO.closeQuietly(conn);
@@ -97,36 +104,26 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
             }
         }
 
-        if (parameters == null) {
-            String kind = this.toKind(StringUtils.join(array, " "));
-            String mode = this.dialectMap.get(kind);
-
-            parameters = new String[4];
-            parameters[0] = kind;
-            parameters[1] = mode;
-            parameters[2] = "";
-            parameters[3] = "";
-        }
-        return parameters;
+        String[] array = new String[3];
+        array[0] = this.parseName(StringUtils.join(args, " "));
+        array[1] = "";
+        array[2] = "";
+        return array;
     }
 
     /**
-     * 从数据库连接中查询标识符，大版本号，小版本号
+     * 从数据库连接中解析: 数据库简称，大版本号，小版本号
      *
      * @param conn 数据库连接
-     * @return
+     * @return 数据库信息数组，第一个元素是数据库简称，第二个元素是数据库大版本号，第三个元素是数据库小版本号
      */
-    private String[] toParameters(Connection conn) {
+    private String[] parse(Connection conn) {
         try {
             DatabaseMetaData metaData = conn.getMetaData();
-            String kind = this.toKind(metaData.getURL());
-            String mode = this.dialectMap.get(kind);
-
-            String[] array = new String[4];
-            array[0] = kind;
-            array[1] = mode;
-            array[2] = String.valueOf(metaData.getDatabaseMajorVersion());
-            array[3] = String.valueOf(metaData.getDatabaseMinorVersion());
+            String[] array = new String[3];
+            array[0] = this.parseName(metaData.getURL());
+            array[1] = String.valueOf(metaData.getDatabaseMajorVersion());
+            array[2] = String.valueOf(metaData.getDatabaseMinorVersion());
             return array;
         } catch (Throwable e) {
             STD.out.error("parse()", e);
@@ -137,29 +134,22 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
     /**
      * 从 JDBC URL 中提取数据库名
      *
-     * @param url
-     * @return
+     * @param str 字符串
+     * @return 组件名, 如：db2 oracle mysql
      */
-    private String toKind(String url) {
-        String str = url.toLowerCase();
-        for (Iterator<String> it = this.dialectMap.keySet().iterator(); it.hasNext(); ) {
+    private String parseName(String str) {
+        String lower = str.toLowerCase();
+        for (Iterator<String> it = this.beanNames.iterator(); it.hasNext(); ) {
             String name = it.next();
-            String key = name.toLowerCase();
-            if (str.indexOf(key) != -1) {
+            if (lower.contains(name.toLowerCase())) {
                 return name;
             }
         }
-        throw new UnsupportedOperationException(url);
+        throw new UnsupportedOperationException(str);
     }
 
     public void addBean(BeanEvent event) {
-        Annotation anno = event.getAnnotation();
-        if (anno instanceof EasyBean) {
-            EasyBean easybean = (EasyBean) event.getAnnotation();
-            String kind = StringUtils.trimBlank(easybean.kind());
-            String mode = StringUtils.trimBlank(easybean.mode());
-            this.dialectMap.put(kind, mode);
-        }
+        this.beanNames.add(event.getBeanInfo().getName());
     }
 
     public void removeBean(BeanEvent event) {

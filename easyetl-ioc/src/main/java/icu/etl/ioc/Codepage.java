@@ -32,6 +32,6 @@ public interface Codepage {
      *
      * @return
      */
-    Map<String, String> getAll();
+    Map<String, String> values();
 
 }

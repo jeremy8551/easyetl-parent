@@ -31,7 +31,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "default", mode = "")
+@EasyBean(name = "default")
 public class ScriptFormatter extends UniversalScriptFormatter {
     private final static long serialVersionUID = 1L;
 

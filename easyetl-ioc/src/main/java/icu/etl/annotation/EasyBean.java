@@ -19,11 +19,11 @@ import java.lang.annotation.Target;
 public @interface EasyBean {
 
     /**
-     * 组件管理模式
+     * 详见 {@linkplain EasyBean#singleton()}
      *
      * @return 详见 {@linkplain EasyBean#singleton()}
      */
-    boolean value() default false;
+    String value() default "";
 
     /**
      * 组件管理模式
@@ -40,32 +40,19 @@ public @interface EasyBean {
     boolean lazy() default true;
 
     /**
-     * 种类信息, 用于区分相同接口的不同实现类
+     * 组件名称
      *
      * @return 种类信息
      */
-    String kind() default "";
+    String name() default "";
 
     /**
-     * 模式信息, 用于区分相同种类的实现类
+     * 排序编号
+     * 如果注册了多个同名的组件导致冲突时，容器使用排序编号最大组件
      *
-     * @return 模式信息
+     * @return 默认0，值越大权重越高
      */
-    String mode() default "";
-
-    /**
-     * 大版本号
-     *
-     * @return 大版本号
-     */
-    String major() default "";
-
-    /**
-     * 小版本号
-     *
-     * @return 小版本号
-     */
-    String minor() default "";
+    int level() default 0;
 
     /**
      * 描述信息

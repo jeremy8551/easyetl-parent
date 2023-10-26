@@ -29,7 +29,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2014-07-23 16:16:03
  */
-@EasyBean(kind = "zip", mode = "", major = "", minor = "")
+@EasyBean(name = "zip")
 public class ZipCompress implements Compress {
 
     private volatile boolean terminate = false;

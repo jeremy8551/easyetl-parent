@@ -7,7 +7,6 @@ import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.Codepage;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.Attribute;
-import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
 
 /**
@@ -21,15 +20,17 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
 
-    public TextTableFile build(EasyetlContext context, Object... array) throws Exception {
-        Class<TextTableFile> cls = context.getBeanClass(TextTableFile.class, array);
-        TextTableFile file = ClassUtils.newInstance(cls);
+    @SuppressWarnings("unchecked")
+    public TextTableFile getBean(EasyetlContext context, Object... args) throws Exception {
+        TextTableFile file = context.getBean(TextTableFile.class, args);
+        if (file == null) {
+            throw new UnsupportedOperationException(StringUtils.toString(args));
+        }
 
-        // 设置数据类型的属性
-        for (Object obj : array) {
+        for (Object obj : args) {
             if (obj instanceof Attribute) {
                 Attribute<String> attribute = (Attribute<String>) obj;
-                this.setProperty(context, file, attribute);
+                this.setProperty(context, file, attribute); // 设置数据类型的属性
             }
         }
         return file;

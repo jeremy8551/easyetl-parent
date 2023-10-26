@@ -8,7 +8,7 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.Dates;
 
-@EasyBean(kind = "zh", mode = "cn", major = "", minor = "", description = "2013-2023中国法定节假日")
+@EasyBean(name = "zh_cn", description = "2013-2023中国法定节假日")
 public class NationalChinaHoliday implements NationalHoliday {
 
     private Set<Date> reset;

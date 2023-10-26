@@ -30,7 +30,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "del", mode = "export", major = "", minor = "", description = "DB2数据库export命令导出文件格式, 逗号分隔，双引号转义字符，双引号是字符串限定符")
+@EasyBean(name = "del", description = "DB2数据库export命令导出文件格式, 逗号分隔，双引号转义字符，双引号是字符串限定符")
 public class DB2ExportFile extends CommonTextTableFile implements TextTableFile {
 
     public DB2ExportFile() {

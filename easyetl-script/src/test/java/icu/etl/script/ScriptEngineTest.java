@@ -15,7 +15,7 @@ public class ScriptEngineTest {
 
     @Test
     public void test() {
-        EasyetlContext context = new AnnotationEasyetlContext("info:sout");
+        EasyetlContext context = new AnnotationEasyetlContext("debug:sout");
         UniversalScriptEngineFactory factory = new UniversalScriptEngineFactory(context);
         ScriptEngine engine = null;
         try {

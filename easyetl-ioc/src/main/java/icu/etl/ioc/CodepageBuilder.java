@@ -1,9 +1,7 @@
 package icu.etl.ioc;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -12,41 +10,23 @@ import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBean
-public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEventListener {
+public class CodepageBuilder implements Codepage, BeanEventListener {
 
     /** codepage 与 charset 的映射关系 */
     private Map<String, String> map;
-
-    /** true表示未执行初始化 */
-    private boolean notInit;
 
     /**
      * 初始化
      */
     public CodepageBuilder() {
         this.map = new HashMap<String, String>();
-        this.notInit = true;
-        this.addAll();
-    }
-
-    public Codepage build(EasyetlContext context, Object... array) throws Exception {
-        if (this.notInit) {
-            this.notInit = false;
-            List<BeanClass> list = context.getBeanClassList(Codepage.class);
-            for (BeanClass bean : list) {
-                Class<Codepage> type = bean.getBeanClass();
-                Codepage obj = ClassUtils.newInstance(type);
-                this.map.putAll(obj.getAll());
-            }
-        }
-        return this;
     }
 
     public void addBean(BeanEvent event) {
-        Annotation anno = event.getAnnotation();
-        if (anno instanceof EasyBean) {
-            Codepage obj = ClassUtils.newInstance(event.getBeanClass());
-            this.map.putAll(obj.getAll());
+        Class<Object> type = event.getBeanInfo().getType();
+        if (Codepage.class.isAssignableFrom(type)) {
+            Codepage obj = ClassUtils.newInstance(type);
+            this.map.putAll(obj.values());
         }
     }
 
@@ -72,7 +52,7 @@ public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEve
         return this.map.get(key);
     }
 
-    public Map<String, String> getAll() {
+    public Map<String, String> values() {
         return java.util.Collections.unmodifiableMap(this.map);
     }
 

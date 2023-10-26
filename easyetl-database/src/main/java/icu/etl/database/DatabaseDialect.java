@@ -6,23 +6,27 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import icu.etl.annotation.EasyBean;
-
 /**
- * 数据库方言接口 <br>
- * <br>
- * 实现类注解的填写规则: <br>
- * {@linkplain EasyBean#kind()} 属性表示数据库缩写, 如: db2 <br>
- * {@linkplain EasyBean#mode()} 属性未使用, 填空字符串 <br>
- * {@linkplain EasyBean#major()} 属性填数据库的大版本号（且只能是整数），如： 11 <br>
- * {@linkplain EasyBean#minor()} 属性填数据库的小版本号（且只能是整数），如： 5 <br>
- * {@linkplain EasyBean#description()} 属性表示描述信息 <br>
- * <br>
+ * 数据库方言接口
  *
  * @author jeremy8551@qq.com
  * @createtime 2012-03-06
  */
 public interface DatabaseDialect {
+
+    /**
+     * 返回数据库的大版本号，实现数据库不同版本，对应不同的方言类
+     *
+     * @return 大版本号
+     */
+    String getDatabaseMajorVersion();
+
+    /**
+     * 返回数据库的小版本号，实现数据库不同版本，对应不同的方言类
+     *
+     * @return 小版本号
+     */
+    String getDatabaseMinorVersion();
 
     /**
      * 转为表全名

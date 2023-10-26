@@ -21,7 +21,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean(kind = "csv", mode = "file", major = "", minor = "", description = "CSV格式文件")
+@EasyBean(name = "csv", description = "CSV格式文件")
 public class CsvFile extends CommonTextTableFile implements TextTableFile {
 
     public CsvFile() {

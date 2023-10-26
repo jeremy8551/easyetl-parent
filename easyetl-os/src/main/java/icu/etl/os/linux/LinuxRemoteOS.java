@@ -52,7 +52,7 @@ import icu.etl.util.StringUtils;
 /**
  * 远程 linux 操作系统的接口实现类
  */
-@EasyBean(kind = "linux", mode = "remote", major = "", minor = "")
+@EasyBean(name = "linux")
 public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwork, EasyetlContextAware {
 
     protected OSSecureShellCommand cmd;

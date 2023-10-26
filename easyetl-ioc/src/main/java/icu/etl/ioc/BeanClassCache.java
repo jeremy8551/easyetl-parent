@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class BeanClassCache extends ArrayList<BeanClass> {
+public class BeanClassCache<E> extends ArrayList<E> {
     private final static long serialVersionUID = 1L;
 
     /**
@@ -32,14 +32,13 @@ public class BeanClassCache extends ArrayList<BeanClass> {
     /**
      * 返回唯一的实现类信息
      *
-     * @param <E> 元素类型
-     * @return 返回类信息
+     * @return 返回第一个元素
      */
-    public <E> Class<E> getOnlyOne() {
+    public E getOnlyOne() {
         if (this.size() == 0) {
             return null;
         } else {
-            return this.get(0).getBeanClass();
+            return this.get(0);
         }
     }
 

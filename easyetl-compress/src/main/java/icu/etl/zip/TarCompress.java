@@ -21,7 +21,7 @@ import icu.etl.util.IO;
 import icu.etl.util.Numbers;
 import icu.etl.util.StringUtils;
 
-@EasyBean(kind = "tar", mode = "", major = "", minor = "")
+@EasyBean(name = "tar")
 public class TarCompress implements Compress {
 
     private volatile boolean terminate = false;

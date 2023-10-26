@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@icu.etl.annotation.EasyBean(kind = "zh", mode = "cn")
+@icu.etl.annotation.EasyBean(kind = "zh_cn")
 public class USHolidays implements icu.etl.ioc.NationalHoliday {
 
     private Set<Date> rest = new HashSet<Date>();
