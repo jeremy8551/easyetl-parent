@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.log.STD;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Dates;
@@ -92,8 +91,8 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
      */
     protected void add(BeanInfo beanInfo) {
         if (beanInfo.equals(this.locale.getLanguage() + "_" + this.locale.getCountry())) {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug("use " + beanInfo.getType().getName());
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug("use " + beanInfo.getType().getName());
             }
 
             try {
@@ -101,7 +100,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
                 this.work.addAll(obj.getWorkDays());
                 this.rest.addAll(obj.getRestDays());
             } catch (Throwable e) {
-                STD.out.warn("load " + beanInfo.getType().getName() + " error!", e);
+                Ioc.out.warn("load " + beanInfo.getType().getName() + " error!", e);
             }
         }
     }

@@ -15,12 +15,12 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2023/10/5
  */
-public class BeanClassLoader {
+public class BeanInfoScanner {
 
     /**
      * 初始化
      */
-    public BeanClassLoader() {
+    public BeanInfoScanner() {
     }
 
     /**

@@ -17,7 +17,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import icu.etl.log.STD;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -120,8 +119,8 @@ public class ClassScanner {
             this.jarfiles.clear();
         }
 
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getClassMessage(15, this.includePackageNames.isEmpty() ? "" : " " + StringUtils.toString(this.includePackageNames) + " ", count));
+        if (Ioc.out.isDebugEnabled()) {
+            Ioc.out.debug(ResourcesUtils.getIocMessage(6, this.includePackageNames.isEmpty() ? "" : " " + this.includePackageNames + " ", count));
         }
         return count;
     }
@@ -143,8 +142,8 @@ public class ClassScanner {
         try {
             enu = classLoader.getResources(uri);
         } catch (Throwable e) {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getClassMessage(7, uri), e);
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(ResourcesUtils.getClassMessage(7, uri), e);
             }
             return 0;
         }
@@ -158,8 +157,8 @@ public class ClassScanner {
 
             String urlpath = StringUtils.decodeJvmUtf8HexString(url.getPath());
             String lowderPath = urlpath.toLowerCase();
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getClassMessage(1, urlpath, packageName));
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(ResourcesUtils.getClassMessage(1, urlpath, packageName));
             }
 
             // 加载类文件
@@ -168,8 +167,8 @@ public class ClassScanner {
                 try {
                     count += this.scanPackage(classLoader, packageName, urlpath);
                 } catch (Throwable e) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getClassMessage(10, packageName, urlpath), e);
+                    if (Ioc.out.isDebugEnabled()) {
+                        Ioc.out.debug(ResourcesUtils.getClassMessage(10, packageName, urlpath), e);
                     }
                 }
             }
@@ -191,13 +190,13 @@ public class ClassScanner {
 
             // 不能识别的资源信息
             else {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getClassMessage(17, protocol, urlpath));
+                if (Ioc.out.isDebugEnabled()) {
+                    Ioc.out.debug(ResourcesUtils.getClassMessage(17, protocol, urlpath));
                 }
             }
 
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(""); // 添加一个换行，区分多个类路径的扫描日志
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(""); // 添加一个换行，区分多个类路径的扫描日志
             }
         }
 
@@ -217,15 +216,15 @@ public class ClassScanner {
             return 0;
         }
 
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getClassMessage(6, packageName.length() == 0 ? "" : packageName, packagePath));
+        if (Ioc.out.isDebugEnabled()) {
+            Ioc.out.debug(ResourcesUtils.getClassMessage(6, packageName.length() == 0 ? "" : packageName, packagePath));
         }
 
         int count = 0;
         File packagefile = new File(packagePath);
         if (!packagefile.exists()) {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getClassMessage(27, packageName, packagePath));
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(ResourcesUtils.getClassMessage(27, packageName, packagePath));
             }
             return count;
         }
@@ -246,11 +245,11 @@ public class ClassScanner {
             String lowderpath = filepath.toLowerCase();
             String extname = FileUtils.getFilenameExt(filename).toLowerCase();
 
-            if (STD.out.isTraceEnabled()) {
+            if (Ioc.out.isTraceEnabled()) {
                 if (file.isDirectory()) {
-                    STD.out.trace(ResourcesUtils.getClassMessage(24, packageName, filename, FileUtils.joinFilepath(StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename)));
+                    Ioc.out.trace(ResourcesUtils.getClassMessage(24, packageName, filename, FileUtils.joinFilepath(StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename)));
 //                } else { 与下面日志重复，需要注释掉
-//                    STD.out.trace(ResourcesUtils.getClassMessage(7, StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename, packageName));
+//                    Ioc.out.trace(ResourcesUtils.getClassMessage(7, StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename, packageName));
                 }
             }
 
@@ -280,8 +279,8 @@ public class ClassScanner {
                         continue;
                     }
 
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getClassMessage(4, className, filepath));
+                    if (Ioc.out.isDebugEnabled()) {
+                        Ioc.out.debug(ResourcesUtils.getClassMessage(4, className, filepath));
                     }
 
                     Class<?> cls = this.forName(className, false, loader);
@@ -289,8 +288,8 @@ public class ClassScanner {
                         count++;
                     }
                 } else {
-                    if (STD.out.isTraceEnabled()) {
-                        STD.out.trace(ResourcesUtils.getClassMessage(8, file.getAbsolutePath()));
+                    if (Ioc.out.isTraceEnabled()) {
+                        Ioc.out.trace(ResourcesUtils.getClassMessage(8, file.getAbsolutePath()));
                     }
                 }
             }
@@ -326,8 +325,8 @@ public class ClassScanner {
         try {
             return Class.forName(className, initialize, loader);
         } catch (Throwable e) {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getClassMessage(5, className), e);
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(ResourcesUtils.getClassMessage(5, className), e);
             }
             return null;
         }
@@ -350,16 +349,16 @@ public class ClassScanner {
                 JarURLConnection conn = (JarURLConnection) url.openConnection();
                 jarfile = conn.getJarFile();
             } catch (Throwable e) {
-                if (STD.out.isWarnEnabled()) {
-                    STD.out.warn(ResourcesUtils.getClassMessage(28, urlpath));
+                if (Ioc.out.isWarnEnabled()) {
+                    Ioc.out.warn(ResourcesUtils.getClassMessage(28, urlpath));
                 }
                 return null;
             }
 
             File file = new File(StringUtils.decodeJvmUtf8HexString(jarfile.getName()));
             if (this.jarfiles.contains(file)) { // 判断是否已扫描
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getClassMessage(16, jarfile.getName()));
+                if (Ioc.out.isDebugEnabled()) {
+                    Ioc.out.debug(ResourcesUtils.getClassMessage(16, jarfile.getName()));
                 }
                 return null;
             } else {
@@ -372,8 +371,8 @@ public class ClassScanner {
         else if (obj instanceof File) {
             File file = (File) obj;
             if (this.jarfiles.contains(file)) { // 判断是否已扫描jar
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getClassMessage(16, file));
+                if (Ioc.out.isDebugEnabled()) {
+                    Ioc.out.debug(ResourcesUtils.getClassMessage(16, file));
                 }
                 return null;
             }
@@ -383,8 +382,8 @@ public class ClassScanner {
                 this.jarfiles.add(file);
                 return jarfile;
             } catch (Throwable e) {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getClassMessage(29, file.getAbsolutePath()));
+                if (Ioc.out.isDebugEnabled()) {
+                    Ioc.out.debug(ResourcesUtils.getClassMessage(29, file.getAbsolutePath()));
                 }
                 return null;
             }
@@ -407,8 +406,8 @@ public class ClassScanner {
             return count;
         }
 
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getClassMessage(3, StringUtils.decodeJvmUtf8HexString(name)));
+        if (Ioc.out.isDebugEnabled()) {
+            Ioc.out.debug(ResourcesUtils.getClassMessage(3, StringUtils.decodeJvmUtf8HexString(name)));
         }
 
         // 读取类路径的上级目录
@@ -419,8 +418,8 @@ public class ClassScanner {
                 Attributes mainAttributes = mf.getMainAttributes();
                 Set<Entry<Object, Object>> entrySet = mainAttributes.entrySet();
                 if (!entrySet.isEmpty()) {
-                    if (STD.out.isTraceEnabled()) {
-                        STD.out.trace(jarfile.getName() + "!/META-INF/MANIFEST.MF");
+                    if (Ioc.out.isTraceEnabled()) {
+                        Ioc.out.trace(jarfile.getName() + "!/META-INF/MANIFEST.MF");
                     }
 
                     for (Entry<Object, Object> entry : entrySet) {
@@ -429,20 +428,20 @@ public class ClassScanner {
                             String classpathPrefix = value.replace('/', '.').replace('\\', '.') + ".";
                             prefixs.add(classpathPrefix);
 
-                            if (STD.out.isTraceEnabled()) {
-                                STD.out.trace(entry.getKey() + " = " + value + " *");
+                            if (Ioc.out.isTraceEnabled()) {
+                                Ioc.out.trace(entry.getKey() + " = " + value + " *");
                             }
                         } else {
-                            if (STD.out.isTraceEnabled()) {
-                                STD.out.trace(entry.getKey() + " = " + value);
+                            if (Ioc.out.isTraceEnabled()) {
+                                Ioc.out.trace(entry.getKey() + " = " + value);
                             }
                         }
                     }
                 }
             }
         } catch (Throwable e) {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(jarfile.getName() + "!/META-INF/MANIFEST.MF", e);
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(jarfile.getName() + "!/META-INF/MANIFEST.MF", e);
             }
         }
 
@@ -466,8 +465,8 @@ public class ClassScanner {
                     continue;
                 }
 
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getClassMessage(4, className));
+                if (Ioc.out.isDebugEnabled()) {
+                    Ioc.out.debug(ResourcesUtils.getClassMessage(4, className));
                 }
 
                 Class<?> cls = this.forName(className, false, loader);
@@ -485,16 +484,16 @@ public class ClassScanner {
                     File jarfileParent = innerfile.getParentFile();
                     FileUtils.createDirectory(jarfileParent);
 
-                    if (STD.out.isTraceEnabled()) {
-                        STD.out.trace(ResourcesUtils.getClassMessage(14, jarfile.getName(), filename, jarfileParent));
+                    if (Ioc.out.isTraceEnabled()) {
+                        Ioc.out.trace(ResourcesUtils.getClassMessage(14, jarfile.getName(), filename, jarfileParent));
                     }
 
                     IO.write(jarfile.getInputStream(entry), new FileOutputStream(innerfile)); // 解压 jar 文件
                     innerfile.deleteOnExit();
                     innerjarfile = new JarFile(innerfile);
                 } catch (Throwable e) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getClassMessage(30, jarfile.getName(), entry.getName()));
+                    if (Ioc.out.isDebugEnabled()) {
+                        Ioc.out.debug(ResourcesUtils.getClassMessage(30, jarfile.getName(), entry.getName()));
                     }
                     continue;
                 }
@@ -538,8 +537,8 @@ public class ClassScanner {
             }
         }
 
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getClassMessage(22, className, StringUtils.toString(this.includePackageNames)));
+        if (Ioc.out.isDebugEnabled()) {
+            Ioc.out.debug(ResourcesUtils.getClassMessage(22, className, StringUtils.toString(this.includePackageNames)));
         }
         return true;
     }
@@ -554,11 +553,11 @@ public class ClassScanner {
     protected boolean isExclude(String className, boolean pkgOrCls) {
         for (String name : this.excludePackageNames) {
             if (className.startsWith(name)) {
-                if (STD.out.isDebugEnabled()) {
+                if (Ioc.out.isDebugEnabled()) {
                     if (pkgOrCls) {
-                        STD.out.debug(ResourcesUtils.getClassMessage(25, className, name));
+                        Ioc.out.debug(ResourcesUtils.getClassMessage(25, className, name));
                     } else {
-                        STD.out.debug(ResourcesUtils.getClassMessage(23, className, name));
+                        Ioc.out.debug(ResourcesUtils.getClassMessage(23, className, name));
                     }
                 }
                 return true;

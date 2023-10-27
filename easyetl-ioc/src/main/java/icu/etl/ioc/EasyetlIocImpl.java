@@ -49,7 +49,7 @@ public class EasyetlIocImpl implements EasyetlIoc {
         // 防止多线程同时访问同一个组件信息
         synchronized (beanInfo) {
             // 单例模式
-            if (beanInfo.isSingleton()) {
+            if (beanInfo.singleton()) {
                 if (beanInfo.getBean() == null) {
                     beanInfo.setBean(this.context.createBean(beanInfo.getType(), argument.getArgs()));
                 }

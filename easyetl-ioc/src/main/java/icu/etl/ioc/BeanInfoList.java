@@ -2,10 +2,8 @@ package icu.etl.ioc;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.log.STD;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -20,7 +18,7 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
     /**
      * {@linkplain BeanInfoList} 中组件信息所归属的类或接口
      */
-    private Class<?> type;
+    protected Class<?> type;
 
     /**
      * 初始化
@@ -32,35 +30,29 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
         this.type = type;
     }
 
-    public boolean add(BeanInfoRegister beanInfo, Comparator<BeanInfoRegister> comparator) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getClassMessage(21, type.getName(), beanInfo.getType().getName()));
+    /**
+     * 注册组件
+     *
+     * @param beanInfo 组件信息
+     * @return 返回true表示注册成功 false表示注册失败
+     */
+    public boolean push(BeanInfoRegister beanInfo) {
+        if (Ioc.out.isDebugEnabled()) {
+            Ioc.out.debug(ResourcesUtils.getIocMessage(5, type.getName(), beanInfo.getType().getName()));
         }
-        return !this.contains(beanInfo, comparator) && this.add(beanInfo);
+        return !this.contains(beanInfo) && super.add(beanInfo);
     }
 
     /**
      * 判断组件信息集合中是否已添加了参数 {@code beanClass}
      *
-     * @param beanInfo   组件信息
-     * @param comparator 组件信息的排序规则
+     * @param beanInfo 组件信息
      * @return 返回true表示已添加
      */
-    public boolean contains(BeanInfoRegister beanInfo, Comparator<BeanInfoRegister> comparator) {
-        int size = this.size();
-        if (comparator == null) {
-            for (int i = 0; i < size; i++) {
-                BeanInfoRegister bean = this.get(i);
-                if (beanInfo.compare(beanInfo, bean) == 0) {
-                    return true;
-                }
-            }
-        } else {
-            for (int i = 0; i < size; i++) {
-                BeanInfoRegister bean = this.get(i);
-                if (comparator.compare(beanInfo, bean) == 0) {
-                    return true;
-                }
+    public boolean contains(BeanInfoRegister beanInfo) {
+        for (int i = 0, size = this.size(); i < size; i++) {
+            if (beanInfo.compare(beanInfo, this.get(i)) == 0) {
+                return true;
             }
         }
         return false;
@@ -92,9 +84,8 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
             return this;
         }
 
-        int size = this.size();
         BeanInfoList list = new BeanInfoList(this.type);
-        for (int i = 0; i < size; i++) {
+        for (int i = 0, size = this.size(); i < size; i++) {
             BeanInfoRegister beanInfo = this.get(i);
             if (beanInfo.equals(name)) {
                 list.add(beanInfo);
@@ -104,9 +95,8 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
     }
 
     public BeanInfoList indexOf(BeanFilter filter) {
-        int size = this.size();
         BeanInfoList list = new BeanInfoList(this.type);
-        for (int i = 0; i < size; i++) {
+        for (int i = 0, size = this.size(); i < size; i++) {
             BeanInfoRegister beanInfo = this.get(i);
             if (filter.accept(beanInfo)) {
                 list.add(beanInfo);
@@ -134,7 +124,7 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
             return first;
         }
 
-        if (first.getLevel() == this.get(1).getLevel()) { // 判断排序值是否相等
+        if (first.getPriority() == this.get(1).getPriority()) { // 判断排序值是否相等
             throw new RepeatDefineBeanException(this.type, first.getName(), this);
         } else {
             return first;
@@ -142,30 +132,11 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
     }
 
     /**
-     * 对于同名的组件，按 {@linkplain EasyBean#level()} 倒序进行排序
+     * 按组件的优先级从高到低排序
      */
     public void sortByDesc() {
         if (this.size() > 0) {
             Collections.sort(this, this.get(0));
         }
     }
-
-    /**
-     * 判断类信息是否唯一
-     *
-     * @return 返回true表示集合中元素为1或0
-     */
-    public boolean onlyOne() {
-        return this.size() <= 1;
-    }
-
-    /**
-     * 返回唯一的实现类信息
-     *
-     * @return 返回第一个元素
-     */
-    public BeanInfoRegister getOnlyOne() {
-        return this.size() == 0 ? null : this.get(0);
-    }
-
 }

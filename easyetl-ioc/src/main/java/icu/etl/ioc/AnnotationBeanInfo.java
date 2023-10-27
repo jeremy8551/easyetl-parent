@@ -10,7 +10,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class AnnotationBeanInfoRegister implements BeanInfoRegister {
+public class AnnotationBeanInfo implements BeanInfoRegister {
 
     /** 组件类 */
     protected Class<?> type;
@@ -34,7 +34,7 @@ public class AnnotationBeanInfoRegister implements BeanInfoRegister {
      *
      * @param type 组件类信息
      */
-    public AnnotationBeanInfoRegister(Class<?> type) {
+    public AnnotationBeanInfo(Class<?> type) {
         if (type == null) {
             throw new NullPointerException();
         }
@@ -66,11 +66,11 @@ public class AnnotationBeanInfoRegister implements BeanInfoRegister {
         return this.name;
     }
 
-    public boolean isSingleton() {
+    public boolean singleton() {
         return singleton;
     }
 
-    public int getLevel() {
+    public int getPriority() {
         return order;
     }
 
@@ -110,6 +110,6 @@ public class AnnotationBeanInfoRegister implements BeanInfoRegister {
             return nc;
         }
 
-        return o2.getLevel() - o1.getLevel(); // 倒序排序
+        return o2.getPriority() - o1.getPriority(); // 倒序排序
     }
 }

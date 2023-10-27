@@ -1,7 +1,6 @@
 package icu.etl.ioc;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import icu.etl.util.ClassUtils;
@@ -73,7 +72,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         this.listeners.clear();
 
         // 重新加载
-        new BeanClassLoader().load(this);
+        new BeanInfoScanner().load(this);
         this.beans.refresh();
     }
 
@@ -113,11 +112,10 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     /**
      * 查询类实现的所有接口，添加所有接口与实现类的映射关系
      *
-     * @param beanInfo   组件信息
-     * @param comparator 判断组件重复的规则，可以为null
+     * @param beanInfo 组件信息
      * @return 返回true表示添加成功 false表示失败
      */
-    public synchronized boolean addBean(BeanInfoRegister beanInfo, Comparator<BeanInfoRegister> comparator) {
+    public synchronized boolean addBean(BeanInfoRegister beanInfo) {
         if (beanInfo == null) {
             return false;
         }
@@ -131,7 +129,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         // 添加类和父类 与实现类的映射关系
         Class<?> supercls = cls;
         while (supercls != null && !supercls.equals(Object.class)) {
-            if (this.beans.get(supercls).add(beanInfo, comparator)) {
+            if (this.beans.get(supercls).push(beanInfo)) {
                 this.listeners.addBeanEvent(beanInfo);
                 add = true;
             }
@@ -141,7 +139,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         // 添加接口与实现类的映射关系
         List<Class<?>> interfaces = ClassUtils.getAllInterface(cls, null);
         for (Class<?> type : interfaces) {
-            if (this.beans.get(type).add(beanInfo, comparator)) {
+            if (this.beans.get(type).push(beanInfo)) {
                 this.listeners.addBeanEvent(beanInfo);
                 add = true;
             }

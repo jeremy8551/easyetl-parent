@@ -7,7 +7,7 @@ import java.util.Set;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DB;
 import icu.etl.database.DatabaseDialect;
-import icu.etl.ioc.AnnotationBeanInfoRegister;
+import icu.etl.ioc.AnnotationBeanInfo;
 import icu.etl.ioc.BeanFilter;
 import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.BeanInfoList;
@@ -25,7 +25,7 @@ public class DatabaseDialectManager {
 
     private CaseSensitivMap<BeanInfoList> map;
 
-    public static class DialectInfo extends AnnotationBeanInfoRegister {
+    public static class DialectInfo extends AnnotationBeanInfo {
         String major;
         String minor;
 
@@ -60,7 +60,7 @@ public class DatabaseDialectManager {
                 return nc;
             }
 
-            return o2.getLevel() - o1.getLevel(); // 倒序排序
+            return o2.getPriority() - o1.getPriority(); // 倒序排序
         }
     }
 
@@ -109,7 +109,7 @@ public class DatabaseDialectManager {
 
         // 注册方言
         DialectInfo dialectInfo = new DialectInfo(beanInfo, dialect.getDatabaseMajorVersion(), dialect.getDatabaseMinorVersion());
-        if (!list.contains(dialectInfo, null)) {
+        if (!list.contains(dialectInfo)) {
             if (DB.out.isDebugEnabled()) {
                 DB.out.debug(ResourcesUtils.getDatabaseMessage(3, beanInfo.getName(), beanInfo.getType().getName())); // 注册数据库方言类 {0} -> {1}
             }

@@ -1,7 +1,5 @@
 package icu.etl.ioc;
 
-import java.util.Comparator;
-
 import icu.etl.annotation.EasyBean;
 
 /**
@@ -10,7 +8,7 @@ import icu.etl.annotation.EasyBean;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanInfoRegister> {
+public class DefaultClassScanRule implements ClassScanRule {
 
     /**
      * 初始化，扫描类路径中所有被注解标记的类信息
@@ -19,23 +17,7 @@ public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanInfoR
     }
 
     public boolean process(Class<?> cls, BeanRegister register) {
-        if (cls == null) {
-            return false;
-        }
-
-        // 如果类上配置了注解
-        if (cls.isAnnotationPresent(EasyBean.class)) {
-            return register.addBean(new AnnotationBeanInfoRegister(cls), this);
-        }
-        return false;
-    }
-
-    public int compare(BeanInfoRegister o1, BeanInfoRegister o2) {
-        if (o1.equals(o2.getName()) && o1.equals(o2.getType())) {
-            return 0;
-        } else {
-            return 1;
-        }
+        return cls != null && cls.isAnnotationPresent(EasyBean.class) && register.addBean(new AnnotationBeanInfo(cls));
     }
 
     public boolean equals(Object obj) {

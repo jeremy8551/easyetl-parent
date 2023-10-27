@@ -65,7 +65,7 @@ public class BeanInfoManager {
             list.sortByDesc();
         }
 
-        // 处理非延迟加载组件
+        // 处理即时加载组件
         List<BeanInfoRegister> list = this.getNolazyBeanInfoList();
         for (BeanInfoRegister beanInfo : list) {
             if (beanInfo.getBean() == null) {
