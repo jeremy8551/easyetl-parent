@@ -30,34 +30,39 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /** 配置信息 */
     protected UniversalScriptConfiguration config;
 
-    /** 关键字集合 */
-    protected Set<String> keywords;
-
-    /** 系统容器的上下文 */
+    /** 容器的上下文信息 */
     protected EasyetlContext context;
 
     /**
      * 初始化
+     * 因为涉及到 {@linkplain javax.script.ScriptEngineManager} 使用 SPI 机制读取并创建脚本引擎工厂实例，所以本方法中只做简单操作。
+     * 容器类相关的操作采用懒加载方式处理，即：首次使用容器时做初始化操作。
      */
     public UniversalScriptEngineFactory() {
-        this(new AnnotationEasyetlContext());
+        this.stdout = LogFactory.getLog(UniversalScriptEngine.class, System.out, System.err);
+        this.stderr = LogFactory.getLog(UniversalScriptEngine.class, System.err, System.err);
     }
 
     /**
      * 初始化
      *
-     * @param context
+     * @param context 容器上下文信息
      */
     public UniversalScriptEngineFactory(EasyetlContext context) {
+        this();
+        this.setContext(context);
+    }
+
+    /**
+     * 设置脚本引擎使用的容器上下文信息
+     *
+     * @param context 容器上下文信息
+     */
+    public void setContext(EasyetlContext context) {
         if (context == null) {
             throw new NullPointerException();
         }
-
         this.context = context;
-        this.stdout = LogFactory.getLog(UniversalScriptEngine.class, System.out, System.err);
-        this.stderr = LogFactory.getLog(UniversalScriptEngine.class, System.err, System.err);
-        this.config = this.context.getBean(UniversalScriptConfiguration.class);
-        this.keywords = this.config.getKeywords();
     }
 
     /**
@@ -66,23 +71,38 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      * @return 容器上下文信息
      */
     public EasyetlContext getContext() {
-        return context;
+        if (this.context == null) {
+            this.context = new AnnotationEasyetlContext();
+        }
+        return this.context;
+    }
+
+    /**
+     * 返回脚本引擎配置信息
+     *
+     * @return 配置信息
+     */
+    public UniversalScriptConfiguration getConfiguration() {
+        if (this.config == null) {
+            this.config = this.getContext().getBean(UniversalScriptConfiguration.class);
+        }
+        return this.config;
     }
 
     public String getEngineName() {
-        return this.config.getEngineName();
+        return this.getConfiguration().getEngineName();
     }
 
     public String getEngineVersion() {
-        return this.config.getEngineVersion();
+        return this.getConfiguration().getEngineVersion();
     }
 
     public String getLanguageName() {
-        return this.config.getLanguageName();
+        return this.getConfiguration().getLanguageName();
     }
 
     public String getLanguageVersion() {
-        return this.config.getLanguageVersion();
+        return this.getConfiguration().getLanguageVersion();
     }
 
     public String getMethodCallSyntax(String obj, String method, String... args) {
@@ -127,19 +147,19 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
 
     public List<String> getMimeTypes() {
         List<String> list = new ArrayList<String>();
-        StringUtils.split(this.config.getMimeTypes(), ',', list);
+        StringUtils.split(this.getConfiguration().getMimeTypes(), ',', list);
         return Collections.unmodifiableList(StringUtils.trimBlank(list));
     }
 
     public List<String> getExtensions() {
         List<String> list = new ArrayList<String>();
-        StringUtils.split(this.config.getExtensions(), ',', list);
+        StringUtils.split(this.getConfiguration().getExtensions(), ',', list);
         return Collections.unmodifiableList(StringUtils.trimBlank(list));
     }
 
     public List<String> getNames() {
         List<String> list = new ArrayList<String>();
-        StringUtils.split(this.config.getNames(), ',', list);
+        StringUtils.split(this.getConfiguration().getNames(), ',', list);
         return Collections.unmodifiableList(StringUtils.trimBlank(list));
     }
 
@@ -148,7 +168,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     }
 
     public Object getParameter(String key) {
-        return this.config.getProperty(key);
+        return this.getConfiguration().getProperty(key);
     }
 
     public String getProgram(String... statements) {
@@ -167,16 +187,16 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /**
      * 关键字集合
      *
-     * @return
+     * @return 关键字集合
      */
     public Set<String> getKeywords() {
-        return this.keywords;
+        return this.getConfiguration().getKeywords();
     }
 
     /**
      * 返回标准信息输出日志接口
      *
-     * @return
+     * @return 标准信息输出日志接口
      */
     public Log getStdoutLog() {
         return this.stdout;
@@ -185,7 +205,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /**
      * 返回错误信息输出日志接口
      *
-     * @return
+     * @return 错误信息输出日志接口
      */
     public Log getStderrLog() {
         return this.stderr;
@@ -194,41 +214,41 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /**
      * 返回用户会话工厂
      *
-     * @return
+     * @return 用户会话工厂
      */
     public UniversalScriptSessionFactory buildSessionFactory() {
-        String flag = StringUtils.defaultString(this.config.getSessionFactory(), "default");
-        return this.context.getBean(UniversalScriptSessionFactory.class, flag);
+        String flag = StringUtils.defaultString(this.getConfiguration().getSessionFactory(), "default");
+        return this.getContext().getBean(UniversalScriptSessionFactory.class, flag);
     }
 
     /**
      * 返回编译器
      *
-     * @return
+     * @return 编译器
      */
     public UniversalScriptCompiler buildCompiler() {
-        String flag = StringUtils.defaultString(this.config.getCompiler(), "default");
-        return this.context.getBean(UniversalScriptCompiler.class, flag);
+        String flag = StringUtils.defaultString(this.getConfiguration().getCompiler(), "default");
+        return this.getContext().getBean(UniversalScriptCompiler.class, flag);
     }
 
     /**
      * 返回类型转换器
      *
-     * @return
+     * @return 类型转换器
      */
     public UniversalScriptFormatter buildFormatter() {
-        String flag = StringUtils.defaultString(this.config.getConverter(), "default");
-        return this.context.getBean(UniversalScriptFormatter.class, flag);
+        String flag = StringUtils.defaultString(this.getConfiguration().getConverter(), "default");
+        return this.getContext().getBean(UniversalScriptFormatter.class, flag);
     }
 
     /**
      * 创建校验器
      *
-     * @return
+     * @return 校验器
      */
     public UniversalScriptChecker buildChecker() {
-        String flag = StringUtils.defaultString(this.config.getChecker(), "default");
-        UniversalScriptChecker obj = this.context.getBean(UniversalScriptChecker.class, flag);
+        String flag = StringUtils.defaultString(this.getConfiguration().getChecker(), "default");
+        UniversalScriptChecker obj = this.getContext().getBean(UniversalScriptChecker.class, flag);
         obj.setScriptEngineKeywords(this.getKeywords());
         return obj;
     }
@@ -236,8 +256,8 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /**
      * 打印脚本引擎属性信息
      *
-     * @param charsetName
-     * @return
+     * @param charsetName 字符集
+     * @return 图形表格
      */
     public String toString(String charsetName) {
         String[] array = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg006"), ',');

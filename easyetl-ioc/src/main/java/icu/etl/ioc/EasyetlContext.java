@@ -5,13 +5,11 @@ import java.util.List;
 import icu.etl.annotation.EasyBean;
 
 /**
- * 容器接口
+ * 容器上下文信息
  *
  * @author jeremy8551@qq.com
  */
 public interface EasyetlContext extends BeanRegister {
-
-    EasyetlIoc removeIoc(String name);
 
     /**
      * 添加容器实例
@@ -20,6 +18,14 @@ public interface EasyetlContext extends BeanRegister {
      * @return 如果容器重名，则会替换掉重名容器，并返回替换掉的容器
      */
     EasyetlIoc addIoc(EasyetlIoc ioc);
+
+    /**
+     * 删除容器实例对象
+     *
+     * @param name 容器名
+     * @return 被删除的容器
+     */
+    EasyetlIoc removeIoc(String name);
 
     /**
      * 返回容器使用的类加载器
@@ -36,7 +42,7 @@ public interface EasyetlContext extends BeanRegister {
     String[] getArgument();
 
     /**
-     * 返回容器中存储的所有组件类信息（按组件添加的顺序）
+     * 返回容器中存储的所有组件的查询条件（按组件添加的顺序）
      *
      * @return 组件类信息的集合（按组件添加的顺序）
      */
@@ -136,6 +142,6 @@ public interface EasyetlContext extends BeanRegister {
      * @param builder 组件工厂
      * @return 返回true表示添加成功
      */
-    boolean addBuilder(Class<?> type, BeanBuilder<?> builder);
+    boolean addBeanBuilder(Class<?> type, BeanBuilder<?> builder);
 
 }

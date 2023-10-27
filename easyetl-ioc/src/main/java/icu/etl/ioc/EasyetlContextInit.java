@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 import icu.etl.log.Log;
+import icu.etl.util.ClassUtils;
 import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
 
@@ -15,21 +16,36 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2023/10/5
  */
-public class BeanInfoScanner {
+public class EasyetlContextInit {
+
+    /**
+     * 扫描参数
+     * <p>
+     * 例如: java.lang.String,org.test,!org.test.String
+     * <p>
+     * 在包名前面使用符号 ! 表示扫描类时会排除掉这个包名下的所有类
+     */
+    private String[] packageArgs;
+
+    private ClassLoader classLoader;
+
+    private String[] args;
 
     /**
      * 初始化
      */
-    public BeanInfoScanner() {
+    public EasyetlContextInit(ClassLoader classLoader, String[] args) {
+        this.classLoader = (classLoader == null) ? ClassUtils.getDefaultClassLoader() : classLoader;
+        this.args = args;
+        this.initLog(args);
     }
 
     /**
-     * 扫描指定包下的类
+     * 解析参数，首先初始化日志参数
      *
-     * @param context 上下文信息
+     * @param args 外部输入的参数数组
      */
-    public void load(EasyetlContext context) {
-        String[] args = context.getArgument();
+    private void initLog(String[] args) {
         List<String> list = new ArrayList<String>(args.length + 10);
         for (String str : args) {
             String[] array = StringUtils.removeBlank(StringUtils.split(str, ','));
@@ -57,31 +73,38 @@ public class BeanInfoScanner {
             }
         }
 
-        String[] array = new String[list.size()];
-        list.toArray(array);
-        this.load(context, array);
+        this.packageArgs = new String[list.size()];
+        list.toArray(this.packageArgs);
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public String[] getArgument() {
+        String[] array = new String[this.args.length];
+        System.arraycopy(this.args, 0, array, 0, this.args.length);
+        return array;
     }
 
     /**
      * 扫描指定包下的类信息
      *
-     * @param context      上下文信息
-     * @param packageNames 包名表达式, 例如: java.lang.String,org.test,!org.test.String
-     *                     在包名前面使用符号 ! 表示扫描类时会排除掉这个包名下的所有类
+     * @param context 上下文信息
      */
-    protected void load(EasyetlContext context, String[] packageNames) {
-        if (packageNames.length == 0) { // 取默认值
+    public void scann(BeanRegister context) {
+        if (packageArgs.length == 0) { // 取默认值
             String value = System.getProperty(ClassScanner.PROPERTY_SCANNPKG, "");
-            packageNames = StringUtils.removeBlank(StringUtils.split(value, ','));
+            packageArgs = StringUtils.removeBlank(StringUtils.split(value, ','));
         }
 
-        List<String> includePackageNames = new ArrayList<String>(packageNames.length);
-        List<String> excludePackageNames = new ArrayList<String>(packageNames.length);
+        List<String> includePackageNames = new ArrayList<String>(packageArgs.length);
+        List<String> excludePackageNames = new ArrayList<String>(packageArgs.length);
 
         char[] prefix = new char[]{'^', '!', '！', StringUtils.toFullWidthChar('^')};
         List<String> list = Arrays.asList(String.valueOf(prefix[0]), String.valueOf(prefix[1]), String.valueOf(prefix[2]), String.valueOf(prefix[3]));
 
-        for (String str : packageNames) {
+        for (String str : packageArgs) {
             String[] array = StringUtils.split(str, ',');
             for (String part : array) {
                 String packageName = StringUtils.rtrimBlank(StringUtils.ltrimBlank(part, prefix), '.'); // 包名
@@ -95,7 +118,7 @@ public class BeanInfoScanner {
             }
         }
 
-        this.load(context, includePackageNames, excludePackageNames);
+        this.scann(context, includePackageNames, excludePackageNames);
     }
 
     /**
@@ -105,20 +128,19 @@ public class BeanInfoScanner {
      * @param includePackageNames 需要扫描的JAVA包名: java.lang, 为null或空白字符串时，表示扫描所有JAVA包下的类信息
      * @param excludepackageNames 扫描时需要排除的包名
      */
-    protected void load(EasyetlContext context, List<String> includePackageNames, List<String> excludepackageNames) {
+    private void scann(BeanRegister context, List<String> includePackageNames, List<String> excludepackageNames) {
         String groupId = Settings.getGroupID();
         includePackageNames.remove(groupId);
         includePackageNames.add(0, groupId); // 保证首先扫描本工程中的包
 
         // 加载类扫描规则集合
         List<ClassScanRule> processors = new ArrayList<ClassScanRule>();
-        ServiceLoader<ClassScanRule> sl = ServiceLoader.load(ClassScanRule.class);
-        for (ClassScanRule rule : sl) {
+        ServiceLoader<ClassScanRule> serviceLoader = ServiceLoader.load(ClassScanRule.class, this.getClassLoader());
+        for (ClassScanRule rule : serviceLoader) {
             processors.add(rule);
         }
 
-        ClassScanner scanner = new ClassScanner(context.getClassLoader(), includePackageNames, excludepackageNames, processors);
+        ClassScanner scanner = new ClassScanner(this.getClassLoader(), includePackageNames, excludepackageNames, processors);
         scanner.load(context);
     }
-
 }

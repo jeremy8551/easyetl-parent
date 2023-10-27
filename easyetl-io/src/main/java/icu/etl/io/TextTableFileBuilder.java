@@ -4,8 +4,10 @@ import java.nio.charset.StandardCharsets;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
+import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.Codepage;
 import icu.etl.ioc.EasyetlContext;
+import icu.etl.util.ArrayUtils;
 import icu.etl.util.Attribute;
 import icu.etl.util.StringUtils;
 
@@ -22,11 +24,20 @@ public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
 
     @SuppressWarnings("unchecked")
     public TextTableFile getBean(EasyetlContext context, Object... args) throws Exception {
-        TextTableFile file = context.getBean(TextTableFile.class, args);
-        if (file == null) {
-            throw new UnsupportedOperationException(StringUtils.toString(args));
+        // 查询参数中一定要有文件类型
+        String name = ArrayUtils.indexOf(args, String.class, 0);
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException(StringUtils.toString(args));
         }
 
+        // 根据文件类型查询对应的组件
+        BeanInfo beanInfo = context.getBeanInfo(TextTableFile.class, name);
+        if (beanInfo == null) {
+            throw new UnsupportedOperationException(name);
+        }
+
+        // 创建文件，并设置属性
+        TextTableFile file = context.createBean(beanInfo.getType());
         for (Object obj : args) {
             if (obj instanceof Attribute) {
                 Attribute<String> attribute = (Attribute<String>) obj;

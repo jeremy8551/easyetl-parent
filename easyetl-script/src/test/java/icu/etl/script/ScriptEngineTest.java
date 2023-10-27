@@ -14,12 +14,11 @@ import org.junit.Test;
 public class ScriptEngineTest {
 
     @Test
-    public void test() {
-        EasyetlContext context = new AnnotationEasyetlContext("debug:sout");
-        UniversalScriptEngineFactory factory = new UniversalScriptEngineFactory(context);
-        ScriptEngine engine = null;
+    public void tes1() {
+        ScriptEngineManager e = new ScriptEngineManager();
+        ScriptEngine engine;
         try {
-            engine = factory.getScriptEngine();
+            engine = e.getEngineByExtension("etl");
             engine.eval("help");
             engine.eval("exit 0");
         } catch (Exception e1) {
@@ -29,11 +28,12 @@ public class ScriptEngineTest {
     }
 
     @Test
-    public void tes1() {
-        ScriptEngineManager e = new ScriptEngineManager();
-        ScriptEngine engine = null;
+    public void test() {
+        EasyetlContext context = new AnnotationEasyetlContext("debug:sout");
+        UniversalScriptEngineFactory factory = new UniversalScriptEngineFactory(context);
+        ScriptEngine engine;
         try {
-            engine = e.getEngineByExtension("etl");
+            engine = factory.getScriptEngine();
             engine.eval("help");
             engine.eval("exit 0");
         } catch (Exception e1) {

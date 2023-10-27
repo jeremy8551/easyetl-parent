@@ -341,6 +341,10 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         ScriptEngineManager manager = new ScriptEngineManager();
         List<ScriptEngineFactory> engineFactories = manager.getEngineFactories();
         for (ScriptEngineFactory factory : engineFactories) {
+            if (factory instanceof UniversalScriptEngineFactory) { // 使用当前脚本引擎的容器上下文信息，防止新脚本引擎创建新容器，导致重新扫描
+                ((UniversalScriptEngineFactory) factory).setContext(context.getFactory().getContext());
+            }
+
             table.addCell(titles[0]);
             table.addCell(factory.getEngineName());
             table.addCell(titles[1]);

@@ -11,5 +11,4 @@ import icu.etl.log.LogFactory;
  */
 public class Ioc {
     public final static Log out = LogFactory.getLog(Ioc.class);
-
 }

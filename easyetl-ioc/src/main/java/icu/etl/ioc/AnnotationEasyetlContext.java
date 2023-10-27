@@ -6,17 +6,11 @@ import java.util.List;
 import icu.etl.util.ClassUtils;
 
 /**
- * 组件工厂的上下文信息
+ * 容器上下文信息
  *
  * @author jeremy8551@qq.com
  */
 public class AnnotationEasyetlContext implements EasyetlContext {
-
-    /** 类加载器 */
-    private ClassLoader classLoader;
-
-    /** 启动参数 */
-    private String[] args;
 
     /** 组件工厂集合 */
     private EasyetlIocManager iocs;
@@ -32,6 +26,9 @@ public class AnnotationEasyetlContext implements EasyetlContext {
 
     /** 监听器管理 */
     private ListenerManager listeners;
+
+    /** 参数管理器 */
+    private EasyetlContextInit init;
 
     /**
      * 上下文信息
@@ -52,12 +49,11 @@ public class AnnotationEasyetlContext implements EasyetlContext {
      * @param args   参数数组
      */
     public AnnotationEasyetlContext(ClassLoader loader, String... args) {
-        this.classLoader = (loader == null) ? ClassUtils.getDefaultClassLoader() : loader;
-        this.args = args;
-        this.beans = new BeanInfoManager(this);
-        this.listeners = new ListenerManager(this);
+        this.init = new EasyetlContextInit(loader, args);
         this.iocs = new EasyetlIocManager(this);
         this.factory = new BeanConstructor(this);
+        this.beans = new BeanInfoManager(this);
+        this.listeners = new ListenerManager(this);
         this.builders = new BeanBuilderManager(this);
         this.refresh();
     }
@@ -72,18 +68,16 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         this.listeners.clear();
 
         // 重新加载
-        new BeanInfoScanner().load(this);
+        this.init.scann(this);
         this.beans.refresh();
     }
 
     public ClassLoader getClassLoader() {
-        return this.classLoader;
+        return this.init.getClassLoader();
     }
 
     public String[] getArgument() {
-        String[] array = new String[this.args.length];
-        System.arraycopy(this.args, 0, array, 0, this.args.length);
-        return array;
+        return this.init.getArgument();
     }
 
     public synchronized EasyetlIoc removeIoc(String name) {
@@ -182,7 +176,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         return this.builders.remove(type);
     }
 
-    public synchronized boolean addBuilder(Class<?> type, BeanBuilder<?> builder) {
+    public synchronized boolean addBeanBuilder(Class<?> type, BeanBuilder<?> builder) {
         if (type == null) {
             throw new NullPointerException();
         }
