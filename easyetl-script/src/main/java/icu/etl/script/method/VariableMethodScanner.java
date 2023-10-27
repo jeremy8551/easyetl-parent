@@ -4,7 +4,6 @@ import java.util.List;
 
 import icu.etl.annotation.ScriptVariableFunction;
 import icu.etl.ioc.BeanInfo;
-import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.Log;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptEngineFactory;
@@ -42,17 +41,14 @@ public class VariableMethodScanner {
         this.log = this.factory.getStdoutLog();
         this.repository = repository;
 
-        // 组件工厂上下文信息
-        EasyetlContext ioccxt = this.factory.getContext();
-
         // 显示所有已加载的变量方法
-        List<BeanInfo> list = ioccxt.getBeanInfoList(UniversalScriptVariableMethod.class);
-        for (BeanInfo beanInfo : list) {
-            this.loadVariableMethod(ioccxt.createBean(beanInfo.getType()));
+        List<BeanInfo> beanInfoList = this.factory.getContext().getBeanInfoList(UniversalScriptVariableMethod.class);
+        for (BeanInfo beanInfo : beanInfoList) {
+            this.loadVariableMethod(beanInfo.getType());
         }
 
         // 如果类扫描器未扫描到脚本引擎默认变量方法，则自动加载所有变量方法
-        if (list.isEmpty()) {
+        if (beanInfoList.isEmpty()) {
             this.loadVariableMethodBuilder();
         }
 

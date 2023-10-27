@@ -1,8 +1,10 @@
 package icu.etl.ioc;
 
+import java.util.Comparator;
+
 import icu.etl.annotation.EasyBean;
 
-public interface BeanInfo {
+public interface BeanInfo extends Comparator<BeanInfo> {
 
     /**
      * 组件类信息
@@ -30,7 +32,7 @@ public interface BeanInfo {
      *
      * @return 详见 {@linkplain EasyBean#level()}
      */
-    int getOrder();
+    int getLevel();
 
     boolean isLazy();
 
@@ -51,20 +53,5 @@ public interface BeanInfo {
      * @return 返回true表示相等
      */
     boolean equals(String name);
-
-    /**
-     * 返回单例对象
-     *
-     * @param <E> 类信息
-     * @return 单例对象
-     */
-    <E> E getInstance();
-
-    /**
-     * 保存单例对象
-     *
-     * @param instance 单例对象
-     */
-    void setInstance(Object instance);
 
 }

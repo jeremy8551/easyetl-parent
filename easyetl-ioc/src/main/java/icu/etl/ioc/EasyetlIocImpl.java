@@ -7,14 +7,14 @@ import icu.etl.util.ResourcesUtils;
 public class EasyetlIocImpl implements EasyetlIoc {
 
     /** 上下文信息 */
-    private EasyetlContext context;
+    private AnnotationEasyetlContext context;
 
     /**
      * 初始化
      *
      * @param context 容器上下文信息
      */
-    public EasyetlIocImpl(EasyetlContext context) {
+    public EasyetlIocImpl(AnnotationEasyetlContext context) {
         this.context = Objects.requireNonNull(context);
     }
 
@@ -23,7 +23,7 @@ public class EasyetlIocImpl implements EasyetlIoc {
     }
 
     @SuppressWarnings("unchecked")
-    public <E> E getBean(Class<E> type, Object[] args) {
+    public <E> E getBean(Class<?> type, Object[] args) {
         // 优先使用接口工厂生成实例对象
         BeanBuilder<?> factory = this.context.getBeanBuilder(type);
         if (factory != null) {
@@ -34,24 +34,37 @@ public class EasyetlIocImpl implements EasyetlIoc {
             }
         }
 
-        // 查询接口的实现类
-        synchronized (this) {
-            BeanArgument argument = new BeanArgument(args);
-            BeanInfo beanInfo = this.context.getBeanInfo(type, argument.getName());
-            if (beanInfo != null) {
-                if (beanInfo.isSingleton() && beanInfo.getInstance() != null) {
-                    return beanInfo.getInstance();
-                }
-
-                E obj = this.context.createBean(beanInfo.getType(), argument);
-                if (beanInfo.isSingleton()) {
-                    beanInfo.setInstance(obj);
-                }
-                return obj;
+        // 按组件类与组件名查询
+        BeanArgument argument = new BeanArgument(args);
+        BeanInfoRegister beanInfo = this.context.getBeanInfo(type, argument.getName());
+        if (beanInfo == null) {
+            // 尝试创建类的实例对象
+            try {
+                return this.context.createBean(type, args);
+            } catch (Throwable e) {
+                return null;
             }
         }
 
-        return null;
+        // 防止多线程同时访问同一个组件信息
+        synchronized (beanInfo) {
+            // 单例模式
+            if (beanInfo.isSingleton()) {
+                if (beanInfo.getBean() == null) {
+                    beanInfo.setBean(this.context.createBean(beanInfo.getType(), argument.getArgs()));
+                }
+                return beanInfo.getBean();
+            }
+
+            // 原型模式
+            if (beanInfo.getBean() != null) {
+                E bean = beanInfo.getBean();
+                beanInfo.setBean(null); // 原型模式需要删除存储的实例对象，防止被重复使用
+                return bean;
+            }
+        }
+
+        return this.context.createBean(beanInfo.getType(), argument.getArgs());
     }
 
 }

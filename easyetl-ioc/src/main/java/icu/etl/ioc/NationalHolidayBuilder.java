@@ -143,7 +143,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Nat
     }
 
     public void addBean(BeanEvent event) {
-        BeanInfo beanInfo = event.getBeanInfo();
+        BeanInfoRegister beanInfo = event.getBeanInfo();
         if (NationalHoliday.class.isAssignableFrom(beanInfo.getType())) {
             this.add(beanInfo);
         }

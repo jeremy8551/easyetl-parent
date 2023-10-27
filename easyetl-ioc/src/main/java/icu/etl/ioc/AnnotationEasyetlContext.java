@@ -1,7 +1,6 @@
 package icu.etl.ioc;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -32,6 +31,9 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     /** 组件构造方法的工具 */
     private BeanConstructor factory;
 
+    /** 监听器管理 */
+    private ListenerManager listeners;
+
     /**
      * 上下文信息
      *
@@ -53,9 +55,10 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     public AnnotationEasyetlContext(ClassLoader loader, String... args) {
         this.classLoader = (loader == null) ? ClassUtils.getDefaultClassLoader() : loader;
         this.args = args;
+        this.beans = new BeanInfoManager(this);
+        this.listeners = new ListenerManager(this);
         this.iocs = new EasyetlIocManager(this);
         this.factory = new BeanConstructor(this);
-        this.beans = new BeanInfoManager(this);
         this.builders = new BeanBuilderManager(this);
         this.refresh();
     }
@@ -64,15 +67,14 @@ public class AnnotationEasyetlContext implements EasyetlContext {
      * 初始化操作
      */
     public synchronized void refresh() {
+        // 清空数据
         this.beans.clear();
         this.builders.clear();
+        this.listeners.clear();
+
+        // 重新加载
         new BeanClassLoader().load(this);
         this.beans.refresh();
-        this.beans.addListener(this.builders.getListeners()); // 将组件工厂中的监听器添加到组件管理器中,实现组件变化自动通知
-        List<BeanInfo> list = this.beans.getNolazyBeanInfoList();
-        for (BeanInfo beanInfo : list) {
-            this.createBean(beanInfo.getType());
-        }
     }
 
     public ClassLoader getClassLoader() {
@@ -80,7 +82,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     }
 
     public String[] getArgument() {
-        String[] array = new String[args.length];
+        String[] array = new String[this.args.length];
         System.arraycopy(this.args, 0, array, 0, this.args.length);
         return array;
     }
@@ -97,7 +99,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         return this.factory.newInstance(type, args);
     }
 
-    public BeanInfo getBeanInfo(Class<?> type, String name) {
+    public BeanInfoRegister getBeanInfo(Class<?> type, String name) {
         if (type == null) {
             throw new NullPointerException();
         }
@@ -115,14 +117,14 @@ public class AnnotationEasyetlContext implements EasyetlContext {
      * @param comparator 判断组件重复的规则，可以为null
      * @return 返回true表示添加成功 false表示失败
      */
-    public synchronized boolean addBean(BeanInfo beanInfo, Comparator<BeanInfo> comparator) {
+    public synchronized boolean addBean(BeanInfoRegister beanInfo, Comparator<BeanInfoRegister> comparator) {
         if (beanInfo == null) {
             return false;
         }
 
         boolean add = false;
         Class<?> cls = beanInfo.getType();
-        if (this.builders.add(cls)) {
+        if (this.builders.add(cls, this.listeners)) {
             add = true;
         }
 
@@ -130,6 +132,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         Class<?> supercls = cls;
         while (supercls != null && !supercls.equals(Object.class)) {
             if (this.beans.get(supercls).add(beanInfo, comparator)) {
+                this.listeners.addBeanEvent(beanInfo);
                 add = true;
             }
             supercls = supercls.getSuperclass();
@@ -139,6 +142,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         List<Class<?>> interfaces = ClassUtils.getAllInterface(cls, null);
         for (Class<?> type : interfaces) {
             if (this.beans.get(type).add(beanInfo, comparator)) {
+                this.listeners.addBeanEvent(beanInfo);
                 add = true;
             }
         }
@@ -146,7 +150,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     }
 
     public synchronized List<BeanInfo> removeBeanInfoList(Class<?> type) {
-        return Collections.unmodifiableList(this.beans.remove(type));
+        return new ArrayList<BeanInfo>(this.beans.remove(type));
     }
 
     public boolean containsBeanInfo(Class<?> type, Class<?> cls) {
@@ -154,14 +158,14 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     }
 
     public List<BeanInfo> getBeanInfoList(Class<?> type) {
-        return Collections.unmodifiableList(this.beans.get(type));
+        return new ArrayList<BeanInfo>(this.beans.get(type));
     }
 
     public List<BeanInfo> getBeanInfoList(Class<?> type, String name) {
         if (type == null) {
             throw new NullPointerException();
         }
-        return this.beans.get(type).indexOf(name);
+        return new ArrayList<BeanInfo>(this.beans.get(type).indexOf(name));
     }
 
     public List<Class<?>> getTypes() {

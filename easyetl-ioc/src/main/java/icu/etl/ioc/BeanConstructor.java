@@ -1,6 +1,7 @@
 package icu.etl.ioc;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import icu.etl.util.ClassUtils;
@@ -18,22 +19,16 @@ public class BeanConstructor {
         this.context = context;
     }
 
-    @SuppressWarnings("unchecked")
     public <E> E newInstance(Class<?> type, Object... args) {
-        return this.newInstance(type, new BeanArgument("", args));
-    }
+        if (Modifier.isAbstract(type.getModifiers())) { // 不能是接口或抽象类
+            throw new UnsupportedOperationException(ResourcesUtils.getIocMessage(4, type.getName()));
+        }
 
-    /**
-     * 使用 Class 生成一个实例对象
-     *
-     * @param type     类信息
-     * @param argument 参数
-     * @param <E>      类信息
-     * @return 实例对象
-     */
-    public <E> E newInstance(Class<?> type, BeanArgument argument) {
+        BeanArgument argument = new BeanArgument("", args);
         E obj = this.create(type, argument);
-        if (obj instanceof EasyetlContextAware) { // 自动注入容器上下文信息 TODO 改成反射注入
+
+        // 自动注入容器上下文信息 TODO 改成反射注入
+        if (obj instanceof EasyetlContextAware) {
             ((EasyetlContextAware) obj).setContext(this.context);
         }
         return obj;
@@ -41,47 +36,56 @@ public class BeanConstructor {
 
     @SuppressWarnings("unchecked")
     protected <E> E create(Class<?> type, BeanArgument argument) {
-        BeanConstructorParser parser = new BeanConstructorParser(type, argument);
+        BeanConstructorSet set = new BeanConstructorSet(type, argument);
 
         // 优先使用参数匹配的构造方法
-        if (parser.getMatchConstructor() != null) {
-            System.out.println(type.getName() + " Constructor size: " + parser.getMatchConstructor().getParameterTypes().length);
+        if (set.getMatchConstructor() != null) {
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(ResourcesUtils.getIocMessage(1, type.getName(), set.getMatchConstructor().toGenericString()));
+            }
+
             try {
-                return (E) parser.getMatchConstructor().newInstance(argument.getArgs());
+                return (E) set.getMatchConstructor().newInstance(argument.getArgs());
             } catch (Throwable e) {
                 if (Ioc.out.isDebugEnabled()) {
-                    Ioc.out.debug(e.getLocalizedMessage(), e);
+                    Ioc.out.debug(ResourcesUtils.getIocMessage(2, type.getName(), set.getMatchConstructor().toGenericString()), e);
                 }
             }
         }
 
         // 使用无参构造方法
-        if (parser.getBaseConstructor() != null) {
-            System.out.println(type.getName() + " base Constructor size: " + parser.getBaseConstructor().getParameterTypes().length);
+        if (set.getBaseConstructor() != null) {
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(ResourcesUtils.getIocMessage(1, type.getName(), set.getBaseConstructor().toGenericString()));
+            }
+
             try {
-                return (E) parser.getBaseConstructor().newInstance();
+                return (E) set.getBaseConstructor().newInstance();
             } catch (Throwable e) {
                 if (Ioc.out.isDebugEnabled()) {
-                    Ioc.out.debug(e.getLocalizedMessage(), e);
+                    Ioc.out.debug(ResourcesUtils.getIocMessage(2, type.getName(), set.getBaseConstructor().toGenericString()), e);
                 }
             }
         }
 
         // 使用其他构造方法
-        List<Constructor<?>> others = parser.getConstructors();
+        List<Constructor<?>> others = set.getConstructors();
         for (Constructor<?> c : others) {
+            if (Ioc.out.isDebugEnabled()) {
+                Ioc.out.debug(ResourcesUtils.getIocMessage(1, type.getName(), c.toGenericString()));
+            }
+
             Object[] parameters = this.toArgs(c.getParameterTypes(), argument.getArgs());
-            System.out.println(type.getName() + " Constructor size o: " + c.getParameterTypes().length);
             try {
                 return (E) c.newInstance(parameters);
             } catch (Throwable e) {
                 if (Ioc.out.isDebugEnabled()) {
-                    Ioc.out.debug(e.getLocalizedMessage(), e);
+                    Ioc.out.debug(ResourcesUtils.getIocMessage(2, type.getName(), c.toGenericString()), e);
                 }
             }
         }
 
-        throw new UnsupportedOperationException(ResourcesUtils.getClassMessage(12, type.getName()));
+        throw new UnsupportedOperationException(ResourcesUtils.getIocMessage(3, type.getName()));
     }
 
     /**

@@ -6,5 +6,5 @@ package icu.etl.ioc;
  */
 public interface BeanFilter {
 
-    boolean accept(BeanInfo beanInfo);
+    boolean accept(BeanInfoRegister beanInfo);
 }

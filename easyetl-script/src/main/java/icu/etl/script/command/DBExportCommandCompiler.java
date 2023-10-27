@@ -92,10 +92,10 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
         ct2.addTitle("");
         ct2.addTitle("");
         ct2.addTitle("");
-        for (BeanInfo beanConfig : list2) {
-            ct2.addCell(beanConfig.getName());
-            ct2.addCell(beanConfig.getDescription());
-            ct2.addCell(beanConfig.getType().getName());
+        for (BeanInfo beanInfo : list2) {
+            ct2.addCell(beanInfo.getName());
+            ct2.addCell(beanInfo.getDescription());
+            ct2.addCell(beanInfo.getType().getName());
         }
 
         out.println(new ScriptUsage(this.getClass() //

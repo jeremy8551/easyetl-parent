@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import icu.etl.collection.ByteBuffer;
-import icu.etl.ioc.AnnotationBeanInfo;
+import icu.etl.ioc.AnnotationBeanInfoRegister;
 import icu.etl.ioc.AnnotationEasyetlContext;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.ClassUtils;
@@ -71,7 +71,7 @@ public class NationalHolidaysTest {
         String fullName = NationalHolidaysTest.class.getPackage().getName() + "." + className;
         Class<? extends NationalHoliday> cls = ClassUtils.loadClass(fullName);
 
-        Assert.assertTrue(context.addBean(new AnnotationBeanInfo(cls), null));
+        Assert.assertTrue(context.addBean(new AnnotationBeanInfoRegister(cls), null));
         Assert.assertTrue(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
         Assert.assertFalse(bean.getRestDays().contains(Dates.parse("2021-12-24")));
     }

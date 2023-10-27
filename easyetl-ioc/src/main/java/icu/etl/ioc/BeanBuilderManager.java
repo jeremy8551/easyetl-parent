@@ -1,8 +1,6 @@
 package icu.etl.ioc;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Set;
 
 import icu.etl.util.ClassUtils;
@@ -19,15 +17,12 @@ public class BeanBuilderManager {
     /** 组件接口与组件工厂类映射关系 */
     private final LinkedHashMap<Class<?>, BeanBuilder<?>> map;
 
-    private final List<BeanEventListener> listeners;
-
     public BeanBuilderManager(EasyetlContext context) {
         this.map = new LinkedHashMap<Class<?>, BeanBuilder<?>>();
-        this.listeners = new ArrayList<BeanEventListener>();
         this.context = context;
     }
 
-    public boolean add(Class<?> cls) {
+    public boolean add(Class<?> cls, ListenerManager register) {
         /** 如果没有实现 {@linkplain BeanBuilder} 接口 **/
         if (!BeanBuilder.class.isAssignableFrom(cls)) {
             return false;
@@ -44,7 +39,12 @@ public class BeanBuilderManager {
                 return false;
             }
 
-            if (this.add(genCls, this.context.createBean(cls))) {
+            BeanBuilder<?> builder = this.context.createBean(cls);
+            if (this.add(genCls, builder)) {
+                // 如果组件工厂实现了监听接口
+                if (builder instanceof BeanEventListener) {
+                    register.addListener((BeanEventListener) builder);
+                }
                 return true;
             }
         }
@@ -63,11 +63,6 @@ public class BeanBuilderManager {
                 Ioc.out.debug(ResourcesUtils.getClassMessage(19, type.getName(), builder.getClass().getName()));
             }
             this.map.put(type, builder);
-
-            // 如果组件工厂实现了监听接口
-            if (builder instanceof BeanEventListener) {
-                this.listeners.add((BeanEventListener) builder);
-            }
             return true;
         }
     }
@@ -84,13 +79,8 @@ public class BeanBuilderManager {
         return this.map.keySet();
     }
 
-    public List<BeanEventListener> getListeners() {
-        return listeners;
-    }
-
     public void clear() {
         this.map.clear();
-        this.listeners.clear();
     }
 
 }

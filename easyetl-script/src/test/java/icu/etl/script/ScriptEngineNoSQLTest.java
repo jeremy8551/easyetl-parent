@@ -28,7 +28,7 @@ public class ScriptEngineNoSQLTest {
 
     @Test
     public void test() throws IOException {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext("icu.etl,sout:");
+        AnnotationEasyetlContext context = new AnnotationEasyetlContext("icu.etl,sout:debug");
 
         // 设置外部资源文件
         System.setProperty(ResourcesUtils.PROPERTY_RESOURCE, FileUtils.joinFilepath(ClassUtils.getClasspath(this.getClass()), "script_res.properties"));

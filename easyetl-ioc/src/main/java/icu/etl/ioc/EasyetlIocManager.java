@@ -14,7 +14,7 @@ public class EasyetlIocManager {
     /** 组件工厂集合 */
     private List<EasyetlIoc> list;
 
-    public EasyetlIocManager(EasyetlContext context) {
+    public EasyetlIocManager(AnnotationEasyetlContext context) {
         this.list = new ArrayList<EasyetlIoc>();
         this.add(new EasyetlIocImpl(context));
     }

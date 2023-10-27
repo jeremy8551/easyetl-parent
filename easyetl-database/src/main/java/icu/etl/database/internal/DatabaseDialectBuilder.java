@@ -3,6 +3,7 @@ package icu.etl.database.internal;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -12,8 +13,10 @@ import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.BeanEvent;
 import icu.etl.ioc.BeanEventListener;
 import icu.etl.ioc.BeanInfo;
+import icu.etl.ioc.BeanInfoRegister;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.log.STD;
+import icu.etl.util.ArrayUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 
@@ -27,21 +30,21 @@ import icu.etl.util.StringUtils;
 public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, BeanEventListener {
 
     /** 数据库方言管理类 */
-    private final DialectManager manager;
+    private final DatabaseDialectManager manager;
 
     /**
      * 初始化
      */
     public DatabaseDialectBuilder(EasyetlContext context) {
         List<BeanInfo> list = context.getBeanInfoList(DatabaseDialect.class);
-        this.manager = new DialectManager(context, list);
+        this.manager = new DatabaseDialectManager(context, list);
     }
 
     public DatabaseDialect getBean(EasyetlContext context, Object... args) throws Exception {
-        String[] parameters = this.getDatabaseInfo(args);
-        String name = parameters[0];
-        String major = parameters[1];
-        String minor = parameters[2];
+        String[] array = this.getDatabaseInfo(args);
+        String name = array[0];
+        String major = array[1];
+        String minor = array[2];
         return context.createBean(this.manager.getDialectClass(name, major, minor));
     }
 
@@ -83,10 +86,12 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
             }
         }
 
+        String major = ArrayUtils.indexOf(args, String.class, 0);
+        String minor = major == null ? null : ArrayUtils.indexOf(args, String.class, Arrays.binarySearch(args, major) + 1);
         String[] array = new String[3];
-        array[0] = this.manager.parse(StringUtils.join(args, " "));
-        array[1] = "";
-        array[2] = "";
+        array[0] = this.manager.parseBeanName(StringUtils.join(args, " "));
+        array[1] = StringUtils.defaultString(major, "");
+        array[2] = StringUtils.defaultString(minor, "");
         return array;
     }
 
@@ -100,7 +105,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
         try {
             DatabaseMetaData metaData = conn.getMetaData();
             String[] array = new String[3];
-            array[0] = manager.parse(metaData.getURL());
+            array[0] = manager.parseBeanName(metaData.getURL());
             array[1] = String.valueOf(metaData.getDatabaseMajorVersion());
             array[2] = String.valueOf(metaData.getDatabaseMinorVersion());
             return array;
@@ -111,7 +116,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
     }
 
     public void addBean(BeanEvent event) {
-        BeanInfo beanInfo = event.getBeanInfo();
+        BeanInfoRegister beanInfo = event.getBeanInfo();
         if (DatabaseDialect.class.isAssignableFrom(beanInfo.getType())) {
             this.manager.add(event.getContext(), beanInfo);
         }

@@ -10,7 +10,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class AnnotationBeanInfo implements BeanInfo {
+public class AnnotationBeanInfoRegister implements BeanInfoRegister {
 
     /** 组件类 */
     protected Class<?> type;
@@ -34,14 +34,13 @@ public class AnnotationBeanInfo implements BeanInfo {
      *
      * @param type 组件类信息
      */
-    public AnnotationBeanInfo(Class<?> type) {
+    public AnnotationBeanInfoRegister(Class<?> type) {
         if (type == null) {
             throw new NullPointerException();
         }
 
         this.type = type;
         this.instance = null;
-
         EasyBean annotation = type.getAnnotation(EasyBean.class); // 取得类上配置的注解
         if (annotation != null) {
             this.singleton = annotation.singleton();
@@ -55,7 +54,6 @@ public class AnnotationBeanInfo implements BeanInfo {
             this.order = 0;
             this.lazy = true;
             this.description = "";
-            System.out.println(type.getName() + " 上没有使用EasyBean注解，自动设置默认 " + annotation);
         }
     }
 
@@ -72,7 +70,7 @@ public class AnnotationBeanInfo implements BeanInfo {
         return singleton;
     }
 
-    public int getOrder() {
+    public int getLevel() {
         return order;
     }
 
@@ -93,11 +91,25 @@ public class AnnotationBeanInfo implements BeanInfo {
     }
 
     @SuppressWarnings("unchecked")
-    public <E> E getInstance() {
+    public <E> E getBean() {
         return (E) instance;
     }
 
-    public void setInstance(Object instance) {
+    public void setBean(Object instance) {
         this.instance = instance;
+    }
+
+    public int compare(BeanInfo o1, BeanInfo o2) {
+        int tc = o1.getType().getName().compareTo(o2.getType().getName());
+        if (tc != 0) {
+            return tc;
+        }
+
+        int nc = o1.getName().compareTo(o2.getName());
+        if (nc != 0) {
+            return nc;
+        }
+
+        return o2.getLevel() - o1.getLevel(); // 倒序排序
     }
 }

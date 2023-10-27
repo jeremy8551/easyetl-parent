@@ -35,8 +35,8 @@ public class RepeatDefineBeanException extends RuntimeException {
     protected static String toString(Object obj) {
         if (obj instanceof Class) {
             return ((Class) obj).getName();
-        } else if (obj instanceof BeanInfo) {
-            return ((BeanInfo) obj).getType().getName();
+        } else if (obj instanceof BeanInfoRegister) {
+            return ((BeanInfoRegister) obj).getType().getName();
         } else {
             return obj.getClass().getName();
         }

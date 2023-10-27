@@ -7,10 +7,8 @@ import icu.etl.database.DatabaseTableColumn;
 import icu.etl.database.DatabaseTableColumnList;
 import icu.etl.expression.Analysis;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.ArrayUtils;
-import icu.etl.util.ClassUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.StringUtils;
 
@@ -32,12 +30,12 @@ public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
         } else if (value.equalsIgnoreCase("uuid")) {
             return new UUIDReplace(columns, field);
         } else { // 自定义
-            String[] beans = StringUtils.split(value, '/');
-            BeanInfo beanInfo = context.getBeanInfo(IncrementReplace.class, beans[0]);
-            if (beanInfo == null) {
+            Object[] beans = StringUtils.split(value, '/');
+            IncrementReplace bean = context.getBean(IncrementReplace.class, beans);
+            if (bean == null) {
                 return new StandardReplace(columns, field, value);
             } else {
-                return ClassUtils.newInstance(beanInfo.getType());
+                return bean;
             }
         }
     }

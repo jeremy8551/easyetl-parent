@@ -10,7 +10,7 @@ import icu.etl.annotation.EasyBean;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanInfo> {
+public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanInfoRegister> {
 
     /**
      * 初始化，扫描类路径中所有被注解标记的类信息
@@ -25,12 +25,12 @@ public class DefaultClassScanRule implements ClassScanRule, Comparator<BeanInfo>
 
         // 如果类上配置了注解
         if (cls.isAnnotationPresent(EasyBean.class)) {
-            return register.addBean(new AnnotationBeanInfo(cls), this);
+            return register.addBean(new AnnotationBeanInfoRegister(cls), this);
         }
         return false;
     }
 
-    public int compare(BeanInfo o1, BeanInfo o2) {
+    public int compare(BeanInfoRegister o1, BeanInfoRegister o2) {
         if (o1.equals(o2.getName()) && o1.equals(o2.getType())) {
             return 0;
         } else {

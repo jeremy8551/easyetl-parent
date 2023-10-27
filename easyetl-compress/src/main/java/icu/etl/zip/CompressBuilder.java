@@ -4,10 +4,8 @@ import java.io.File;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.EasyetlContext;
 import icu.etl.util.ArrayUtils;
-import icu.etl.util.ClassUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 
@@ -37,12 +35,7 @@ public class CompressBuilder implements BeanBuilder<Compress> {
             suffix = "zip";
         }
 
-        BeanInfo beanInfo = context.getBeanInfo(Compress.class, suffix);
-        if (beanInfo == null) {
-            throw new UnsupportedOperationException(suffix);
-        } else {
-            return ClassUtils.newInstance(beanInfo.getType());
-        }
+        return context.getBean(Compress.class, suffix);
     }
 
 }

@@ -19,17 +19,13 @@ public class BeanInfoManager {
     /** 组件（接口或类）与实现类的映射关系 */
     private final LinkedHashMap<Class<?>, BeanInfoList> map;
 
-    private final List<BeanEventListener> listeners;
-
     public BeanInfoManager(EasyetlContext context) {
         this.map = new LinkedHashMap<Class<?>, BeanInfoList>(50);
-        this.listeners = new ArrayList<BeanEventListener>();
         this.context = context;
     }
 
     public void clear() {
         this.map.clear();
-        this.listeners.clear();
     }
 
     public BeanInfoList remove(Class<?> type) {
@@ -39,17 +35,17 @@ public class BeanInfoManager {
     public BeanInfoList get(Class<?> type) {
         BeanInfoList list = this.map.get(type);
         if (list == null) {
-            list = new BeanInfoList(this, type);
+            list = new BeanInfoList(type);
             this.map.put(type, list);
         }
         return list;
     }
 
-    public List<BeanInfo> getNolazyBeanInfoList() {
-        List<BeanInfo> nolazys = new ArrayList<BeanInfo>();
+    public List<BeanInfoRegister> getNolazyBeanInfoList() {
+        List<BeanInfoRegister> nolazys = new ArrayList<BeanInfoRegister>();
         Collection<BeanInfoList> values = this.map.values();
         for (BeanInfoList list : values) {
-            for (BeanInfo beanInfo : list) {
+            for (BeanInfoRegister beanInfo : list) {
                 if (!beanInfo.isLazy()) {
                     nolazys.add(beanInfo);
                 }
@@ -62,26 +58,19 @@ public class BeanInfoManager {
         return this.map.keySet();
     }
 
-    public void addListener(List<BeanEventListener> listeners) {
-        this.listeners.addAll(listeners);
-    }
-
-    public void addBeanEvent(BeanInfo beanInfo) {
-        for (BeanEventListener listener : this.listeners) {
-            listener.addBean(new StandardBeanEvent(this.context, beanInfo));
-        }
-    }
-
-    public void removeBeanEvent(BeanInfo beanInfo) {
-        for (BeanEventListener listener : this.listeners) {
-            listener.removeBean(new StandardBeanEvent(this.context, beanInfo));
-        }
-    }
-
     public void refresh() {
+        // 对同名的组件, 按优先级排序
         Collection<BeanInfoList> values = this.map.values();
         for (BeanInfoList list : values) {
             list.sortByDesc();
+        }
+
+        // 处理非延迟加载组件
+        List<BeanInfoRegister> list = this.getNolazyBeanInfoList();
+        for (BeanInfoRegister beanInfo : list) {
+            if (beanInfo.getBean() == null) {
+                beanInfo.setBean(this.context.createBean(beanInfo.getType()));
+            }
         }
     }
 

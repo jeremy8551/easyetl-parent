@@ -11,6 +11,14 @@ import icu.etl.annotation.EasyBean;
  */
 public interface EasyetlContext extends BeanRegister {
 
+    EasyetlIoc removeIoc(String name);
+
+    /**
+     * 添加容器实例
+     *
+     * @param ioc 容器实例
+     * @return 如果容器重名，则会替换掉重名容器，并返回替换掉的容器
+     */
     EasyetlIoc addIoc(EasyetlIoc ioc);
 
     /**

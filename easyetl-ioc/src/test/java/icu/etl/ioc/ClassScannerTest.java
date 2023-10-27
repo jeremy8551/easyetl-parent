@@ -24,7 +24,7 @@ public class ClassScannerTest {
                 exists1 = true;
             }
         }
-        Assert.assertTrue(!exists);
+        Assert.assertFalse(exists);
         Assert.assertTrue(exists1);
     }
 

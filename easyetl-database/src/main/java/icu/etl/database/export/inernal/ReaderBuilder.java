@@ -22,7 +22,6 @@ public class ReaderBuilder implements BeanBuilder<ExtractReader> {
     public ExtractReader getBean(EasyetlContext context, Object... args) throws Exception {
         ExtracterContext cxt = ArrayUtils.indexOf(args, ExtracterContext.class, 0);
         String source = cxt.getSource();
-
         if (StringUtils.startsWith(source, "select", 0, true, true)) {
             return new DatabaseReader(cxt);
         } else if (ClassUtils.forName(source, false, context.getClassLoader()) != null) {

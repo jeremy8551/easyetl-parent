@@ -21,6 +21,6 @@ public interface BeanEvent {
      * @param <E> 组件实现类
      * @return 组件实现类
      */
-    <E> BeanInfo getBeanInfo();
+    <E> BeanInfoRegister getBeanInfo();
 
 }

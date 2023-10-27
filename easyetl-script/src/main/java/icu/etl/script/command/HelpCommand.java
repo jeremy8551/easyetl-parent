@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -148,12 +149,12 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                     , ClassUtils.toMethodName(UniversalCommandCompiler.class, "compile") // 52
                     , "META-INF/services/" + ClassScanRule.class.getName() // 53
                     , "" // 54
-                    , ClassUtils.toMethodName(EasyBean.class, "major") // 55
-                    , ClassUtils.toMethodName(EasyBean.class, "minor") // 56
+                    , "" // 55
+                    , "" // 56
                     , "" // 57
                     , "" // 58
-                    , ClassUtils.toMethodName(EasyBean.class, "kind") // 59
-                    , ClassUtils.toMethodName(EasyBean.class, "mode") // 60
+                    , "" // 59
+                    , "" // 60
                     , ClassUtils.toMethodName(EasyBean.class, "description") // 61
                     , "" // 62
                     , UniversalScriptExpression.class.getName() // 63
@@ -284,7 +285,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
      */
     public String supportedDatabase(UniversalScriptContext context) {
         List<BeanInfo> list = context.getFactory().getContext().getBeanInfoList(DatabaseDialect.class);
-        java.util.Collections.sort(list, new Comparator<BeanInfo>() {
+        Collections.sort(list, new Comparator<BeanInfo>() {
             public int compare(BeanInfo o1, BeanInfo o2) {
                 return o1.getName().compareTo(o2.getName());
             }

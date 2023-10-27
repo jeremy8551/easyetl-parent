@@ -11,7 +11,7 @@ import icu.etl.util.ClassUtils;
  * @author jeremy8551@qq.com
  * @createtime 2023/10/26
  */
-public class BeanConstructorParser {
+public class BeanConstructorSet {
 
     private List<Constructor<?>> list;
 
@@ -21,7 +21,7 @@ public class BeanConstructorParser {
 
     private Constructor<?> baseConstructor;
 
-    public BeanConstructorParser(Class<?> type, BeanArgument argument) {
+    public BeanConstructorSet(Class<?> type, BeanArgument argument) {
         Constructor<?>[] array = type.getConstructors();
         this.list = new ArrayList<Constructor<?>>(array.length);
         this.argument = argument;

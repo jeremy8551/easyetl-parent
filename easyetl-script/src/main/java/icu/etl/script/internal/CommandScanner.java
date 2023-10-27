@@ -158,7 +158,7 @@ public class CommandScanner {
                 this.loadScriptCommand(cls);
             } catch (Throwable e) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getClassMessage(18, cls.getName(), e));
+                    log.warn(ResourcesUtils.getClassMessage(18, cls.getName()), e);
                 }
             }
         }

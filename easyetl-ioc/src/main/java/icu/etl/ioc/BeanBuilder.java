@@ -18,5 +18,5 @@ public interface BeanBuilder<E> {
      * @throws Exception 生成实例对象发生错误
      */
     E getBean(EasyetlContext context, Object... args) throws Exception;
-    
+
 }

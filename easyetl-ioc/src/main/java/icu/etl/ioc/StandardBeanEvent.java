@@ -6,7 +6,7 @@ package icu.etl.ioc;
 public class StandardBeanEvent implements BeanEvent {
 
     /** 实现类信息 */
-    private BeanInfo beanInfo;
+    private BeanInfoRegister beanInfo;
 
     /** 容器上下文信息 */
     private EasyetlContext context;
@@ -17,7 +17,7 @@ public class StandardBeanEvent implements BeanEvent {
      * @param context  容器上下文信息
      * @param beanInfo 组件信息
      */
-    public StandardBeanEvent(EasyetlContext context, BeanInfo beanInfo) {
+    public StandardBeanEvent(EasyetlContext context, BeanInfoRegister beanInfo) {
         this.context = context;
         this.beanInfo = beanInfo;
     }
@@ -26,7 +26,7 @@ public class StandardBeanEvent implements BeanEvent {
         return context;
     }
 
-    public BeanInfo getBeanInfo() {
+    public BeanInfoRegister getBeanInfo() {
         return beanInfo;
     }
 
