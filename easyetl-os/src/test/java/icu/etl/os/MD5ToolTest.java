@@ -8,7 +8,7 @@ import javax.script.ScriptException;
 
 import icu.etl.crypto.MD5Encrypt;
 import icu.etl.io.BufferedLineWriter;
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
@@ -26,7 +26,7 @@ public class MD5ToolTest {
             String md5 = MD5Encrypt.encrypt(str, null);
             System.out.println("MD5Encrypt.encrypt value is " + md5);
 
-            AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+            EasyBeanContext context = new EasyBeanContext();
             OSSecureShellCommand shell = context.getBean(OSSecureShellCommand.class);
             try {
                 shell.connect(TestEnv.getSSHHost(), TestEnv.getSSHPort(), TestEnv.getSSHUsername(), TestEnv.getSSHPassword());
@@ -85,7 +85,7 @@ public class MD5ToolTest {
             e.eval("put " + file.getAbsolutePath() + " `pwd`");
             e.eval("bye");
 
-            AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+            EasyBeanContext context = new EasyBeanContext();
             OSSecureShellCommand shell = context.getBean(OSSecureShellCommand.class);
             try {
                 shell.connect(host, port, username, password);

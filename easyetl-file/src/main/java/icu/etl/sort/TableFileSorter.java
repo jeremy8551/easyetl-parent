@@ -24,7 +24,7 @@ import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileCounter;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -105,7 +105,7 @@ public class TableFileSorter implements Terminate {
      * @return 排序后的文件
      * @throws IOException
      */
-    public synchronized File sort(EasyetlContext context, TextTableFile file, String... orders) throws IOException {
+    public synchronized File sort(EasyContext context, TextTableFile file, String... orders) throws IOException {
         Analysis analysis = new StandardAnalysis();
         OrderByExpression[] array = new OrderByExpression[orders.length];
         for (int i = 0; i < orders.length; i++) {

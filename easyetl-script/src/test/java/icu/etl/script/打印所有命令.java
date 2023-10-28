@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.BeanInfo;
 import icu.etl.log.STD;
 import icu.etl.script.internal.CommandScanner;
@@ -17,7 +17,7 @@ import icu.etl.util.FileUtils;
 public class 打印所有命令 {
 
     public static void main(String[] args) throws IOException {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext("sout:info");
+        EasyBeanContext context = new EasyBeanContext("sout:info");
 
         String[] list = ClassUtils.getJavaClassPath();
         for (String classpath : list) {

@@ -2,8 +2,8 @@ package icu.etl.database.load;
 
 import icu.etl.concurrent.Executor;
 import icu.etl.database.load.inernal.StandardLoadEngineContext;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.log.Log;
 import icu.etl.log.STD;
 
@@ -13,7 +13,7 @@ import icu.etl.log.STD;
  * @author jeremy8551@qq.com
  * @createtime 2021-03-03
  */
-public class LoadEngine extends Executor implements EasyetlContextAware {
+public class LoadEngine extends Executor implements EasyContextAware {
 
     /** 装数引擎默认日志接口 */
     public static Log out = STD.out;
@@ -24,7 +24,7 @@ public class LoadEngine extends Executor implements EasyetlContextAware {
     /** 装数引擎 */
     protected Loader loader;
 
-    protected EasyetlContext ioccxt;
+    protected EasyContext ioccxt;
 
     /**
      * 初始化
@@ -34,7 +34,7 @@ public class LoadEngine extends Executor implements EasyetlContextAware {
         this.context = new StandardLoadEngineContext();
     }
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.ioccxt = context;
     }
 

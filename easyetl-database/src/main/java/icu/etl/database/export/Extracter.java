@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import icu.etl.concurrent.Executor;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -14,7 +14,7 @@ import icu.etl.util.ResourcesUtils;
  * @author jeremy8551@qq.com
  * @createtime 2020-11-12
  */
-public class Extracter extends Executor implements EasyetlContextAware {
+public class Extracter extends Executor implements EasyContextAware {
 
     /** 上下文信息 */
     protected ExtracterContext context;
@@ -26,7 +26,7 @@ public class Extracter extends Executor implements EasyetlContextAware {
     protected ExtractMessage message;
 
     /** 容器上下文信息 */
-    protected EasyetlContext ioccxt;
+    protected EasyContext ioccxt;
 
     /**
      * 初始化
@@ -37,7 +37,7 @@ public class Extracter extends Executor implements EasyetlContextAware {
         this.listener = new ExtractListener(this.context);
     }
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.ioccxt = context;
     }
 

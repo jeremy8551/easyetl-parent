@@ -6,7 +6,7 @@ import java.util.List;
 import icu.etl.database.db2.DB2Dialect;
 import icu.etl.database.mysql.MysqlDialect;
 import icu.etl.database.oracle.OracleDialect;
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
 import org.junit.Test;
@@ -133,7 +133,7 @@ public class DatabaseDialectTest {
 
     @Test
     public void test2() throws SQLException {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         String catalog = null;
         String schema = null;
         JdbcDao dao = new JdbcDao(context, TestEnv.getConnection());

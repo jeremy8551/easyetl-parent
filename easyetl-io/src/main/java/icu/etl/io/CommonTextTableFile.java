@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -20,7 +20,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2017-02-22
  */
 @EasyBean(name = "txt", description = "文本文件, 逗号分隔，无转义字符，无字符串限定符")
-public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
+public class CommonTextTableFile implements TextTableFile, EasyContextAware {
 
     /** 表格数据文件 */
     protected File file;
@@ -50,7 +50,7 @@ public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
     protected List<String> columnNames;
 
     /** 容器上下文信息 */
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     /**
      * 初始化
@@ -67,7 +67,7 @@ public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
         this.columnNames = new ArrayList<String>();
     }
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 
@@ -197,8 +197,8 @@ public class CommonTextTableFile implements TextTableFile, EasyetlContextAware {
      * @param obj
      */
     public void clone(TextTableFile obj) {
-        if (obj instanceof EasyetlContextAware) {
-            ((EasyetlContextAware) obj).setContext(this.context);
+        if (obj instanceof EasyContextAware) {
+            ((EasyContextAware) obj).setContext(this.context);
         }
 
         obj.setAbsolutePath(this.getAbsolutePath());

@@ -26,7 +26,7 @@ import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.ClassScanRule;
 import icu.etl.ioc.ClassScanner;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.jdk.JavaDialect;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.Log;
@@ -226,8 +226,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
 
     public String toAllImplements(UniversalScriptContext scriptContext) {
         StringBuilder buf = new StringBuilder();
-        EasyetlContext context = scriptContext.getFactory().getContext();
-        Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getTypes());
+        EasyContext context = scriptContext.getFactory().getContext();
+        Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getBeanInfoTypes());
 
         // 以下这些接口的实现类已在帮助说明中删除
         setes.remove(UniversalScriptVariableMethod.class);

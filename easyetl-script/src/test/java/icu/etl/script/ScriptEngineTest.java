@@ -3,8 +3,8 @@ package icu.etl.script;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import icu.etl.ioc.AnnotationEasyetlContext;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
+import icu.etl.ioc.EasyContext;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class ScriptEngineTest {
 
     @Test
     public void test() {
-        EasyetlContext context = new AnnotationEasyetlContext("debug:sout");
+        EasyContext context = new EasyBeanContext("debug:sout");
         UniversalScriptEngineFactory factory = new UniversalScriptEngineFactory(context);
         ScriptEngine engine;
         try {

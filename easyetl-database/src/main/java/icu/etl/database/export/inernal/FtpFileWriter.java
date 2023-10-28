@@ -6,17 +6,17 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.ExtractMessage;
 import icu.etl.database.export.ExtractWriter;
 import icu.etl.database.export.ExtracterContext;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.os.OSFtpCommand;
 import icu.etl.util.Ensure;
 
 @EasyBean(name = "ftp", description = "卸载数据到远程ftp服务器")
-public class FtpFileWriter extends SftpFileWriter implements ExtractWriter, EasyetlContextAware {
+public class FtpFileWriter extends SftpFileWriter implements ExtractWriter, EasyContextAware {
 
-    protected EasyetlContext context;
+    protected EasyContext context;
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 

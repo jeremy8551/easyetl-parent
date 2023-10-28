@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import icu.apache.mail.common.EmailAttachment;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.zip.Compress;
@@ -23,20 +23,20 @@ public class MailFile {
 
     private String name;
 
-    public MailFile(EasyetlContext context, String disposition, File file, String name, String description) throws IOException {
+    public MailFile(EasyContext context, String disposition, File file, String name, String description) throws IOException {
         this(context, file);
         this.disposition = disposition;
         this.name = name;
         this.description = description;
     }
 
-    public MailFile(EasyetlContext context, File file, String name, String description) throws IOException {
+    public MailFile(EasyContext context, File file, String name, String description) throws IOException {
         this(context, file);
         this.name = name;
         this.description = description;
     }
 
-    public MailFile(EasyetlContext context, File file) throws IOException {
+    public MailFile(EasyContext context, File file) throws IOException {
         if (file == null) {
             throw new NullPointerException();
         }
@@ -63,7 +63,7 @@ public class MailFile {
      * @param delete       true表示文件全部压缩成功后自动删除 {@code fileOrDir}
      * @throws IOException
      */
-    public void compress(EasyetlContext context, File fileOrDir, File compressFile, String charsetName, boolean delete) throws IOException {
+    public void compress(EasyContext context, File fileOrDir, File compressFile, String charsetName, boolean delete) throws IOException {
         Compress compress = context.getBean(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
         try {
             compress.setFile(compressFile);

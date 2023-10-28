@@ -11,12 +11,12 @@ import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DatabaseConfiguration;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseURL;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.os.OSAccount;
 import icu.etl.util.StringUtils;
 
-public class StandardDatabaseConfiguration implements DatabaseConfiguration, EasyetlContextAware {
+public class StandardDatabaseConfiguration implements DatabaseConfiguration, EasyContextAware {
 
     private String host;
     private String driverClassName;
@@ -29,7 +29,7 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration, Eas
     private OSAccount sshUser;
     private int sshPort;
 
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     /**
      * 初始化
@@ -58,7 +58,7 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration, Eas
         this.add(ipAddress, driverClassName, url, username, password, adminUsername, adminPassword, sshUser, sshUserPw, sshPort);
     }
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 

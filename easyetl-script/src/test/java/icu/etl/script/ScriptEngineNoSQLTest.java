@@ -10,7 +10,7 @@ import javax.script.ScriptException;
 
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseURL;
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.os.OS;
 import icu.etl.os.OSUser;
 import icu.etl.util.ClassUtils;
@@ -28,7 +28,7 @@ public class ScriptEngineNoSQLTest {
 
     @Test
     public void test() throws IOException {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext("icu.etl,sout:info");
+        EasyBeanContext context = new EasyBeanContext("icu.etl,sout:info");
 
         // 设置外部资源文件
         System.setProperty(ResourcesUtils.PROPERTY_RESOURCE, FileUtils.joinFilepath(ClassUtils.getClasspath(this.getClass()), "script_res.properties"));

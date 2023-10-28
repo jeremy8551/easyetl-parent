@@ -10,10 +10,10 @@ import icu.etl.util.ClassUtils;
  *
  * @author jeremy8551@qq.com
  */
-public class AnnotationEasyetlContext implements EasyetlContext {
+public class EasyBeanContext implements EasyContext {
 
     /** 组件工厂集合 */
-    private EasyetlIocManager iocs;
+    private IocContextManager iocs;
 
     /** 组件（接口或类）与实现类的映射关系 */
     private BeanInfoManager beans;
@@ -22,13 +22,13 @@ public class AnnotationEasyetlContext implements EasyetlContext {
     private BeanBuilderManager builders;
 
     /** 组件构造方法的工具 */
-    private BeanConstructor factory;
+    private BeanFactoryImpl factory;
 
     /** 监听器管理 */
-    private ListenerManager listeners;
+    private BeanEventManager listeners;
 
     /** 参数管理器 */
-    private EasyetlContextInit init;
+    private EasyContextInit init;
 
     /**
      * 上下文信息
@@ -38,7 +38,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
      *             !org.test 表示扫描包时，排除掉这个包名下的类
      *             sout:debug 表示使用控制台输出debug级别的日志
      */
-    public AnnotationEasyetlContext(String... args) {
+    public EasyBeanContext(String... args) {
         this(null, args);
     }
 
@@ -48,12 +48,12 @@ public class AnnotationEasyetlContext implements EasyetlContext {
      * @param loader 类加载器
      * @param args   参数数组
      */
-    public AnnotationEasyetlContext(ClassLoader loader, String... args) {
-        this.init = new EasyetlContextInit(loader, args);
-        this.iocs = new EasyetlIocManager(this);
-        this.factory = new BeanConstructor(this);
+    public EasyBeanContext(ClassLoader loader, String... args) {
+        this.init = new EasyContextInit(loader, args);
+        this.iocs = new IocContextManager(this);
+        this.factory = new BeanFactoryImpl(this);
         this.beans = new BeanInfoManager(this);
-        this.listeners = new ListenerManager(this);
+        this.listeners = new BeanEventManager(this);
         this.builders = new BeanBuilderManager(this);
         this.refresh();
     }
@@ -80,16 +80,16 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         return this.init.getArgument();
     }
 
-    public synchronized EasyetlIoc removeIoc(String name) {
+    public synchronized IocContext removeIoc(String name) {
         return this.iocs.remove(name);
     }
 
-    public synchronized EasyetlIoc addIoc(EasyetlIoc ioc) {
+    public synchronized IocContext addIoc(IocContext ioc) {
         return this.iocs.add(ioc);
     }
 
     public <E> E createBean(Class<?> type, Object... args) {
-        return this.factory.newInstance(type, args);
+        return this.factory.createBean(type, args);
     }
 
     public BeanInfoRegister getBeanInfo(Class<?> type, String name) {
@@ -160,7 +160,7 @@ public class AnnotationEasyetlContext implements EasyetlContext {
         return new ArrayList<BeanInfo>(this.beans.get(type).indexOf(name));
     }
 
-    public List<Class<?>> getTypes() {
+    public List<Class<?>> getBeanInfoTypes() {
         return new ArrayList<Class<?>>(this.beans.keySet());
     }
 

@@ -14,7 +14,7 @@ import icu.etl.ioc.BeanEvent;
 import icu.etl.ioc.BeanEventListener;
 import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.BeanInfoRegister;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.log.STD;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.IO;
@@ -35,12 +35,12 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
     /**
      * 初始化
      */
-    public DatabaseDialectBuilder(EasyetlContext context) {
+    public DatabaseDialectBuilder(EasyContext context) {
         List<BeanInfo> list = context.getBeanInfoList(DatabaseDialect.class);
         this.manager = new DatabaseDialectManager(context, list);
     }
 
-    public DatabaseDialect getBean(EasyetlContext context, Object... args) throws Exception {
+    public DatabaseDialect getBean(EasyContext context, Object... args) throws Exception {
         String[] array = this.getDatabaseInfo(args);
         String name = array[0];
         String major = array[1];

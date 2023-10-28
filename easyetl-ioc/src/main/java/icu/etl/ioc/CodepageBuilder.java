@@ -21,7 +21,7 @@ public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEve
         this.map = new HashMap<String, String>();
     }
 
-    public Codepage getBean(EasyetlContext context, Object... args) throws Exception {
+    public Codepage getBean(EasyContext context, Object... args) throws Exception {
         return this;
     }
 
@@ -41,9 +41,9 @@ public class CodepageBuilder implements Codepage, BeanBuilder<Codepage>, BeanEve
             return this.map.get(key);
         } else {
             for (Iterator<Entry<String, String>> it = this.map.entrySet().iterator(); it.hasNext(); ) {
-                Entry<String, String> e = it.next();
-                if (key.equalsIgnoreCase(e.getValue())) {
-                    return e.getKey();
+                Entry<String, String> next = it.next();
+                if (key.equalsIgnoreCase(next.getValue())) {
+                    return next.getKey();
                 }
             }
             return null;

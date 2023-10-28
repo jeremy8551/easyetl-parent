@@ -19,16 +19,9 @@ import java.lang.annotation.Target;
 public @interface EasyBean {
 
     /**
-     * 详见 {@linkplain EasyBean#singleton()}
-     *
-     * @return 详见 {@linkplain EasyBean#singleton()}
-     */
-    String value() default "";
-
-    /**
      * 组件管理模式
      *
-     * @return true表示组件是单例模式，false表示是原型模式（每次生成的组件都是新的）
+     * @return true表示组件是单例模式, false表示是原型模式（每次生成的组件都是新的）
      */
     boolean singleton() default false;
 

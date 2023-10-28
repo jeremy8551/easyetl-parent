@@ -13,13 +13,13 @@ import icu.etl.database.export.ExtracterContext;
 import icu.etl.io.TableLine;
 import icu.etl.io.TableWriter;
 import icu.etl.io.TextTable;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.os.OSFtpCommand;
 import icu.etl.util.Ensure;
 
 @EasyBean(name = "sftp", description = "卸载数据到远程sftp服务器")
-public class SftpFileWriter implements ExtractWriter, EasyetlContextAware {
+public class SftpFileWriter implements ExtractWriter, EasyContextAware {
 
     protected String target;
 
@@ -34,9 +34,9 @@ public class SftpFileWriter implements ExtractWriter, EasyetlContextAware {
 
     protected ExtractMessage message;
 
-    protected EasyetlContext context;
+    protected EasyContext context;
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 

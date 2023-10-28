@@ -21,8 +21,8 @@ import icu.etl.database.load.inernal.DataWriterFactory;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -33,12 +33,12 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  */
 @EasyBean(name = "serial")
-public class SerialLoadFileEngine implements Loader, EasyetlContextAware {
+public class SerialLoadFileEngine implements Loader, EasyContextAware {
 
     /** true表示终止任务 */
     private volatile boolean running;
 
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     /**
      * 初始化
@@ -48,7 +48,7 @@ public class SerialLoadFileEngine implements Loader, EasyetlContextAware {
         this.running = true;
     }
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 

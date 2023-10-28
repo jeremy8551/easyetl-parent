@@ -5,7 +5,7 @@ import icu.etl.database.export.ExtractReader;
 import icu.etl.database.export.ExtracterContext;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.BeanInfo;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
@@ -19,7 +19,7 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class ReaderBuilder implements BeanBuilder<ExtractReader> {
 
-    public ExtractReader getBean(EasyetlContext context, Object... args) throws Exception {
+    public ExtractReader getBean(EasyContext context, Object... args) throws Exception {
         ExtracterContext cxt = ArrayUtils.indexOf(args, ExtracterContext.class, 0);
         String source = cxt.getSource();
         if (StringUtils.startsWith(source, "select", 0, true, true)) {

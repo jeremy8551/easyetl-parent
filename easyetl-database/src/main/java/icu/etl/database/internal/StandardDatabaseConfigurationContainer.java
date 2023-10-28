@@ -14,7 +14,7 @@ import icu.etl.database.DatabaseConfigurationContainer;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseURL;
 import icu.etl.database.Jdbc;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.os.OSAccount;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.os.OSShellCommand;
@@ -29,9 +29,9 @@ public class StandardDatabaseConfigurationContainer implements DatabaseConfigura
 
     private CaseSensitivMap<DatabaseConfiguration> map;
 
-    private EasyetlContext context;
+    private EasyContext context;
 
-    public StandardDatabaseConfigurationContainer(EasyetlContext context) {
+    public StandardDatabaseConfigurationContainer(EasyContext context) {
         this.map = new CaseSensitivMap<DatabaseConfiguration>();
         this.context = Objects.requireNonNull(context);
     }

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import icu.etl.database.db2.DB2Instance;
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.os.OS;
 import icu.etl.os.OSCpu;
 import icu.etl.os.OSDisk;
@@ -32,7 +32,7 @@ public class 测试远程连接Linux与DB2和WAS探测 {
         password = "xxx";
 
         TimeWatch watch = new TimeWatch();
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         OS os = context.getBean(OS.class, host, port, username, password);
         try {
             System.out.println();

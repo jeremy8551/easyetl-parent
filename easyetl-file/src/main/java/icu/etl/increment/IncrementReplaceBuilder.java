@@ -8,7 +8,7 @@ import icu.etl.database.DatabaseTableColumnList;
 import icu.etl.expression.Analysis;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.BeanInfo;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.StringUtils;
@@ -16,7 +16,7 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
 
-    public IncrementReplace getBean(EasyetlContext context, Object... args) throws Exception {
+    public IncrementReplace getBean(EasyContext context, Object... args) throws Exception {
         Analysis analysis = ArrayUtils.indexOf(args, Analysis.class, 0);
         String str = ArrayUtils.indexOf(args, String.class, 0); // 1:date-
         DatabaseTableColumnList columns = ArrayUtils.indexOf(args, DatabaseTableColumnList.class, 0);

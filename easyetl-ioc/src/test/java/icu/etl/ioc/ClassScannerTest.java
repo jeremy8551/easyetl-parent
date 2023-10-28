@@ -12,7 +12,7 @@ public class ClassScannerTest {
 
     @Test
     public void test() {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext("sout:debug,!org.apache,!icu.etl.test.impl.sec1,");
+        EasyBeanContext context = new EasyBeanContext("sout:debug,!org.apache,!icu.etl.test.impl.sec1,");
         List<BeanInfo> list = context.getBeanInfoList(TestLoader.class);
         boolean exists = false;
         boolean exists1 = false;

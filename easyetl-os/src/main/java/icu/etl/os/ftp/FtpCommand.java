@@ -17,8 +17,8 @@ import icu.apache.net.ftp.parser.FTPFileEntryParserFactory;
 import icu.etl.annotation.EasyBean;
 import icu.etl.expression.GPatternExpression;
 import icu.etl.io.BufferedLineReader;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.log.STD;
 import icu.etl.os.OSFile;
 import icu.etl.os.OSFileCommandException;
@@ -39,7 +39,7 @@ import icu.etl.util.StringUtils;
  * FTP协议的实现类
  */
 @EasyBean(name = "ftp")
-public class FtpCommand implements OSFtpCommand, EasyetlContextAware {
+public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     /** parameters name */
     public final static HashSet<String> PARAM_NAME_LIST = new HashSet<String>(ArrayUtils.asList("DataTimeout", "ControlEncoding", "BufferSize", "FileType", "ParserFactory", "FileStructure", "FileTransferMode", "RemoteVerificationEnabled", "RestartOffset"));
@@ -57,9 +57,9 @@ public class FtpCommand implements OSFtpCommand, EasyetlContextAware {
     protected String remoteServerName;
 
     /** 容器上下文信息 */
-    protected EasyetlContext context;
+    protected EasyContext context;
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 

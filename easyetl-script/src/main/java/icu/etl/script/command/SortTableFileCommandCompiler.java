@@ -9,7 +9,7 @@ import icu.etl.expression.OrderByExpression;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTableFile;
 import icu.etl.ioc.BeanInfo;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -65,7 +65,7 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
         it.assertNext("by");
         boolean asc = (it.isLast("asc") || it.isLast("desc")) ? analysis.equals("asc", it.last()) : true; // 默认排序方式
 
-        EasyetlContext ioccxt = context.getFactory().getContext();
+        EasyContext ioccxt = context.getFactory().getContext();
         String position = it.readOther();
         String[] array = StringUtils.split(StringUtils.trimBlank(position), analysis.getSegment()); // int(1) desc,2, 4,5
         OrderByExpression[] orders = new OrderByExpression[array.length];

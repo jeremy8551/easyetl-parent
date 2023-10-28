@@ -1,6 +1,6 @@
 package icu.etl.ioc;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Set;
 
 import icu.etl.util.ClassUtils;
@@ -12,17 +12,17 @@ import icu.etl.util.ResourcesUtils;
  */
 public class BeanBuilderManager {
 
-    private EasyetlContext context;
+    private EasyContext context;
 
     /** 组件接口与组件工厂类映射关系 */
-    private final LinkedHashMap<Class<?>, BeanBuilder<?>> map;
+    private final HashMap<Class<?>, BeanBuilder<?>> map;
 
-    public BeanBuilderManager(EasyetlContext context) {
-        this.map = new LinkedHashMap<Class<?>, BeanBuilder<?>>();
+    public BeanBuilderManager(EasyContext context) {
+        this.map = new HashMap<Class<?>, BeanBuilder<?>>();
         this.context = context;
     }
 
-    public boolean add(Class<?> cls, ListenerManager register) {
+    public boolean add(Class<?> cls, BeanEventManager register) {
         /** 如果没有实现 {@linkplain BeanBuilder} 接口 **/
         if (!BeanBuilder.class.isAssignableFrom(cls)) {
             return false;

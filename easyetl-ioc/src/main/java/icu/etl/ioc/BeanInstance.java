@@ -1,9 +1,12 @@
 package icu.etl.ioc;
 
+/**
+ * 组件实例接口
+ */
 public interface BeanInstance {
 
     /**
-     * 返回单例对象
+     * 返回实例对象
      *
      * @param <E> 类信息
      * @return 单例对象
@@ -11,9 +14,9 @@ public interface BeanInstance {
     <E> E getBean();
 
     /**
-     * 保存单例对象
+     * 保存实例对象
      *
-     * @param bean 单例对象
+     * @param bean 实例对象
      */
     void setBean(Object bean);
 

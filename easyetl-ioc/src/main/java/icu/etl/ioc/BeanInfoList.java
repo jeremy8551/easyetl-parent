@@ -94,7 +94,7 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
         return list;
     }
 
-    public BeanInfoList indexOf(BeanFilter filter) {
+    public BeanInfoList indexOf(BeanInfoFilter filter) {
         BeanInfoList list = new BeanInfoList(this.type);
         for (int i = 0, size = this.size(); i < size; i++) {
             BeanInfoRegister beanInfo = this.get(i);

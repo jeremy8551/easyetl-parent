@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -30,7 +30,7 @@ public class ZipUtils {
      * @param delete       true表示文件全部压缩成功后自动删除 {@code fileOrDir}
      * @throws IOException
      */
-    public static void compress(EasyetlContext context, File fileOrDir, File compressFile, String charsetName, boolean delete) throws IOException {
+    public static void compress(EasyContext context, File fileOrDir, File compressFile, String charsetName, boolean delete) throws IOException {
         Compress compress = context.getBean(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
         try {
             compress.setFile(compressFile);
@@ -68,7 +68,7 @@ public class ZipUtils {
      * @param delete      true表示全部文件解压成功后自动删除压缩文件参数file
      * @throws IOException
      */
-    public static void uncompress(EasyetlContext context, File file, File dir, String charsetName, boolean delete) throws IOException {
+    public static void uncompress(EasyContext context, File file, File dir, String charsetName, boolean delete) throws IOException {
         Compress compress = context.getBean(Compress.class, FileUtils.getFilenameSuffix(file.getName()));
         try {
             compress.setFile(file);

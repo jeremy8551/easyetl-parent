@@ -23,18 +23,18 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Bea
     private Map<String, NationalHolidaySet> map;
 
     /** 容器上下文信息 */
-    private EasyetlContext context;
+    private EasyContext context;
 
     /**
      * 初始化
      */
-    public NationalHolidayBuilder(EasyetlContext context) {
+    public NationalHolidayBuilder(EasyContext context) {
         this.context = context;
         this.map = new HashMap<String, NationalHolidaySet>();
         this.addAll(context);
     }
 
-    public void addAll(EasyetlContext context) {
+    public void addAll(EasyContext context) {
         List<BeanInfo> list = context.getBeanInfoList(NationalHoliday.class);
         for (BeanInfo beanInfo : list) {
             this.add(context, beanInfo);
@@ -47,7 +47,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Bea
      * @param context  容器上下文信息
      * @param beanInfo 组件信息
      */
-    protected synchronized void add(EasyetlContext context, BeanInfo beanInfo) {
+    protected synchronized void add(EasyContext context, BeanInfo beanInfo) {
         if (NationalHoliday.class.isAssignableFrom(beanInfo.getType())) {
             String key = beanInfo.getName(); // zh, zh_CN, ch_CN_POSIX
 
@@ -64,7 +64,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Bea
         }
     }
 
-    public NationalHoliday getBean(EasyetlContext context, Object... args) throws Exception {
+    public NationalHoliday getBean(EasyContext context, Object... args) throws Exception {
         // 使用当前默认国家语言信息
         if (args.length == 0) {
             return this.map.get(this.toKey(Locale.getDefault()));

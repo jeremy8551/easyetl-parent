@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 import javax.script.ScriptEngineFactory;
 
-import icu.etl.ioc.AnnotationEasyetlContext;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
@@ -31,7 +31,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     protected UniversalScriptConfiguration config;
 
     /** 容器的上下文信息 */
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     /**
      * 初始化
@@ -48,7 +48,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      *
      * @param context 容器上下文信息
      */
-    public UniversalScriptEngineFactory(EasyetlContext context) {
+    public UniversalScriptEngineFactory(EasyContext context) {
         this();
         this.setContext(context);
     }
@@ -58,7 +58,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      *
      * @param context 容器上下文信息
      */
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         if (context == null) {
             throw new NullPointerException();
         }
@@ -70,9 +70,9 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      *
      * @return 容器上下文信息
      */
-    public EasyetlContext getContext() {
+    public EasyContext getContext() {
         if (this.context == null) {
-            this.context = new AnnotationEasyetlContext();
+            this.context = new EasyBeanContext();
         }
         return this.context;
     }

@@ -6,13 +6,13 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
 import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.Codepage;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Attribute;
 import icu.etl.util.StringUtils;
 
 /**
- * 从容器上下文信息 {@linkplain EasyetlContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象 <br>
+ * 从容器上下文信息 {@linkplain EasyContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象 <br>
  * 第一参数必须是 {@linkplain TextTableFile} <br>
  * 第二个参数必须是文件类型 <br>
  * 第三个参数必须是 {@linkplain Attribute} 对象的引用，属性集合中可以设置 charset，codepage，chardel，rowdel，coldel，escape，column，colname
@@ -23,7 +23,7 @@ import icu.etl.util.StringUtils;
 public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
 
     @SuppressWarnings("unchecked")
-    public TextTableFile getBean(EasyetlContext context, Object... args) throws Exception {
+    public TextTableFile getBean(EasyContext context, Object... args) throws Exception {
         // 查询参数中一定要有文件类型
         String name = ArrayUtils.indexOf(args, String.class, 0);
         if (StringUtils.isBlank(name)) {
@@ -47,7 +47,7 @@ public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
         return file;
     }
 
-    public void setProperty(EasyetlContext context, TextTableFile file, Attribute<String> attribute) {
+    public void setProperty(EasyContext context, TextTableFile file, Attribute<String> attribute) {
         if (attribute.contains("charset") && attribute.contains("codepage")) {
             throw new IllegalArgumentException();
         } else if (attribute.contains("charset")) {

@@ -7,13 +7,13 @@ import java.util.List;
  * @author jeremy8551@qq.com
  * @createtime 2023/10/26
  */
-public class ListenerManager {
+public class BeanEventManager {
 
-    private EasyetlContext context;
+    private EasyContext context;
 
     private final List<BeanEventListener> list;
 
-    public ListenerManager(EasyetlContext context) {
+    public BeanEventManager(EasyContext context) {
         this.list = new ArrayList<BeanEventListener>();
         this.context = context;
     }
@@ -24,13 +24,13 @@ public class ListenerManager {
 
     public void addBeanEvent(BeanInfoRegister beanInfo) {
         for (BeanEventListener listener : this.list) {
-            listener.addBean(new StandardBeanEvent(this.context, beanInfo));
+            listener.addBean(new BeanEventImpl(this.context, beanInfo));
         }
     }
 
     public void removeBeanEvent(BeanInfoRegister beanInfo) {
         for (BeanEventListener listener : this.list) {
-            listener.removeBean(new StandardBeanEvent(this.context, beanInfo));
+            listener.removeBean(new BeanEventImpl(this.context, beanInfo));
         }
     }
 

@@ -8,7 +8,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import icu.etl.TestEnv;
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.os.OS;
 import icu.etl.os.OSUser;
 import icu.etl.util.ClassUtils;
@@ -22,7 +22,7 @@ public class 测试脚本引擎装载数据功能 {
 
     public static void main(String[] args) throws ScriptException, IOException {
         Class<?> cls = 测试脚本引擎装载数据功能.class;
-        AnnotationEasyetlContext cxt = new AnnotationEasyetlContext();
+        EasyBeanContext cxt = new EasyBeanContext();
 
         // 新文件
         OS os = cxt.getBean(OS.class);

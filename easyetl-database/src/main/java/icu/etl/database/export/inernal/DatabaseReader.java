@@ -17,8 +17,8 @@ import icu.etl.database.export.ExtractReader;
 import icu.etl.database.export.ExtracterContext;
 import icu.etl.database.export.converter.AbstractConverter;
 import icu.etl.io.TextTable;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.printer.Progress;
 import icu.etl.util.CharTable;
 import icu.etl.util.FileUtils;
@@ -26,7 +26,7 @@ import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
-public class DatabaseReader implements ExtractReader, EasyetlContextAware {
+public class DatabaseReader implements ExtractReader, EasyContextAware {
 
     /** 数据库操作类 */
     private JdbcDao dao;
@@ -59,9 +59,9 @@ public class DatabaseReader implements ExtractReader, EasyetlContextAware {
     private String[] values;
 
     /** 容器上下文信息 */
-    protected EasyetlContext context;
+    protected EasyContext context;
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 

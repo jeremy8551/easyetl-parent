@@ -10,7 +10,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
  */
-public class AnnotationBeanInfo implements BeanInfoRegister {
+public class EasyBeanInfo implements BeanInfoRegister {
 
     /** 组件类 */
     protected Class<?> type;
@@ -34,7 +34,7 @@ public class AnnotationBeanInfo implements BeanInfoRegister {
      *
      * @param type 组件类信息
      */
-    public AnnotationBeanInfo(Class<?> type) {
+    public EasyBeanInfo(Class<?> type) {
         if (type == null) {
             throw new NullPointerException();
         }
@@ -43,14 +43,14 @@ public class AnnotationBeanInfo implements BeanInfoRegister {
         this.instance = null;
         EasyBean annotation = type.getAnnotation(EasyBean.class); // 取得类上配置的注解
         if (annotation != null) {
-            this.singleton = annotation.singleton();
             this.name = StringUtils.trimBlank(annotation.name());
+            this.singleton = annotation.singleton();
             this.order = annotation.level();
             this.lazy = annotation.lazy();
             this.description = annotation.description();
         } else {
-            this.singleton = false;
             this.name = "";
+            this.singleton = false;
             this.order = 0;
             this.lazy = true;
             this.description = "";

@@ -3,12 +3,12 @@ package icu.etl.io;
 import java.io.IOException;
 import java.io.Writer;
 
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 
 /**
  * 表格型数据文件接口 <br>
  * <br>
- * 从容器上下文 {@linkplain EasyetlContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象
+ * 从容器上下文 {@linkplain EasyContext} 中返回一个 {@linkplain TextTableFile} 表格型文件对象
  *
  * @author jeremy8551@qq.com
  * @createtime 2011-07-18

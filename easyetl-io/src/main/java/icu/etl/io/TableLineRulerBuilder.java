@@ -4,13 +4,13 @@ import java.util.List;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.StringUtils;
 
 @EasyBean
 public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
 
-    public TableLineRuler getBean(EasyetlContext context, Object... args) throws Exception {
+    public TableLineRuler getBean(EasyContext context, Object... args) throws Exception {
         TextTable file = this.indexOf(args, TextTable.class, 0);
         if (file != null) {
             String coldel = file.getDelimiter();

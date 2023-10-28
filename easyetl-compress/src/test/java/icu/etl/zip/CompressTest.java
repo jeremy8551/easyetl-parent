@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import icu.apache.ant.zip.ZipEntry;
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 import org.junit.Assert;
@@ -32,7 +32,7 @@ public class CompressTest {
     @Test
     public void test() throws IOException {
         File file = this.createfile("txt.tar.gz");
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         Compress compress = context.getBean(Compress.class, file);
         Assert.assertEquals(GzipCompress.class, compress.getClass());
     }
@@ -40,7 +40,7 @@ public class CompressTest {
     @Test
     public void test1() throws IOException {
         File file = this.createfile("tar.rar");
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         Compress compress = context.getBean(Compress.class, file);
         Assert.assertEquals(RarCompress.class, compress.getClass());
     }
@@ -48,7 +48,7 @@ public class CompressTest {
     @Test
     public void test2() throws IOException {
         File file = this.createfile("tar");
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         Compress compress = context.getBean(Compress.class, file);
         Assert.assertEquals(TarCompress.class, compress.getClass());
     }
@@ -56,7 +56,7 @@ public class CompressTest {
     @Test
     public void test3() throws IOException {
         File file = this.createfile("zip");
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         Compress compress = context.getBean(Compress.class, file);
         Assert.assertEquals(ZipCompress.class, compress.getClass());
     }
@@ -70,7 +70,7 @@ public class CompressTest {
     public void test4() throws IOException {
         String ext = "gz";
 
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         File compressfile = this.createfile(ext); // 压缩文件
 
         File f1 = new File(compressfile.getParentFile(), "t1.txt");
@@ -127,7 +127,7 @@ public class CompressTest {
     public void test6() throws IOException {
         String ext = "zip";
 
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         File compressfile = this.createfile(ext); // 压缩文件
 
         File f1 = new File(compressfile.getParentFile(), "t1.txt");
@@ -192,7 +192,7 @@ public class CompressTest {
     }
 
     private void testcompress(String ext) throws IOException {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
 
         File compressfile = this.createfile(ext); // 压缩文件
 

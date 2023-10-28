@@ -13,7 +13,7 @@ import icu.etl.database.DatabaseException;
 import icu.etl.database.Jdbc;
 import icu.etl.database.internal.StandardDatabaseConfiguration;
 import icu.etl.io.OutputStreamLogger;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.log.STD;
 import icu.etl.os.OSAccount;
 import icu.etl.util.ClassUtils;
@@ -55,14 +55,14 @@ public class Pool implements Closeable {
     private TimeWatch watch;
 
     /** 容器上下文信息 */
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     /**
      * 初始化
      *
      * @context 容器上下文信息
      */
-    public Pool(EasyetlContext context) {
+    public Pool(EasyContext context) {
         super();
         if (context == null) {
             throw new NullPointerException();
@@ -77,7 +77,7 @@ public class Pool implements Closeable {
         this.timeout = 0;
     }
 
-    public EasyetlContext getContext() {
+    public EasyContext getContext() {
         return context;
     }
 

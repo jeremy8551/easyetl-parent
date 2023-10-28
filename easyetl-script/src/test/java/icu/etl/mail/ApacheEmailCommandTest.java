@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import icu.etl.TestEnv;
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
@@ -17,7 +17,7 @@ public class ApacheEmailCommandTest {
 
     @Test
     public void test1() throws IOException {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
 //		LogFactory.setLoggerLevel("info");
         ApacheEmailCommand cmd = new ApacheEmailCommand();
         cmd.setHost(TestEnv.getMailHost());
@@ -47,7 +47,7 @@ public class ApacheEmailCommandTest {
 
     //	@Test
     public void test3() throws IOException {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
 //		LogFactory.setLoggerLevel("info");
         ApacheEmailCommand cmd = new ApacheEmailCommand();
         cmd.setHost(TestEnv.getMailHost());

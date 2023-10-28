@@ -9,7 +9,7 @@ import java.util.List;
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.expression.LoginExpression;
 import icu.etl.expression.WordIterator;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.mail.MailFile;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
@@ -63,7 +63,7 @@ public class EmailSendCommandCompiler extends AbstractTraceCommandCompiler {
         String sender = attrs.getAttribute("sender"); // 发送地址
         String charsetName = attrs.getAttribute("charset"); // 邮件服务器字符集
         String content = FileUtils.readline(new File(filepath), charsetName, 0); // 正文
-        EasyetlContext ioccxt = context.getFactory().getContext();
+        EasyContext ioccxt = context.getFactory().getContext();
 
         // 附件
         String[] attaches = StringUtils.split(attrs.getAttribute("attach"), ',');

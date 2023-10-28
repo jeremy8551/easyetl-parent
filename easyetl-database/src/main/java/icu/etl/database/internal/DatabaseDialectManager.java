@@ -7,13 +7,13 @@ import java.util.Set;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DB;
 import icu.etl.database.DatabaseDialect;
-import icu.etl.ioc.AnnotationBeanInfo;
-import icu.etl.ioc.BeanFilter;
+import icu.etl.ioc.EasyBeanInfo;
+import icu.etl.ioc.BeanInfoFilter;
 import icu.etl.ioc.BeanInfo;
 import icu.etl.ioc.BeanInfoList;
 import icu.etl.ioc.BeanInfoRegister;
 import icu.etl.ioc.BeanInstance;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -25,7 +25,7 @@ public class DatabaseDialectManager {
 
     private CaseSensitivMap<BeanInfoList> map;
 
-    public static class DialectInfo extends AnnotationBeanInfo {
+    public static class DialectInfo extends EasyBeanInfo {
         String major;
         String minor;
 
@@ -64,7 +64,7 @@ public class DatabaseDialectManager {
         }
     }
 
-    public DatabaseDialectManager(EasyetlContext context, List<BeanInfo> list) {
+    public DatabaseDialectManager(EasyContext context, List<BeanInfo> list) {
         this.map = new CaseSensitivMap<BeanInfoList>();
         for (BeanInfo beanInfo : list) {
             this.add(context, beanInfo);
@@ -90,7 +90,7 @@ public class DatabaseDialectManager {
         throw new UnsupportedOperationException(ResourcesUtils.getDatabaseMessage(5, str));
     }
 
-    public synchronized void add(EasyetlContext context, BeanInfo beanInfo) {
+    public synchronized void add(EasyContext context, BeanInfo beanInfo) {
         BeanInfoList list = this.map.get(beanInfo.getName());
         if (list == null) {
             list = new BeanInfoList(DatabaseDialect.class);
@@ -126,7 +126,7 @@ public class DatabaseDialectManager {
 
         // 如果查询条件包含版本号，则根据版本号进行过滤
         if (StringUtils.isNotBlank(major) || StringUtils.isNotBlank(minor)) {
-            BeanInfoList buffer = list.indexOf(new BeanFilter() {
+            BeanInfoList buffer = list.indexOf(new BeanInfoFilter() {
                 public boolean accept(BeanInfoRegister beanInfo) {
                     DialectInfo dialectInfo = (DialectInfo) beanInfo;
                     return dialectInfo.major.equals(major) && dialectInfo.minor.equals(minor);
@@ -140,7 +140,7 @@ public class DatabaseDialectManager {
         }
 
         // 如果没有与数据库版本匹配的方言类，则取版本号为空的作为默认
-        BeanInfoRegister beanInfo = list.indexOf(new BeanFilter() {
+        BeanInfoRegister beanInfo = list.indexOf(new BeanInfoFilter() {
             public boolean accept(BeanInfoRegister beanInfo) {
                 DialectInfo dialectInfo = (DialectInfo) beanInfo;
                 return dialectInfo.major.equals("") && dialectInfo.minor.equals("");

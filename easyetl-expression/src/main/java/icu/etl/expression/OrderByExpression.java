@@ -3,7 +3,7 @@ package icu.etl.expression;
 import java.util.Comparator;
 import java.util.List;
 
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.StringComparator;
 import icu.etl.util.StringUtils;
 
@@ -18,7 +18,7 @@ public class OrderByExpression {
     private int position;
     private Comparator<String> comparator;
     private boolean asc;
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     /**
      * 排序字段表达式
@@ -34,7 +34,7 @@ public class OrderByExpression {
      *                   false表示倒序
      */
     @SuppressWarnings("unchecked")
-    public OrderByExpression(EasyetlContext context, Analysis analysis, String expression, boolean asc) {
+    public OrderByExpression(EasyContext context, Analysis analysis, String expression, boolean asc) {
         if (context == null) {
             throw new NullPointerException();
         }

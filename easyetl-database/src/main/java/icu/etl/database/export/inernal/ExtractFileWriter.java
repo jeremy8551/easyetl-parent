@@ -12,13 +12,13 @@ import icu.etl.database.export.ExtracterContext;
 import icu.etl.io.TableLine;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBean(name = "local", description = "卸载数据到本地文件")
-public class ExtractFileWriter implements ExtractWriter, EasyetlContextAware {
+public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
 
     /** 文件路径 */
     private String filepath;
@@ -53,9 +53,9 @@ public class ExtractFileWriter implements ExtractWriter, EasyetlContextAware {
     /** 消息信息 */
     private ExtractMessage message;
 
-    protected EasyetlContext ioccxt;
+    protected EasyContext ioccxt;
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.ioccxt = context;
     }
 

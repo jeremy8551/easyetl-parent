@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import icu.etl.collection.ByteBuffer;
-import icu.etl.ioc.AnnotationBeanInfo;
-import icu.etl.ioc.AnnotationEasyetlContext;
+import icu.etl.ioc.EasyBeanInfo;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Dates;
@@ -21,7 +21,7 @@ public class NationalHolidaysTest {
 
     @Test
     public void test() throws IOException {
-        AnnotationEasyetlContext context = new AnnotationEasyetlContext();
+        EasyBeanContext context = new EasyBeanContext();
         File javadir = FileUtils.getTempDir(NationalHolidaysTest.class);
         Ensure.isTrue(FileUtils.createDirectory(javadir));
 
@@ -36,7 +36,7 @@ public class NationalHolidaysTest {
         javafile.delete();
         Ensure.isTrue(FileUtils.write(javafile, StringUtils.CHARSET, false, source), source);
 
-        String classesDir = ClassUtils.getClasspath(AnnotationEasyetlContext.class);
+        String classesDir = ClassUtils.getClasspath(EasyBeanContext.class);
         System.out.println("class dir: " + classesDir);
 
         String testClassesDir = ClassUtils.getClasspath(NationalHolidaysTest.class);
@@ -71,7 +71,7 @@ public class NationalHolidaysTest {
         String fullName = NationalHolidaysTest.class.getPackage().getName() + "." + className;
         Class<? extends NationalHoliday> cls = ClassUtils.loadClass(fullName);
 
-        Assert.assertTrue(context.addBean(new AnnotationBeanInfo(cls)));
+        Assert.assertTrue(context.addBean(new EasyBeanInfo(cls)));
         Assert.assertTrue(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
         Assert.assertFalse(bean.getRestDays().contains(Dates.parse("2021-12-24")));
     }

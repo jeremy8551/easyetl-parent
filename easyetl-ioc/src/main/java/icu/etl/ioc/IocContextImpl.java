@@ -4,26 +4,26 @@ import java.util.Objects;
 
 import icu.etl.util.ResourcesUtils;
 
-public class EasyetlIocImpl implements EasyetlIoc {
+public class IocContextImpl implements IocContext {
 
     /** 上下文信息 */
-    private AnnotationEasyetlContext context;
+    private EasyBeanContext context;
 
     /**
      * 初始化
      *
      * @param context 容器上下文信息
      */
-    public EasyetlIocImpl(AnnotationEasyetlContext context) {
+    public IocContextImpl(EasyBeanContext context) {
         this.context = Objects.requireNonNull(context);
     }
 
     public String getName() {
-        return EasyetlIoc.class.getSimpleName();
+        return IocContext.class.getSimpleName();
     }
 
     @SuppressWarnings("unchecked")
-    public <E> E getBean(Class<?> type, Object[] args) {
+    public <E> E getBean(Class<E> type, Object... args) {
         // 优先使用接口工厂生成实例对象
         BeanBuilder<?> factory = this.context.getBeanBuilder(type);
         if (factory != null) {

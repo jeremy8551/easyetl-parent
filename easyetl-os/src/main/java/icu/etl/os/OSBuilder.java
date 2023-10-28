@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.os.linux.LinuxLocalOS;
 import icu.etl.os.linux.LinuxRemoteOS;
 import icu.etl.os.macos.MacOS;
@@ -32,7 +32,7 @@ public class OSBuilder implements BeanBuilder<OS> {
      *             参数为空时，返回本地操作系统的接口
      * @return 实例对象
      */
-    public OS getBean(EasyetlContext context, Object... args) throws Exception {
+    public OS getBean(EasyContext context, Object... args) throws Exception {
         String host = null, username = null, password = null; // 服务器host 用户名 密码
         int port = -1; // 访问端口号
 

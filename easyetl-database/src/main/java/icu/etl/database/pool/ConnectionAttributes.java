@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import icu.etl.database.DatabaseDialect;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.STD;
 
@@ -38,14 +38,14 @@ public class ConnectionAttributes implements Cloneable {
     private boolean hasClientInfo;
     private boolean hasTypeMap;
 
-    private EasyetlContext context;
+    private EasyContext context;
 
     private ConnectionAttributes() {
         this.types = new HashMap<String, Class<?>>();
         this.clientInfo = new Properties();
     }
 
-    public ConnectionAttributes(EasyetlContext context, Connection conn) {
+    public ConnectionAttributes(EasyContext context, Connection conn) {
         this();
 
         if (context == null) {

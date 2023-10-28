@@ -14,19 +14,19 @@ import icu.etl.database.load.LoadTable;
 import icu.etl.database.load.Loader;
 import icu.etl.database.load.inernal.DataWriterFactory;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBean(name = "replace")
-public class ParallelLoadFileEngine implements Loader, EasyetlContextAware {
+public class ParallelLoadFileEngine implements Loader, EasyContextAware {
 
     /** 上下文信息 */
     private LoadEngineContext context;
 
     /** 容器上下文信息 */
-    protected EasyetlContext ioccxt;
+    protected EasyContext ioccxt;
 
     /**
      * 初始化
@@ -35,7 +35,7 @@ public class ParallelLoadFileEngine implements Loader, EasyetlContextAware {
         super();
     }
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.ioccxt = context;
     }
 

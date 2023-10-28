@@ -12,7 +12,7 @@ import icu.etl.database.export.ExtracterContext;
 import icu.etl.database.export.UserListener;
 import icu.etl.database.internal.StandardJdbcConverterMapper;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -176,12 +176,12 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
     private class UserListenerList extends ArrayList<UserListener> {
         private final static long serialVersionUID = 1L;
 
-        public UserListenerList(EasyetlContext context, String listeners) {
+        public UserListenerList(EasyContext context, String listeners) {
             super();
             this.parse(context, listeners);
         }
 
-        public void parse(EasyetlContext context, String listeners) {
+        public void parse(EasyContext context, String listeners) {
             String[] array = StringUtils.split(StringUtils.trimBlank(listeners), ',');
             for (String className : array) {
                 if (StringUtils.isNotBlank(className)) {

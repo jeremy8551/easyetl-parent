@@ -11,7 +11,7 @@ import icu.etl.database.export.inernal.SftpFileWriter;
 import icu.etl.expression.LoginExpression;
 import icu.etl.expression.StandardAnalysis;
 import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.StringUtils;
 
@@ -24,7 +24,7 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class ExtractWriterBuilder implements BeanBuilder<ExtractWriter> {
 
-    public ExtractWriter getBean(EasyetlContext context, Object... args) throws IOException, SQLException {
+    public ExtractWriter getBean(EasyContext context, Object... args) throws IOException, SQLException {
         ExtracterContext cxt = ArrayUtils.indexOf(args, ExtracterContext.class, 0);
         ExtractMessage message = ArrayUtils.indexOf(args, ExtractMessage.class, 0);
         String target = StringUtils.trimBlank(cxt.getTarget());

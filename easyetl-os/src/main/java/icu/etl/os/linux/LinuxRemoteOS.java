@@ -15,8 +15,8 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.expression.DataUnitExpression;
 import icu.etl.io.BufferedLineReader;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.os.OS;
 import icu.etl.os.OSCommand;
 import icu.etl.os.OSCommandStdouts;
@@ -53,7 +53,7 @@ import icu.etl.util.StringUtils;
  * 远程 linux 操作系统的接口实现类
  */
 @EasyBean(name = "linux")
-public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwork, EasyetlContextAware {
+public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwork, EasyContextAware {
 
     protected OSSecureShellCommand cmd;
     protected OSFtpCommand sftp;
@@ -70,7 +70,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
     protected List<OSUserGroup> groups = new ArrayList<OSUserGroup>();
     protected List<LinuxEtcService> services = new ArrayList<LinuxEtcService>();
 
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     /**
      * 初始化
@@ -84,7 +84,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
         Ensure.isTrue(this.connect(host, port, username, password), host, port, username, password);
     }
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 

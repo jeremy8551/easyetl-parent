@@ -16,7 +16,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2023/10/5
  */
-public class EasyetlContextInit {
+public class EasyContextInit {
 
     /**
      * 扫描参数
@@ -34,7 +34,7 @@ public class EasyetlContextInit {
     /**
      * 初始化
      */
-    public EasyetlContextInit(ClassLoader classLoader, String[] args) {
+    public EasyContextInit(ClassLoader classLoader, String[] args) {
         this.classLoader = (classLoader == null) ? ClassUtils.getDefaultClassLoader() : classLoader;
         this.args = args;
         this.initLog(args);

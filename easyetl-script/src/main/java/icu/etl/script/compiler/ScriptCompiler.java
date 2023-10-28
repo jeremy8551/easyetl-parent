@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -50,12 +50,12 @@ public class ScriptCompiler implements UniversalScriptCompiler {
     protected long startLineNumber;
 
     /** 容器上下文信息 */
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     /**
      * 初始化
      */
-    public ScriptCompiler(EasyetlContext context) {
+    public ScriptCompiler(EasyContext context) {
         this.context = context;
         this.cache = new PriorityQueue<UniversalScriptCommand>(10, new Comparator<UniversalScriptCommand>() {
             public int compare(UniversalScriptCommand o1, UniversalScriptCommand o2) {

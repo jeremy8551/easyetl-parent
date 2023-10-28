@@ -61,8 +61,8 @@ import icu.etl.database.internal.StandardJdbcConverterMapper;
 import icu.etl.database.pool.PoolConnection;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.io.ClobWriter;
-import icu.etl.ioc.EasyetlContext;
-import icu.etl.ioc.EasyetlContextAware;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.log.STD;
 import icu.etl.os.OS;
 import icu.etl.os.OSAccount;
@@ -83,7 +83,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  */
 @EasyBean(name = "db2")
-public class DB2Dialect extends AbstractDialect implements DatabaseDialect, EasyetlContextAware {
+public class DB2Dialect extends AbstractDialect implements DatabaseDialect, EasyContextAware {
 
     /** 进程编号名 */
     public final static String APPLICATION_ID = "applicationId";
@@ -96,7 +96,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
 
     protected StandardJdbcConverterMapper map;
 
-    protected EasyetlContext context;
+    protected EasyContext context;
 
     public DB2Dialect() {
         super();
@@ -450,7 +450,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         this.keyword.add("YEARS");
     }
 
-    public void setContext(EasyetlContext context) {
+    public void setContext(EasyContext context) {
         this.context = context;
     }
 

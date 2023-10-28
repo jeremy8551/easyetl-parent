@@ -18,7 +18,7 @@ import javax.sql.RowSetReader;
 
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.internal.StandardRowSetInternal;
-import icu.etl.ioc.EasyetlContext;
+import icu.etl.ioc.EasyContext;
 import icu.etl.log.STD;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.time.Timer;
@@ -53,14 +53,14 @@ public class JdbcDao implements OSConnectCommand {
     private Properties attributes;
 
     /** 容器上下文信息 */
-    private EasyetlContext context;
+    private EasyContext context;
 
     /**
      * 初始化
      *
      * @param context 容器上下文信息
      */
-    public JdbcDao(EasyetlContext context) {
+    public JdbcDao(EasyContext context) {
         if (context == null) {
             throw new NullPointerException();
         }
@@ -77,7 +77,7 @@ public class JdbcDao implements OSConnectCommand {
      * @param context 容器上下文信息
      * @param conn    数据库连接
      */
-    public JdbcDao(EasyetlContext context, Connection conn) {
+    public JdbcDao(EasyContext context, Connection conn) {
         this(context);
         this.setConnection(conn, true);
     }
@@ -89,7 +89,7 @@ public class JdbcDao implements OSConnectCommand {
      * @param conn      数据库连接
      * @param autoClose true 表示执行 {@link #close()} 方法时关闭数据库连接
      */
-    public JdbcDao(EasyetlContext context, Connection conn, boolean autoClose) {
+    public JdbcDao(EasyContext context, Connection conn, boolean autoClose) {
         this(context);
         this.setConnection(conn, autoClose);
     }

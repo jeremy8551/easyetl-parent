@@ -14,12 +14,12 @@ import java.util.Set;
  */
 public class BeanInfoManager {
 
-    private EasyetlContext context;
+    private EasyContext context;
 
     /** 组件（接口或类）与实现类的映射关系 */
     private final LinkedHashMap<Class<?>, BeanInfoList> map;
 
-    public BeanInfoManager(EasyetlContext context) {
+    public BeanInfoManager(EasyContext context) {
         this.map = new LinkedHashMap<Class<?>, BeanInfoList>(50);
         this.context = context;
     }

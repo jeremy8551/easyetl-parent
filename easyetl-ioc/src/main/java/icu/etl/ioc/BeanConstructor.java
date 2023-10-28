@@ -2,152 +2,90 @@ package icu.etl.ioc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
-import icu.etl.util.ClassUtils;
-import icu.etl.util.ResourcesUtils;
-
 /**
+ * 组件的构造方法
+ *
  * @author jeremy8551@qq.com
  * @createtime 2023/10/26
  */
 public class BeanConstructor {
 
-    private EasyetlContext context;
+    private List<Constructor<?>> list;
 
-    public BeanConstructor(EasyetlContext context) {
-        this.context = context;
+    private BeanArgument argument;
+
+    private Constructor<?> argsConstrucetor;
+
+    private Constructor<?> baseConstructor;
+
+    public BeanConstructor(Class<?> type, BeanArgument argument) {
+        Constructor<?>[] array = type.getConstructors();
+        this.list = new ArrayList<Constructor<?>>(array.length);
+        this.argument = argument;
+        this.parse(array);
     }
 
-    public <E> E newInstance(Class<?> type, Object... args) {
-        if (Modifier.isAbstract(type.getModifiers())) { // 不能是接口或抽象类
-            throw new UnsupportedOperationException(ResourcesUtils.getIocMessage(4, type.getName()));
-        }
+    protected void parse(Constructor<?>[] array) {
+        for (Constructor<?> c : array) {
+            // 必须是public修饰的构造方法
+            if (c.getModifiers() != Modifier.PUBLIC) {
+                continue;
+            }
 
-        BeanArgument argument = new BeanArgument("", args);
-        E obj = this.create(type, argument);
+            // 无参构造方法
+            Class<?>[] types = c.getParameterTypes(); // 构造方法的参数类信息
+            if (types.length == 0) {
+                this.baseConstructor = c;
+                continue;
+            }
 
-        // 自动注入容器上下文信息 TODO 改成反射注入
-        if (obj instanceof EasyetlContextAware) {
-            ((EasyetlContextAware) obj).setContext(this.context);
+            // 外部参数与构造方法中的参数匹配
+            if (types.length == this.argument.size()) {
+                if (this.match(types)) {
+                    this.argsConstrucetor = c;
+                } else {
+                    this.list.add(0, c); // 参数个数匹配的优先级高
+                }
+                continue;
+            }
+
+            this.list.add(c);
         }
-        return obj;
     }
 
-    @SuppressWarnings("unchecked")
-    protected <E> E create(Class<?> type, BeanArgument argument) {
-        BeanConstructorSet set = new BeanConstructorSet(type, argument);
-
-        // 优先使用参数匹配的构造方法
-        if (set.getMatchConstructor() != null) {
-            if (Ioc.out.isDebugEnabled()) {
-                Ioc.out.debug(ResourcesUtils.getIocMessage(1, type.getName(), set.getMatchConstructor().toGenericString()));
-            }
-
-            try {
-                return (E) set.getMatchConstructor().newInstance(argument.getArgs());
-            } catch (Throwable e) {
-                if (Ioc.out.isDebugEnabled()) {
-                    Ioc.out.debug(ResourcesUtils.getIocMessage(2, type.getName(), set.getMatchConstructor().toGenericString()), e);
-                }
-            }
-        }
-
-        // 使用无参构造方法
-        if (set.getBaseConstructor() != null) {
-            if (Ioc.out.isDebugEnabled()) {
-                Ioc.out.debug(ResourcesUtils.getIocMessage(1, type.getName(), set.getBaseConstructor().toGenericString()));
-            }
-
-            try {
-                return (E) set.getBaseConstructor().newInstance();
-            } catch (Throwable e) {
-                if (Ioc.out.isDebugEnabled()) {
-                    Ioc.out.debug(ResourcesUtils.getIocMessage(2, type.getName(), set.getBaseConstructor().toGenericString()), e);
-                }
-            }
-        }
-
-        // 使用其他构造方法
-        List<Constructor<?>> others = set.getConstructors();
-        for (Constructor<?> c : others) {
-            if (Ioc.out.isDebugEnabled()) {
-                Ioc.out.debug(ResourcesUtils.getIocMessage(1, type.getName(), c.toGenericString()));
-            }
-
-            Object[] parameters = this.toArgs(c.getParameterTypes(), argument.getArgs());
-            try {
-                return (E) c.newInstance(parameters);
-            } catch (Throwable e) {
-                if (Ioc.out.isDebugEnabled()) {
-                    Ioc.out.debug(ResourcesUtils.getIocMessage(2, type.getName(), c.toGenericString()), e);
-                }
-            }
-        }
-
-        throw new UnsupportedOperationException(ResourcesUtils.getIocMessage(3, type.getName()));
-    }
-
-    /**
-     * TODO 需要优化，防止循环bean，从外部参数数组中取参数值
-     *
-     * @param types 构造方法的参数类型
-     * @param args  外部参数数组
-     * @return 构造方法参数数组
-     */
-    protected Object[] toArgs(Class<?>[] types, Object[] args) {
-        Object[] array = new Object[types.length]; // 构造方法的参数值
+    protected boolean match(Class<?>[] types) {
         for (int i = 0; i < types.length; i++) {
-            if (ClassUtils.equals(EasyetlContext.class, types[i])) { // 通过构造方法注入容器上下文信息
-                array[i] = this.context;
+            Class<?> type = types[i]; // 方法中定义的参数类型
+            if (type == null) {
                 continue;
             }
 
-            // 基础类型不能为null，设置默认值
-            String name = types[i].getName();
-            if (name.equals("int")) {
-                array[i] = 0;
+            // 方法中的参数值
+            Object value = this.argument.get(i);
+            if (value == null) {
                 continue;
             }
 
-            if (name.equals("long")) {
-                array[i] = 0;
-                continue;
+            if (!type.isAssignableFrom(value.getClass())) {
+                return false;
             }
-
-            if (name.equals("float")) {
-                array[i] = 0;
-                continue;
-            }
-
-            if (name.equals("double")) {
-                array[i] = 0;
-                continue;
-            }
-
-            if (name.equals("boolean")) {
-                array[i] = false;
-                continue;
-            }
-
-            if (name.equals("byte")) {
-                array[i] = (byte) 0;
-                continue;
-            }
-
-            if (name.equals("char")) {
-                array[i] = ' ';
-                continue;
-            }
-
-            if (name.equals("short")) {
-                array[i] = (short) 0;
-                continue;
-            }
-
-            array[i] = this.context.getBean(types[i], args);
         }
-        return array;
+        return true;
+    }
+
+    public Constructor<?> getMatchConstructor() {
+        return argsConstrucetor;
+    }
+
+    public Constructor<?> getBaseConstructor() {
+        return baseConstructor;
+    }
+
+    public List<Constructor<?>> getConstructors() {
+        return list;
     }
 
 }

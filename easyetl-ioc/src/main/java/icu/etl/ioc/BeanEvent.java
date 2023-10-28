@@ -13,7 +13,7 @@ public interface BeanEvent {
      *
      * @return 容器上下文信息
      */
-    EasyetlContext getContext();
+    EasyContext getContext();
 
     /**
      * 此时事件相关的实现类信息
