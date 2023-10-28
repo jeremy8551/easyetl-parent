@@ -12,14 +12,10 @@ import icu.etl.util.StringUtils;
  */
 public class ExpressionParameter implements Parameter {
 
-    /**
-     * 表示obj对象的类型
-     */
+    /** 表示obj对象的类型 */
     protected int type;
 
-    /**
-     * 结果对象
-     */
+    /** 结果对象 */
     protected Object value;
 
     /**
@@ -147,20 +143,6 @@ public class ExpressionParameter implements Parameter {
 
     public Date dateValue() {
         return (Date) this.value;
-    }
-
-    /**
-     * 如果 value 是布尔表达式，则对 value 取反并返回true<br>
-     * 如果 value 不是布尔表达式，则返回 false
-     */
-    public boolean reverseBoolean() {
-        if (this.value instanceof Boolean) {
-            Boolean value = (Boolean) this.value;
-            this.value = new Boolean(!value.booleanValue());
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public Object value() {

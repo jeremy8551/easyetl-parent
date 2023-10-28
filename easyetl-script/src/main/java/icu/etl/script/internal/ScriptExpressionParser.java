@@ -11,7 +11,6 @@ import icu.etl.expression.parameter.ExpressionParameter;
 import icu.etl.expression.parameter.Parameter;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
-import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptCompiler;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptException;
@@ -31,6 +30,11 @@ import icu.etl.util.StringUtils;
  * @createtime 2020-12-08
  */
 public class ScriptExpressionParser extends Parser {
+
+    /**
+     * 运算参数类型： 常量字符串
+     */
+    public final static int STDOUT = 100;
 
     private UniversalScriptSession session;
     private UniversalScriptContext context;
@@ -68,6 +72,10 @@ public class ScriptExpressionParser extends Parser {
                 String value = this.analysis.replaceShellVariable(this.session, this.context, str, false, false, true, true);
                 parameter.setValue(value);
             }
+
+            if (parameter.getType() == STDOUT) {
+                parameter.setType(Parameter.STRING);
+            }
         }
 
         return super.calc(datas, operations);
@@ -98,7 +106,9 @@ public class ScriptExpressionParser extends Parser {
                 int exitcode = this.context.getEngine().eval(this.session, this.context, cache, this.stderr, command);
                 if (exitcode == 0) {
                     String message = StringUtils.trimBlank(cache);
-                    datas.add(new ExpressionParameter(message));
+                    ExpressionParameter expression = new ExpressionParameter(message);
+                    expression.setType(ScriptExpressionParser.STDOUT);
+                    datas.add(expression);
                     return index;
                 } else {
                     throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(58, command));
@@ -279,7 +289,7 @@ public class ScriptExpressionParser extends Parser {
         UniversalCommandRepository repository = compiler.getRepository(); // 命令编译器集合
         VariableMethodCommandCompiler c = repository.get(VariableMethodCommandCompiler.class);
 
-        int value = UniversalScriptCommand.VARIABLE_METHOD_ERROR;
+        int value;
         VariableMethodCommand command = c.compile(analysis, variableName, methodName, reverse);
         try {
             value = command.execute(this.session, this.context, this.stdout, this.stderr, false, null, null);

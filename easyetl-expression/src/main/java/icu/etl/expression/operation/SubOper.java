@@ -1,5 +1,7 @@
 package icu.etl.expression.operation;
 
+import java.util.Date;
+
 import icu.etl.expression.ExpressionException;
 import icu.etl.expression.parameter.DateUnitParameter;
 import icu.etl.expression.parameter.ExpressionParameter;
@@ -39,7 +41,7 @@ public class SubOper implements Operator {
             return data;
         }
         if (d1.getType() == Parameter.LONG && d2.getType() == Parameter.DATEUNIT) { // 19000101 - 1 month
-            java.util.Date date = Dates.testParse(d1.longValue());
+            Date date = Dates.testParse(d1.longValue());
             if (date == null) {
                 throw new ExpressionException(ResourcesUtils.getExpressionMessage(62, d1.stringValue()));
             }
@@ -49,7 +51,7 @@ public class SubOper implements Operator {
             return data;
         }
         if (d1.getType() == Parameter.STRING && d2.getType() == Parameter.DATEUNIT) {
-            java.util.Date date = Dates.testParse(d1.value());
+            Date date = Dates.testParse(d1.value());
             if (date == null) {
                 throw new ExpressionException(ResourcesUtils.getExpressionMessage(62, d1.stringValue()));
             }
@@ -59,7 +61,7 @@ public class SubOper implements Operator {
             return data;
         }
         if (d1.getType() == Parameter.DATE && d2.getType() == Parameter.DATEUNIT) {
-            java.util.Date date = d1.dateValue();
+            Date date = d1.dateValue();
             DateUnitParameter p = (DateUnitParameter) d2;
             data.setType(Parameter.DATE);
             data.setValue(Dates.calcDay(date, p.getUnit(), -p.longValue().intValue()));
