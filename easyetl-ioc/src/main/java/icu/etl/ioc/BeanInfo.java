@@ -34,7 +34,7 @@ public interface BeanInfo extends Comparator<BeanInfo> {
      * <p>
      * 组件重名时，优先使用权重高的组件
      *
-     * @return 详见 {@linkplain EasyBean#level()}
+     * @return 详见 {@linkplain EasyBean#priority()}
      */
     int getPriority();
 
@@ -67,5 +67,22 @@ public interface BeanInfo extends Comparator<BeanInfo> {
      * @return 返回true表示相等
      */
     boolean equals(String name);
+
+    /**
+     * 判断组件信息是否相等（用于判断是否重复注册组件）
+     *
+     * @param beanInfoRegister
+     * @return
+     */
+    boolean equals(BeanInfo beanInfoRegister);
+
+    /**
+     * 组件集合 {@linkplain BeanInfoList} 的排序规则
+     *
+     * @param o1 组件
+     * @param o2 组件
+     * @return 0表示相等 大于0表示参数1大于参数2 小于0表示参数1小于参数2
+     */
+    int compare(BeanInfo o1, BeanInfo o2);
 
 }

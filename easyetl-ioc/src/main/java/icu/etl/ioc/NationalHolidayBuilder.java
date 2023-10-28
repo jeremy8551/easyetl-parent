@@ -1,11 +1,11 @@
 package icu.etl.ioc;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import icu.etl.annotation.EasyBean;
+import icu.etl.collection.CaseSensitivMap;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.StringUtils;
 
@@ -30,7 +30,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Bea
      */
     public NationalHolidayBuilder(EasyContext context) {
         this.context = context;
-        this.map = new HashMap<String, NationalHolidaySet>();
+        this.map = new CaseSensitivMap<NationalHolidaySet>();
         this.addAll(context);
     }
 
@@ -92,6 +92,7 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Bea
         if (StringUtils.isNotBlank(locale.getCountry())) {
             buf.append('_').append(locale.getCountry());
         }
+        System.out.println("key: " + buf);
         return buf.toString();
     }
 

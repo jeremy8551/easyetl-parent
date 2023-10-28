@@ -45,7 +45,7 @@ public @interface EasyBean {
      *
      * @return 默认0，值越大权重越高
      */
-    int level() default 0;
+    int priority() default 0;
 
     /**
      * 描述信息

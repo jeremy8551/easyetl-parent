@@ -4,6 +4,7 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.script.Bindings;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.expression.ExpressionException;
@@ -1082,12 +1083,14 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
         UniversalScriptVariable globalVariable = context.getGlobalVariable();
         UniversalScriptFormatter format = context.getFormatter();
         Map<String, Object> variables = session.getVariables();
+        Bindings environmentVariable = context.getEnvironmentVariable();
 
         str = this.replaceSubCommand(session, context, stdout, stderr, str, false);
         str = this.replaceShellSpecialVariable(session, str, false);
         str = this.replaceShellVariable(str, localVariable, format, false, true);
         str = this.replaceShellVariable(str, globalVariable, format, false, true);
         str = this.replaceShellVariable(str, variables, format, false, true);
+        str = this.replaceShellVariable(str, environmentVariable, format, false, true);
         return escape ? this.unescapeSQL(str) : str;
     }
 
@@ -1115,6 +1118,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
         UniversalScriptVariable globalVariable = context.getGlobalVariable();
         UniversalScriptFormatter format = context.getFormatter();
         Map<String, Object> variables = session.getVariables();
+        Bindings environmentVariable = context.getEnvironmentVariable();
 
         if (evalInnerCmd) {
             str = this.replaceSubCommand(session, context, stdout, stderr, str, true);
@@ -1123,7 +1127,8 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
         str = this.replaceShellSpecialVariable(session, str, true);
         str = this.replaceShellVariable(str, localVariable, format, true, true);
         str = this.replaceShellVariable(str, globalVariable, format, true, true);
-        str = this.replaceShellVariable(str, variables, format, true, keepVariable);
+        str = this.replaceShellVariable(str, variables, format, true, true);
+        str = this.replaceShellVariable(str, environmentVariable, format, true, keepVariable); // 最后一次替换一定要用 keepVariable 变量
         if (escape) { // 一定要在替换完字符串中变量之后再执行 {@link #unescapeSQL(String)} 方法
             str = this.unescapeSQL(str);
         }

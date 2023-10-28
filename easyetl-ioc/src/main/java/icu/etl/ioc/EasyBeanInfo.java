@@ -20,7 +20,7 @@ public class EasyBeanInfo implements BeanInfoRegister {
 
     protected String name;
 
-    protected int order;
+    protected int priority;
 
     protected boolean lazy;
 
@@ -45,13 +45,13 @@ public class EasyBeanInfo implements BeanInfoRegister {
         if (annotation != null) {
             this.name = StringUtils.trimBlank(annotation.name());
             this.singleton = annotation.singleton();
-            this.order = annotation.level();
+            this.priority = annotation.priority();
             this.lazy = annotation.lazy();
             this.description = annotation.description();
         } else {
             this.name = "";
             this.singleton = false;
-            this.order = 0;
+            this.priority = 0;
             this.lazy = true;
             this.description = "";
         }
@@ -71,7 +71,7 @@ public class EasyBeanInfo implements BeanInfoRegister {
     }
 
     public int getPriority() {
-        return order;
+        return priority;
     }
 
     public boolean isLazy() {
@@ -90,6 +90,10 @@ public class EasyBeanInfo implements BeanInfoRegister {
         return this.name.equalsIgnoreCase(name);
     }
 
+    public boolean equals(BeanInfo beanInfo) {
+        return this.equals(beanInfo.getType());
+    }
+
     @SuppressWarnings("unchecked")
     public <E> E getBean() {
         return (E) instance;
@@ -100,16 +104,16 @@ public class EasyBeanInfo implements BeanInfoRegister {
     }
 
     public int compare(BeanInfo o1, BeanInfo o2) {
-        int tc = o1.getType().getName().compareTo(o2.getType().getName());
-        if (tc != 0) {
-            return tc;
-        }
+//        int tc = o1.getType().getName().compareTo(o2.getType().getName());
+//        if (tc != 0) {
+//            return tc;
+//        }
 
         int nc = o1.getName().compareTo(o2.getName());
         if (nc != 0) {
             return nc;
         }
 
-        return o2.getPriority() - o1.getPriority(); // 倒序排序
+        return o1.getPriority() - o2.getPriority(); // 倒序排序
     }
 }

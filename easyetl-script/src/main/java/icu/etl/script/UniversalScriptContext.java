@@ -34,6 +34,9 @@ public class UniversalScriptContext implements ScriptContext {
     /** 全局变量域（可以在当前脚本及其子脚本中访问） */
     public final static int GLOBAL_SCOPE = 200;
 
+    /** 环境变量（可以在当前脚本及其子脚本中访问） */
+    public final static int ENVIRONMENT_SCOPE = 300;
+
     /** 脚本引擎正在执行的语句输入流 */
     private Reader reader;
 
@@ -54,6 +57,9 @@ public class UniversalScriptContext implements ScriptContext {
 
     /** 局部变量集合 */
     private UniversalScriptVariable localVariable;
+
+    /** 外部的环境变量集合（不可修改内容） */
+    private Bindings environmentVariable;
 
     /** 全局数据库编目集合（可以在当前脚本引擎及其子脚本引擎中访问） */
     private ScriptCatalog globalCatalog;
@@ -99,6 +105,7 @@ public class UniversalScriptContext implements ScriptContext {
         this.listeners = new ScriptListener();
         this.globalVariable = this.engine.createBindings();
         this.localVariable = this.engine.createBindings();
+        this.environmentVariable = this.engine.createBindings();
         this.globalCatalog = new ScriptCatalog();
         this.localCatalog = new ScriptCatalog();
         this.globalPrograms = new ScriptProgram();
@@ -139,6 +146,11 @@ public class UniversalScriptContext implements ScriptContext {
         // 复制全局数据库编目信息
         if (context.globalCatalog != null) {
             this.globalCatalog.addAll(context.globalCatalog);
+        }
+
+        // 复制环境变量的引用
+        if (context.environmentVariable != null) {
+            this.environmentVariable = context.environmentVariable;
         }
     }
 
@@ -472,12 +484,42 @@ public class UniversalScriptContext implements ScriptContext {
     }
 
     /**
+     * 返回环境变量
+     *
+     * @param name 变量名
+     * @return 变量值
+     */
+    public Object getEnvironmentVariable(String name) {
+        return this.environmentVariable.get(name);
+    }
+
+    /**
+     * 返回环境变量集合
+     *
+     * @return 环境变量集合
+     */
+    public Bindings getEnvironmentVariable() {
+        return environmentVariable;
+    }
+
+    /**
+     * 判断是否存在环境变量
+     *
+     * @param name 变量名
+     * @return 返回true表示存在
+     */
+    public boolean containsEnvironmentVariable(String name) {
+        return this.environmentVariable.containsKey(name);
+    }
+
+    /**
      * 将参数集合中的所有参数添加到指定域中
      *
      * @param bindings 参数集合
      * @param scope    域的编号 <br>
      *                 {@link UniversalScriptContext#ENGINE_SCOPE} <br>
      *                 {@link UniversalScriptContext#GLOBAL_SCOPE} <br>
+     *                 {@link UniversalScriptContext#ENVIRONMENT_SCOPE} <br>
      */
     public void setBindings(Bindings bindings, int scope) {
         switch (scope) {
@@ -493,6 +535,12 @@ public class UniversalScriptContext implements ScriptContext {
                 }
                 break;
 
+            case UniversalScriptContext.ENVIRONMENT_SCOPE:
+                if (bindings != null) {
+                    this.environmentVariable = bindings;
+                }
+                break;
+
             default:
                 throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(59, scope));
         }
@@ -505,7 +553,7 @@ public class UniversalScriptContext implements ScriptContext {
      * @return
      */
     public boolean containsAttribute(String name) {
-        return this.globalVariable.containsKey(name) || this.localVariable.containsKey(name);
+        return this.globalVariable.containsKey(name) || this.localVariable.containsKey(name) || this.environmentVariable.containsKey(name);
     }
 
     /**
@@ -522,6 +570,10 @@ public class UniversalScriptContext implements ScriptContext {
             return this.getGlobalVariable(name);
         }
 
+        if (this.environmentVariable.containsKey(name)) {
+            return this.getEnvironmentVariable(name);
+        }
+
         return null;
     }
 
@@ -532,6 +584,7 @@ public class UniversalScriptContext implements ScriptContext {
      * @param scope 域的编号 <br>
      *              {@link UniversalScriptContext#ENGINE_SCOPE} <br>
      *              {@link UniversalScriptContext#GLOBAL_SCOPE} <br>
+     *              {@link UniversalScriptContext#ENVIRONMENT_SCOPE} <br>
      */
     public Object getAttribute(String name, int scope) {
         switch (scope) {
@@ -540,6 +593,9 @@ public class UniversalScriptContext implements ScriptContext {
 
             case UniversalScriptContext.GLOBAL_SCOPE:
                 return this.getGlobalVariable(name);
+
+            case UniversalScriptContext.ENVIRONMENT_SCOPE:
+                return getEnvironmentVariable(name);
 
             default:
                 throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(59, scope));
@@ -599,15 +655,19 @@ public class UniversalScriptContext implements ScriptContext {
      * @return 域的编号 <br>
      * {@link UniversalScriptContext#ENGINE_SCOPE} <br>
      * {@link UniversalScriptContext#GLOBAL_SCOPE} <br>
+     * {@link UniversalScriptContext#ENVIRONMENT_SCOPE} <br>
      */
     public int getAttributesScope(String name) {
         if (this.localVariable.containsKey(name)) {
             return UniversalScriptContext.ENGINE_SCOPE;
-        } else if (this.globalVariable.containsKey(name)) {
-            return UniversalScriptContext.GLOBAL_SCOPE;
-        } else {
-            return -1;
         }
+        if (this.globalVariable.containsKey(name)) {
+            return UniversalScriptContext.GLOBAL_SCOPE;
+        }
+        if (this.environmentVariable.containsKey(name)) {
+            return UniversalScriptContext.ENVIRONMENT_SCOPE;
+        }
+        return -1;
     }
 
     /**
@@ -616,6 +676,7 @@ public class UniversalScriptContext implements ScriptContext {
      * @param scope 域的编号 <br>
      *              {@link UniversalScriptContext#ENGINE_SCOPE} <br>
      *              {@link UniversalScriptContext#GLOBAL_SCOPE} <br>
+     *              {@link UniversalScriptContext#ENVIRONMENT_SCOPE} <br>
      */
     public Bindings getBindings(int scope) {
         switch (scope) {
@@ -624,6 +685,9 @@ public class UniversalScriptContext implements ScriptContext {
 
             case UniversalScriptContext.GLOBAL_SCOPE:
                 return this.globalVariable;
+
+            case UniversalScriptContext.ENVIRONMENT_SCOPE:
+                return this.environmentVariable;
 
             default:
                 throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(59, scope));
@@ -682,7 +746,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 设置用于输出步骤信息的 Writer
      *
-     * @param writer
+     * @param writer 步骤信息输出流
      */
     public void setStepWriter(Writer writer) {
         this.steper.setWriter(writer);
@@ -691,7 +755,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回用于输出步骤信息的 Writer
      *
-     * @return
+     * @return 步骤信息输出流
      */
     public Writer getStepWriter() {
         return this.steper.getWriter();
@@ -700,7 +764,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回脚本引擎的标准输出对象
      *
-     * @return
+     * @return 标准输出对象
      */
     public UniversalScriptStdout getStdout() {
         return this.stdout;
@@ -709,7 +773,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回脚本引擎的错误输出对象
      *
-     * @return
+     * @return 错误输出对象
      */
     public UniversalScriptStderr getStderr() {
         return this.stderr;
@@ -718,7 +782,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回脚本引擎的步骤输出对象
      *
-     * @return
+     * @return 步骤输出对象
      */
     public UniversalScriptSteper getSteper() {
         return this.steper;

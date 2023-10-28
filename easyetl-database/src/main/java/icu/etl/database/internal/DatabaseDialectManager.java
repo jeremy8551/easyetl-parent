@@ -7,12 +7,12 @@ import java.util.Set;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DB;
 import icu.etl.database.DatabaseDialect;
-import icu.etl.ioc.EasyBeanInfo;
-import icu.etl.ioc.BeanInfoFilter;
 import icu.etl.ioc.BeanInfo;
+import icu.etl.ioc.BeanInfoFilter;
 import icu.etl.ioc.BeanInfoList;
 import icu.etl.ioc.BeanInfoRegister;
 import icu.etl.ioc.BeanInstance;
+import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -40,10 +40,10 @@ public class DatabaseDialectManager {
         }
 
         public int compareTo(DialectInfo o1, DialectInfo o2) {
-            int tc = o1.getType().getName().compareTo(o2.getType().getName());
-            if (tc != 0) {
-                return tc;
-            }
+//            int tc = o1.getType().getName().compareTo(o2.getType().getName());
+//            if (tc != 0) {
+//                return tc;
+//            }
 
             int ac = o1.getName().compareTo(o2.getName());
             if (ac != 0) {
@@ -60,7 +60,7 @@ public class DatabaseDialectManager {
                 return nc;
             }
 
-            return o2.getPriority() - o1.getPriority(); // 倒序排序
+            return o1.getPriority() - o2.getPriority(); // 倒序排序
         }
     }
 

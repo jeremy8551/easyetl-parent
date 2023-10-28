@@ -146,10 +146,12 @@ public class SetCommand extends AbstractGlobalCommand {
     protected int printVariable(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr) {
         Set<String> gks = context.getGlobalVariable().keySet(); // 全局变量名
         Set<String> lks = context.getLocalVariable().keySet(); // 局部变量名
-        int size = gks.size() + lks.size(); // 变量个数
+        Set<String> eks = context.getEnvironmentVariable().keySet(); // 环境变量名
+        int size = gks.size() + lks.size() + eks.size(); // 变量个数
         HashSet<String> names = new HashSet<String>(size);
         names.addAll(gks);
         names.addAll(lks);
+        names.addAll(eks);
 
         // 排序
         ArrayList<String> list = new ArrayList<String>(size);
@@ -163,6 +165,8 @@ public class SetCommand extends AbstractGlobalCommand {
                 buf.append(name).append('=').append(context.getGlobalVariable(name)).append(FileUtils.lineSeparator);
             } else if (context.containsLocalVariable(name)) {
                 buf.append(name).append('=').append(context.getLocalVariable(name)).append(FileUtils.lineSeparator);
+            } else if (context.containsEnvironmentVariable(name)) {
+                buf.append(name).append('=').append(context.getEnvironmentVariable(name)).append(FileUtils.lineSeparator);
             } else {
                 throw new UnsupportedOperationException(name);
             }

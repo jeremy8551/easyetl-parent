@@ -72,6 +72,15 @@ public class EasyBeanContext implements EasyContext {
         this.beans.refresh();
     }
 
+    /**
+     * 返回上下文编号
+     *
+     * @return 唯一编号
+     */
+    public String getId() {
+        return "easyetl";
+    }
+
     public ClassLoader getClassLoader() {
         return this.init.getClassLoader();
     }

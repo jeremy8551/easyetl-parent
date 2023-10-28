@@ -2,8 +2,11 @@ package icu.etl.ioc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import icu.etl.annotation.EasyBean;
+import icu.etl.util.CharTable;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -51,7 +54,7 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
      */
     public boolean contains(BeanInfoRegister beanInfo) {
         for (int i = 0, size = this.size(); i < size; i++) {
-            if (beanInfo.compare(beanInfo, this.get(i)) == 0) {
+            if (this.get(i).equals(beanInfo)) {
                 return true;
             }
         }
@@ -136,7 +139,38 @@ public class BeanInfoList extends ArrayList<BeanInfoRegister> {
      */
     public void sortByDesc() {
         if (this.size() > 0) {
-            Collections.sort(this, this.get(0));
+            Comparator<BeanInfo> c = Collections.reverseOrder(this.get(0));
+            Collections.sort(this, c);
         }
+    }
+
+    public String toString() {
+        return toString(this);
+    }
+
+    public static String toString(List<? extends BeanInfo> list) {
+        CharTable ct = new CharTable();
+        ct.addTitle("Type");
+        ct.addTitle("Name");
+        ct.addTitle("Priority");
+        ct.addTitle("singleton");
+        ct.addTitle("Lazy");
+        ct.addTitle("Description");
+        ct.addTitle("bean");
+
+        for (BeanInfo beanInfo : list) {
+            ct.addCell(beanInfo.getType().getName());
+            ct.addCell(beanInfo.getName());
+            ct.addCell(beanInfo.getPriority());
+            ct.addCell(beanInfo.singleton());
+            ct.addCell(beanInfo.isLazy());
+            ct.addCell(beanInfo.getDescription());
+
+            if (beanInfo instanceof BeanInstance) {
+                ct.addCell(((BeanInstance) beanInfo).getBean());
+            }
+        }
+
+        return ct.toDB2Shape().toString();
     }
 }
