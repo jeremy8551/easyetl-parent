@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>icu.etl</groupId>
+        <artifactId>easyetl-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../easyetl-parent</relativePath>
+    </parent>
+
+    <artifactId>easyetl</artifactId>
+    <version>${revision}</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-tool</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>icu.etl</groupId>
+                <artifactId>easyetl-maven-plugin</artifactId>
+                <version>${revision}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>generate-jar</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>sources</goal> <!-- 复制同级别的子模源代码块到当前的模块中 -->
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>reset-project</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>reset</goal> <!-- 删除当前模块中的所有源代码和测试代码 -->
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>uninstall-project</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>uninstall</goal> <!-- 从本地仓库中卸载jar包 -->
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <version>all</version> <!-- 卸载jar包的版本 -->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

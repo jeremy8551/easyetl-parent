@@ -20,7 +20,7 @@ public class Slf4jLoggerBuilder implements LogBuilder {
     }
 
     /**
-     * 判断字符串参数className对应的Java类是否存在
+     * 加载类，不使用工具包中的方法，防止日志模块与工具包高度耦合
      *
      * @param className java类全名
      * @return 返回类信息

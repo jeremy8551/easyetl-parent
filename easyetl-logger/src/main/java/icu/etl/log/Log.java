@@ -8,10 +8,10 @@ package icu.etl.log;
  */
 public interface Log {
 
-    /** JVM参数名，用来设置日志级别，详见 {@linkplain #LEVEL} */
+    /** JVM参数名，日志级别，详见 {@linkplain #LEVEL} */
     public final static String PROPERTY_LOGGER = Log.class.getPackage().getName().split("\\.")[0] + "." + Log.class.getPackage().getName().split("\\.")[1] + ".logger";
 
-    /** JVM参数名（没有参数值），如果设置参数默认使用控制台输出日志 */
+    /** JVM参数名，使用控制台输出日志, 详见  {@linkplain System#out} */
     public final static String PROPERTY_LOGGERSOUT = Log.class.getPackage().getName().split("\\.")[0] + "." + Log.class.getPackage().getName().split("\\.")[1] + ".logger.sout";
 
     /** 默认的日志级别 */
@@ -151,12 +151,5 @@ public interface Log {
      * @param e       异常信息
      */
     void fatal(String message, Throwable e);
-
-    /**
-     * 不带日志级别的输出信息
-     *
-     * @param message 字符串
-     */
-    void write(CharSequence message);
 
 }

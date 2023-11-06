@@ -1,4 +1,5 @@
 target/
+**/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -37,3 +38,15 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# 过滤打包 easyetl-all 工程下的Java代码
+easyetl/src/main/java/**
+easyetl/src/main/resources/**
+easyetl/src/test/**
+
+### flatten-maven-plugin ###
+.flattened-pom.xml
+**/.flattened-pom.xml
+
+# 过滤JDK方言类的实现包
+easyetl-jdk/src/main/java/icu/etl/jdk/JDK*.java

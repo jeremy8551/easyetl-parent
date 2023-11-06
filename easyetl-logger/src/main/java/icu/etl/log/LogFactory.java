@@ -18,7 +18,7 @@ public class LogFactory {
     /** true表示关闭信息输出接口 */
     private volatile boolean disable;
 
-    /** 日志接口工厂 */
+    /** 日志工厂 */
     private LogBuilder builder;
 
     /**
@@ -65,7 +65,7 @@ public class LogFactory {
     /**
      * 生成一个日志
      *
-     * @param cls 产生log事件的类信息
+     * @param cls 返回的日志接口将以cls命名
      * @param out 标准信息输出接口
      * @param err 错误信息输出接口
      * @return 日志接口
@@ -76,21 +76,19 @@ public class LogFactory {
         }
 
         try {
-            String level = LogFactory.getLevel();
-            return this.builder.create(LogFactory.INSTANCE, cls, out, err, level);
+            return this.builder.create(LogFactory.INSTANCE, cls, out, err, LogFactory.getLevel());
         } catch (Throwable e) {
-            e.printStackTrace();
-            throw new RuntimeException(cls.getName(), e);
+            throw new LogException(cls.getName(), e);
         }
     }
 
     /**
      * 设置日志工厂
      *
-     * @param builder 日志建造工厂
+     * @param builder 日志工厂
      * @return 日志工厂
      */
-    public static synchronized LogFactory builder(LogBuilder builder) {
+    public static synchronized LogFactory setbuilder(LogBuilder builder) {
         if (builder == null) {
             throw new NullPointerException();
         }

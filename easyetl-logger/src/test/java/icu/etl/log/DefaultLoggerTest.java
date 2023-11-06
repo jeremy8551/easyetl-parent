@@ -15,9 +15,7 @@ public class DefaultLoggerTest {
         s += "" + FileUtils.lineSeparator;
 
         DefaultLogger log = new DefaultLogger(LogFactory.INSTANCE, DefaultLoggerTest.class, "info");
-        log.write("test1");
-        log.writeline("1234");
-        log.info("5");
+        log.info(s);
     }
 
     @Test

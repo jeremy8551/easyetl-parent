@@ -6,12 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import icu.etl.ioc.BeanBuilder;
-
 /**
- * 组件注解，被标记的类是一个组件
- * <p>
- * IOC容器启动时会扫描带 {@linkplain EasyBean} 与 {@linkplain EasyBeanClass} 注解的类
+ * 组件注解
+ * IOC容器启动时会扫描带 {@linkplain EasyBean} 注解的类
  *
  * @author jeremy8551@qq.com
  * @createtime 2021-02-08
@@ -22,10 +19,39 @@ import icu.etl.ioc.BeanBuilder;
 public @interface EasyBean {
 
     /**
-     * 组件的工厂类（工厂类中必须有无参数的构造方法）
+     * 组件管理模式
      *
-     * @return 组件工厂类
+     * @return true表示组件是单例模式, false表示是原型模式（每次生成的组件都是新的）
      */
-    Class<? extends BeanBuilder<?>> builder();
+    boolean singleton() default false;
+
+    /**
+     * 是否使用延迟加载模式
+     *
+     * @return true表示单例组件使用延迟加载模式
+     */
+    boolean lazy() default true;
+
+    /**
+     * 组件名称
+     *
+     * @return 种类信息
+     */
+    String name() default "";
+
+    /**
+     * 排序编号
+     * 如果注册了多个同名的组件导致冲突时，容器使用排序编号最大组件
+     *
+     * @return 默认0，值越大权重越高
+     */
+    int priority() default 0;
+
+    /**
+     * 描述信息
+     *
+     * @return 描述信息
+     */
+    String description() default "";
 
 }
