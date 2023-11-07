@@ -45,8 +45,6 @@
             <plugin>
                 <groupId>icu.etl</groupId>
                 <artifactId>easyetl-maven-plugin</artifactId>
-                <version>${revision}</version>
-                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>generate-jar</id>
@@ -70,40 +68,92 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <version>all</version> <!-- 卸载jar包的版本 -->
-                </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-source-plugin</artifactId>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>package</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>jar-no-fork</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>package</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>jar</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <doclint>all,-missing</doclint> &lt;!&ndash; 禁用DocLint检查,屏蔽警告和报错信息 &ndash;&gt;-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--                <configuration>-->
+            <!--                    <skip>false</skip>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-jar-plugin</artifactId>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>package</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>jar</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-install-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <skip>false</skip>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-deploy-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <skip>false</skip>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
 
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
+            <!--            &lt;!&ndash; GPG签名插件,对项目最后生成的jar包进行签名 &ndash;&gt;-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-gpg-plugin</artifactId>-->
+            <!--                <version>${maven.gpg.version}</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>verify</phase> &lt;!&ndash; 验证阶段 &ndash;&gt;-->
+            <!--                        <goals>-->
+            <!--                            <goal>sign</goal> &lt;!&ndash; 插件目标: 在验证阶段执行 GPG 签名操作 &ndash;&gt;-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
+
+            <!--            &lt;!&ndash; sonatype插件，用于登录验证、上传jar到sonatype的maven仓库 &ndash;&gt;-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.sonatype.plugins</groupId>-->
+            <!--                <artifactId>nexus-staging-maven-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 

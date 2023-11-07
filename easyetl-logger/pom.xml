@@ -35,30 +35,24 @@
 
     <build>
         <plugins>
-            <!-- easyetl插件 -->
+            <!-- 禁用source插件 -->
             <plugin>
-                <groupId>icu.etl</groupId>
-                <artifactId>easyetl-maven-plugin</artifactId>
-                <version>${revision}</version>
-                <extensions>true</extensions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>uninstall-project</id>
-                        <phase>clean</phase>
+                        <phase>none</phase>
                         <goals>
-                            <goal>uninstall</goal> <!-- 从本地仓库中卸载jar包 -->
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <version>all</version> <!-- 卸载jar包的版本 -->
-                </configuration>
             </plugin>
 
-            <!-- 禁用发布插件 -->
+            <!-- 禁用javadoc插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
+                <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -84,7 +78,38 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+
+            <!-- 禁用发布插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 禁用GPG签名插件,对项目最后生成的jar包进行签名 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>none</phase> <!-- 验证阶段 -->
+                        <goals>
+                            <goal>sign</goal> <!-- 插件目标: 在验证阶段执行 GPG 签名操作 -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 禁用sonatype插件，用于登录验证、上传jar到sonatype的maven仓库 -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <configuration>
+                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 </project>

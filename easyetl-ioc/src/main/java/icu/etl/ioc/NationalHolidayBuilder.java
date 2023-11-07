@@ -92,7 +92,6 @@ public class NationalHolidayBuilder implements BeanBuilder<NationalHoliday>, Bea
         if (StringUtils.isNotBlank(locale.getCountry())) {
             buf.append('_').append(locale.getCountry());
         }
-        System.out.println("key: " + buf);
         return buf.toString();
     }
 

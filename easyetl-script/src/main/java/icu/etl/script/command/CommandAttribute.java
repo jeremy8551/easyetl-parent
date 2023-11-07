@@ -1,10 +1,14 @@
 package icu.etl.script.command;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.collection.CaseSensitivSet;
+import icu.etl.script.UniversalScriptAnalysis;
+import icu.etl.script.UniversalScriptContext;
+import icu.etl.script.UniversalScriptSession;
 import icu.etl.util.Attribute;
 import icu.etl.util.StringUtils;
 
@@ -27,18 +31,24 @@ public class CommandAttribute implements Attribute<String> {
 
     /**
      * 初始化
+     */
+    public CommandAttribute() {
+        this.attributes = new CaseSensitivMap<String>();
+        this.value = new CaseSensitivSet();
+        this.novalue = new CaseSensitivSet();
+    }
+
+    /**
+     * 初始化
      *
      * @param names 支持的属性名数组（添加数组之外的属性会抛出异常）<br>
      *              属性名右侧没有半角冒号表示不存在属性值（会抛出异常）<br>
      *              属性名右侧使用半角冒号表示存在属性值 <br>
      */
     public CommandAttribute(String... names) {
+        this();
         if (names.length == 0) {
             throw new IllegalArgumentException();
-        } else {
-            this.attributes = new CaseSensitivMap<String>();
-            this.value = new CaseSensitivSet();
-            this.novalue = new CaseSensitivSet();
         }
 
         for (int i = 0; i < names.length; i++) {
@@ -109,4 +119,32 @@ public class CommandAttribute implements Attribute<String> {
         }
     }
 
+    public CommandAttribute clone(UniversalScriptSession session, UniversalScriptContext context) {
+        CommandAttribute obj = new CommandAttribute();
+        obj.value.addAll(this.value);
+        obj.novalue.addAll(this.novalue);
+
+        UniversalScriptAnalysis analysis = session.getAnalysis();
+        Iterator<String> it = this.attributes.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            String value = this.attributes.get(key);
+            String newvalue = analysis.replaceShellVariable(session, context, value, true, true, true, false);
+            obj.attributes.put(key, newvalue);
+        }
+        return obj;
+    }
+
+    /**
+     * 返回一个副本
+     *
+     * @return
+     */
+    public CommandAttribute clone() {
+        CommandAttribute obj = new CommandAttribute();
+        obj.attributes.putAll(this.attributes);
+        obj.value.addAll(this.value);
+        obj.novalue.addAll(this.novalue);
+        return obj;
+    }
 }

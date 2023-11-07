@@ -4,7 +4,6 @@ import java.lang.reflect.Modifier;
 
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.annotation.ScriptVariableFunction;
-import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.BeanRegister;
 import icu.etl.ioc.ClassScanRule;
 import icu.etl.script.UniversalCommandCompiler;
@@ -36,7 +35,7 @@ public class ScriptClassScanRule implements ClassScanRule {
         if (cls.isAnnotationPresent(ScriptCommand.class)  //
                 && UniversalCommandCompiler.class.isAssignableFrom(cls) //
                 && !Modifier.isAbstract(cls.getModifiers()) //
-                && register.addBean(new EasyBeanInfo(cls)) //
+                && register.addBean(cls) //
         ) {
             load = true;
         }
@@ -45,7 +44,7 @@ public class ScriptClassScanRule implements ClassScanRule {
         if (cls.isAnnotationPresent(ScriptVariableFunction.class) //
                 && UniversalScriptVariableMethod.class.isAssignableFrom(cls) //
                 && !Modifier.isAbstract(cls.getModifiers()) //
-                && register.addBean(new EasyBeanInfo(cls)) //
+                && register.addBean(cls) //
         ) {
             load = true;
         }

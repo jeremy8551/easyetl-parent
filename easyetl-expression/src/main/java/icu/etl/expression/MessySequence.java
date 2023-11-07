@@ -1,5 +1,6 @@
 package icu.etl.expression;
 
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 
@@ -47,7 +48,7 @@ public class MessySequence implements CharSequence {
      * @param charsetName 字符集
      */
     public MessySequence(String charsetName) {
-        java.nio.charset.Charset charset = java.nio.charset.Charset.forName(charsetName);
+        Charset charset = Charset.forName(charsetName);
         CharsetEncoder encoder = charset.newEncoder();
         if (encoder == null) {
             throw new NullPointerException();

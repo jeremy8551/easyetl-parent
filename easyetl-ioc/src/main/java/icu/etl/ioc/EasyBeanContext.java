@@ -89,6 +89,10 @@ public class EasyBeanContext implements EasyContext {
         return this.init.getArgument();
     }
 
+    public void setArgument(String... args) {
+        this.init.setArgument(args);
+    }
+
     public synchronized IocContext removeIoc(String name) {
         return this.iocs.remove(name);
     }
@@ -112,12 +116,10 @@ public class EasyBeanContext implements EasyContext {
         return this.iocs.getBean(type, args);
     }
 
-    /**
-     * 查询类实现的所有接口，添加所有接口与实现类的映射关系
-     *
-     * @param beanInfo 组件信息
-     * @return 返回true表示添加成功 false表示失败
-     */
+    public boolean addBean(Class<?> type) {
+        return this.addBean(new EasyBeanInfo(type));
+    }
+
     public synchronized boolean addBean(BeanInfoRegister beanInfo) {
         if (beanInfo == null) {
             return false;

@@ -25,6 +25,10 @@ public class IncrementFileWriter implements IncrementHandler {
     private TextTableFile newfile;
     private TextTableFile oldfile;
 
+    private boolean newfileEqualsNewout;
+    private boolean newfileEqualUpdout;
+    private boolean oldfileEqualDelout;
+
     public IncrementFileWriter(TextTableFile newfile, TextTableFile oldfile, List<IncrementListener> listeners, IncrementLogger logger, IncrementReplaceList replaces, TextTableFileWriter newout, TextTableFileWriter updout, TextTableFileWriter delout) {
         this.listeners = new ArrayList<IncrementListener>();
         if (logger != null) {
@@ -44,6 +48,10 @@ public class IncrementFileWriter implements IncrementHandler {
         this.outDelRecords = delout != null;
         this.newfile = newfile;
         this.oldfile = oldfile;
+
+        this.newfileEqualsNewout = this.newfile.equalsStyle(this.newout.getTable());
+        this.newfileEqualUpdout = this.newfile.equalsStyle(this.updout.getTable());
+        this.oldfileEqualDelout = this.oldfile.equalsStyle(this.delout.getTable());
     }
 
     public void handleCreateRecord(TextTableLine in) throws IOException {
@@ -52,7 +60,7 @@ public class IncrementFileWriter implements IncrementHandler {
                 l.beforeCreateRecord(in);
             }
 
-            if (this.newfile.equalsStyle(this.newout.getTable())) {
+            if (newfileEqualsNewout) {
                 this.newout.addLine(in.getContent());
             } else {
                 this.newout.addLine(in);
@@ -70,7 +78,7 @@ public class IncrementFileWriter implements IncrementHandler {
                 l.beforeUpdateRecord(newLine, oldLine, position);
             }
 
-            if (this.newfile.equalsStyle(this.updout.getTable())) {
+            if (newfileEqualUpdout) {
                 this.updout.addLine(newLine.getContent());
             } else {
                 this.updout.addLine(newLine);
@@ -88,7 +96,7 @@ public class IncrementFileWriter implements IncrementHandler {
                 l.beforeDeleteRecord(in);
             }
 
-            if (this.oldfile.equalsStyle(this.delout.getTable())) {
+            if (oldfileEqualDelout) {
                 this.delout.addLine(in.getContent());
             } else {
                 this.delout.addLine(in);

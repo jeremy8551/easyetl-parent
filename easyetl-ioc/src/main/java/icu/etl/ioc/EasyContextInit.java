@@ -102,6 +102,11 @@ public class EasyContextInit {
         return array;
     }
 
+    public void setArgument(String... args) {
+        this.args = args;
+        this.initLog(args);
+    }
+
     /**
      * 扫描指定包下的类信息
      *

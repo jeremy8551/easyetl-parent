@@ -12,7 +12,7 @@ public class StringConverter extends AbstractConverter {
 
     public void init() throws IOException, SQLException {
         String charsetName = (String) this.getAttribute(PARAM_CHARSET);
-        this.process = StringUtils.isBlank(charsetName) ? new None() : new Messy(charsetName);
+        this.process = StringUtils.isNotBlank(charsetName) && this.contains(PARAM_MESSY) ? new Messy(charsetName) : new None();
     }
 
     public void execute() throws IOException, SQLException {

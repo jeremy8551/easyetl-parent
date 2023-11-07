@@ -8,6 +8,20 @@ package icu.etl.ioc;
 public interface EasyContext extends BeanContext, BeanRegister, BeanInfoContext, BeanBuilderContext, BeanFactory {
 
     /**
+     * 设置容器启动参数
+     *
+     * @param args 启动参数数组
+     */
+    void setArgument(String... args);
+
+    /**
+     * 返回容器启动的参数
+     *
+     * @return 启动参数数组
+     */
+    String[] getArgument();
+
+    /**
      * 添加容器实例
      *
      * @param ioc 容器实例
@@ -29,12 +43,5 @@ public interface EasyContext extends BeanContext, BeanRegister, BeanInfoContext,
      * @return 类加载器
      */
     ClassLoader getClassLoader();
-
-    /**
-     * 返回容器启动的参数
-     *
-     * @return 启动参数数组
-     */
-    String[] getArgument();
 
 }

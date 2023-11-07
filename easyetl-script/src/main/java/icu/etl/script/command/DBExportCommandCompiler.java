@@ -39,7 +39,7 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
     }
 
     public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException {
-        WordIterator it = analysis.parse(analysis.replaceShellVariable(session, context, command, false, true, true, false));
+        WordIterator it = analysis.parse(command);
         it.assertNext("db");
         it.assertNext("export");
         it.assertNext("to");
@@ -70,7 +70,7 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
         }
 
         String sql = it.readOther();
-        return new DBExportCommand(this, orginalScript, filepath, filetype, sql, attrs);
+        return new DBExportCommand(this, command, filepath, filetype, sql, attrs);
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {

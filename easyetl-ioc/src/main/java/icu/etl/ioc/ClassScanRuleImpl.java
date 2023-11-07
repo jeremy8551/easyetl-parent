@@ -17,7 +17,7 @@ public class ClassScanRuleImpl implements ClassScanRule {
     }
 
     public boolean process(Class<?> cls, BeanRegister register) {
-        return cls != null && cls.isAnnotationPresent(EasyBean.class) && register.addBean(new EasyBeanInfo(cls));
+        return cls != null && cls.isAnnotationPresent(EasyBean.class) && register.addBean(cls);
     }
 
     public boolean equals(Object obj) {

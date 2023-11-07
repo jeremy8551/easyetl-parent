@@ -53,6 +53,9 @@ public abstract class AbstractConverter implements JdbcObjectConverter {
     /** 时间撮格式 */
     public final static String PARAM_TIMESTAMPFORMAT = "timestampformat";
 
+    /** 处理字符串中的乱码 */
+    public final static String PARAM_MESSY = "messy";
+
     /** 参数名 */
     private Map<String, Object> attributes;
 

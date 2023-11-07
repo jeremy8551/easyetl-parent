@@ -60,7 +60,7 @@ public class Pool implements Closeable {
     /**
      * 初始化
      *
-     * @context 容器上下文信息
+     * @param context 容器上下文信息
      */
     public Pool(EasyContext context) {
         super();

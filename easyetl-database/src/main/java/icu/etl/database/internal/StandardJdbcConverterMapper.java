@@ -40,7 +40,7 @@ public class StandardJdbcConverterMapper implements JdbcConverterMapper {
     /**
      * 解析表达式
      *
-     * @param str    表达式，格式: field->className?key=val&key1=val1,10->className?key=val
+     * @param str    表达式，格式: {@literal field->className?key=val&key1=val1,10->className?key=val }
      * @param condel 类型转换器之间的分隔符
      * @param mapdel 字段与转换器类信息之间的分隔符
      */

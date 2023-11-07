@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  * 测试数据装载命令
  */
-public class ScriptEngineDBLoadCmdTest {
+public class ScriptEngineDBExportCmdTest {
 
     @Rule
     public WithDBRule rule = new WithDBRule();
@@ -23,7 +23,7 @@ public class ScriptEngineDBLoadCmdTest {
         UniversalScriptEngineFactory manager = new UniversalScriptEngineFactory(context);
         ScriptEngine engine = manager.getScriptEngine();
         engine.setBindings(rule.getEnvironment(), UniversalScriptContext.ENVIRONMENT_SCOPE);
-        engine.eval(". classpath:/script/test_db_load.sql");
+        engine.eval(". classpath:/script/test_db_export.sql");
     }
 
 }

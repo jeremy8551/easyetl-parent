@@ -82,13 +82,13 @@ undeclare sname Statement
 set count = select count(*) from v12_test_tmp with ur;
 echo 笔数 $count
 
+rm $temp/v12_test_tmp.del
 rm $temp/v12_test_tmp.txt
 
 declare exportTaskId progress use out print "${taskId}正在执行 ${process}%, 总共${totalRecord}个记录${leftTime}" total $count times
 
-db export to $temp/v12_test_tmp{}.del of del modified by progress=exportTaskId chardel=* charhide=0 escapes=1 writebuf=200 maxrows=30041 title message=$temp/v12_test_tmp.txt select * from v12_test_tmp with ur;
+db export to $temp\v12_test_tmp{}.del of del modified by progress=exportTaskId chardel=* charhide=0 escapes=1 writebuf=200 maxrows=30041 title message=$temp/v12_test_tmp.txt select * from v12_test_tmp with ur;
 
-cat $temp/v12_test_tmp.txt
 echo ""
 echo ""
 
@@ -123,7 +123,7 @@ while read line do
        set tlen=array[1].trim().int()
     else
     fi
-done < $temp/v12_test_tmp.txt
+done < $temp/v12_test_tmp.del
 
 if $trows != $count || $tlen != $bytes then
    echo "$trows != $count || $tlen != $bytes"

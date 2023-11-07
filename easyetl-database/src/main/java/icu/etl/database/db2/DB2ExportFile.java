@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 import icu.etl.annotation.EasyBean;
+import icu.etl.collection.CharBuffer;
 import icu.etl.database.DatabaseException;
 import icu.etl.database.db2.format.DB2DecimalFormat;
 import icu.etl.database.db2.format.DB2DoubleFormat;
@@ -52,26 +53,19 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
     public TableLineRuler getRuler() {
         return new TableLineRuler() {
 
+            private CharBuffer buf = new CharBuffer(100, 50);
+
             public void split(String str, List<String> list) {
                 DB2ExportFile.splitDB2ExportFileLine(str, false, list);
             }
 
             public String join(TableLine line) {
+                buf.setLength(0);
                 int column = line.getColumn();
-
-                int length = column + 2; // the length of join field array
-                for (int i = 1; i <= column; i++) {
-                    length += line.getColumn(i).length() + 4;
-                }
-
-                StringBuilder buf = new StringBuilder(length); // create a buffer size
                 for (int i = 1; i <= column; ) {
-                    String field = line.getColumn(i); // set element of array value
-
+                    String field = line.getColumn(i);
                     if (field != null) {
-                        buf.append('\"');
-                        buf.append(StringUtils.replaceAll(StringUtils.replaceAll(field, "\"", "\"\""), ",", "\",")); // 对字符串中的半角逗号与双引号进行转义
-                        buf.append('\"');
+                        buf.append(field);
                     }
 
                     if (++i <= column) {

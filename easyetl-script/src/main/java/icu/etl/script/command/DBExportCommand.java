@@ -99,8 +99,10 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
         if (this.start(session, context, stdout, stderr, null)) {
             if (session.isEchoEnable() || forceStdout) {
+                String newTarget = FileUtils.replaceFolderSeparator(this.dataTarget);
+                String newCommand = StringUtils.replace(this.command, this.dataTarget, newTarget);
                 UniversalScriptAnalysis analysis = session.getAnalysis();
-                stdout.println(analysis.replaceShellVariable(session, context, this.command, true, true, true, false));
+                stdout.println(analysis.replaceShellVariable(session, context, newCommand, true, true, true, true));
             }
 
             this.executor.run();
@@ -123,39 +125,45 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             this.executor.getLogger().setStderr(stderr);
 
             UniversalScriptAnalysis analysis = session.getAnalysis();
-            TextTableFile format = context.getFactory().getContext().getBean(TextTableFile.class, this.dataType, this.attrs);
-            File msgfile = FileUtils.createFile(this.attrs.getAttribute("message"), 3, "messagefile", "export");
-            JdbcConverterMapper mapper = new StandardJdbcConverterMapper(this.attrs.getAttribute("convert"), String.valueOf(analysis.getSegment()), String.valueOf(analysis.getMapdel()));
-            UserListenerList listeners = new UserListenerList(context.getFactory().getContext(), this.attrs.getAttribute("listener"));
+            String newTarget = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.dataTarget, true, true, true, false));
+            String dataType = analysis.replaceShellVariable(session, context, this.dataType, true, true, true, false);
+            String dataSource = analysis.replaceShellVariable(session, context, this.dataSource, true, true, true, true);
+            CommandAttribute attribute = this.attrs.clone(session, context);
+
+            TextTableFile format = context.getFactory().getContext().getBean(TextTableFile.class, dataType, attribute);
+            String messagefilepath = attribute.getAttribute("messagefilepath");
+            File msgfile = FileUtils.createFile(messagefilepath, 3, "messagefile", "export");
+            JdbcConverterMapper mapper = new StandardJdbcConverterMapper(attribute.getAttribute("convert"), String.valueOf(analysis.getSegment()), String.valueOf(analysis.getMapdel()));
+            UserListenerList listeners = new UserListenerList(context.getFactory().getContext(), attribute.getAttribute("listener"));
 
             // 保存属性
             ExtracterContext cxt = this.executor.getContext();
-            cxt.setTarget(this.dataTarget);
-            cxt.setSource(this.dataSource);
+            cxt.setTarget(newTarget);
+            cxt.setSource(dataSource);
             cxt.setFormat(format);
             cxt.setConverters(mapper);
             cxt.setMessagefile(msgfile);
             cxt.setListener(listeners);
-            cxt.setAppend(this.attrs.contains("append"));
-            cxt.setCacheLines(this.attrs.contains("writebuf") ? this.attrs.getIntAttribute("writebuf") : 100);
-            cxt.setCharFilter(this.attrs.getAttribute("charhide"));
-            cxt.setEscapes(this.attrs.getAttribute("escapes"));
-            cxt.setDateformat(this.attrs.getAttribute("dateformat"));
-            cxt.setTimeformat(this.attrs.getAttribute("timeformat"));
-            cxt.setTimestampformat(this.attrs.getAttribute("timestampformat"));
-            cxt.setTitle(this.attrs.contains("colname"));
-            cxt.setMaximum(this.attrs.contains("maxrows") ? this.attrs.getIntAttribute("maxrows") : 0);
-            cxt.setProgress(this.attrs.contains("progress") ? ProgressMap.getProgress(context, this.attrs.getAttribute("progress")) : null);
+            cxt.setAppend(attribute.contains("append"));
+            cxt.setCacheLines(attribute.contains("writebuf") ? attribute.getIntAttribute("writebuf") : 100);
+            cxt.setCharFilter(attribute.getAttribute("charhide"));
+            cxt.setEscapes(attribute.getAttribute("escapes"));
+            cxt.setDateformat(attribute.getAttribute("dateformat"));
+            cxt.setTimeformat(attribute.getAttribute("timeformat"));
+            cxt.setTimestampformat(attribute.getAttribute("timestampformat"));
+            cxt.setTitle(attribute.contains("colname"));
+            cxt.setMaximum(attribute.contains("maxrows") ? attribute.getIntAttribute("maxrows") : 0);
+            cxt.setProgress(attribute.contains("progress") ? ProgressMap.getProgress(context, attribute.getAttribute("progress")) : null);
             cxt.setHttpServletRequest(context.getAttribute("httpServletRequest"));
             cxt.setHttpServletResponse(context.getAttribute("httpServletResponse"));
 
             // 确定卸数使用的数据库连接
-            ScriptDataSource dataSource = ScriptDataSource.get(context);
-            String catalog = StringUtils.defaultString(this.attrs.getAttribute("catalog"), dataSource.getCatalog());
+            ScriptDataSource pool = ScriptDataSource.get(context);
+            String catalog = StringUtils.defaultString(attribute.getAttribute("catalog"), pool.getCatalog());
             if (StringUtils.isBlank(catalog)) { // 默认使用脚本引擎当前正在使用的数据库编目
                 throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(65, this.command));
             } else {
-                cxt.setDataSource(dataSource.getPool(catalog));
+                cxt.setDataSource(pool.getPool(catalog));
             }
         }
 
