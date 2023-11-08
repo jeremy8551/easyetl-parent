@@ -22,6 +22,20 @@ public interface EasyContext extends BeanContext, BeanRegister, BeanInfoContext,
     String[] getArgument();
 
     /**
+     * 设置类加载器
+     *
+     * @param classLoader 类加载器
+     */
+    void setClassLoader(ClassLoader classLoader);
+
+    /**
+     * 返回容器使用的类加载器
+     *
+     * @return 类加载器
+     */
+    ClassLoader getClassLoader();
+
+    /**
      * 添加容器实例
      *
      * @param ioc 容器实例
@@ -36,12 +50,5 @@ public interface EasyContext extends BeanContext, BeanRegister, BeanInfoContext,
      * @return 被删除的容器
      */
     IocContext removeIoc(String name);
-
-    /**
-     * 返回容器使用的类加载器
-     *
-     * @return 类加载器
-     */
-    ClassLoader getClassLoader();
 
 }

@@ -4,9 +4,9 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.test.bean.TestLoader;
 
 @EasyBean(name = "2", description = "")
-public class TestLoader2 implements TestLoader {
+public class TestLoader1 implements TestLoader {
     @Override
     public void print() {
-        System.out.println(TestLoader2.class.getName());
+        System.out.println(TestLoader1.class.getName());
     }
 }

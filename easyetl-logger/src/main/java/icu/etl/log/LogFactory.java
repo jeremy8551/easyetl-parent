@@ -12,6 +12,53 @@ import icu.etl.util.StringUtils;
  */
 public class LogFactory {
 
+    /**
+     * 解析日志配置信息
+     *
+     * @param str 日志配置信息
+     *            sout:info 表示使用控制台输出info级别的日志
+     *            slf4j:debug 表示使用slf4j输出debug级别的日志
+     *            :info 表示使用默认日志工厂流输出info级别的日志
+     * @return 返回true表示解析成功 false表示失败
+     */
+    public static boolean parse(String str) {
+        if (str == null || str.indexOf(':') == -1) {
+            return false;
+        }
+
+        String[] array = StringUtils.split(str, ':');
+        if (array.length > 2) {
+            throw new IllegalArgumentException(str);
+        }
+
+        // 使用控制台输出
+        if (StringUtils.inArrayIgnoreCase("sout", array)) {
+            LogFactory.setbuilder(new ConsoleLoggerBuilder());
+        }
+
+        // 使用slf4j输出
+        if (StringUtils.inArrayIgnoreCase("slf4j", array)) {
+            LogFactory.setbuilder(new Slf4jLoggerBuilder());
+        }
+
+        // 使用标准输出
+        if (StringUtils.inArrayIgnoreCase("", array)) {
+            LogFactory.setbuilder(new DefaultLoggerBuilder());
+        }
+
+        // 如果是日志等级参数
+        if (StringUtils.inArrayIgnoreCase(array[0], Log.LEVEL)) {
+            System.setProperty(Log.PROPERTY_LOGGER, array[0]);
+        }
+
+        // 如果是日志等级参数
+        if (StringUtils.inArrayIgnoreCase(array[1], Log.LEVEL)) {
+            System.setProperty(Log.PROPERTY_LOGGER, array[1]);
+        }
+
+        return true;
+    }
+
     /** 唯一实例 */
     protected final static LogFactory INSTANCE = new LogFactory();
 

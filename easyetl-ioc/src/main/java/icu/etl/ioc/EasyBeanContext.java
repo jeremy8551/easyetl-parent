@@ -12,6 +12,12 @@ import icu.etl.util.ClassUtils;
  */
 public class EasyBeanContext implements EasyContext {
 
+    /** 类加载器 */
+    private ClassLoader classLoader;
+
+    /** 启动参数 */
+    private String[] args;
+
     /** 组件工厂集合 */
     private IocContextManager iocs;
 
@@ -26,9 +32,6 @@ public class EasyBeanContext implements EasyContext {
 
     /** 监听器管理 */
     private BeanEventManager listeners;
-
-    /** 参数管理器 */
-    private EasyContextInit init;
 
     /**
      * 上下文信息
@@ -45,52 +48,51 @@ public class EasyBeanContext implements EasyContext {
     /**
      * 容器上下文信息
      *
-     * @param loader 类加载器
-     * @param args   参数数组
+     * @param classLoader 类加载器
+     * @param args        参数数组
      */
-    public EasyBeanContext(ClassLoader loader, String... args) {
-        this.init = new EasyContextInit(loader, args);
+    public EasyBeanContext(ClassLoader classLoader, String... args) {
+        this(classLoader);
+        this.setArgument(args);
+
+        // 扫描并加载组件
+        EasyScanPatternList list = new EasyScanPatternList();
+        list.addProperty();
+        list.addArgument(args);
+        list.addGroupID();
+        this.loadBeanInfo(list.toArray());
+    }
+
+    /**
+     * 容器上下文信息
+     *
+     * @param classLoader 类加载器
+     */
+    public EasyBeanContext(ClassLoader classLoader) {
+        this.setClassLoader(classLoader);
         this.iocs = new IocContextManager(this);
         this.factory = new BeanFactoryImpl(this);
         this.beans = new BeanInfoTable(this);
         this.listeners = new BeanEventManager(this);
         this.builders = new BeanBuilderManager(this);
-        this.refresh();
     }
 
-    /**
-     * 初始化操作
-     */
-    public synchronized void refresh() {
-        // 清空数据
-        this.beans.clear();
-        this.builders.clear();
-        this.listeners.clear();
-
-        // 重新加载
-        this.init.scann(this);
-        this.beans.refresh();
-    }
-
-    /**
-     * 返回上下文编号
-     *
-     * @return 唯一编号
-     */
-    public String getId() {
-        return "easyetl";
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = (classLoader == null) ? ClassUtils.getDefaultClassLoader() : classLoader;
     }
 
     public ClassLoader getClassLoader() {
-        return this.init.getClassLoader();
+        return this.classLoader;
     }
 
     public String[] getArgument() {
-        return this.init.getArgument();
+        String[] array = new String[this.args.length];
+        System.arraycopy(this.args, 0, array, 0, this.args.length);
+        return array;
     }
 
     public void setArgument(String... args) {
-        this.init.setArgument(args);
+        this.args = args;
     }
 
     public synchronized IocContext removeIoc(String name) {
@@ -103,6 +105,19 @@ public class EasyBeanContext implements EasyContext {
 
     public <E> E createBean(Class<?> type, Object... args) {
         return this.factory.createBean(type, args);
+    }
+
+    public synchronized void removeBeanInfo() {
+        this.beans.clear();
+        this.builders.clear();
+        this.listeners.clear();
+    }
+
+    public synchronized int loadBeanInfo(String... args) {
+        BeanInfoScanner scanner = new BeanInfoScanner();
+        int beans = scanner.load(this, args);
+        this.beans.refresh(); // 刷新组件信息
+        return beans;
     }
 
     public BeanInfoRegister getBeanInfo(Class<?> type, String name) {

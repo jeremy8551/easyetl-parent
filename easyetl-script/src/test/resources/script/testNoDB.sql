@@ -355,8 +355,6 @@ help script
 echo ""
 echo ""
 
-help
-
 echo ""
 echo ""
 echo ""

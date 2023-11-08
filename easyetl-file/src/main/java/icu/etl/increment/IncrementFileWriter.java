@@ -49,9 +49,9 @@ public class IncrementFileWriter implements IncrementHandler {
         this.newfile = newfile;
         this.oldfile = oldfile;
 
-        this.newfileEqualsNewout = this.newfile.equalsStyle(this.newout.getTable());
-        this.newfileEqualUpdout = this.newfile.equalsStyle(this.updout.getTable());
-        this.oldfileEqualDelout = this.oldfile.equalsStyle(this.delout.getTable());
+        this.newfileEqualsNewout = this.newfile != null && this.newout != null && this.newfile.equalsStyle(this.newout.getTable());
+        this.newfileEqualUpdout = this.newfile != null && this.updout != null && this.newfile.equalsStyle(this.updout.getTable());
+        this.oldfileEqualDelout = this.oldfile != null && this.delout != null && this.oldfile.equalsStyle(this.delout.getTable());
     }
 
     public void handleCreateRecord(TextTableLine in) throws IOException {

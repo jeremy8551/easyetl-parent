@@ -9,6 +9,13 @@ import java.util.List;
 public interface BeanInfoContext {
 
     /**
+     * 初始化操作
+     *
+     * @param args 参数数组
+     */
+    int loadBeanInfo(String... args);
+
+    /**
      * 返回容器中存储的所有组件的查询条件（按组件添加的顺序）
      *
      * @return 组件类信息的集合（按组件添加的顺序）
@@ -57,5 +64,10 @@ public interface BeanInfoContext {
      * @return 组件的实现类集合
      */
     List<BeanInfo> removeBeanInfoList(Class<?> type);
+
+    /**
+     * 删除所有已注册的组件信息
+     */
+    void removeBeanInfo();
 
 }
