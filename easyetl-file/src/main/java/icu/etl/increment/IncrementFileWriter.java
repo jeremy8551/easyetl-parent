@@ -29,7 +29,7 @@ public class IncrementFileWriter implements IncrementHandler {
     private boolean newfileEqualUpdout;
     private boolean oldfileEqualDelout;
 
-    public IncrementFileWriter(TextTableFile newfile, TextTableFile oldfile, List<IncrementListener> listeners, IncrementLogger logger, IncrementReplaceList replaces, TextTableFileWriter newout, TextTableFileWriter updout, TextTableFileWriter delout) {
+    public IncrementFileWriter(TextTableFile newfile, TextTableFile oldfile, List<IncrementListener> listeners, IncrementLoggerListener logger, IncrementReplaceList replaces, TextTableFileWriter newout, TextTableFileWriter updout, TextTableFileWriter delout) {
         this.listeners = new ArrayList<IncrementListener>();
         if (logger != null) {
             this.listeners.add(logger);
@@ -54,56 +54,60 @@ public class IncrementFileWriter implements IncrementHandler {
         this.oldfileEqualDelout = this.oldfile != null && this.delout != null && this.oldfile.equalsStyle(this.delout.getTable());
     }
 
-    public void handleCreateRecord(TextTableLine in) throws IOException {
+    public void handleCreateRecord(TextTableLine line) throws IOException {
         if (this.outNewRecords) {
+            IncrementTextTableLine record = new IncrementTextTableLine(this.newfile, line);
             for (IncrementListener l : this.listeners) {
-                l.beforeCreateRecord(in);
+                l.beforeCreateRecord(record);
             }
 
-            if (newfileEqualsNewout) {
-                this.newout.addLine(in.getContent());
+            if (this.newfileEqualsNewout) {
+                this.newout.addLine(record.getContent());
             } else {
-                this.newout.addLine(in);
+                this.newout.addLine(record);
             }
 
             for (IncrementListener l : this.listeners) {
-                l.afterCreateRecord(in);
+                l.afterCreateRecord(record);
             }
         }
     }
 
     public void handleUpdateRecord(TextTableLine newLine, TextTableLine oldLine, int position) throws IOException {
         if (this.outUpdRecords) {
+            IncrementTextTableLine newRecord = new IncrementTextTableLine(this.newfile, newLine);
+            IncrementTextTableLine oldRecord = new IncrementTextTableLine(this.oldfile, oldLine);
             for (IncrementListener l : this.listeners) {
-                l.beforeUpdateRecord(newLine, oldLine, position);
+                l.beforeUpdateRecord(newRecord, oldRecord, position);
             }
 
-            if (newfileEqualUpdout) {
-                this.updout.addLine(newLine.getContent());
+            if (this.newfileEqualUpdout) {
+                this.updout.addLine(newRecord.getContent());
             } else {
-                this.updout.addLine(newLine);
+                this.updout.addLine(newRecord);
             }
 
             for (IncrementListener l : this.listeners) {
-                l.afterUpdateRecord(newLine, oldLine, position);
+                l.afterUpdateRecord(newRecord, oldRecord, position);
             }
         }
     }
 
-    public void handleDeleteRecord(TextTableLine in) throws IOException {
+    public void handleDeleteRecord(TextTableLine line) throws IOException {
         if (this.outDelRecords) {
+            IncrementTextTableLine record = new IncrementTextTableLine(this.oldfile, line);
             for (IncrementListener l : this.listeners) {
-                l.beforeDeleteRecord(in);
+                l.beforeDeleteRecord(record);
             }
 
-            if (oldfileEqualDelout) {
-                this.delout.addLine(in.getContent());
+            if (this.oldfileEqualDelout) {
+                this.delout.addLine(record.getContent());
             } else {
-                this.delout.addLine(in);
+                this.delout.addLine(record);
             }
 
             for (IncrementListener l : this.listeners) {
-                l.afterDeleteRecord(in);
+                l.afterDeleteRecord(record);
             }
         }
     }

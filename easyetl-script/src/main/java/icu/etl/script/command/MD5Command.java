@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.sql.SQLException;
 
+import icu.etl.concurrent.Terminate;
 import icu.etl.crypto.MD5Encrypt;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -21,7 +22,6 @@ import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
-import icu.etl.util.Terminate;
 
 /**
  * 生成字符串或文件的 MD5 值

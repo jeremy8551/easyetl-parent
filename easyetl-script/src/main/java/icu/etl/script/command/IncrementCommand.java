@@ -6,10 +6,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
-import icu.etl.concurrent.Executor;
+import icu.etl.concurrent.EasyJob;
+import icu.etl.concurrent.ThreadSource;
 import icu.etl.increment.Increment;
 import icu.etl.increment.IncrementContext;
-import icu.etl.increment.IncrementLogger;
+import icu.etl.increment.IncrementLoggerListener;
 import icu.etl.increment.IncrementPosition;
 import icu.etl.increment.IncrementReplace;
 import icu.etl.increment.IncrementReplaceList;
@@ -21,10 +22,10 @@ import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
+import icu.etl.script.UniversalScriptJob;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
-import icu.etl.script.UniversalScriptThread;
 import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.script.internal.ProgressMap;
 import icu.etl.util.ArrayUtils;
@@ -63,7 +64,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-05-14
  */
-public class IncrementCommand extends AbstractTraceCommand implements UniversalScriptThread, NohupCommandSupported {
+public class IncrementCommand extends AbstractTraceCommand implements UniversalScriptJob, NohupCommandSupported {
 
     /** 新文件输出流表达式 */
     private IncrementExpression newfileExpr;
@@ -85,7 +86,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
-        if (!this.start(session, context, stdout, stderr, null)) {
+        if (!this.hasJob(session, context, stdout, stderr, null)) {
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -94,8 +95,8 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, false, true, false));
         }
 
-        this.executor.run();
-        return (this.executor.alreadyError() || this.executor.isTerminate()) ? UniversalScriptCommand.TERMINATE : 0;
+        int value = context.getEngine().eval(this.executor, stdout, stderr);
+        return this.executor.isTerminate() ? UniversalScriptCommand.TERMINATE : (value == 0 ? 0 : UniversalScriptCommand.COMMAND_ERROR);
     }
 
     public void terminate() throws IOException, SQLException {
@@ -104,7 +105,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
         }
     }
 
-    public boolean start(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
+    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
         if (this.executor == null) {
             TextTableFile newfile = this.newfileExpr.createTableFile();
             TextTableFile oldfile = this.oldfileExpr.createTableFile();
@@ -220,6 +221,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             cxt.setSortNewContext(this.newfileExpr.createSortContext());
             cxt.setSortOldContext(this.oldfileExpr.createSortContext());
             cxt.setReplaceList(replaceList);
+            cxt.setThreadSource(context.getContainer().getBean(ThreadSource.class));
 
             // 设置新文件的读取进度
             if (this.newfileExpr.contains("progress")) {
@@ -236,26 +238,24 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             // 设置日志输出接口
             if (StringUtils.isNotBlank(logfilepath)) {
                 if ("stdout".equalsIgnoreCase(logfilepath)) {
-                    cxt.setLogger(new IncrementLogger(stdout, position, oldfile, newfile));
+                    cxt.setLogger(new IncrementLoggerListener(stdout, position, oldfile, newfile));
                 } else if ("stderr".equalsIgnoreCase(logfilepath)) {
-                    cxt.setLogger(new IncrementLogger(stderr, position, oldfile, newfile));
+                    cxt.setLogger(new IncrementLoggerListener(stderr, position, oldfile, newfile));
                 } else {
                     String charsetName = StringUtils.defaultString(newfile.getCharsetName(), context.getCharsetName()); // 新文件的字符集编码
                     StandardFilePrinter out = new StandardFilePrinter(new File(logfilepath), charsetName, false);
-                    cxt.setLogger(new IncrementLogger(out, position, oldfile, newfile));
+                    cxt.setLogger(new IncrementLoggerListener(out, position, oldfile, newfile));
                 }
             }
 
             this.executor = new Increment(cxt);
-            this.executor.getLogger().setStdout(stdout);
-            this.executor.getLogger().setStderr(stderr);
         }
 
         IncrementContext cxt = this.executor.getContext();
         return FileUtils.isFile(cxt.getNewFile().getFile()) && FileUtils.isFile(cxt.getOldFile().getFile());
     }
 
-    public Executor getExecutor() {
+    public EasyJob getJob() {
         Increment instance = this.executor;
         this.executor = null;
         return instance;

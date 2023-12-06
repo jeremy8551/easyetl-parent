@@ -8,17 +8,12 @@ package icu.etl.log;
  */
 public interface Log {
 
-    /** JVM参数名，日志级别，详见 {@linkplain #LEVEL} */
-    public final static String PROPERTY_LOGGER = Log.class.getPackage().getName().split("\\.")[0] + "." + Log.class.getPackage().getName().split("\\.")[1] + ".logger";
-
-    /** JVM参数名，使用控制台输出日志, 详见  {@linkplain System#out} */
-    public final static String PROPERTY_LOGGERSOUT = Log.class.getPackage().getName().split("\\.")[0] + "." + Log.class.getPackage().getName().split("\\.")[1] + ".logger.sout";
-
-    /** 默认的日志级别 */
-    public final static String DEFAULT_LEVEL = System.getProperty(Log.PROPERTY_LOGGER, "info");
-
-    /** 日志输出级别，从低到高 */
-    public final static String[] LEVEL = {"trace", "debug", "info", "warn", "error", "fatal"};
+    /**
+     * 返回日志所属类的名字
+     *
+     * @return 字符串
+     */
+    String getName();
 
     /**
      * 判断日志级别是否是跟踪模式
@@ -66,8 +61,9 @@ public interface Log {
      * 输出跟踪信息
      *
      * @param message 字符串
+     * @param args    参数数组
      */
-    void trace(String message);
+    void trace(String message, Object... args);
 
     /**
      * 输出跟踪信息
@@ -81,8 +77,9 @@ public interface Log {
      * 输出调试信息
      *
      * @param message 字符串
+     * @param args    参数数组
      */
-    void debug(String message);
+    void debug(String message, Object... args);
 
     /**
      * 输出调试信息
@@ -96,8 +93,9 @@ public interface Log {
      * 输出一般信息
      *
      * @param message 字符串
+     * @param args    参数数组
      */
-    void info(String message);
+    void info(String message, Object... args);
 
     /**
      * 输出一般信息
@@ -111,8 +109,9 @@ public interface Log {
      * 输出警告信息
      *
      * @param message 字符串
+     * @param args    参数数组
      */
-    void warn(String message);
+    void warn(String message, Object... args);
 
     /**
      * 输出警告信息
@@ -126,8 +125,9 @@ public interface Log {
      * 输出错误信息
      *
      * @param message 字符串
+     * @param args    参数数组
      */
-    void error(String message);
+    void error(String message, Object... args);
 
     /**
      * 输出错误信息
@@ -141,8 +141,9 @@ public interface Log {
      * 输出严重错误信息
      *
      * @param message 字符串
+     * @param args    参数数组
      */
-    void fatal(String message);
+    void fatal(String message, Object... args);
 
     /**
      * 输出严重错误信息

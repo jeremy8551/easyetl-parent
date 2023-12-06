@@ -3,7 +3,6 @@ package icu.etl.os;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.Properties;
 import javax.script.SimpleBindings;
 
@@ -11,6 +10,7 @@ import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.FileUtils;
+import icu.etl.util.ObjectUtils;
 import icu.etl.util.StringUtils;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -19,20 +19,20 @@ import org.junit.runners.model.Statement;
 public class WithSSHRule implements TestRule {
 
     /** 容器上下文信息 */
-    protected static EasyBeanContext context;
+    protected EasyBeanContext context;
 
     /** 脚本引擎的环境变量集合 */
-    protected static WithDBConfig environment;
+    protected WithDBConfig environment;
 
     /** true表示找不到数据库 */
-    protected static boolean notFindServer;
+    protected boolean notFindServer;
 
     public WithSSHRule() {
     }
 
     public Statement apply(Statement statement, Description description) {
         this.init();
-        return new WithDBStatement(statement);
+        return new WithDBStatement(this, statement);
     }
 
     /**
@@ -67,7 +67,7 @@ public class WithSSHRule implements TestRule {
 
             try {
                 String sshhost = (String) environment.get("ssh.host");
-                WithSSHRule.notFindServer = !Ping.ping(sshhost);
+                this.notFindServer = !Ping.ping(sshhost);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -76,15 +76,17 @@ public class WithSSHRule implements TestRule {
 
     public static class WithDBStatement extends Statement {
         private Statement statment;
+        private WithSSHRule rule;
 
-        public WithDBStatement(Statement statment) {
+        public WithDBStatement(WithSSHRule rule, Statement statment) {
             this.statment = statment;
+            this.rule = rule;
         }
 
         @Override
         public void evaluate() throws Throwable {
-            if (WithSSHRule.notFindServer) {
-                System.out.println("**************** 未找到可用服务器 ****************");
+            if (rule.notFindServer) {
+                System.out.println("**************** 未配置SSH服务器 ****************");
                 return;
             }
 
@@ -139,7 +141,7 @@ public class WithSSHRule implements TestRule {
             p.load(ClassUtils.getResourceAsStream("/testconfig.properties"));
 
             String envmode = WithSSHRule.class.getPackage().getName() + ".test.mode";
-            String mode = Optional.ofNullable(System.getProperty(envmode)).orElse("home");
+            String mode = ObjectUtils.coalesce(System.getProperty(envmode), "home");
             InputStream in = ClassUtils.getResourceAsStream("/testconfig-" + mode + ".properties");
             if (in != null) {
                 p.load(in);

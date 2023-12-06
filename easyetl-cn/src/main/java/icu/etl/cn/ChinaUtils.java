@@ -1,6 +1,7 @@
 package icu.etl.cn;
 
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.CharsetName;
 import icu.etl.util.Dates;
 import icu.etl.util.Property;
 import icu.etl.util.StringUtils;
@@ -26,6 +28,9 @@ public class ChinaUtils {
 
     /** 资源文件 */
     public static String CONFIG_XML = "/cn/china.xml";
+
+    /** 字符集编码器 */
+    public final static CharsetEncoder GBK_ENCODER = Charset.forName(CharsetName.GBK).newEncoder();
 
     /**
      * 统一社会信用代码加权因子
@@ -116,7 +121,7 @@ public class ChinaUtils {
             return isIdCard18(idCard);
         } else if (length == 15) { // 15位身份证
             String id18no = idCard15to18(idCard);
-            return id18no != null && ChinaUtils.isIdCard18(id18no);
+            return ChinaUtils.isIdCard18(id18no);
         } else {
             return false;
         }
@@ -162,7 +167,7 @@ public class ChinaUtils {
         }
 
         try {
-            String id17no = StringUtils.left(idCard, 6) + "19" + StringUtils.right(idCard, 9);
+            String id17no = idCard.substring(0, 6) + "19" + StringUtils.right(idCard, 9);
             int j = 0;
             for (int i = 0; i < id17no.length(); i++) {
                 j = j + Integer.parseInt(id17no.substring(i, i + 1)) * IDNO_CONSTANTS[i];
@@ -211,7 +216,7 @@ public class ChinaUtils {
      * @return 返回true表示参数是中文字符 false表示不是中文字符
      */
     public static boolean isChineseLetter(char c) {
-        return isChineseLetter(c, null);
+        return isChineseLetter(c, GBK_ENCODER);
     }
 
     /**
@@ -234,7 +239,7 @@ public class ChinaUtils {
 
         if (block) {
             if (encoder == null) {
-                encoder = java.nio.charset.Charset.forName("GBK").newEncoder();
+                encoder = GBK_ENCODER;
             }
             return encoder.canEncode(c);
         } else {

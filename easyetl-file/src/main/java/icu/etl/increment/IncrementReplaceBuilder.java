@@ -6,15 +6,15 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.database.DatabaseTableColumn;
 import icu.etl.database.DatabaseTableColumnList;
 import icu.etl.expression.Analysis;
-import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanInfo;
+import icu.etl.ioc.EasyBeanBuilder;
+import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.StringUtils;
 
 @EasyBean
-public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
+public class IncrementReplaceBuilder implements EasyBeanBuilder<IncrementReplace> {
 
     public IncrementReplace getBean(EasyContext context, Object... args) throws Exception {
         Analysis analysis = ArrayUtils.indexOf(args, Analysis.class, 0);
@@ -32,7 +32,7 @@ public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
             return new UUIDReplace(columns, field);
         } else { // 自定义
             String[] beans = StringUtils.split(value, '/');
-            BeanInfo beanInfo = context.getBeanInfo(IncrementReplace.class, beans[0]);
+            EasyBeanInfo beanInfo = context.getBeanInfo(IncrementReplace.class, beans[0]);
             if (beanInfo == null) {
                 return new StandardReplace(columns, field, value);
             } else {
@@ -44,13 +44,13 @@ public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
     /**
      * 将字段替换成日期
      */
-    protected class DateReplace implements IncrementReplace {
+    protected static class DateReplace implements IncrementReplace {
 
         private int position;
         private String pattern;
 
         public DateReplace(DatabaseTableColumnList list, String nameOrPosition, String value) {
-            DatabaseTableColumn column = null;
+            DatabaseTableColumn column;
             if (list != null && (column = list.getColumn(nameOrPosition)) != null) {
                 this.position = column.getPosition();
             } else if (StringUtils.isNumber(nameOrPosition)) {
@@ -73,12 +73,12 @@ public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
     /**
      * 将字段替换成 UUID 值
      */
-    protected class UUIDReplace implements IncrementReplace {
+    protected static class UUIDReplace implements IncrementReplace {
 
         private int position;
 
         public UUIDReplace(DatabaseTableColumnList list, String nameOrPosition) {
-            DatabaseTableColumn column = null;
+            DatabaseTableColumn column;
             if (list != null && (column = list.getColumn(nameOrPosition)) != null) {
                 this.position = column.getPosition();
             } else if (StringUtils.isNumber(nameOrPosition)) {
@@ -100,13 +100,13 @@ public class IncrementReplaceBuilder implements BeanBuilder<IncrementReplace> {
     /**
      * 将字段替换成指定值
      */
-    protected class StandardReplace implements IncrementReplace {
+    protected static class StandardReplace implements IncrementReplace {
 
         private int position;
         private String value;
 
         public StandardReplace(DatabaseTableColumnList list, String nameOrPosition, String value) {
-            DatabaseTableColumn column = null;
+            DatabaseTableColumn column;
             if (list != null && (column = list.getColumn(nameOrPosition)) != null) {
                 this.position = column.getPosition();
             } else if (StringUtils.isNumber(nameOrPosition)) {

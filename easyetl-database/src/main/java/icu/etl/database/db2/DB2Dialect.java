@@ -11,11 +11,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseConfiguration;
 import icu.etl.database.DatabaseConfigurationContainer;
 import icu.etl.database.DatabaseDDL;
@@ -66,12 +64,14 @@ import icu.etl.io.BufferedLineReader;
 import icu.etl.io.ClobWriter;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OS;
 import icu.etl.os.OSAccount;
 import icu.etl.os.OSCommand;
 import icu.etl.os.OSCommandException;
-import icu.etl.time.Timer;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -86,6 +86,7 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean(name = "db2")
 public class DB2Dialect extends AbstractDialect implements DatabaseDialect, EasyContextAware {
+    private final static Log log = LogFactory.getLog(DB2Dialect.class);
 
     /** 进程编号名 */
     public final static String APPLICATION_ID = "applicationId";
@@ -472,7 +473,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 JdbcDao.execute(connection, sql);
                 break;
             } catch (Throwable e) {
-                Timer.sleep(2000);
+                Dates.sleep(2000);
                 continue;
             }
         }
@@ -536,8 +537,8 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         try {
             return this.toDDLByProduce(connection, table);
         } catch (Exception e) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(e.getLocalizedMessage(), e);
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
             }
             return this.toDDLByDB2lookCommand(connection, table);
         }
@@ -558,7 +559,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 break;
             }
         }
-        Objects.requireNonNull(optoken);
+        Ensure.notNull(optoken);
 
         try {
             // 根据返回的OP_TOKEN查询DDL语句
@@ -639,8 +640,8 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                     String oscommand = builder.getTableCommand(name, table.getSchema(), table.getName(), acct.getUsername(), acct.getPassword());
                     if (cmd.execute(oscommand) == 0) {
                         String tableDDL = cmd.getStdout();
-                        int start = (int) Ensure.isPosition(SQL.indexOf(tableDDL, "create", 0, true));
-                        int end = (int) Ensure.isPosition(SQL.indexOf(tableDDL, ";", start, false));
+                        int start = (int) Ensure.isFromZero(SQL.indexOf(tableDDL, "create", 0, true));
+                        int end = (int) Ensure.isFromZero(SQL.indexOf(tableDDL, ";", start, false));
                         return tableDDL.substring(start, end);
                     }
                 }
@@ -1213,7 +1214,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 }
 
                 if (StringUtils.isNotBlank(applicationHandle) && this.forceApplication(conn, username, password, applicationHandle)) {
-                    DB.out.debug(ResourcesUtils.getDatabaseMessage(55, applicationHandle));
+                    log.debug(ResourcesUtils.getDatabaseMessage(55, applicationHandle));
                     return true;
                 }
             }
@@ -1228,14 +1229,14 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 }
 
                 if (StringUtils.isNotBlank(applicationHandle) && this.forceApplication(conn, username, password, applicationHandle)) {
-                    DB.out.debug(ResourcesUtils.getDatabaseMessage(55, applicationHandle));
+                    log.debug(ResourcesUtils.getDatabaseMessage(55, applicationHandle));
                     return true;
                 }
             }
-            DB.out.warn(ResourcesUtils.getDatabaseMessage(56, applicationHandle));
+            log.warn(ResourcesUtils.getDatabaseMessage(56, applicationHandle));
             return false;
         } catch (SQLException e) {
-            DB.out.error(ResourcesUtils.getDatabaseMessage(56, applicationHandle), e);
+            log.error(ResourcesUtils.getDatabaseMessage(56, applicationHandle), e);
             return false;
         }
     }
@@ -1261,8 +1262,8 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
             Method method = ClassUtils.getMethod(obj, "getDB2Correlator");
             if (method != null) {
                 String applicationId = StringUtils.toString(ClassUtils.executeMethod(obj, "getDB2Correlator"));
-                if (DB.out.isDebugEnabled()) {
-                    DB.out.debug(ResourcesUtils.getDatabaseMessage(57, obj, applicationId));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getDatabaseMessage(57, obj, applicationId));
                 }
                 config.put(DB2Dialect.APPLICATION_ID, applicationId);
             }
@@ -1297,8 +1298,8 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 while (in.hasNext()) {
                     String line = in.next();
 
-                    if (DB.out.isDebugEnabled()) {
-                        DB.out.debug(line);
+                    if (log.isDebugEnabled()) {
+                        log.debug(line);
                     }
 
                     String[] array = StringUtils.splitByBlank(line);
@@ -1313,7 +1314,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 IO.close(in);
             }
 
-            DB.out.error(cmd.getStderr());
+            log.error(cmd.getStderr());
             return null;
         } finally {
             os.close();
@@ -1336,7 +1337,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
             }
         } catch (Throwable e) {
             dao.rollbackQuiet();
-            DB.out.error(applicationHandle, e);
+            log.error(applicationHandle, e);
             return false;
         } finally {
             dao.rollbackQuiet();

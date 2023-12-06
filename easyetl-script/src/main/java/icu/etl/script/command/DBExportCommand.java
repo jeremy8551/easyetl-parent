@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import icu.etl.concurrent.Executor;
+import icu.etl.concurrent.EasyJob;
 import icu.etl.database.JdbcConverterMapper;
-import icu.etl.database.export.Extracter;
+import icu.etl.database.export.ExportEngine;
 import icu.etl.database.export.ExtracterContext;
 import icu.etl.database.export.UserListener;
 import icu.etl.database.internal.StandardJdbcConverterMapper;
@@ -18,10 +18,10 @@ import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptException;
+import icu.etl.script.UniversalScriptJob;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
-import icu.etl.script.UniversalScriptThread;
 import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.script.internal.ProgressMap;
 import icu.etl.script.internal.ScriptDataSource;
@@ -71,10 +71,10 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-public class DBExportCommand extends AbstractTraceCommand implements UniversalScriptThread, NohupCommandSupported {
+public class DBExportCommand extends AbstractTraceCommand implements UniversalScriptJob, NohupCommandSupported {
 
     /** 任务信息 */
-    private Extracter executor;
+    private ExportEngine engine;
 
     /** 数据文件 */
     private String dataTarget;
@@ -97,7 +97,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
-        if (this.start(session, context, stdout, stderr, null)) {
+        if (this.hasJob(session, context, stdout, stderr, null)) {
             if (session.isEchoEnable() || forceStdout) {
                 String newTarget = FileUtils.replaceFolderSeparator(this.dataTarget);
                 String newCommand = StringUtils.replace(this.command, this.dataTarget, newTarget);
@@ -105,24 +105,24 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
                 stdout.println(analysis.replaceShellVariable(session, context, newCommand, true, true, true, true));
             }
 
-            this.executor.run();
-            return (this.executor.alreadyError() || this.executor.isTerminate()) ? UniversalScriptCommand.TERMINATE : 0;
+            int value = context.getEngine().eval(this.engine, stdout, stderr);
+            return this.engine.isTerminate() ? UniversalScriptCommand.TERMINATE : (value == 0 ? 0 : UniversalScriptCommand.COMMAND_ERROR);
         } else {
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }
 
     public void terminate() throws IOException, SQLException {
-        if (this.executor != null) {
-            this.executor.terminate();
+        if (this.engine != null) {
+            this.engine.terminate();
         }
     }
 
-    public boolean start(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
-        if (this.executor == null) {
-            this.executor = new Extracter(context.getFactory().getContext());
-            this.executor.getLogger().setStdout(stdout);
-            this.executor.getLogger().setStderr(stderr);
+    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
+        if (this.engine == null) {
+            this.engine = new ExportEngine(context.getFactory().getContext());
+//            this.executor.getLogger().setStdout(stdout);
+//            this.executor.getLogger().setStderr(stderr);
 
             UniversalScriptAnalysis analysis = session.getAnalysis();
             String newTarget = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.dataTarget, true, true, true, false));
@@ -130,14 +130,14 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             String dataSource = analysis.replaceShellVariable(session, context, this.dataSource, true, true, true, true);
             CommandAttribute attribute = this.attrs.clone(session, context);
 
-            TextTableFile format = context.getFactory().getContext().getBean(TextTableFile.class, dataType, attribute);
-            String messagefilepath = attribute.getAttribute("messagefilepath");
+            TextTableFile format = context.getContainer().getBean(TextTableFile.class, dataType, attribute);
+            String messagefilepath = attribute.getAttribute("message");
             File msgfile = FileUtils.createFile(messagefilepath, 3, "messagefile", "export");
             JdbcConverterMapper mapper = new StandardJdbcConverterMapper(attribute.getAttribute("convert"), String.valueOf(analysis.getSegment()), String.valueOf(analysis.getMapdel()));
             UserListenerList listeners = new UserListenerList(context.getFactory().getContext(), attribute.getAttribute("listener"));
 
             // 保存属性
-            ExtracterContext cxt = this.executor.getContext();
+            ExtracterContext cxt = this.engine.getContext();
             cxt.setTarget(newTarget);
             cxt.setSource(dataSource);
             cxt.setFormat(format);
@@ -167,12 +167,12 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             }
         }
 
-        return this.executor.getListener().ready();
+        return this.engine.getListener().ready();
     }
 
-    public Executor getExecutor() {
-        Extracter instance = this.executor;
-        this.executor = null;
+    public EasyJob getJob() {
+        ExportEngine instance = this.engine;
+        this.engine = null;
         return instance;
     }
 
@@ -180,7 +180,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
         return true;
     }
 
-    private class UserListenerList extends ArrayList<UserListener> {
+    private static class UserListenerList extends ArrayList<UserListener> {
         private final static long serialVersionUID = 1L;
 
         public UserListenerList(EasyContext context, String listeners) {
@@ -192,7 +192,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             String[] array = StringUtils.split(StringUtils.trimBlank(listeners), ',');
             for (String className : array) {
                 if (StringUtils.isNotBlank(className)) {
-                    this.add(context.createBean(ClassUtils.loadClass(className)));
+                    this.add((UserListener) context.createBean(ClassUtils.loadClass(className)));
                 }
             }
         }

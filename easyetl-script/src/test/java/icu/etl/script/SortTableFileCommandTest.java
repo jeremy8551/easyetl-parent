@@ -13,7 +13,6 @@ import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
-import icu.etl.sort.TableFileSortContext;
 import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -36,15 +35,6 @@ public class SortTableFileCommandTest {
         file.setDelimiter(",");
         File txtfile = this.createfile(file);
         file.setAbsolutePath(txtfile.getAbsolutePath());
-
-        TableFileSortContext config = new TableFileSortContext();
-        config.setWriterBuffer(50);
-        config.setMaxRows(10000);
-        config.setDeleteFile(true);
-        config.setThreadNumber(3);
-        config.setFileCount(3);
-        config.setReaderBuffer(8192);
-        config.setKeepSource(false);
 
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByExtension("etl");

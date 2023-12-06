@@ -9,7 +9,7 @@ import icu.etl.annotation.ScriptCommand;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TableColumnComparator;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanInfo;
+import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -57,18 +57,18 @@ public class IncrementCommandCompiler extends AbstractTraceCommandCompiler {
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) { // 查找接口对应的的实现类
-        List<BeanInfo> list = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
+        List<EasyBeanInfo> list = context.getContainer().getBeanInfoList(TextTableFile.class);
         CharTable table = new CharTable(context.getCharsetName());
         table.addTitle("");
         table.addTitle("");
         table.addTitle("");
-        for (BeanInfo beanInfo : list) {
+        for (EasyBeanInfo beanInfo : list) {
             table.addCell(beanInfo.getName());
             table.addCell(beanInfo.getDescription());
             table.addCell(beanInfo.getType().getName());
         }
 
-        out.println(new ScriptUsage(this.getClass(), table.toSimpleShape().ltrim().toString(), TableColumnComparator.class.getName()));
+        out.println(new ScriptUsage(this.getClass(), table.toString(CharTable.Style.simple), TableColumnComparator.class.getName()));
     }
 
 }

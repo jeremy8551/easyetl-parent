@@ -5,10 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.annotation.ScriptCommand;
-import icu.etl.expression.OrderByExpression;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanInfo;
+import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyContext;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
@@ -17,6 +16,7 @@ import icu.etl.script.UniversalScriptReader;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.internal.ScriptUsage;
+import icu.etl.sort.OrderByExpression;
 import icu.etl.util.CharTable;
 import icu.etl.util.StringUtils;
 
@@ -63,31 +63,30 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
         }
         it.assertNext("order");
         it.assertNext("by");
-        boolean asc = (it.isLast("asc") || it.isLast("desc")) ? analysis.equals("asc", it.last()) : true; // 默认排序方式
 
         EasyContext ioccxt = context.getFactory().getContext();
         String position = it.readOther();
         String[] array = StringUtils.split(StringUtils.trimBlank(position), analysis.getSegment()); // int(1) desc,2, 4,5
         OrderByExpression[] orders = new OrderByExpression[array.length];
         for (int i = 0; i < array.length; i++) {
-            orders[i] = new OrderByExpression(ioccxt, analysis, array[i], asc);
+            orders[i] = new OrderByExpression(ioccxt, analysis, array[i]);
         }
         return new SortTableFileCommand(this, orginalScript, filepath, filetype, orders, attrs);
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) { // 查找接口对应的的实现类
-        List<BeanInfo> list = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
+        List<EasyBeanInfo> list = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
         CharTable ct = new CharTable(context.getCharsetName());
         ct.addTitle("");
         ct.addTitle("");
         ct.addTitle("");
-        for (BeanInfo beanInfo : list) {
+        for (EasyBeanInfo beanInfo : list) {
             ct.addCell(beanInfo.getName());
             ct.addCell(beanInfo.getDescription());
             ct.addCell(beanInfo.getType().getName());
         }
 
-        out.println(new ScriptUsage(this.getClass(), ct.toSimpleShape().ltrim().toString()));
+        out.println(new ScriptUsage(this.getClass(), ct.toString(CharTable.Style.simple)));
     }
 
 }

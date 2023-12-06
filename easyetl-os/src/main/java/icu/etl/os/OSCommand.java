@@ -3,7 +3,7 @@ package icu.etl.os;
 import java.io.OutputStream;
 import java.util.List;
 
-import icu.etl.util.Terminate;
+import icu.etl.concurrent.Terminate;
 
 /**
  * 该接口用于描述操作系统上的命令功能。 <br>

@@ -4,13 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.expression.OrderByExpression;
+import icu.etl.concurrent.ThreadSource;
 import icu.etl.io.TextTableFile;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
+import icu.etl.sort.OrderByExpression;
 import icu.etl.sort.TableFileSortContext;
 import icu.etl.sort.TableFileSorter;
 import icu.etl.util.IO;
@@ -44,6 +45,7 @@ public class SortTableFileCommand extends AbstractTraceCommand {
         }
 
         TableFileSortContext cxt = new TableFileSortContext();
+        cxt.setThreadSource(context.getContainer().getBean(ThreadSource.class));
         cxt.setDeleteFile(!this.map.contains("keeptemp"));
         cxt.setKeepSource(!this.map.contains("covsrc"));
         if (this.map.contains("maxfile")) {
@@ -64,7 +66,7 @@ public class SortTableFileCommand extends AbstractTraceCommand {
             cxt.setWriterBuffer(this.map.getIntAttribute("writebuf"));
         }
 
-        TextTableFile file = context.getFactory().getContext().getBean(TextTableFile.class, this.filetype, this.map);
+        TextTableFile file = context.getContainer().getBean(TextTableFile.class, this.filetype, this.map);
         file.setAbsolutePath(this.filepath);
 
         this.tfs = new TableFileSorter(cxt);

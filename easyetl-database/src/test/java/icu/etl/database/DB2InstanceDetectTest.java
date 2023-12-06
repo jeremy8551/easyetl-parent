@@ -15,7 +15,7 @@ import icu.etl.os.OSNetworkCard;
 import icu.etl.os.OSProcess;
 import icu.etl.os.OSUser;
 import icu.etl.os.OSUserGroup;
-import icu.etl.time.Timer;
+import icu.etl.util.Dates;
 import icu.etl.util.TimeWatch;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -101,7 +101,7 @@ public class DB2InstanceDetectTest {
             System.out.println("用时: " + watch.useTime());
 
             System.out.println("初始化用时: " + watch.useTime());
-            Timer.sleep(2000);
+            Dates.sleep(2000);
             System.out.println("当前用户是: " + os.getUser());
             System.out.println("判断目录 " + os.getUser().getHome() + " 是否存在: " + fileCmd.exists(os.getUser().getHome()));
 

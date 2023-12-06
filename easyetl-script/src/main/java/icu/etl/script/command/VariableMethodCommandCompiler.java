@@ -104,7 +104,7 @@ public class VariableMethodCommandCompiler extends AbstractTraceCommandCompiler 
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
-        out.println(new ScriptUsage(this.getClass(), this.methods.toString(StringUtils.CHARSET, false)));
+        out.println(new ScriptUsage(this.getClass(), this.methods.toString(StringUtils.CHARSET)));
     }
 
 }

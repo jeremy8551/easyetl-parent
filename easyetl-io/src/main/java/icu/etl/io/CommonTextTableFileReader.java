@@ -9,7 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import icu.etl.collection.NatureRandomList;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Numbers;
@@ -23,6 +25,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2017-02-22
  */
 public class CommonTextTableFileReader implements TextTableFileReader, TextTableLine {
+    private final static Log log = LogFactory.getLog(CommonTextTableFileReader.class);
 
     /** 表格数据文件 */
     protected TextTableFile file;
@@ -93,11 +96,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      * @param bufferSize 缓冲区容量，单位字符
      */
     protected void init(TextTableFile file, int bufferSize) {
-        if (file == null) {
-            throw new NullPointerException();
-        }
-
-        this.file = file;
+        this.file = Ensure.notNull(file);
         this.bufferSize = bufferSize;
         this.rule = file.getRuler();
         this.lineNumber = 0;
@@ -179,8 +178,8 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
         if (value == null) {
             return true;
         } else {
-            if (STD.out.isErrorEnabled()) {
-                STD.out.error(ResourcesUtils.getIoxMessage(33, this.file.getAbsolutePath(), value[0], value[1]));
+            if (log.isErrorEnabled()) {
+                log.error(ResourcesUtils.getIoxMessage(33, this.file.getAbsolutePath(), value[0], value[1]));
             }
             return false;
         }
@@ -217,8 +216,8 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
         }
 
         int column = (array.length == 0) ? 0 : Numbers.max(array);
-        if (array.length > 0 && STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getIoxMessage(8, this.file.getAbsolutePath(), column));
+        if (array.length > 0 && log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getIoxMessage(8, this.file.getAbsolutePath(), column));
         }
         return column;
     }

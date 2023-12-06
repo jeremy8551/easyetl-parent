@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import icu.etl.annotation.ScriptVariableFunction;
+import icu.etl.annotation.ScriptFunction;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -20,7 +20,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@ScriptVariableFunction(name = "indexOf")
+@ScriptFunction(name = "indexOf")
 public class IndexOfMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws IOException, SQLException {

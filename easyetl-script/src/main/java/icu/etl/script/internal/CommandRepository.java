@@ -15,6 +15,7 @@ import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptException;
 import icu.etl.util.CharTable;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -53,11 +54,7 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
      * 初始化
      */
     public CommandRepository(UniversalScriptAnalysis analysis) {
-        if (analysis == null) {
-            throw new NullPointerException();
-        }
-
-        this.analysis = analysis;
+        this.analysis = Ensure.notNull(analysis);
         this.all = new ArrayList<CommandCompilerContext>();
         this.cache = new ArrayList<UniversalCommandCompiler>();
         this.rule1 = new ArrayList<CommandCompilerContext>();
@@ -305,7 +302,7 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
             }
         }
 
-        return ct.toDB2Shape().ltrim().toString();
+        return ct.toString(CharTable.Style.db2);
     }
 
 }

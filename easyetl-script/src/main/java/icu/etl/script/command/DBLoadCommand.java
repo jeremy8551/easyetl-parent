@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.concurrent.Executor;
+import icu.etl.concurrent.EasyJob;
 import icu.etl.database.load.LoadEngine;
 import icu.etl.database.load.LoadEngineContext;
 import icu.etl.database.load.LoadEngineLaunch;
@@ -13,10 +13,10 @@ import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptEngine;
+import icu.etl.script.UniversalScriptJob;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
-import icu.etl.script.UniversalScriptThread;
 import icu.etl.script.command.feature.JumpCommandSupported;
 import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.util.StringUtils;
@@ -69,13 +69,13 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-05-04
  */
-public class DBLoadCommand extends AbstractTraceCommand implements UniversalScriptThread, JumpCommandSupported, NohupCommandSupported {
+public class DBLoadCommand extends AbstractTraceCommand implements UniversalScriptJob, JumpCommandSupported, NohupCommandSupported {
 
     /** 装数引擎 */
     private LoadEngine engine;
 
     /** 用于判断是否可以执行装载数据任务 */
-    private LoadEngineLaunch obj;
+    private LoadEngineLaunch launch;
 
     /** 脚本语句，用于判断是否可以执行装载任务 */
     private String script;
@@ -92,13 +92,8 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
         }
 
         this.engine.setContext(context.getFactory().getContext());
-        this.engine.run();
-
-        if (this.engine.alreadyError()) {
-            return UniversalScriptCommand.COMMAND_ERROR;
-        } else {
-            return this.engine.isTerminate() ? UniversalScriptCommand.TERMINATE : 0;
-        }
+        int value = context.getEngine().eval(this.engine, stdout, stderr);
+        return this.engine.isTerminate() ? UniversalScriptCommand.TERMINATE : (value == 0 ? 0 : UniversalScriptCommand.COMMAND_ERROR);
     }
 
     public void terminate() throws IOException, SQLException {
@@ -107,9 +102,9 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
         }
     }
 
-    public boolean start(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
-        if (this.obj != null) {
-            return this.obj.ready(this.engine.getContext());
+    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
+        if (this.launch != null) {
+            return this.launch.ready(this.engine.getContext());
         } else if (StringUtils.isNotBlank(this.script)) {
             UniversalScriptAnalysis analysis = session.getAnalysis();
             String script = analysis.replaceShellVariable(session, context, this.script, true, true, true, false);
@@ -120,7 +115,7 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
         }
     }
 
-    public Executor getExecutor() {
+    public EasyJob getJob() {
         LoadEngine engine = this.engine;
         this.engine = null;
         return engine;
@@ -132,7 +127,7 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
      * @param obj
      */
     public void setRule(LoadEngineLaunch obj) {
-        this.obj = obj;
+        this.launch = obj;
     }
 
     /**

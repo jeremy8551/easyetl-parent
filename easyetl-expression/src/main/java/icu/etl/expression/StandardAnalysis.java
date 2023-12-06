@@ -3,6 +3,7 @@ package icu.etl.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -36,9 +37,9 @@ public class StandardAnalysis implements Analysis {
             return -1;
         }
 
-        if (dest == null || dest.length() == 0 || from < 0) {
-            throw new IllegalArgumentException("indexOf(" + str + ", " + dest + ", " + from + ", " + left + ")");
-        }
+        Ensure.notNull(dest);
+        Ensure.isFromOne(dest.length());
+        Ensure.isFromZero(from);
 
         char fc = dest.charAt(0); // 搜索字符的第一个字符
         for (int i = from; i < str.length(); i++) {
@@ -161,7 +162,7 @@ public class StandardAnalysis implements Analysis {
 
     public int indexOfParenthes(CharSequence str, int from) {
         if (from < 0 || from >= str.length()) {
-            throw new IllegalArgumentException("indexOfParenthes(" + str + ", " + from + ")");
+            throw new IllegalArgumentException(str + ", " + from);
         }
 
         for (int i = from + 1, count = 1; i < str.length(); i++) {
@@ -196,7 +197,7 @@ public class StandardAnalysis implements Analysis {
 
     public int indexOfBracket(CharSequence str, int from) {
         if (from < 0 || from >= str.length()) {
-            throw new IllegalArgumentException("indexOfBracket(" + str + ", " + from + ")");
+            throw new IllegalArgumentException(str + ", " + from);
         }
 
         for (int i = from + 1, count = 1; i < str.length(); i++) {
@@ -236,7 +237,7 @@ public class StandardAnalysis implements Analysis {
 
     public int indexOfBrace(CharSequence str, int from) {
         if (from < 0 || from >= str.length()) {
-            throw new IllegalArgumentException("indexOfBrace(" + str + ", " + from + ")");
+            throw new IllegalArgumentException(str + ", " + from);
         }
 
         for (int i = from + 1, count = 1; i < str.length(); i++) {
@@ -384,7 +385,7 @@ public class StandardAnalysis implements Analysis {
             return false;
         }
         if (prefix == null || prefix.length() == 0 || from < 0) {
-            throw new IllegalArgumentException("startsWith(\"" + str + "\", \"" + prefix + "\", " + from + ", " + ignoreBlank + ")");
+            throw new IllegalArgumentException(str + ", " + prefix + ", " + from + ", " + ignoreBlank);
         }
 
         for (int i = from; i < str.length(); i++) {

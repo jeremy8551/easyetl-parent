@@ -15,22 +15,12 @@
     <dependencies>
         <dependency>
             <groupId>icu.etl</groupId>
-            <artifactId>easyetl-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>icu.etl</groupId>
-            <artifactId>easyetl-ioc</artifactId>
+            <artifactId>easyetl-tool</artifactId>
         </dependency>
 
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-logger</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>icu.etl</groupId>
-            <artifactId>easyetl-tool</artifactId>
         </dependency>
     </dependencies>
 

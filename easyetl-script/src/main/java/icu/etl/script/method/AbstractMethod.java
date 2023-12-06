@@ -3,7 +3,7 @@ package icu.etl.script.method;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.annotation.ScriptVariableFunction;
+import icu.etl.annotation.ScriptFunction;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -91,7 +91,7 @@ public abstract class AbstractMethod implements UniversalScriptVariableMethod {
      */
     public void usage(UniversalScriptStdout out) {
         Class<? extends UniversalScriptVariableMethod> cls = this.getClass();
-        ScriptVariableFunction anno = cls.getAnnotation(ScriptVariableFunction.class);
+        ScriptFunction anno = cls.getAnnotation(ScriptFunction.class);
         String name = StringUtils.trimBlank(anno.name()).toLowerCase();
         this.usage(out, name);
     }

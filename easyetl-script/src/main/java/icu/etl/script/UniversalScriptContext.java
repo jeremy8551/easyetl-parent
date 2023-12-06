@@ -9,6 +9,7 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 
 import icu.etl.io.AliveReader;
+import icu.etl.ioc.EasyContext;
 import icu.etl.script.internal.ScriptCatalog;
 import icu.etl.script.internal.ScriptListener;
 import icu.etl.script.internal.ScriptProgram;
@@ -88,6 +89,9 @@ public class UniversalScriptContext implements ScriptContext {
     /** 校验规则 */
     private UniversalScriptChecker checker;
 
+    /** 容器上下文信息 */
+    private EasyContext ioc;
+
     /**
      * 初始化
      *
@@ -100,6 +104,7 @@ public class UniversalScriptContext implements ScriptContext {
 
         this.engine = engine;
         this.factory = engine.getFactory();
+        this.ioc = engine.getFactory().getContext();
         this.format = this.factory.buildFormatter();
         this.checker = this.factory.buildChecker();
         this.listeners = new ScriptListener();
@@ -111,9 +116,9 @@ public class UniversalScriptContext implements ScriptContext {
         this.globalPrograms = new ScriptProgram();
         this.localPrograms = new ScriptProgram();
 
-        this.stdout = new ScriptStdout(this.factory.getStdoutLog(), null, this.format);
-        this.stderr = new ScriptStderr(this.factory.getStderrLog(), null, this.format);
-        this.steper = new ScriptSteper(this.factory.getStdoutLog(), null, this.format);
+        this.stdout = new ScriptStdout(null, this.format);
+        this.stderr = new ScriptStderr(null, this.format);
+        this.steper = new ScriptSteper(null, this.format);
     }
 
     /**
@@ -175,10 +180,19 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回脚本引擎上下文信息对应的脚本引擎对象
      *
-     * @return
+     * @return 脚本引擎
      */
     public UniversalScriptEngine getEngine() {
         return this.engine;
+    }
+
+    /**
+     * 返回容器上下文信息
+     *
+     * @return 容器上下文信息
+     */
+    public EasyContext getContainer() {
+        return this.ioc;
     }
 
     /**

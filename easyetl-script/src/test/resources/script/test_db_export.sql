@@ -50,5 +50,13 @@ db export to $temp\v7_test_tmp.del of del modified by progress=exportTaskId char
 
 cat $temp\v7_test_tmp.del
 
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+db export to $temp\v7_test_tmp1.del of del select * from v7_test_tmp with ur;
+
+
 db connect reset
 exit 0

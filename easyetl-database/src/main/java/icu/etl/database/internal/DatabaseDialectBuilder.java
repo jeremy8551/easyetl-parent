@@ -8,14 +8,15 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseDialect;
-import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanEvent;
 import icu.etl.ioc.BeanEventListener;
-import icu.etl.ioc.BeanInfo;
-import icu.etl.ioc.BeanInfoRegister;
+import icu.etl.ioc.EasyBeanBuilder;
+import icu.etl.ioc.EasyBeanEvent;
+import icu.etl.ioc.EasyBeanInfo;
+import icu.etl.ioc.EasyBeanInfoValue;
 import icu.etl.ioc.EasyContext;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -27,7 +28,8 @@ import icu.etl.util.StringUtils;
  * @createtime 2012-03-06
  */
 @EasyBean
-public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, BeanEventListener {
+public class DatabaseDialectBuilder implements EasyBeanBuilder<DatabaseDialect>, BeanEventListener {
+    private final static Log log = LogFactory.getLog(DatabaseDialectBuilder.class);
 
     /** 数据库方言管理类 */
     private final DatabaseDialectManager manager;
@@ -36,7 +38,7 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
      * 初始化
      */
     public DatabaseDialectBuilder(EasyContext context) {
-        List<BeanInfo> list = context.getBeanInfoList(DatabaseDialect.class);
+        List<EasyBeanInfo> list = context.getBeanInfoList(DatabaseDialect.class);
         this.manager = new DatabaseDialectManager(context, list);
     }
 
@@ -110,19 +112,19 @@ public class DatabaseDialectBuilder implements BeanBuilder<DatabaseDialect>, Bea
             array[2] = String.valueOf(metaData.getDatabaseMinorVersion());
             return array;
         } catch (Throwable e) {
-            DB.out.error("parse()", e);
+            log.error("parse()", e);
             return null;
         }
     }
 
-    public void addBean(BeanEvent event) {
-        BeanInfoRegister beanInfo = event.getBeanInfo();
+    public void addBean(EasyBeanEvent event) {
+        EasyBeanInfoValue beanInfo = event.getBeanInfo();
         if (DatabaseDialect.class.isAssignableFrom(beanInfo.getType())) {
             this.manager.add(event.getContext(), beanInfo);
         }
     }
 
-    public void removeBean(BeanEvent event) {
+    public void removeBean(EasyBeanEvent event) {
     }
 
 }

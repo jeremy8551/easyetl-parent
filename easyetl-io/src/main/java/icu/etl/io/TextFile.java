@@ -2,7 +2,7 @@ package icu.etl.io;
 
 import java.io.File;
 
-import icu.etl.util.Charset;
+import icu.etl.util.CharsetName;
 
 /**
  * 文本文件接口
@@ -10,7 +10,7 @@ import icu.etl.util.Charset;
  * @author jeremy8551@qq.com
  * @createtime 2021-05-11
  */
-public interface TextFile extends LineSeparator, Charset {
+public interface TextFile extends LineSeparator, CharsetName {
 
     /**
      * 设置文件路径 <br>

@@ -2,6 +2,7 @@ package icu.etl.database.db2;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -332,7 +333,7 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
             return null;
         }
         if (encoder == null) {
-            java.nio.charset.Charset charset = java.nio.charset.Charset.forName(StringUtils.CHARSET);
+            Charset charset = Charset.forName(StringUtils.CHARSET);
             encoder = charset.newEncoder();
         }
 

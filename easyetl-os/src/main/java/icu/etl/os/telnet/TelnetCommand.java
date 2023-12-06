@@ -19,14 +19,13 @@ import icu.etl.collection.ByteBuffer;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
-import icu.etl.log.STD;
 import icu.etl.os.OSCommandException;
 import icu.etl.os.OSCommandStdouts;
 import icu.etl.os.OSShellCommand;
 import icu.etl.os.internal.OSCommandStdoutsImpl;
 import icu.etl.os.internal.OSCommandUtils;
-import icu.etl.time.Timer;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.Dates;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 
@@ -38,8 +37,8 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean(name = "telnet", description = "apache-net")
 public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShellCommand {
-
-    private static Log log = LogFactory.getLog(TelnetCommand.class);
+    private final static Log log = LogFactory.getLog(TelnetCommand.class);
+    
     private TelnetClient client;
     private String host;
     private int port;
@@ -209,7 +208,7 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
      * @return
      */
     public String getResponse(long waitTime) {
-        Timer.sleep(waitTime);
+        Dates.sleep(waitTime);
         return this.stdoutLog.toString();
     }
 
@@ -239,8 +238,8 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
                 this.execute(command); // 执行命令
                 String stdout = this.getStdout(); // 标准输出
 
-                if (STD.out.isTraceEnabled()) {
-                    STD.out.trace(stdout);
+                if (log.isTraceEnabled()) {
+                    log.trace(stdout);
                 }
 
                 BufferedLineReader in = new BufferedLineReader(stdout);
@@ -256,8 +255,8 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
             }
             return map;
         } else { // 如果执行合并命令报错则执行分布命令
-            if (STD.out.isTraceEnabled()) {
-                STD.out.trace(allStdout);
+            if (log.isTraceEnabled()) {
+                log.trace(allStdout);
             }
             return OSCommandUtils.splitMultiCommandStdout(allStdout);
         }

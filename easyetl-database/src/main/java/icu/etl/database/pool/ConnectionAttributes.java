@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.ioc.EasyContext;
 import icu.etl.jdk.JavaDialectFactory;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 
 /**
  * 数据库连接设置信息
@@ -17,6 +18,7 @@ import icu.etl.jdk.JavaDialectFactory;
  * @createtime 2012-03-13
  */
 public class ConnectionAttributes implements Cloneable {
+    private final static Log log = LogFactory.getLog(ConnectionAttributes.class);
 
     private Map<String, Class<?>> types;
     private Properties clientInfo;
@@ -58,76 +60,89 @@ public class ConnectionAttributes implements Cloneable {
             this.autoCommit = conn.getAutoCommit();
             this.hasAutoCommit = true;
         } catch (Throwable e) {
-            DB.out.warn("getAutoCommit", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.catalog = conn.getCatalog();
             this.hasCatalog = true;
         } catch (Throwable e) {
-            DB.out.warn("getCatalog", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
-            try {
-                this.schema = conn.getSchema();
-                this.hasSchema = true;
-            } catch (Throwable e) {
-                DatabaseDialect dialect = this.context.getBean(DatabaseDialect.class, conn);
-                this.schema = dialect.getSchema(conn);
-                this.hasSchema = true;
-            }
+            DatabaseDialect dialect = this.context.getBean(DatabaseDialect.class, conn);
+            this.schema = dialect.getSchema(conn);
+            this.hasSchema = true;
         } catch (Throwable e) {
-            DB.out.warn("getSchema", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.readOnly = conn.isReadOnly();
             this.hasReadOnly = true;
         } catch (Throwable e) {
-            DB.out.warn("isReadOnly", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.holdability = conn.getHoldability();
             this.hasHoldability = true;
         } catch (Throwable e) {
-            DB.out.warn("getHoldability", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.networkTimeout = JavaDialectFactory.getDialect().getNetworkTimeout(conn);
             this.hasNetworkTimeout = true;
         } catch (Throwable e) {
-            DB.out.warn("getNetworkTimeout", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.transactionIsolation = conn.getTransactionIsolation();
             this.hasTransactionIsolation = true;
         } catch (Throwable e) {
-            DB.out.warn("getTransactionIsolation", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.clientInfo.putAll(JavaDialectFactory.getDialect().getClientInfo(conn));
             this.hasClientInfo = true;
         } catch (Throwable e) {
-            DB.out.warn("getClientInfo", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.types.putAll(conn.getTypeMap());
             this.hasTypeMap = true;
         } catch (Throwable e) {
-            DB.out.warn("getTypeMap", e);
+            if (log.isWarnEnabled()) {
+                log.warn(e.getLocalizedMessage(), e);
+            }
         }
     }
 
     /**
      * 将属性设置到数据库连接参数 conn 中
      *
-     * @param conn
+     * @param conn 数据库连接
      */
     public void reset(Connection conn) {
         try {
@@ -135,7 +150,7 @@ public class ConnectionAttributes implements Cloneable {
                 conn.setAutoCommit(this.autoCommit);
             }
         } catch (Exception e) {
-            // DB.out.warn(this.autoCommit + " is valid!", e);
+            // log.warn(this.autoCommit + " is valid!", e);
         }
 
         try {
@@ -143,20 +158,16 @@ public class ConnectionAttributes implements Cloneable {
                 conn.setCatalog(this.catalog);
             }
         } catch (Exception e) {
-            // DB.out.warn(this.catalog + " is valid!", e);
+            // log.warn(this.catalog + " is valid!", e);
         }
 
         try {
             if (this.hasSchema) {
-                try {
-                    conn.setSchema(this.schema);
-                } catch (Throwable e) {
-                    DatabaseDialect dialect = this.context.getBean(DatabaseDialect.class, conn);
-                    dialect.setSchema(conn, this.schema);
-                }
+                DatabaseDialect dialect = this.context.getBean(DatabaseDialect.class, conn);
+                dialect.setSchema(conn, this.schema);
             }
         } catch (Exception e) {
-            // DB.out.warn(this.schema + " is valid!", e);
+            // log.warn(this.schema + " is valid!", e);
         }
 
         try {
@@ -164,7 +175,7 @@ public class ConnectionAttributes implements Cloneable {
                 conn.setReadOnly(this.readOnly);
             }
         } catch (Exception e) {
-            // DB.out.warn(this.readOnly + " is valid!", e);
+            // log.warn(this.readOnly + " is valid!", e);
         }
 
         try {
@@ -172,7 +183,7 @@ public class ConnectionAttributes implements Cloneable {
                 conn.setTransactionIsolation(this.transactionIsolation);
             }
         } catch (Exception e) {
-            // DB.out.warn(this.transactionIsolation + " is valid!", e);
+            // log.warn(this.transactionIsolation + " is valid!", e);
         }
 
         try {
@@ -180,7 +191,7 @@ public class ConnectionAttributes implements Cloneable {
                 JavaDialectFactory.getDialect().setClientInfo(conn, this.clientInfo);
             }
         } catch (Exception e) {
-            // DB.out.warn(StringUtils.toString(this.clientInfo) + " is valid!", e);
+            // log.warn(StringUtils.toString(this.clientInfo) + " is valid!", e);
         }
 
         try {
@@ -188,7 +199,7 @@ public class ConnectionAttributes implements Cloneable {
                 conn.setHoldability(this.holdability);
             }
         } catch (Exception e) {
-            // DB.out.warn(this.holdability + " is valid!", e);
+            // log.warn(this.holdability + " is valid!", e);
         }
 
         // try {
@@ -196,7 +207,7 @@ public class ConnectionAttributes implements Cloneable {
         // conn.setNetworkTimeout(null, this.networkTimeout);
         // }
         // } catch (Exception e) {
-        // DB.out.warn(this.networkTimeout + " is valid!", e);
+        // log.warn(this.networkTimeout + " is valid!", e);
         // }
 
         try {
@@ -204,7 +215,7 @@ public class ConnectionAttributes implements Cloneable {
                 conn.setTypeMap(this.types);
             }
         } catch (Exception e) {
-            // DB.out.warn(StringUtils.toString(this.types) + " is valid!", e);
+            // log.warn(StringUtils.toString(this.types) + " is valid!", e);
         }
     }
 

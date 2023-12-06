@@ -16,10 +16,10 @@ import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.command.feature.NohupCommandSupported;
+import icu.etl.util.Dates;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
-import icu.etl.util.TimeWatch;
 
 /**
  * 休眠
@@ -43,6 +43,7 @@ public class SleepCommand extends AbstractTraceCommand implements UniversalScrip
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+        long compileMillis = session.getCompiler().getCompileMillis();
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String time = analysis.replaceShellVariable(session, context, this.time, true, true, true, false);
         long millis = new MillisExpression(time).value();
@@ -51,14 +52,21 @@ public class SleepCommand extends AbstractTraceCommand implements UniversalScrip
             stdout.println("sleep " + millis + " millisecond");
         }
 
-        TimeWatch watch = new TimeWatch();
+        // 计算休眠时间
+        long sleep = millis - (System.currentTimeMillis() - compileMillis);
+        if (sleep <= 0) {
+            return 0;
+        }
+
         try {
             Thread.sleep(millis);
             return 0;
         } catch (Throwable e) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(42), e);
 
-            while (!session.isTerminate() && watch.useMillis() < millis) {
+            sleep = millis - (System.currentTimeMillis() - compileMillis);
+            if (sleep > 0) {
+                Dates.sleep(sleep);
             }
             return 0;
         }

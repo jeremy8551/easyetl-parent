@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Properties;
 
 import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
@@ -20,7 +19,8 @@ import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
 import icu.etl.annotation.EasyBean;
 import icu.etl.expression.GPatternExpression;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OSException;
 import icu.etl.os.OSFile;
 import icu.etl.os.OSFileCommandException;
@@ -44,20 +44,21 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean(name = "sftp", description = "jsch-0.1.51")
 public class SftpCommand implements OSFtpCommand {
+    private final static Log log = LogFactory.getLog(SftpCommand.class);
 
     /** username@host:port */
     protected String remoteServerName;
 
-    /** JSch component object */
+    /** JSch */
     protected JSch jsch = new JSch();
 
-    /** ssh connection transaction */
+    /** 会话连接 */
     private Session session;
 
-    /** Currently open channel */
+    /** 当前已打开的信道 */
     protected JschChannel channel;
 
-    /** Parameter set */
+    /** 参数集合 */
     protected Properties params;
 
     /** 字符集 */
@@ -67,7 +68,7 @@ public class SftpCommand implements OSFtpCommand {
 //	private final static HashSet<String> PARAMS_NAME_SET = new HashSet<String>(Arrays.toList("lang.s2c", "lang.c2s", "random", "CheckCiphers", "kex", "CheckKexes", "server_host_key", "cipher.c2s", "cipher.s2c", "mac.c2s", "mac.s2c", "compression.c2s", "compression.s2c", "compression_level", "StrictHostKeyChecking", "HashKnownHosts", "PreferredAuthentications", "MaxAuthTries", "ClearAllForwardings", "HostKeyAlias", "UserKnownHostsFile", "IdentityFile", "ServerAliveInterval"));
 
     /**
-     * initialization
+     * 初始化
      */
     public SftpCommand() {
         this.params = new Properties();
@@ -82,8 +83,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public boolean connect(String host, int port, String username, String password) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(13, "SFTP", username + "@" + host + ":" + port + "?password=" + password));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(13, "SFTP", username + "@" + host + ":" + port + "?password=" + password));
         }
 
         try {
@@ -103,8 +104,8 @@ public class SftpCommand implements OSFtpCommand {
             this.remoteServerName = username + "@" + host + ":" + port;
             return true;
         } catch (Exception e) {
-            if (STD.out.isErrorEnabled()) {
-                STD.out.error("sftp " + username + "@" + host + ":" + port + "?password=" + password, e);
+            if (log.isErrorEnabled()) {
+                log.error("sftp " + username + "@" + host + ":" + port + "?password=" + password, e);
             }
             return false;
         }
@@ -256,8 +257,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public void terminate() {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "terminate"));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "terminate"));
         }
 
         if (this.channel != null) {
@@ -285,8 +286,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public boolean mkdir(String filepath) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "mkdir " + filepath));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "mkdir " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -314,8 +315,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public boolean cd(String filepath) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "cd " + filepath));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "cd " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -324,8 +325,8 @@ public class SftpCommand implements OSFtpCommand {
             sftp.cd(filepath);
             return true;
         } catch (SftpException e) {
-            if (STD.out.isErrorEnabled()) {
-                STD.out.error("cd " + filepath + " fail!", e);
+            if (log.isErrorEnabled()) {
+                log.error("cd " + filepath + " fail!", e);
             }
             return false;
         } finally {
@@ -334,8 +335,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public boolean rm(String filepath) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "rm " + filepath));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "rm " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -369,8 +370,8 @@ public class SftpCommand implements OSFtpCommand {
                 if (cfile.isDirectory()) {
                     this.rmfile(sftp, cfile.getAbsolutePath());
                 } else {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug("rm " + cfile.getAbsolutePath());
+                    if (log.isDebugEnabled()) {
+                        log.debug("rm " + cfile.getAbsolutePath());
                     }
                     sftp.rm(cfile.getAbsolutePath());
                 }
@@ -382,8 +383,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public String pwd() {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "pwd"));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "pwd"));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -397,8 +398,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public List<OSFile> ls(String filepath) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "ls " + filepath));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "ls " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -424,8 +425,8 @@ public class SftpCommand implements OSFtpCommand {
                     ChannelSftp.LsEntry entry = (ChannelSftp.LsEntry) it.next();
                     OSFile file = this.toOSFile(entry.getFilename(), filepath, entry.getAttrs(), entry.getLongname());
                     if (!LinuxLocalOS.KEY_FILENAMES.contains(file.getName())) {
-                        if (STD.out.isDebugEnabled()) {
-                            STD.out.debug("ls result: " + file.toString());
+                        if (log.isDebugEnabled()) {
+                            log.debug("ls result: " + file.toString());
                         }
                         list.add(file);
                     }
@@ -434,8 +435,8 @@ public class SftpCommand implements OSFtpCommand {
                 filepath = this.toFilepath(filepath);
                 OSFile file = this.toOSFile(FileUtils.getFilename(filepath), FileUtils.getParent(filepath), stat, null);
                 if (!LinuxLocalOS.KEY_FILENAMES.contains(file.getName())) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug("ls result: " + file.toString());
+                    if (log.isDebugEnabled()) {
+                        log.debug("ls result: " + file.toString());
                     }
                     list.add(file);
                 }
@@ -481,8 +482,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public boolean upload(File localFile, String remoteDir) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "upload " + localFile + " " + remoteDir));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "upload " + localFile + " " + remoteDir));
         }
 
         if (localFile == null || !localFile.exists()) {
@@ -517,13 +518,13 @@ public class SftpCommand implements OSFtpCommand {
             String remotedir = FileUtils.rtrimFolderSeparator(filepath) + "/" + localfile.getName();
             OSFile file = this.toOSFile(sftp, remotedir);
             if (file == null) {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug("uploadfile & mkdir " + remotedir);
+                if (log.isDebugEnabled()) {
+                    log.debug("uploadfile & mkdir " + remotedir);
                 }
                 sftp.mkdir(remotedir);
             } else if (!file.isDirectory()) {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug("uploadfile & rm & mkdir " + remotedir);
+                if (log.isDebugEnabled()) {
+                    log.debug("uploadfile & rm & mkdir " + remotedir);
                 }
                 sftp.rm(remotedir);
                 sftp.mkdir(remotedir);
@@ -535,8 +536,8 @@ public class SftpCommand implements OSFtpCommand {
             boolean flag = true;
             File[] files = FileUtils.array(localfile.listFiles());
             for (File cfile : files) {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug("uploadfile " + cfile + " " + remotedir + " ..");
+                if (log.isDebugEnabled()) {
+                    log.debug("uploadfile " + cfile + " " + remotedir + " ..");
                 }
                 if (!this.uploadfile(sftp, cfile, remotedir, monitor, mode)) {
                     flag = false;
@@ -550,8 +551,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public boolean rename(String filepath, String newfilepath) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "rename " + filepath + " " + newfilepath));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "rename " + filepath + " " + newfilepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -571,8 +572,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public File download(String filepath, File localDir) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "download " + filepath + " " + localDir));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "download " + filepath + " " + localDir));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -612,16 +613,16 @@ public class SftpCommand implements OSFtpCommand {
             List<OSFile> list = this.ls(sftp, filepath);
             for (OSFile cfile : list) {
                 if (cfile.isDirectory()) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug("downfile " + cfile.getAbsolutePath() + " " + localfile.getAbsolutePath());
+                    if (log.isDebugEnabled()) {
+                        log.debug("downfile " + cfile.getAbsolutePath() + " " + localfile.getAbsolutePath());
                     }
 
                     if (this.downfile(sftp, cfile.getAbsolutePath(), localfile) == null) {
                         return null;
                     }
                 } else {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug("downfile " + cfile.getAbsolutePath() + " " + localfile.getAbsolutePath());
+                    if (log.isDebugEnabled()) {
+                        log.debug("downfile " + cfile.getAbsolutePath() + " " + localfile.getAbsolutePath());
                     }
                     this.writefile(sftp, cfile.getAbsolutePath(), new File(localfile, cfile.getName()));
                 }
@@ -658,8 +659,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public String read(String filepath, String charsetName, int lineno) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "read " + filepath + " " + charsetName + " " + lineno));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "read " + filepath + " " + charsetName + " " + lineno));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -684,8 +685,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public boolean write(String filepath, String charsetName, boolean append, CharSequence content) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "write " + filepath + " " + append + " " + content));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "write " + filepath + " " + append + " " + content));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -714,8 +715,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public boolean copy(String filepath, String directory) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "copy " + filepath + " " + directory));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "copy " + filepath + " " + directory));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -744,8 +745,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public List<OSFile> find(String filepath, String name, char type, OSFileFilter filter) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "find " + filepath + " " + name + " " + type + " " + filter));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "find " + filepath + " " + name + " " + type + " " + filter));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -764,8 +765,8 @@ public class SftpCommand implements OSFtpCommand {
         if (this.isDirectory(filepath)) {
             List<OSFile> files = this.ls(sftp, filepath);
             for (OSFile file : files) {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug("find " + file.getParent() + "/" + file.getName() + " -> " + name);
+                if (log.isDebugEnabled()) {
+                    log.debug("find " + file.getParent() + "/" + file.getName() + " -> " + name);
                 }
 
                 if (file.isDirectory()) {
@@ -809,8 +810,8 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public void setCharsetName(String charsetName) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug("set " + SftpCommand.class.getSimpleName() + " charset = " + charsetName);
+        if (log.isDebugEnabled()) {
+            log.debug("set " + SftpCommand.class.getSimpleName() + " charset = " + charsetName);
         }
 
         this.charsetName = charsetName;
@@ -828,8 +829,8 @@ public class SftpCommand implements OSFtpCommand {
     public void close() {
         try {
             if (this.channel != null) {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "bye"));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "bye"));
                 }
                 this.channel.closeSftp();
             }
@@ -839,54 +840,4 @@ public class SftpCommand implements OSFtpCommand {
             this.closeSession();
         }
     }
-}
-
-class JschChannel {
-    protected Channel sftp;
-    protected boolean isTmp;
-    private String charset;
-
-    public JschChannel(Channel sftp, boolean isTmp) {
-        super();
-        this.sftp = sftp;
-        this.isTmp = isTmp;
-    }
-
-    public ChannelSftp getSftp(String charsetName) {
-        ChannelSftp channel = (ChannelSftp) this.sftp;
-        if (channel != null && StringUtils.isNotBlank(charsetName) && !charsetName.equals(this.charset)) {
-            try {
-                channel.setFilenameEncoding(charsetName);
-                this.charset = charsetName;
-            } catch (SftpException e) {
-                throw new OSFileCommandException(charsetName, e);
-            }
-        }
-        return channel;
-    }
-
-    public boolean isConnected() {
-        return this.sftp != null && this.sftp.isConnected();
-    }
-
-    public ChannelExec getExec() {
-        return (ChannelExec) sftp;
-    }
-
-    public void closeSftp() {
-        if (this.sftp != null) {
-            this.sftp.disconnect();
-            this.sftp = null;
-        }
-    }
-
-    /**
-     * If it is a temporary channel, close the channel
-     */
-    public void closeTempChannel() {
-        if (this.isTmp) {
-            this.closeSftp();
-        }
-    }
-
 }

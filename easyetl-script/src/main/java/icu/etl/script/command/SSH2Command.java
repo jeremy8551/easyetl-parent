@@ -60,7 +60,7 @@ public class SSH2Command extends AbstractTraceCommand implements JumpCommandSupp
         }
 
         // 登陆服务器执行命令
-        this.client = context.getFactory().getContext().getBean(OSSecureShellCommand.class);
+        this.client = context.getContainer().getBean(OSSecureShellCommand.class);
         try {
             if (!this.client.connect(host, Integer.parseInt(port), username, password)) {
                 stderr.println(ResourcesUtils.getScriptStderrMessage(38, "ssh2"));

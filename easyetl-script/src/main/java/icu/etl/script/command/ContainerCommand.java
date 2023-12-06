@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import icu.etl.concurrent.ExecutorContainer;
+import icu.etl.concurrent.EasyJobService;
+import icu.etl.concurrent.ThreadSource;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -33,7 +34,7 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
     private List<UniversalScriptCommand> cmdlist;
 
     /** 运行容器 */
-    private ExecutorContainer container;
+    private EasyJobService container;
 
     public ContainerCommand(UniversalCommandCompiler compiler, String command, Map<String, String> attributes, List<UniversalScriptCommand> cmdlist) {
         super(compiler, command);
@@ -54,18 +55,18 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
 
         ScriptContainerReader in = new ScriptContainerReader(session, context, stdout, stderr, this);
         try {
-            this.container = new ExecutorContainer(in);
-            if (this.container.execute(number) == 0) {
+            this.container = context.getContainer().getBean(ThreadSource.class).getJobService(number);
+            if (this.container.execute(in) == 0) {
                 if (print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(47, this.container.getStartNumber(), watch.useTime()));
+                    stdout.println(ResourcesUtils.getScriptStdoutMessage(47, this.container.getStartJob(), watch.useTime()));
                 }
                 return 0;
             } else {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(105, this.container.getStartNumber(), this.container.getErrorNumber(), watch.useTime()));
+                stderr.println(ResourcesUtils.getScriptStderrMessage(105, this.container.getStartJob(), this.container.getErrorJob(), watch.useTime()));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
         } catch (Exception e) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(105, this.container.getStartNumber(), this.container.getErrorNumber(), watch.useTime()), e);
+            stderr.println(ResourcesUtils.getScriptStderrMessage(105, this.container.getStartJob(), this.container.getErrorJob(), watch.useTime()), e);
             return UniversalScriptCommand.COMMAND_ERROR;
         } finally {
             in.close();
@@ -76,15 +77,6 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
         if (this.container != null) {
             this.container.terminate();
         }
-    }
-
-    /**
-     * 返回容器的所有参数
-     *
-     * @return
-     */
-    public Map<String, String> getAttributes() {
-        return attributes;
     }
 
     /**

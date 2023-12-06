@@ -3,7 +3,14 @@ package icu.etl.ioc;
 import java.util.ArrayList;
 import java.util.List;
 
+import icu.etl.ioc.impl.EasyBeanFactoryImpl;
+import icu.etl.ioc.impl.EasyBeanInfoImpl;
+import icu.etl.ioc.scan.BeanClassScanner;
+import icu.etl.ioc.scan.BeanSpiScanner;
+import icu.etl.ioc.scan.EasyScanPatternList;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Ensure;
+import icu.etl.util.Settings;
 
 /**
  * 容器上下文信息
@@ -18,20 +25,23 @@ public class EasyBeanContext implements EasyContext {
     /** 启动参数 */
     private String[] args;
 
-    /** 组件工厂集合 */
-    private IocContextManager iocs;
+    /** Ioc容器管理器 */
+    private ContainerContextManager iocManager;
 
-    /** 组件（接口或类）与实现类的映射关系 */
-    private BeanInfoTable beans;
+    /** 组件信息表 */
+    private EasyBeanTable table;
 
-    /** 组件接口与组件工厂类映射关系 */
+    /** 单个组件的构建工厂 */
     private BeanBuilderManager builders;
 
-    /** 组件构造方法的工具 */
-    private BeanFactoryImpl factory;
+    /** 所有组件的实例化工厂 */
+    private EasyBeanFactoryImpl factory;
 
-    /** 监听器管理 */
-    private BeanEventManager listeners;
+    /** 事件管理器 */
+    private BeanEventManager eventManager;
+
+    /** 上级容器 */
+    private EasyContext parent;
 
     /**
      * 上下文信息
@@ -70,11 +80,19 @@ public class EasyBeanContext implements EasyContext {
      */
     public EasyBeanContext(ClassLoader classLoader) {
         this.setClassLoader(classLoader);
-        this.iocs = new IocContextManager(this);
-        this.factory = new BeanFactoryImpl(this);
-        this.beans = new BeanInfoTable(this);
-        this.listeners = new BeanEventManager(this);
+        this.iocManager = new ContainerContextManager(this);
+        this.factory = new EasyBeanFactoryImpl(this);
+        this.table = new EasyBeanTable(this);
+        this.eventManager = new BeanEventManager(this);
         this.builders = new BeanBuilderManager(this);
+    }
+
+    public EasyContext getParent() {
+        return parent;
+    }
+
+    public void setParent(EasyContext parent) {
+        this.parent = parent;
     }
 
     public void setClassLoader(ClassLoader classLoader) {
@@ -95,12 +113,12 @@ public class EasyBeanContext implements EasyContext {
         this.args = args;
     }
 
-    public synchronized IocContext removeIoc(String name) {
-        return this.iocs.remove(name);
+    public synchronized EasyContainerContext removeIoc(String name) {
+        return this.iocManager.remove(name);
     }
 
-    public synchronized IocContext addIoc(IocContext ioc) {
-        return this.iocs.add(ioc);
+    public synchronized EasyContainerContext addIoc(EasyContainerContext ioc) {
+        return this.iocManager.add(ioc);
     }
 
     public <E> E createBean(Class<?> type, Object... args) {
@@ -108,49 +126,54 @@ public class EasyBeanContext implements EasyContext {
     }
 
     public synchronized void removeBeanInfo() {
-        this.beans.clear();
+        this.table.clear();
         this.builders.clear();
-        this.listeners.clear();
+        this.eventManager.clear();
     }
 
     public synchronized int loadBeanInfo(String... args) {
-        BeanInfoScanner scanner = new BeanInfoScanner();
-        int beans = scanner.load(this, args);
-        this.beans.refresh(); // 刷新组件信息
-        return beans;
+        // SPI扫描
+        BeanSpiScanner scanner1 = new BeanSpiScanner();
+        int load1 = scanner1.load(this);
+
+        // 类扫描
+        BeanClassScanner scanner2 = new BeanClassScanner();
+        int load2 = scanner2.load(this, args);
+
+        // 刷新
+        this.table.refresh();
+        return load1 + load2;
     }
 
-    public BeanInfoRegister getBeanInfo(Class<?> type, String name) {
-        if (type == null) {
-            throw new NullPointerException();
-        }
-        return this.beans.get(type).indexOf(name).getBeanInfo();
+    public EasyBeanInfoValue getBeanInfo(Class<?> type, String name) {
+        Ensure.notNull(type);
+        return this.table.get(type).indexOf(name).getBeanInfo();
     }
 
     public <E> E getBean(Class<E> type, Object... args) {
-        return this.iocs.getBean(type, args);
+        return this.iocManager.getBean(type, args);
     }
 
     public boolean addBean(Class<?> type) {
-        return this.addBean(new EasyBeanInfo(type));
+        return this.addBean(new EasyBeanInfoImpl(type));
     }
 
-    public synchronized boolean addBean(BeanInfoRegister beanInfo) {
+    public synchronized boolean addBean(EasyBeanInfoValue beanInfo) {
         if (beanInfo == null) {
             return false;
         }
 
         boolean add = false;
         Class<?> cls = beanInfo.getType();
-        if (this.builders.add(cls, this.listeners)) {
+        if (this.builders.add(cls, this.eventManager)) {
             add = true;
         }
 
         // 添加类和父类 与实现类的映射关系
         Class<?> supercls = cls;
         while (supercls != null && !supercls.equals(Object.class)) {
-            if (this.beans.get(supercls).push(beanInfo)) {
-                this.listeners.addBeanEvent(beanInfo);
+            if (this.table.get(supercls).push(beanInfo)) {
+                this.eventManager.addBeanEvent(beanInfo);
                 add = true;
             }
             supercls = supercls.getSuperclass();
@@ -159,57 +182,54 @@ public class EasyBeanContext implements EasyContext {
         // 添加接口与实现类的映射关系
         List<Class<?>> interfaces = ClassUtils.getAllInterface(cls, null);
         for (Class<?> type : interfaces) {
-            if (this.beans.get(type).push(beanInfo)) {
-                this.listeners.addBeanEvent(beanInfo);
+            if (this.table.get(type).push(beanInfo)) {
+                this.eventManager.addBeanEvent(beanInfo);
                 add = true;
             }
         }
         return add;
     }
 
-    public synchronized List<BeanInfo> removeBeanInfoList(Class<?> type) {
-        return new ArrayList<BeanInfo>(this.beans.remove(type));
+    public synchronized List<EasyBeanInfo> removeBeanInfoList(Class<?> type) {
+        return new ArrayList<EasyBeanInfo>(this.table.remove(type));
     }
 
     public boolean containsBeanInfo(Class<?> type, Class<?> cls) {
-        return this.beans.get(type).contains(cls);
+        return this.table.get(type).contains(cls);
     }
 
-    public List<BeanInfo> getBeanInfoList(Class<?> type) {
-        return new ArrayList<BeanInfo>(this.beans.get(type));
+    public List<EasyBeanInfo> getBeanInfoList(Class<?> type) {
+        return new ArrayList<EasyBeanInfo>(this.table.get(type));
     }
 
-    public List<BeanInfo> getBeanInfoList(Class<?> type, String name) {
-        if (type == null) {
-            throw new NullPointerException();
-        }
-        return new ArrayList<BeanInfo>(this.beans.get(type).indexOf(name));
+    public List<EasyBeanInfo> getBeanInfoList(Class<?> type, String name) {
+        Ensure.notNull(type);
+        return new ArrayList<EasyBeanInfo>(this.table.get(type).indexOf(name));
     }
 
     public List<Class<?>> getBeanInfoTypes() {
-        return new ArrayList<Class<?>>(this.beans.keySet());
+        return new ArrayList<Class<?>>(this.table.keySet());
     }
 
     public List<Class<?>> getBeanBuilderType() {
         return new ArrayList<Class<?>>(this.builders.keySet());
     }
 
-    public BeanBuilder<?> getBeanBuilder(Class<?> type) {
+    public EasyBeanBuilder<?> getBeanBuilder(Class<?> type) {
         return this.builders.get(type);
     }
 
-    public synchronized BeanBuilder<?> removeBeanBuilder(Class<?> type) {
+    public synchronized EasyBeanBuilder<?> removeBeanBuilder(Class<?> type) {
         return this.builders.remove(type);
     }
 
-    public synchronized boolean addBeanBuilder(Class<?> type, BeanBuilder<?> builder) {
-        if (type == null) {
-            throw new NullPointerException();
-        }
-        if (builder == null) {
-            throw new NullPointerException();
-        }
+    public synchronized boolean addBeanBuilder(Class<?> type, EasyBeanBuilder<?> builder) {
+        Ensure.notNull(type);
+        Ensure.notNull(builder);
         return this.builders.add(type, builder);
     }
 
+    public String getName() {
+        return Settings.getApplicationName();
+    }
 }

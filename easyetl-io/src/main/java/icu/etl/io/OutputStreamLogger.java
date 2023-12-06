@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import icu.etl.collection.ByteBuffer;
 import icu.etl.log.Log;
-import icu.etl.util.Charset;
+import icu.etl.util.CharsetName;
 import icu.etl.util.StringUtils;
 
 /**
@@ -14,7 +14,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2018-05-03
  */
-public class OutputStreamLogger extends OutputStream implements Charset {
+public class OutputStreamLogger extends OutputStream implements CharsetName {
 
     /** 输出接口 */
     protected Log log;

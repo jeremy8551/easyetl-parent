@@ -13,6 +13,18 @@
     <artifactId>easyetl-logger</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-tool</artifactId>
+        </dependency>
+
+        <!-- 测试包 -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- slf4j日志门面 -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -24,12 +36,16 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
             <optional>true</optional>
         </dependency>
 
+        <!-- log4j的适配器 -->
         <dependency>
-            <groupId>icu.etl</groupId>
-            <artifactId>easyetl-tool</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.api.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

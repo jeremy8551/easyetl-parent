@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import icu.etl.concurrent.ExecutorMessage;
+import icu.etl.concurrent.EasyJobMessage;
 import icu.etl.database.DatabaseTableColumn;
 import icu.etl.io.TextTableFile;
 import icu.etl.util.Attribute;
@@ -21,7 +21,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-18
  */
-public class LoadFileMessage extends ExecutorMessage {
+public class LoadFileMessage extends EasyJobMessage {
 
     /**
      * 初始化
@@ -45,9 +45,9 @@ public class LoadFileMessage extends ExecutorMessage {
         File parent = file.getFile().getParentFile(); // 消息文件默认与数据文件在相同目录
         Attribute<String> attributes = context.getAttributes();
         if (attributes.contains("message")) {
-            String msfilepath = attributes.getAttribute("message");
-            File msgfile = new File(msfilepath);
-            if (msfilepath.endsWith("/") || msfilepath.endsWith("\\")) {
+            String msgfilepath = attributes.getAttribute("message");
+            File msgfile = new File(msgfilepath);
+            if (msgfilepath.endsWith("/") || msgfilepath.endsWith("\\")) {
                 parent = msgfile;
             } else {
                 return msgfile;
@@ -209,7 +209,7 @@ public class LoadFileMessage extends ExecutorMessage {
      *
      * @param file 数据文件
      */
-    public void setFilepath(TextTableFile file) {
+    public void setFile(TextTableFile file) {
         this.setAttribute("filePath", file == null ? "" : file.getAbsolutePath());
     }
 
@@ -218,7 +218,7 @@ public class LoadFileMessage extends ExecutorMessage {
      *
      * @return
      */
-    public String getFilepath() {
+    public String getFile() {
         return this.getAttribute("filePath");
     }
 

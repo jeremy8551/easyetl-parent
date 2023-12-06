@@ -2,8 +2,6 @@ package icu.etl.ioc;
 
 import java.util.List;
 
-import icu.etl.log.Log;
-import icu.etl.log.LogFactory;
 import icu.etl.test.bean.TestLoader;
 import icu.etl.test.impl.TestLoader2;
 import icu.etl.test.impl.sec1.TestLoader1;
@@ -15,10 +13,10 @@ public class ClassScannerTest {
     @Test
     public void test() {
         EasyBeanContext context = new EasyBeanContext("sout:debug,!org.apache,!icu.etl.test.impl.sec1,");
-        List<BeanInfo> list = context.getBeanInfoList(TestLoader.class);
+        List<EasyBeanInfo> list = context.getBeanInfoList(TestLoader.class);
         boolean exists = false;
         boolean exists1 = false;
-        for (BeanInfo anno : list) {
+        for (EasyBeanInfo anno : list) {
             if (anno.getType().equals(TestLoader1.class)) {
                 exists = true;
             }
@@ -34,7 +32,7 @@ public class ClassScannerTest {
         exists = false;
         exists1 = false;
         list = context.getBeanInfoList(TestLoader.class);
-        for (BeanInfo anno : list) {
+        for (EasyBeanInfo anno : list) {
             if (anno.getType().equals(TestLoader1.class)) {
                 exists = true;
             }
@@ -44,9 +42,6 @@ public class ClassScannerTest {
         }
         Assert.assertTrue(exists);
         Assert.assertTrue(exists1);
-
-        Log log = LogFactory.getLog(ClassScannerTest.class);
-        log.info("test 测试!");
     }
 
 }

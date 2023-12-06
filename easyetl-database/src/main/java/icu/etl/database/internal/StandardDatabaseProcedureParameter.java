@@ -5,9 +5,10 @@ import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseProcedure;
 import icu.etl.database.DatabaseProcedureParameter;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.Dates;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.Settings;
@@ -20,6 +21,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2018-05-09
  */
 public class StandardDatabaseProcedureParameter implements DatabaseProcedureParameter {
+    private final static Log log = LogFactory.getLog(StandardDatabaseProcedureParameter.class);
 
     /** 存储过程名 */
     private String procedureName;
@@ -456,8 +458,8 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
                 throw new UnsupportedOperationException(String.valueOf(type));
 
             default:
-                if (DB.out.isWarnEnabled()) {
-                    DB.out.warn(ResourcesUtils.getDatabaseMessage(14, type));
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getDatabaseMessage(14, type));
                 }
 
                 statement.setString(this.getPlaceholder(), StringUtils.unquotation(expression));

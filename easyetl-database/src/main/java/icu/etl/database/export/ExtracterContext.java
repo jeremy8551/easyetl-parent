@@ -16,7 +16,7 @@ import icu.etl.printer.Progress;
  */
 public class ExtracterContext {
 
-    private Extracter extracter;
+    private ExportEngine extracter;
     private List<UserListener> listener;
     private JdbcConverterMapper converters;
     private TextTable format;
@@ -42,7 +42,7 @@ public class ExtracterContext {
      *
      * @param parent
      */
-    public ExtracterContext(Extracter parent) {
+    public ExtracterContext(ExportEngine parent) {
         this.extracter = parent;
     }
 
@@ -51,7 +51,7 @@ public class ExtracterContext {
      *
      * @return
      */
-    public Extracter getExtracter() {
+    public ExportEngine getExtracter() {
         return extracter;
     }
 
@@ -60,7 +60,7 @@ public class ExtracterContext {
      *
      * @param extracter
      */
-    protected void setExtracter(Extracter extracter) {
+    protected void setExtracter(ExportEngine extracter) {
         this.extracter = extracter;
     }
 

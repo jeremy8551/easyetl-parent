@@ -3,7 +3,7 @@ package icu.etl.script.method;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.annotation.ScriptVariableFunction;
+import icu.etl.annotation.ScriptFunction;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -18,7 +18,7 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@ScriptVariableFunction(name = "[")
+@ScriptFunction(name = "[")
 public class ElementMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws IOException, SQLException {

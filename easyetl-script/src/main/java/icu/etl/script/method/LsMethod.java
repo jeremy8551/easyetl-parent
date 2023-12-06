@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.annotation.ScriptVariableFunction;
+import icu.etl.annotation.ScriptFunction;
 import icu.etl.os.linux.LinuxLocalOS;
 import icu.etl.os.linux.Linuxs;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -18,7 +18,7 @@ import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
-@ScriptVariableFunction(name = "ls")
+@ScriptFunction(name = "ls")
 public class LsMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws IOException, SQLException {
@@ -64,7 +64,7 @@ public class LsMethod extends AbstractMethod {
                 table.addCell(Linuxs.toLongname(file));
             }
 
-            this.value = table.toSimpleShape().ltrim().toString();
+            this.value = table.toString(CharTable.Style.simple);
             int next = end + 1;
             return this.executeNextMethod(session, context, stdout, stderr, analysis, variableName, methodHandle, this.value, next);
         } else {

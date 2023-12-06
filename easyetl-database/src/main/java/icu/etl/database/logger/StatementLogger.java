@@ -5,7 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
-import icu.etl.database.DB;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
@@ -17,6 +18,7 @@ import icu.etl.util.TimeWatch;
  * @createtime 2011-09-23
  */
 public class StatementLogger implements InvocationHandler {
+    private final static Log log = LogFactory.getLog(StatementLogger.class);
 
     /** 被代理的 Statement 对象 */
     private Object statement;
@@ -58,14 +60,14 @@ public class StatementLogger implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (DB.out.isInfoEnabled()) {
-            DB.out.info(ResourcesUtils.getDatabaseMessage(35, this.id, this.statement.getClass().getName(), StringUtils.toString(method), Arrays.toString(args)));
+        if (log.isInfoEnabled()) {
+            log.info(ResourcesUtils.getDatabaseMessage(35, this.id, this.statement.getClass().getName(), StringUtils.toString(method), Arrays.toString(args)));
         }
 
         this.watch.start();
         Object value = method.invoke(this.statement, args);
-        if (DB.out.isInfoEnabled()) {
-            DB.out.info(ResourcesUtils.getDatabaseMessage(36, this.id, this.statement.getClass().getName(), StringUtils.toString(method), value, this.watch.useTime()));
+        if (log.isInfoEnabled()) {
+            log.info(ResourcesUtils.getDatabaseMessage(36, this.id, this.statement.getClass().getName(), StringUtils.toString(method), value, this.watch.useTime()));
         }
         return value;
     }

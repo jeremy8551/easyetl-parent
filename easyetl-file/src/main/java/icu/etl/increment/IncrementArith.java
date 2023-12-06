@@ -2,8 +2,8 @@ package icu.etl.increment;
 
 import java.io.IOException;
 
+import icu.etl.concurrent.Terminate;
 import icu.etl.io.TextTableFileReader;
-import icu.etl.util.Terminate;
 
 /**
  * 增量剥离算法

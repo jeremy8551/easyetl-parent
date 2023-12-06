@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import icu.etl.concurrent.Executor;
-import icu.etl.concurrent.ExecutorContainer;
-import icu.etl.concurrent.ExecutorReader;
-import icu.etl.jdk.JavaDialectFactory;
-import icu.etl.log.STD;
+import icu.etl.concurrent.AbstractJob;
+import icu.etl.concurrent.EasyJob;
+import icu.etl.concurrent.EasyJobReader;
+import icu.etl.concurrent.ThreadSource;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.Numbers;
 import icu.etl.util.ResourcesUtils;
@@ -25,12 +27,24 @@ import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
 
 public class TextTableFileCounter {
+    private final static Log log = LogFactory.getLog(TextTableFileCounter.class);
 
     /** 单线程和多线程统计文本行数的阀值，小于阀值使用单线程统计，大于等于阀值使用多线程统计文本行数（阀值同时也作为每个临时文件的大小） */
     public static long UNIT = 1024 * 1024 * 1024; // 1GB
 
     /** 文件序号模版 */
     private static volatile int threadNoTemplate = 0;
+
+    /** 线程池 */
+    private ThreadSource threadSource;
+
+    /** 任务最大并发数 */
+    private int concurrernt;
+
+    public TextTableFileCounter(ThreadSource threadSource, int concurrernt) {
+        this.threadSource = Ensure.notNull(threadSource);
+        this.concurrernt = Ensure.isFromOne(concurrernt);
+    }
 
     /**
      * 快速统计文本文件行数, 统计规则如下: <br>
@@ -39,7 +53,7 @@ public class TextTableFileCounter {
      * @param file        文件
      * @param charsetName 文件字符集, 为空时取操作系统默认值
      * @return 文件中的行数
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     public long execute(File file, String charsetName) throws IOException {
         if (file == null) {
@@ -67,7 +81,7 @@ public class TextTableFileCounter {
      * @return 文件行数
      * @throws IOException 读取文件发生错误
      */
-    public long executeSerial(File file, String charsetName) throws IOException {
+    protected long executeSerial(File file, String charsetName) throws IOException {
         long count = 0;
         BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName), IO.FILE_BYTES_BUFFER_SIZE);
         try {
@@ -88,17 +102,9 @@ public class TextTableFileCounter {
      * @param readBuffer 输入流缓冲区长度，单位字符
      * @return 文件行数
      */
-    public long executeParallel(File file, long unit, int readBuffer) {
-        int thread = JavaDialectFactory.getDialect().getAvailableThreads();
-        if (thread < 3) {
-            thread = 3;
-        }
-        if (thread >= 7) {
-            thread = 7;
-        }
-
+    protected long executeParallel(File file, long unit, int readBuffer) {
         Long divide = Numbers.divide(file.length(), (long) 12);
-        long partSize = Math.max(divide.longValue(), 92160);
+        long partSize = Math.max(divide, 92160);
         if (partSize > unit) {
             partSize = unit;
         }
@@ -128,19 +134,17 @@ public class TextTableFileCounter {
             }
         }
 
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getIoxMessage(40, thread, list.size(), new BigDecimal(partSize), new BigDecimal(readBuffer)));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getIoxMessage(40, this.concurrernt, list.size(), new BigDecimal(partSize), new BigDecimal(readBuffer)));
         }
 
-        // 创建线程池
-        ExecutorContainer container = new ExecutorContainer(new ReadLineExecutorReader(list));
-        container.execute(thread);
+        // 并发统计行数
+        this.threadSource.getJobService(this.concurrernt).executeForce(new ReadLineExecutorReader(list));
 
         // 统计行数
         long total = 0;
         ReadLineExecutor last = null;
-        for (Iterator<ReadLineExecutor> it = list.iterator(); it.hasNext(); ) {
-            ReadLineExecutor obj = it.next();
+        for (ReadLineExecutor obj : list) {
             if (last != null) { // 如果上一个片段的最后一个字符是 \r 下一个片段的第一个字符是 \n 需要减掉一个换行符
                 if (last.getEndPointer() == '\r' && obj.getStartPointer() == '\n') {
                     total--;
@@ -157,22 +161,22 @@ public class TextTableFileCounter {
         return total;
     }
 
-    class ReadLineExecutor extends Executor {
+    static class ReadLineExecutor extends AbstractJob {
 
         /** 文件内的位置指针 */
-        private long filePointer;
+        private final long filePointer;
 
         /** 能读取地最大字节数 */
-        private long maxBytes;
+        private final long maxBytes;
 
         /** 文件 */
-        private File file;
+        private final File file;
 
         /** 已读取的文件总行数 */
         private long readLines;
 
         /** 缓冲区长度（读取文件时的缓冲区） */
-        private int bufferSize;
+        private final int bufferSize;
 
         /** 读取的第一个字节 */
         private byte firstChar;
@@ -210,14 +214,14 @@ public class TextTableFileCounter {
             this.filePointer = filePointer;
             this.maxBytes = maxByteSize;
 
-            if (STD.out.isTraceEnabled()) {
-                STD.out.trace(ResourcesUtils.getIoxMessage(41, this.getName(), filePointer, (filePointer + maxByteSize)));
+            if (log.isTraceEnabled()) {
+                log.trace(ResourcesUtils.getIoxMessage(41, this.getName(), filePointer, (filePointer + maxByteSize)));
             }
         }
 
-        public void execute() throws IOException {
-            if (STD.out.isTraceEnabled()) {
-                STD.out.trace(ResourcesUtils.getIoxMessage(42, this.getName()));
+        public int execute() throws IOException {
+            if (log.isTraceEnabled()) {
+                log.trace(ResourcesUtils.getIoxMessage(42, this.getName()));
             }
 
             TimeWatch tk = new TimeWatch();
@@ -226,8 +230,8 @@ public class TextTableFileCounter {
                 if (this.filePointer > 0) {
                     in.seek(this.filePointer);
 
-                    if (STD.out.isTraceEnabled()) {
-                        STD.out.trace(ResourcesUtils.getIoxMessage(43, this.getName(), this.filePointer));
+                    if (log.isTraceEnabled()) {
+                        log.trace(ResourcesUtils.getIoxMessage(43, this.getName(), this.filePointer));
                     }
                 }
 
@@ -236,7 +240,7 @@ public class TextTableFileCounter {
                 FileChannel channel = in.getChannel();
                 int length = channel.read(buffer);
                 if (length == -1) {
-                    return;
+                    return 0;
                 }
 
                 byte[] array = buffer.array();
@@ -290,9 +294,10 @@ public class TextTableFileCounter {
                     }
                 }
 
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getIoxMessage(44, this.getName(), this.readLines, tk.useTime()));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getIoxMessage(44, this.getName(), this.readLines, tk.useTime()));
                 }
+                return 0;
             } finally {
                 in.close();
             }
@@ -301,7 +306,7 @@ public class TextTableFileCounter {
         /**
          * 返回文件内部位置的指针
          *
-         * @return
+         * @return 指针
          */
         public long getFilePointer() {
             return filePointer;
@@ -310,7 +315,7 @@ public class TextTableFileCounter {
         /**
          * 返回已读取的最大字节数
          *
-         * @return
+         * @return 最大字节数
          */
         public long getMaxBytes() {
             return maxBytes;
@@ -319,7 +324,7 @@ public class TextTableFileCounter {
         /**
          * 返回文件
          *
-         * @return
+         * @return 文件
          */
         public File getFile() {
             return file;
@@ -328,38 +333,34 @@ public class TextTableFileCounter {
         /**
          * 返回已读行数
          *
-         * @return
+         * @return 已读行数
          */
         public long getLineNumber() {
             return readLines;
         }
 
         /**
-         * 返回起始位置信息，从0开始
+         * 返回起始位置，从0开始
          *
-         * @return
+         * @return 起始位置
          */
         public byte getStartPointer() {
             return this.firstChar;
         }
 
         /**
-         * 返回结束位置信息
+         * 返回结束位置
          *
-         * @return
+         * @return 结束位置
          */
         public byte getEndPointer() {
             return this.lastChar;
         }
-
-        public int getPRI() {
-            return 0;
-        }
     }
 
-    class ReadLineExecutorReader implements ExecutorReader {
+    static class ReadLineExecutorReader implements EasyJobReader {
 
-        private Iterator<ReadLineExecutor> it;
+        private final Iterator<ReadLineExecutor> it;
 
         private volatile boolean terminate;
 
@@ -375,7 +376,7 @@ public class TextTableFileCounter {
             return terminate;
         }
 
-        public Executor next() {
+        public EasyJob next() {
             return this.it.next();
         }
 

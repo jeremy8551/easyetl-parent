@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -12,6 +14,7 @@ import icu.etl.util.ResourcesUtils;
  * @author jeremy8551@qq.com
  */
 public class IncrementTableArith implements IncrementArith {
+    private final static Log log = LogFactory.getLog(IncrementTableArith.class);
 
     /** true 表示以终止任务 */
     private volatile boolean terminate;
@@ -53,15 +56,15 @@ public class IncrementTableArith implements IncrementArith {
                     return;
                 }
 
-                int c = rule.compareIndex(nl, ol);
-                if (c == 0) {
+                int v = rule.compareIndex(nl, ol);
+                if (v == 0) {
                     int p = rule.compareColumn(nl, ol);
                     if (p != 0) {
                         out.handleUpdateRecord(nl, ol, p);
                     }
                     nl = newIn.readLine();
                     ol = oldIn.readLine();
-                } else if (c < 0) {
+                } else if (v < 0) {
                     out.handleCreateRecord(nl);
                     nl = newIn.readLine();
                 } else {
@@ -88,7 +91,10 @@ public class IncrementTableArith implements IncrementArith {
                 ol = oldIn.readLine();
             }
         } catch (Throwable e) {
-            throw new IOException(ResourcesUtils.getIncrementMessage(72, newIn.getLineNumber(), oldIn.getLineNumber()), e);
+            if (log.isErrorEnabled()) {
+                log.error(e.getLocalizedMessage(), e);
+            }
+            throw new IOException(ResourcesUtils.getIncrementMessage(72, newIn.getLineNumber(), oldIn.getLineNumber()));
         } finally {
             oldIn.close();
             newIn.close();

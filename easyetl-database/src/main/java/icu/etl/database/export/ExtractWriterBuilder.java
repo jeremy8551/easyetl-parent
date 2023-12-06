@@ -10,7 +10,7 @@ import icu.etl.database.export.inernal.HttpRequestWriter;
 import icu.etl.database.export.inernal.SftpFileWriter;
 import icu.etl.expression.LoginExpression;
 import icu.etl.expression.StandardAnalysis;
-import icu.etl.ioc.BeanBuilder;
+import icu.etl.ioc.EasyBeanBuilder;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.StringUtils;
@@ -22,7 +22,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2021-02-18
  */
 @EasyBean
-public class ExtractWriterBuilder implements BeanBuilder<ExtractWriter> {
+public class ExtractWriterBuilder implements EasyBeanBuilder<ExtractWriter> {
 
     public ExtractWriter getBean(EasyContext context, Object... args) throws IOException, SQLException {
         ExtracterContext cxt = ArrayUtils.indexOf(args, ExtracterContext.class, 0);

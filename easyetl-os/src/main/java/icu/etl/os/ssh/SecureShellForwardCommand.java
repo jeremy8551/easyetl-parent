@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 
-import icu.etl.log.STD;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.os.OSException;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
 
 /**
  * SSH 端口转发协议的实现类
@@ -21,6 +22,7 @@ import com.jcraft.jsch.Session;
  * @createtime 2018-08-10
  */
 public class SecureShellForwardCommand implements OSConnectCommand {
+    private final static Log log = LogFactory.getLog(SecureShellForwardCommand.class);
 
     /** 超时时间，单位秒 */
     public static int CLOSE_PORTFORWARDLOCAL_TIMEOUT = 120;
@@ -85,7 +87,7 @@ public class SecureShellForwardCommand implements OSConnectCommand {
      */
     public void stdout(String str) throws IOException {
         if (this.stdout == null) {
-            STD.out.info(str);
+            log.info(str);
         } else {
             this.stdout.write(StringUtils.toBytes(str, this.charsetName));
             this.stdout.flush();
@@ -100,7 +102,9 @@ public class SecureShellForwardCommand implements OSConnectCommand {
      */
     public void stderr(String str, Throwable o) {
         if (this.stderr == null) {
-            STD.out.error(str);
+            if (log.isErrorEnabled()) {
+                log.error(str);
+            }
         } else {
             try {
                 this.stderr.write(StringUtils.toBytes(str, this.charsetName));
@@ -115,8 +119,8 @@ public class SecureShellForwardCommand implements OSConnectCommand {
     }
 
     public boolean connect(String proxyHost, int proxySSHPort, String proxySSHUsername, String proxySSHPassword) {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug("ssh " + proxySSHUsername + "@" + proxyHost + ":" + proxySSHPort + "?password=" + proxySSHPassword);
+        if (log.isDebugEnabled()) {
+            log.debug("ssh " + proxySSHUsername + "@" + proxyHost + ":" + proxySSHPort + "?password=" + proxySSHPassword);
         }
 
         try {
@@ -220,7 +224,7 @@ public class SecureShellForwardCommand implements OSConnectCommand {
                         break;
                     }
                 } catch (Throwable e) {
-                    STD.out.error("shutdown port forward local error!", e);
+                    log.error("shutdown port forward local error!", e);
                     if (watch.useSeconds() <= SecureShellForwardCommand.CLOSE_PORTFORWARDLOCAL_TIMEOUT) {
                         continue;
                     } else {

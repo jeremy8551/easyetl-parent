@@ -7,6 +7,8 @@ import icu.etl.database.DatabaseIndex;
 import icu.etl.database.DatabaseIndexList;
 import icu.etl.database.DatabaseTable;
 import icu.etl.database.JdbcDao;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -16,6 +18,7 @@ import icu.etl.util.ResourcesUtils;
  * @createtime 2021-06-16
  */
 public class LoadIndex {
+    private final static Log log = LogFactory.getLog(LoadIndex.class);
 
     /** 数据库表信息 */
     private DatabaseTable table;
@@ -51,8 +54,8 @@ public class LoadIndex {
             DatabaseIndexList list = this.table.getPrimaryIndexs();
             for (DatabaseIndex index : list) {
                 String sql = dao.dropPrimaryKey(index);
-                if (LoadEngine.out.isDebugEnabled()) {
-                    LoadEngine.out.debug(ResourcesUtils.getLoadMessage(13, context.getId(), sql));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getLoadMessage(13, context.getId(), sql));
                 }
             }
 
@@ -60,8 +63,8 @@ public class LoadIndex {
             DatabaseIndexList indexs = this.table.getIndexs();
             for (DatabaseIndex index : indexs) {
                 String sql = dao.dropIndex(index);
-                if (LoadEngine.out.isDebugEnabled()) {
-                    LoadEngine.out.debug(ResourcesUtils.getLoadMessage(13, context.getId(), sql));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getLoadMessage(13, context.getId(), sql));
                 }
             }
         } else {
@@ -83,8 +86,8 @@ public class LoadIndex {
             for (DatabaseIndex index : list) {
                 DatabaseDDL ddl = dao.toDDL(index, true);
                 for (String sql : ddl) {
-                    if (LoadEngine.out.isDebugEnabled()) {
-                        LoadEngine.out.debug(ResourcesUtils.getLoadMessage(14, context.getId(), sql));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getLoadMessage(14, context.getId(), sql));
                     }
                     dao.execute(sql);
                 }
@@ -95,8 +98,8 @@ public class LoadIndex {
             for (DatabaseIndex index : indexs) {
                 DatabaseDDL ddl = dao.toDDL(index, false);
                 for (String sql : ddl) {
-                    if (LoadEngine.out.isDebugEnabled()) {
-                        LoadEngine.out.debug(ResourcesUtils.getLoadMessage(14, context.getId(), sql));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getLoadMessage(14, context.getId(), sql));
                     }
                     dao.execute(sql);
                 }

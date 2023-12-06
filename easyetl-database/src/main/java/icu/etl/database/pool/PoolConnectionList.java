@@ -3,12 +3,15 @@ package icu.etl.database.pool;
 import java.sql.Connection;
 import java.util.Stack;
 
-import icu.etl.database.DB;
 import icu.etl.database.Jdbc;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 
 public class PoolConnectionList extends Stack<PoolConnection> {
+    private final static Log log = LogFactory.getLog(PoolConnectionList.class);
+
     private final static long serialVersionUID = 1L;
 
     public PoolConnectionList() {
@@ -25,8 +28,8 @@ public class PoolConnectionList extends Stack<PoolConnection> {
             if (proxy != null) {
                 Connection conn = proxy.getConnection();
                 if (Jdbc.canUseQuietly(conn)) {
-                    if (DB.out.isDebugEnabled()) {
-                        DB.out.debug(ResourcesUtils.getDataSourceMessage(9, proxy));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getDataSourceMessage(9, proxy));
                     }
 
                     try {

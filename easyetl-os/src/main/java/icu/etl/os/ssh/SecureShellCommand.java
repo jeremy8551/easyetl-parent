@@ -3,7 +3,6 @@ package icu.etl.os.ssh;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -15,8 +14,10 @@ import com.jcraft.jsch.UserInfo;
 import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.io.BufferedLineReader;
+import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextAware;
 import icu.etl.log.Log;
-import icu.etl.log.STD;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OSCommandException;
 import icu.etl.os.OSCommandStdouts;
 import icu.etl.os.OSConnectCommand;
@@ -27,6 +28,8 @@ import icu.etl.os.internal.OSCommandStdoutsImpl;
 import icu.etl.os.internal.OSCommandUtils;
 import icu.etl.time.Timer;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.CharsetName;
+import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -37,16 +40,11 @@ import icu.etl.util.TimeWatch;
 /**
  * SSH 协议的终端实现类
  */
-@EasyBean(name = "linux", description = "jsch-0.1.51")
-public class SecureShellCommand implements OSSecureShellCommand {
+@EasyBean(name = "linux", description = "jsch")
+public class SecureShellCommand implements OSSecureShellCommand, EasyContextAware {
+    private final static Log log = LogFactory.getLog(SecureShellCommand.class);
 
     public final static String charset = "charset";
-
-    /** 适配器 */
-    private SecureShellLogger adapter;
-
-    /** 日志接口 */
-    private Log log;
 
     /** ssh连接 */
     private JSch conn;
@@ -96,13 +94,14 @@ public class SecureShellCommand implements OSSecureShellCommand {
     /** 环境文件集合 */
     private List<String> envfiles;
 
+    /** 容器上下文信息 */
+    private EasyContext context;
+
     /**
      * 初始化
      */
     public SecureShellCommand() {
-        this.adapter = new SecureShellLogger();
-        this.log = this.adapter.getLog();
-        JSch.setLogger(this.adapter);
+        JSch.setLogger(new JschLogger());
         this.shellPrompt = "";
         this.stdoutLog = new ByteBuffer(300);
         this.stderrLog = new ByteBuffer(300);
@@ -114,13 +113,8 @@ public class SecureShellCommand implements OSSecureShellCommand {
         this.monitor = new SecureShellCommandMonitor();
     }
 
-    /**
-     * 返回终端的日志接口
-     *
-     * @return
-     */
-    protected Log getLog() {
-        return log;
+    public void setContext(EasyContext context) {
+        this.context = context;
     }
 
     /**
@@ -187,6 +181,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
                 this.session.disconnect();
             }
         } catch (Throwable e) {
+            if (log.isTraceEnabled()) {
+                log.trace(e.getLocalizedMessage(), e);
+            }
         }
 
         this.conn = new JSch();
@@ -215,6 +212,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
             try {
                 this.ftp.closeChannelSftp();
             } catch (Throwable e) {
+                if (log.isTraceEnabled()) {
+                    log.trace(e.getLocalizedMessage(), e);
+                }
             } finally {
                 this.ftp.setSession(this.session);
                 this.ftp.setRemoteServerName(this.connectInfo);
@@ -242,8 +242,8 @@ public class SecureShellCommand implements OSSecureShellCommand {
             String username = this.config.getProperty(OSConnectCommand.username);
             String password = this.config.getProperty(OSConnectCommand.password);
 
-            if (this.log.isDebugEnabled()) {
-                this.log.debug(ResourcesUtils.getSSH2JschMessage(17, host + ":" + port));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getSSH2JschMessage(17, host + ":" + port));
             }
 
             try {
@@ -251,6 +251,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
                     this.session.disconnect();
                 }
             } catch (Throwable e) {
+                if (log.isTraceEnabled()) {
+                    log.trace(e.getLocalizedMessage(), e);
+                }
             }
 
             this.conn = new JSch();
@@ -266,6 +269,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
                 try {
                     this.ftp.closeChannelSftp();
                 } catch (Throwable e) {
+                    if (log.isTraceEnabled()) {
+                        log.trace(e.getLocalizedMessage(), e);
+                    }
                 } finally {
                     this.ftp.setSession(this.session);
                     this.ftp.setRemoteServerName(this.connectInfo);
@@ -280,6 +286,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
         try {
             this.ftp.closeChannelSftp();
         } catch (Throwable e) {
+            if (log.isTraceEnabled()) {
+                log.trace(e.getLocalizedMessage(), e);
+            }
         }
 
         this.alive = false;
@@ -323,7 +332,7 @@ public class SecureShellCommand implements OSSecureShellCommand {
      * @return
      */
     public UserInfo getUserInfo(String username, String password) {
-        DefaultUserInfo user = new DefaultUserInfo(this.log);
+        DefaultUserInfo user = new DefaultUserInfo(log);
         user.setUsername(username);
         user.setPassword(password);
         return user;
@@ -367,14 +376,14 @@ public class SecureShellCommand implements OSSecureShellCommand {
             String[] array = this.parseSuCommand(command);
             if (array == null) {
                 String str = this.toShellCommand(command);
-                if (this.log.isDebugEnabled()) {
-                    this.log.debug(ResourcesUtils.getSSH2JschMessage(11, this.connectInfo, str));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getSSH2JschMessage(11, this.connectInfo, str));
                 }
                 channel.setCommand(str);
             } else {
                 String str = this.toShellCommand(array[0]);
-                if (this.log.isDebugEnabled()) {
-                    this.log.debug(ResourcesUtils.getSSH2JschMessage(11, this.connectInfo, str + " -> " + array[1]));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getSSH2JschMessage(11, this.connectInfo, str + " -> " + array[1]));
                 }
                 channel.setCommand(str);
                 OutputStream out = channel.getOutputStream();
@@ -396,8 +405,8 @@ public class SecureShellCommand implements OSSecureShellCommand {
 
             byte[] buffer = new byte[1024];
             while (true) {
-                if (this.log.isDebugEnabled() && watch.useSeconds() > 0 && watch.useSeconds() % 30 == 0) {
-                    this.log.debug(ResourcesUtils.getSSH2JschMessage(14, this.connectInfo, 30));
+                if (log.isDebugEnabled() && watch.useSeconds() > 0 && watch.useSeconds() % 30 == 0) {
+                    log.debug(ResourcesUtils.getSSH2JschMessage(14, this.connectInfo, 30));
                 }
 
                 if (this.terminate || !this.isConnected()) {
@@ -420,7 +429,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
                             outSideStdout.flush();
                         }
                     } catch (Throwable e) {
-                        this.log.error(ResourcesUtils.getSSH2JschMessage(2, this.stdoutLog.toString(this.getCharsetName())), e);
+                        if (log.isErrorEnabled()) {
+                            log.error(ResourcesUtils.getSSH2JschMessage(2, this.stdoutLog.toString(this.getCharsetName())), e);
+                        }
                     }
                 }
 
@@ -444,7 +455,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
                                 outSideStderr.flush();
                             }
                         } catch (Throwable e) {
-                            this.log.error(ResourcesUtils.getSSH2JschMessage(3, errorLog.toString(this.getCharsetName())), e);
+                            if (log.isErrorEnabled()) {
+                                log.error(ResourcesUtils.getSSH2JschMessage(3, errorLog.toString(this.getCharsetName())), e);
+                            }
                         }
                     }
 
@@ -456,7 +469,7 @@ public class SecureShellCommand implements OSSecureShellCommand {
                 }
 
                 this.startMonitor(watch.useSeconds());
-                Timer.sleep(1000);
+                Dates.sleep(1000);
             }
         } catch (Throwable e) {
             throw new OSCommandException(ResourcesUtils.getSSH2JschMessage(4, command), e);
@@ -467,9 +480,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
                 channel.disconnect();
             }
 
-            if (this.log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 String pid = this.config.getProperty("pid");
-                this.log.debug(ResourcesUtils.getSSH2JschMessage(15, (pid == null ? "" : pid), this.getStdout(), this.getStderr()));
+                log.debug(ResourcesUtils.getSSH2JschMessage(15, (pid == null ? "" : pid), this.getStdout(), this.getStderr()));
             }
         }
     }
@@ -482,7 +495,7 @@ public class SecureShellCommand implements OSSecureShellCommand {
             if (ca.length > 2 && ca[0].equalsIgnoreCase("su") && ca[1].equals("-")) {
                 String[] result = new String[2];
                 int index = command.indexOf(line);
-                Ensure.isPosition(index);
+                Ensure.isFromZero(index);
                 result[0] = command.substring(0, index + line.length());
                 result[1] = StringUtils.ltrimBlank(command.substring(index + line.length()), '&', '|', ';') + "; exit $?\n";
                 return result;
@@ -518,7 +531,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
                 this.timer.stop(true);
             }
         } catch (Exception e) {
-            this.log.error(ResourcesUtils.getSSH2JschMessage(10), e);
+            if (log.isErrorEnabled()) {
+                log.error(ResourcesUtils.getSSH2JschMessage(10), e);
+            }
         }
     }
 
@@ -535,18 +550,16 @@ public class SecureShellCommand implements OSSecureShellCommand {
         }
 
         String logstr = new String(array, 0, length);
-        int begin = 0, end = 0;
         String flagStr = "[ system shell pid is ";
-        if (logstr != null //
-                && (begin = logstr.indexOf(flagStr)) != -1 //
-                && (end = StringUtils.indexOfBlank(logstr, begin + flagStr.length(), -1)) != -1 //
-        ) {
+
+        int begin = 0, end = 0;
+        if ((begin = logstr.indexOf(flagStr)) != -1 && (end = StringUtils.indexOfBlank(logstr, begin + flagStr.length(), -1)) != -1) {
             int searchPos = begin + flagStr.length();
             String pid = logstr.substring(searchPos, end);
             if (StringUtils.isNotBlank(pid)) {
                 this.setPid(pid);
-                if (this.log.isDebugEnabled()) {
-                    this.log.debug(ResourcesUtils.getSSH2JschMessage(8, this.connectInfo, pid));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getSSH2JschMessage(8, this.connectInfo, pid));
                 }
 
                 int endPos = logstr.indexOf("]", searchPos);
@@ -639,7 +652,7 @@ public class SecureShellCommand implements OSSecureShellCommand {
     protected synchronized void init() throws OSCommandException, IOException {
         // 打印shell命令提示符
         this.execute("echo ''");
-        String str = this.stdoutLog.toString(StandardCharsets.ISO_8859_1.name());
+        String str = this.stdoutLog.toString(CharsetName.ISO_8859_1);
         this.shellPrompt = (str == null) ? "" : StringUtils.trimBlank(str);
 
         if (log.isDebugEnabled()) {
@@ -745,7 +758,9 @@ public class SecureShellCommand implements OSSecureShellCommand {
         try {
             return this.session != null && this.session.isConnected();
         } catch (Exception e) {
-            STD.out.error("isConnected() error!", e);
+            if (log.isErrorEnabled()) {
+                log.error("isConnected() error!", e);
+            }
             return false;
         }
     }
@@ -761,8 +776,8 @@ public class SecureShellCommand implements OSSecureShellCommand {
     /**
      * 用户登陆验证信息
      */
-    class DefaultUserInfo implements UserInfo {
-        private Log log;
+    static class DefaultUserInfo implements UserInfo {
+        private final Log log;
         private String username;
         private String password;
 
@@ -845,8 +860,8 @@ public class SecureShellCommand implements OSSecureShellCommand {
                 this.execute(command); // 执行命令
                 String stdout = this.getStdout(); // 标准输出
 
-                if (STD.out.isTraceEnabled()) {
-                    STD.out.trace(stdout);
+                if (log.isTraceEnabled()) {
+                    log.trace(stdout);
                 }
 
                 BufferedLineReader in = new BufferedLineReader(stdout);
@@ -862,8 +877,8 @@ public class SecureShellCommand implements OSSecureShellCommand {
             }
             return map;
         } else { // 如果执行合并命令报错则执行分布命令
-            if (STD.out.isTraceEnabled()) {
-                STD.out.trace(allStdout);
+            if (log.isTraceEnabled()) {
+                log.trace(allStdout);
             }
             return OSCommandUtils.splitMultiCommandStdout(allStdout);
         }

@@ -8,7 +8,7 @@ import icu.etl.util.CollectionUtils;
 import icu.etl.util.StringUtils;
 
 public class ScriptCatalog extends Hashtable<String, Properties> {
-    private static final long serialVersionUID = 1L;
+    private final static long serialVersionUID = 1L;
 
     public ScriptCatalog() {
         super();

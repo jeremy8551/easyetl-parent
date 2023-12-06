@@ -26,7 +26,7 @@ public class EchoCommandCompiler extends AbstractTraceCommandCompiler {
             return new EchoCommand(this, command, true);
         } else if (analysis.startsWith(str, "-n", 0, true)) {
             int index = str.indexOf("-n");
-            Ensure.isPosition(index);
+            Ensure.isFromZero(index);
             int next = index + 2;
             if (next >= str.length() || Character.isWhitespace(str.charAt(next))) {
                 str = str.substring(next + 1);

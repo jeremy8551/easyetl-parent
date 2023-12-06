@@ -3,7 +3,7 @@ package icu.etl.os;
 import java.io.IOException;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.ioc.BeanBuilder;
+import icu.etl.ioc.EasyBeanBuilder;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
 import icu.etl.os.linux.LinuxLocalOS;
@@ -16,21 +16,22 @@ import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
 
 @EasyBean
-public class OSBuilder implements BeanBuilder<OS> {
+public class OSBuilder implements EasyBeanBuilder<OS> {
 
     /**
      * 返回操作系统接口
      *
-     * @param args 登录参数，格式如下: <br>
-     *             localhost <br>
-     *             127.0.0.1 <br>
-     *             localhost 22 username password <br>
-     *             localhost username password <br>
-     *             127.0.0.1 22 username password <br>
-     *             192.168.1.2 username password <br>
-     *             192.168.1.2 username <br>
-     *             <br>
-     *             参数为空时，返回本地操作系统的接口
+     * @param context 容器上下文信息
+     * @param args    登录参数，格式如下: <br>
+     *                localhost <br>
+     *                127.0.0.1 <br>
+     *                localhost 22 username password <br>
+     *                localhost username password <br>
+     *                127.0.0.1 22 username password <br>
+     *                192.168.1.2 username password <br>
+     *                192.168.1.2 username <br>
+     *                <br>
+     *                参数为空时，返回本地操作系统的接口
      * @return 实例对象
      */
     public OS getBean(EasyContext context, Object... args) throws Exception {
@@ -39,7 +40,7 @@ public class OSBuilder implements BeanBuilder<OS> {
 
         for (Object obj : args) {
             if (obj instanceof Integer) { // 识别端口号
-                port = ((Integer) obj).intValue();
+                port = (Integer) obj;
                 continue;
             } else if (obj instanceof CharSequence) {
                 String str = StringUtils.trimBlank(obj.toString());
@@ -108,8 +109,8 @@ public class OSBuilder implements BeanBuilder<OS> {
      * @param port     访问端口
      * @param username 登录用户名
      * @param password 登录密码
-     * @return
-     * @throws IOException
+     * @return 实例对象
+     * @throws IOException 文件错误
      */
     private OS build(EasyContext context, String host, int port, String username, String password) throws IOException {
         if ((StringUtils.isBlank(host) || NetUtils.isLocalHost(host)) && (username == null || Settings.getUserName().equalsIgnoreCase(username))) {

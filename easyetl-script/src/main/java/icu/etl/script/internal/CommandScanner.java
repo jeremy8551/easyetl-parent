@@ -4,9 +4,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import icu.etl.annotation.ScriptCommand;
-import icu.etl.ioc.BeanInfo;
+import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyContext;
-import icu.etl.script.Script;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptCommand;
@@ -25,6 +26,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2021-02-09
  */
 public class CommandScanner {
+    private final static Log log = LogFactory.getLog(CommandScanner.class);
 
     /** 脚本引擎命令仓库 */
     private UniversalCommandRepository repository;
@@ -55,14 +57,14 @@ public class CommandScanner {
 
         // 显示所有已加载的脚本引擎命令
         EasyContext cxt = context.getFactory().getContext();
-        List<BeanInfo> beanList = cxt.getBeanInfoList(UniversalCommandCompiler.class);
-        for (BeanInfo beanInfo : beanList) {
+        List<EasyBeanInfo> beanList = cxt.getBeanInfoList(UniversalCommandCompiler.class);
+        for (EasyBeanInfo beanInfo : beanList) {
             Class<? extends UniversalCommandCompiler> cls = beanInfo.getType();
             try {
                 this.loadScriptCommand(cls);
             } catch (Throwable e) {
-                if (Script.out.isWarnEnabled()) {
-                    Script.out.warn(ResourcesUtils.getClassMessage(18, cls.getName()), e);
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getClassMessage(18, cls.getName()), e);
                 }
             }
         }
@@ -84,8 +86,8 @@ public class CommandScanner {
             String[] words = StringUtils.trimBlank(anno.keywords());
 
             if (StringUtils.isBlank(names)) {
-                if (Script.out.isWarnEnabled()) {
-                    Script.out.warn(ResourcesUtils.getScriptStderrMessage(48, cls.getName(), ScriptCommand.class.getName(), "name"));
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getScriptStderrMessage(48, cls.getName(), ScriptCommand.class.getName(), "name"));
                 }
                 return;
             }
@@ -94,8 +96,8 @@ public class CommandScanner {
             try {
                 compiler = this.context.getFactory().getContext().createBean(cls);
             } catch (Exception e) {
-                if (Script.out.isWarnEnabled()) {
-                    Script.out.warn(ResourcesUtils.getClassMessage(12, cls.getName()), e);
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getClassMessage(12, cls.getName()), e);
                 }
                 return;
             }
@@ -109,8 +111,8 @@ public class CommandScanner {
 
             this.repository.add(names, compiler);
 
-            if (Script.out.isDebugEnabled()) {
-                Script.out.debug(ResourcesUtils.getScriptStdoutMessage(50, cls.getName()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getScriptStdoutMessage(50, cls.getName()));
             }
 
             // 关键字
@@ -118,8 +120,8 @@ public class CommandScanner {
                 this.factory.getKeywords().add(key);
             }
         } else {
-            if (Script.out.isDebugEnabled()) { // 只有调试模式才会打印警告
-                Script.out.warn(ResourcesUtils.getScriptStderrMessage(52, cls.getName(), UniversalScriptCommand.class.getName(), ScriptCommand.class.getName()));
+            if (log.isDebugEnabled()) { // 只有调试模式才会打印警告
+                log.warn(ResourcesUtils.getScriptStderrMessage(52, cls.getName(), UniversalScriptCommand.class.getName(), ScriptCommand.class.getName()));
             }
         }
     }

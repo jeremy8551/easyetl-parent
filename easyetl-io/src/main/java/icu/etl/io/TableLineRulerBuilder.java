@@ -3,13 +3,13 @@ package icu.etl.io;
 import java.util.List;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.ioc.BeanBuilder;
+import icu.etl.ioc.EasyBeanBuilder;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBean
-public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
+public class TableLineRulerBuilder implements EasyBeanBuilder<TableLineRuler> {
 
     public TableLineRuler getBean(EasyContext context, Object... args) {
         TextTable file = ArrayUtils.indexOf(args, TextTable.class, 0);
@@ -35,11 +35,13 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
     /**
      * 字符分隔符长度大于1，有转义字符
      */
-    class S0 implements TableLineRuler {
+    static class S0 implements TableLineRuler {
 
         private String delimiter;
 
         private char escape;
+
+        private StringBuilder buf = new StringBuilder();
 
         public S0(String delimiter, char escape) {
             this.delimiter = delimiter;
@@ -52,12 +54,7 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
 
         public String join(TableLine line) {
             int column = line.getColumn();
-            int length = 0;
-            for (int i = 1; i <= column; i++) {
-                length += line.getColumn(i).length() + this.delimiter.length() + 2;
-            }
-
-            StringBuilder buf = new StringBuilder(length);
+            buf.setLength(0);
             for (int i = 1; i <= column; ) {
                 buf.append(StringUtils.escape(line.getColumn(i), this.escape));
                 if (++i <= column) {
@@ -89,9 +86,11 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
     /**
      * 字符分隔符长度大于1，没有转义字符
      */
-    class S1 implements TableLineRuler {
+    static class S1 implements TableLineRuler {
 
         private String delimiter;
+
+        private StringBuilder buf = new StringBuilder();
 
         public S1(String delimiter) {
             this.delimiter = delimiter;
@@ -103,12 +102,7 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
 
         public String join(TableLine line) {
             int column = line.getColumn();
-            int length = 0;
-            for (int i = 1; i <= column; i++) {
-                length += line.getColumn(i).length() + this.delimiter.length();
-            }
-
-            StringBuilder buf = new StringBuilder(length);
+            buf.setLength(0);
             for (int i = 1; i <= column; ) {
                 buf.append(line.getColumn(i));
                 if (++i <= column) {
@@ -139,11 +133,13 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
     /**
      * 单字符分隔符，且有转义字符
      */
-    class S2 implements TableLineRuler {
+    static class S2 implements TableLineRuler {
 
         private char delimiter;
 
         private char escape;
+
+        private StringBuilder buf = new StringBuilder();
 
         public S2(char delimiter, char escape) {
             this.delimiter = delimiter;
@@ -156,12 +152,7 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
 
         public String join(TableLine line) {
             int column = line.getColumn();
-            int length = 0;
-            for (int i = 1; i <= column; i++) {
-                length += line.getColumn(i).length() + 1 + 2;
-            }
-
-            StringBuilder buf = new StringBuilder(length);
+            buf.setLength(0);
             for (int i = 1; i <= column; ) {
                 buf.append(StringUtils.escape(line.getColumn(i), this.escape));
                 if (++i <= column) {
@@ -192,9 +183,11 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
     /**
      * 单字符分隔符，且没有转义字符
      */
-    class S3 implements TableLineRuler {
+    static class S3 implements TableLineRuler {
 
         private char delimiter;
+
+        private StringBuilder buf = new StringBuilder();
 
         public S3(char delimiter) {
             this.delimiter = delimiter;
@@ -206,12 +199,7 @@ public class TableLineRulerBuilder implements BeanBuilder<TableLineRuler> {
 
         public String join(TableLine line) {
             int column = line.getColumn();
-            int length = 0;
-            for (int i = 1; i <= column; i++) {
-                length += line.getColumn(i).length() + 1;
-            }
-
-            StringBuilder buf = new StringBuilder(length);
+            buf.setLength(0);
             for (int i = 1; i <= column; ) {
                 buf.append(line.getColumn(i));
                 if (++i <= column) {

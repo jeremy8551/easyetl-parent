@@ -50,7 +50,7 @@ public class ZipCommand extends AbstractFileCommand implements UniversalScriptIn
             stdout.println("zip " + file.getAbsolutePath());
         }
 
-        this.c = context.getFactory().getContext().getBean(Compress.class, "zip");
+        this.c = context.getContainer().getBean(Compress.class, "zip");
         try {
             this.c.setFile(new File(file.getParentFile(), FileUtils.changeFilenameExt(file.getName(), "zip")));
             this.c.archiveFile(file, null);

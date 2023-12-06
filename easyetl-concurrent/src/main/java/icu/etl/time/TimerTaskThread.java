@@ -2,7 +2,8 @@ package icu.etl.time;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -12,6 +13,7 @@ import icu.etl.util.ResourcesUtils;
  * @createtime 2014-05-07
  */
 public class TimerTaskThread extends Thread implements UncaughtExceptionHandler {
+    private final static Log log = LogFactory.getLog(TimerTaskThread.class);
 
     /**
      * 定时任务
@@ -50,18 +52,18 @@ public class TimerTaskThread extends Thread implements UncaughtExceptionHandler 
     public void run() {
         this.isRunning = true;
         try {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(42, this.getName()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(42, this.getName()));
             }
 
             loop();
 
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(43, this.getName()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(43, this.getName()));
             }
         } catch (Exception e) {
-            if (STD.out.isErrorEnabled()) {
-                STD.out.error(ResourcesUtils.getTimerMessage(44, this.getName()), e);
+            if (log.isErrorEnabled()) {
+                log.error(ResourcesUtils.getTimerMessage(44, this.getName()), e);
             }
 
             try {
@@ -96,15 +98,15 @@ public class TimerTaskThread extends Thread implements UncaughtExceptionHandler 
                 }
             } else { // 还未到执行时间
                 try {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getTimerMessage(45, this.getName(), delay));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getTimerMessage(45, this.getName(), delay));
                     }
                     synchronized (task) {
                         task.wait(delay); // 任务线程进入等待状态
                     }
                 } catch (Throwable e) {
-                    if (STD.out.isErrorEnabled()) {
-                        STD.out.error(ResourcesUtils.getTimerMessage(46, this.getName()), e);
+                    if (log.isErrorEnabled()) {
+                        log.error(ResourcesUtils.getTimerMessage(46, this.getName()), e);
                     }
                 }
                 continue;
@@ -145,8 +147,8 @@ public class TimerTaskThread extends Thread implements UncaughtExceptionHandler 
      * 线程发生严重错误退出时执行的函数
      */
     public void uncaughtException(Thread t, Throwable e) {
-        if (STD.out.isErrorEnabled()) {
-            STD.out.error(ResourcesUtils.getTimerMessage(47, t.getName()), e);
+        if (log.isErrorEnabled()) {
+            log.error(ResourcesUtils.getTimerMessage(47, t.getName()), e);
         }
 
         cancelTask(); // 取消任务

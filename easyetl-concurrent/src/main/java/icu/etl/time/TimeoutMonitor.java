@@ -1,6 +1,7 @@
 package icu.etl.time;
 
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -10,6 +11,7 @@ import icu.etl.util.ResourcesUtils;
  * @createtime 2014-05-05
  */
 public class TimeoutMonitor extends TimerTask {
+    private final static Log log = LogFactory.getLog(TimeoutMonitor.class);
 
     /**
      * 被监视任务
@@ -34,8 +36,8 @@ public class TimeoutMonitor extends TimerTask {
     public void execute() throws TimerException {
         if (target != null && target.isRunning()) {
             long second = getDelay() / 1000;
-            if (STD.out.isWarnEnabled()) {
-                STD.out.warn(ResourcesUtils.getTimerMessage(41, target.getTaskId(), second));
+            if (log.isWarnEnabled()) {
+                log.warn(ResourcesUtils.getTimerMessage(41, target.getTaskId(), second));
             }
             target.terminate();
         }

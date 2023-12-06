@@ -13,13 +13,13 @@ public interface BeanEventListener {
      *
      * @param event 事件
      */
-    void addBean(BeanEvent event);
+    void addBean(EasyBeanEvent event);
 
     /**
      * 删除组件实现类的监听接口
      *
      * @param event 事件
      */
-    void removeBean(BeanEvent event);
+    void removeBean(EasyBeanEvent event);
 
 }

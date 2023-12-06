@@ -401,7 +401,7 @@ public class Linuxs {
                         list.add(map);
                     }
 
-                    int index = (int) Ensure.isPosition(StringUtils.indexOfBlank(line, 0, -1));
+                    int index = (int) Ensure.isFromZero(StringUtils.indexOfBlank(line, 0, -1));
                     String name = StringUtils.rtrimBlank(line.substring(0, index), ':');
                     map = new CaseSensitivMap<String>();
                     map.put("name", name);

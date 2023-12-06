@@ -82,6 +82,13 @@ public interface UniversalScriptCompiler {
     long getLineNumber();
 
     /**
+     * 返回编译当前命令的开始时间戳（一般用于线程休眠，使用这个时间戳可以保证时间准确）
+     *
+     * @return 时间戳
+     */
+    long getCompileMillis();
+
+    /**
      * 关闭编译器
      */
     void close();

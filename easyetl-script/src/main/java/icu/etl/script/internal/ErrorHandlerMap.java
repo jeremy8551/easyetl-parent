@@ -124,7 +124,7 @@ public class ErrorHandlerMap implements UniversalScriptProgram {
      */
     public synchronized int catchCommandError(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, String script, Throwable exception) {
         if (stderr == null) {
-            stderr = new ScriptStderr(context.getFactory().getStderrLog());
+            stderr = new ScriptStderr();
         }
 
         if (this.map.isEmpty()) {
@@ -159,7 +159,7 @@ public class ErrorHandlerMap implements UniversalScriptProgram {
      */
     public synchronized int catchEvalError(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, String message, Throwable exception) {
         if (stderr == null) {
-            stderr = new ScriptStderr(context.getFactory().getStderrLog());
+            stderr = new ScriptStderr();
         }
 
         if (this.map.isEmpty()) {

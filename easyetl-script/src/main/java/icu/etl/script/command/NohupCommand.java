@@ -12,6 +12,7 @@ import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.UniversalScriptVariable;
 import icu.etl.script.session.ScriptProcess;
+import icu.etl.script.session.ScriptProcessEnvironment;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.Settings;
@@ -26,6 +27,9 @@ public class NohupCommand extends AbstractCommand {
     /** 后台运行的命令 */
     private UniversalScriptCommand subcommand;
 
+    /** 后台线程的运行环境 */
+    private ScriptProcessEnvironment environment;
+
     public NohupCommand(UniversalCommandCompiler compiler, String command, UniversalScriptCommand subcommand) {
         super(compiler, command);
         this.subcommand = subcommand;
@@ -38,15 +42,22 @@ public class NohupCommand extends AbstractCommand {
         }
 
         // 创建子进程
-        ScriptProcess process = session.getSubProcess().create(session, context, stdout, stderr, forceStdout, this.subcommand, logfile);
+        ScriptProcessEnvironment environment = new ScriptProcessEnvironment(session, context, stdout, stderr, forceStdout, this.subcommand, logfile);
+        ScriptProcess process = session.getSubProcess().create(environment);
         process.start();
+        this.environment = environment;
+        boolean print = session.isEchoEnable() || forceStdout;
 
-        // 等待 nohup 命令启动，防止并发任务启动超时
-        int timeout = 60 * 20; // 超时时间：20分钟
+        // 等待后台线程启动，防止启动超时
+        int timeout = 20 * 60 * 1000; // 超时时间：20分钟
         TimeWatch watch = new TimeWatch();
         boolean hasPrint = false;
-        boolean print = session.isEchoEnable() || forceStdout;
         while (!this.terminate && process.waitFor()) { // 等待线程启动运行后退出
+            environment.getWaitRun().sleep(timeout);
+            if (this.terminate) {
+                break;
+            }
+
             if (!hasPrint) {
                 if (print) {
                     stdout.println(ResourcesUtils.getScriptStdoutMessage(24, this.subcommand));
@@ -55,7 +66,7 @@ public class NohupCommand extends AbstractCommand {
             }
 
             // 判断是否大于超时时间
-            if (watch.useSeconds() > timeout) {
+            if (watch.useMillis() > timeout) {
                 stderr.println(ResourcesUtils.getScriptStderrMessage(25, this.subcommand.getScript()));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
@@ -74,6 +85,9 @@ public class NohupCommand extends AbstractCommand {
 
     public void terminate() throws IOException, SQLException {
         this.terminate = true;
+        if (this.environment != null) {
+            this.environment.getWaitRun().wakeup();
+        }
     }
 
 }

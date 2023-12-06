@@ -87,8 +87,19 @@
 
         <dependency>
             <groupId>icu.etl</groupId>
+            <artifactId>easyetl-printer</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
             <artifactId>easyetl-compress</artifactId>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-crypto</artifactId>
         </dependency>
     </dependencies>
 

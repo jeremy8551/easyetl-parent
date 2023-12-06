@@ -56,6 +56,11 @@
 
         <dependency>
             <groupId>icu.etl</groupId>
+            <artifactId>easyetl-printer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
             <artifactId>easyetl-tool</artifactId>
         </dependency>
 

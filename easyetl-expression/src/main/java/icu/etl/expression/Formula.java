@@ -7,6 +7,8 @@ import java.util.List;
 
 import icu.etl.expression.operation.Operator;
 import icu.etl.expression.parameter.Parameter;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -16,11 +18,15 @@ import icu.etl.util.ResourcesUtils;
  * @createtime 2014-05-27 14:22:12
  */
 public class Formula {
+    private final static Log log = LogFactory.getLog(Formula.class);
 
+    /** 参数集合 */
     private List<Parameter> datas;
 
+    /** 操作集合 */
     private List<Operator> operations;
 
+    /** 循环次数 */
     private int loop;
 
     /**
@@ -38,7 +44,7 @@ public class Formula {
     /**
      * 返回公式中参数个数
      *
-     * @return
+     * @return 参数个数
      */
     public int getParameterSize() {
         return this.datas.size();
@@ -47,7 +53,7 @@ public class Formula {
     /**
      * 返回公式中的参数集合
      *
-     * @return
+     * @return 参数集合
      */
     public List<Parameter> getParameters() {
         return Collections.unmodifiableList(this.datas);
@@ -56,7 +62,7 @@ public class Formula {
     /**
      * 返回公式中的操作符集合
      *
-     * @return
+     * @return 操作集合
      */
     public List<Operator> getOperators() {
         return Collections.unmodifiableList(this.operations);
@@ -139,7 +145,7 @@ public class Formula {
      * @param left      左侧参数
      * @param operation 运算操作符
      * @param right     右侧参数
-     * @return
+     * @return 参数
      */
     public Parameter execute(Parameter left, Operator operation, Parameter right) {
         if (operation == null) {
@@ -160,8 +166,8 @@ public class Formula {
             left.execute();
             right.execute();
 
-            if (Expression.out.isDebugEnabled()) {
-                Expression.out.debug(operation + "data1=" + left + ", data2=" + right);
+            if (log.isTraceEnabled()) {
+                log.trace("{} data1={}, data2={}", operation, left, right);
             }
 
             Parameter parameter = operation.execute(left, right);
@@ -169,8 +175,8 @@ public class Formula {
                 throw new ExpressionException(ResourcesUtils.getExpressionMessage(41));
             }
 
-            if (Expression.out.isDebugEnabled()) {
-                Expression.out.debug(operation + "data1=" + left + ", data2=" + right + " " + ResourcesUtils.getExpressionMessage(42, parameter));
+            if (log.isTraceEnabled()) {
+                log.trace("{} data1={}, data2={}, {}", operation, left, right, ResourcesUtils.getExpressionMessage(42, parameter));
             }
 
             parameter.execute();
@@ -187,11 +193,11 @@ public class Formula {
     }
 
     /**
-     * used by test
+     * 测试使用
      *
      * @param datas      参数
      * @param operations 运算操作符
-     * @return
+     * @return 字符串
      */
     protected String toString(List<Parameter> datas, List<Operator> operations) {
         Iterator<Parameter> it = datas.iterator();

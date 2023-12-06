@@ -1,6 +1,6 @@
 package icu.etl.io;
 
-import icu.etl.util.Charset;
+import icu.etl.util.CharsetName;
 
 /**
  * 文本型表格数据
@@ -8,7 +8,7 @@ import icu.etl.util.Charset;
  * @author jeremy8551@qq.com
  * @createtime 2021-05-11
  */
-public interface TextTable extends Table, Charset, Escape, LineSeparator {
+public interface TextTable extends Table, CharsetName, Escape, LineSeparator {
 
     /**
      * 设置字段分隔符

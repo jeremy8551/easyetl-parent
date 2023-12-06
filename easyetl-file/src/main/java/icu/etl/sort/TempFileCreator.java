@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
@@ -17,6 +19,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2023-09-23
  */
 public class TempFileCreator {
+    private final static Log log = LogFactory.getLog(TempFileCreator.class);
 
     /** 找到一个可用文件名的超时时间, 10秒 */
     public static long FINDFILE_TIMEOUT = 10 * 1000;
@@ -49,6 +52,11 @@ public class TempFileCreator {
         // 使用设定目录
         if (dir != null) {
             this.parent = new File(dir, "." + this.filename);
+
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getIoxMessage(55, this.parent.getAbsolutePath()));
+            }
+
             if (FileUtils.createDirectory(this.parent)) {
                 return;
             } else {
@@ -72,6 +80,10 @@ public class TempFileCreator {
                 throw new IOException(ResourcesUtils.getIoxMessage(47, this.parent.getAbsolutePath(), buf));
             }
 
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getIoxMessage(55, this.parent.getAbsolutePath()));
+            }
+
             if (FileUtils.clearDirectory(this.parent)) { // 清空目录中的临时文件
                 return;
             } else {
@@ -88,6 +100,10 @@ public class TempFileCreator {
         this.parent = new File(FileUtils.getTempDir(TableFileDeduplicateSorter.class), "." + this.filename);
         if (this.parent.exists()) {
             if (this.parent.isDirectory()) {
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getIoxMessage(55, this.parent.getAbsolutePath()));
+                }
+                
                 FileUtils.clearDirectory(this.parent);
             } else {
                 throw new IOException(ResourcesUtils.getIoxMessage(50, this.parent.getAbsolutePath()));
@@ -105,7 +121,7 @@ public class TempFileCreator {
     /**
      * 返回最终排序结果文件
      *
-     * @return
+     * @return 排序结果文件
      */
     public File toSortfile() throws IOException {
         File file = new File(FileUtils.changeFilenameExt(this.file.getAbsolutePath(), "sort"));
@@ -123,7 +139,7 @@ public class TempFileCreator {
     /**
      * 返回备份文件
      *
-     * @return
+     * @return 备份文件
      */
     public File toBakfile() throws IOException {
         int no = 1;
@@ -142,6 +158,10 @@ public class TempFileCreator {
      * 删除排序文件产生的临时文件
      */
     public void deleteTempfiles() throws IOException {
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getIoxMessage(52, this.parent.getAbsolutePath()));
+        }
+
         if (!FileUtils.delete(this.parent)) {
             throw new IOException(ResourcesUtils.getIoxMessage(49, this.parent.getAbsolutePath()));
         }
@@ -150,8 +170,8 @@ public class TempFileCreator {
     /**
      * 生成清单文件
      *
-     * @return
-     * @throws IOException
+     * @return 清单文件
+     * @throws IOException 查找文件超时
      */
     public File toListfile() throws IOException {
         synchronized (this.lock1) {
@@ -171,8 +191,8 @@ public class TempFileCreator {
     /**
      * 生成合并后的临时文件
      *
-     * @return
-     * @throws IOException
+     * @return 临时文件
+     * @throws IOException 查找文件超时
      */
     public File toMergeFile() throws IOException {
         synchronized (this.lock2) {
@@ -192,8 +212,8 @@ public class TempFileCreator {
     /**
      * 生成临时文件
      *
-     * @return
-     * @throws IOException
+     * @return 临时文件
+     * @throws IOException 查找文件超时
      */
     public File toTempFile() throws IOException {
         synchronized (this.lock3) {

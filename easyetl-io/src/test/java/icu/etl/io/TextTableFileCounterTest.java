@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.Random;
 
 import icu.etl.cn.ChineseRandom;
+import icu.etl.concurrent.ThreadSource;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.printer.Progress;
 import icu.etl.printer.StandardPrinter;
 import icu.etl.util.Dates;
@@ -35,77 +37,83 @@ public class TextTableFileCounterTest {
 
     @Test
     public void testCalcTextFileLinesFile() throws IOException {
+        EasyBeanContext context = new EasyBeanContext();
+        ThreadSource threadSource = context.getBean(ThreadSource.class);
         File file = this.createfile();
 
         FileUtils.write(file, StringUtils.CHARSET, false, (CharSequence) null);
-        assertEquals(0, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(0, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "");
-        assertEquals(0, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(0, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, " ");
-        assertEquals(1, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(1, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n");
-        assertEquals(1, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(1, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n1");
-        assertEquals(2, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(2, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n1\n");
-        assertEquals(2, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(2, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\r\n1\r\n");
-        assertEquals(2, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(2, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n1\r\n");
-        assertEquals(2, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(2, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n2\r\n3\r");
-        assertEquals(new TextTableFileCounter().execute(file, StringUtils.CHARSET), 3);
+        assertEquals(new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET), 3);
     }
 
     @Test
     public void testCountTextFileLinesFile() throws IOException {
+        EasyBeanContext context = new EasyBeanContext();
+        ThreadSource threadSource = context.getBean(ThreadSource.class);
         File file = createfile();
 
         FileUtils.write(file, StringUtils.CHARSET, false, (CharSequence) null);
-        assertEquals(0, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(0, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "");
-        assertEquals(0, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(0, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, " ");
-        assertEquals(1, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(1, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n");
-        assertEquals(1, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(1, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n1");
-        assertEquals(2, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(2, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n1\n");
-        assertEquals(2, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(2, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\r\n2\r\n");
-        assertEquals(2, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(2, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n2\r\n");
-        assertEquals(2, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(2, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n2\r\n3\r");
-        assertEquals(3, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(3, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n2\r\n3\r4");
-        assertEquals(4, new TextTableFileCounter().execute(file, StringUtils.CHARSET));
+        assertEquals(4, new TextTableFileCounter(threadSource, 2).execute(file, StringUtils.CHARSET));
     }
 
     @Test
     public void test110() throws IOException {
+        EasyBeanContext context = new EasyBeanContext();
+        ThreadSource threadSource = context.getBean(ThreadSource.class);
         File file = new File(Settings.getUserHome(), "TEST_FILE_BIG.txt");
         String charsetName = StringUtils.CHARSET;
         long rows = this.createBigFile(file, charsetName);
-        assertEquals(rows, new TextTableFileCounter().execute(file, charsetName));
+        assertEquals(rows, new TextTableFileCounter(threadSource, 2).execute(file, charsetName));
         System.out.println("并行统计完毕, 共计 " + rows + " 行!");
     }
 

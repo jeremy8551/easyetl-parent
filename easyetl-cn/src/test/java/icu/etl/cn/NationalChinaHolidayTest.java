@@ -1,7 +1,6 @@
 package icu.etl.cn;
 
 import icu.etl.ioc.EasyBeanContext;
-import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.Dates;
 import org.junit.Test;
 

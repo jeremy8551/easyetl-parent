@@ -4,7 +4,6 @@ import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
-import icu.etl.util.TerminateException;
 
 /**
  * Java 命令模版类，详见 {@linkplain JavaCommand} 中注释信息
@@ -22,10 +21,8 @@ public abstract class AbstractJavaCommand {
 
     /**
      * 终止脚本命令
-     *
-     * @throws TerminateException
      */
-    public void terminate() throws TerminateException {
+    public void terminate() {
         this.terminate = true;
     }
 

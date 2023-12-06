@@ -41,9 +41,9 @@ public class PSCommand extends AbstractTraceCommand implements NohupCommandSuppo
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
         StringBuilder buf = new StringBuilder();
         if (this.type == 1) {
-            buf.append(this.printAllSession(session).toShellShape().ltrim().toString());
+            buf.append(this.printAllSession(session).toString(CharTable.Style.shell));
         } else {
-            buf.append(this.printAllProcess(session).toShellShape().ltrim().toString());
+            buf.append(this.printAllProcess(session).toString(CharTable.Style.shell));
         }
 
         if (session.isEchoEnable() || forceStdout) {

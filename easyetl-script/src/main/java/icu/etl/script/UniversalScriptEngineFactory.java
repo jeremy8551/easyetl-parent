@@ -9,10 +9,9 @@ import javax.script.ScriptEngineFactory;
 
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
-import icu.etl.log.Log;
-import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CharTable;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -24,9 +23,6 @@ import icu.etl.util.StringUtils;
  */
 public class UniversalScriptEngineFactory implements ScriptEngineFactory {
 
-    private Log stdout;
-    private Log stderr;
-
     /** 配置信息 */
     protected UniversalScriptConfiguration config;
 
@@ -36,11 +32,8 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /**
      * 初始化
      * 因为涉及到 {@linkplain javax.script.ScriptEngineManager} 使用 SPI 机制读取并创建脚本引擎工厂实例，所以本方法中只做简单操作。
-     * 容器类相关的操作采用懒加载方式处理，即：首次使用容器时做初始化操作。
      */
     public UniversalScriptEngineFactory() {
-        this.stdout = LogFactory.getLog(UniversalScriptEngine.class, System.out, System.err);
-        this.stderr = LogFactory.getLog(UniversalScriptEngine.class, System.err, System.err);
     }
 
     /**
@@ -59,10 +52,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      * @param context 容器上下文信息
      */
     public void setContext(EasyContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
-        this.context = context;
+        this.context = Ensure.notNull(context);
     }
 
     /**
@@ -72,7 +62,11 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public EasyContext getContext() {
         if (this.context == null) {
-            this.context = new EasyBeanContext();
+            synchronized (this) {
+                if (this.context == null) {
+                    this.context = new EasyBeanContext();
+                }
+            }
         }
         return this.context;
     }
@@ -84,7 +78,11 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      */
     public UniversalScriptConfiguration getConfiguration() {
         if (this.config == null) {
-            this.config = this.getContext().getBean(UniversalScriptConfiguration.class);
+            synchronized (this) {
+                if (this.config == null) {
+                    this.config = this.getContext().getBean(UniversalScriptConfiguration.class);
+                }
+            }
         }
         return this.config;
     }
@@ -194,24 +192,6 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     }
 
     /**
-     * 返回标准信息输出日志接口
-     *
-     * @return 标准信息输出日志接口
-     */
-    public Log getStdoutLog() {
-        return this.stdout;
-    }
-
-    /**
-     * 返回错误信息输出日志接口
-     *
-     * @return 错误信息输出日志接口
-     */
-    public Log getStderrLog() {
-        return this.stderr;
-    }
-
-    /**
      * 返回用户会话工厂
      *
      * @return 用户会话工厂
@@ -292,7 +272,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
         table.addCell("cat `pwd`/text | tail -n 1 ");
         table.addCell(titles[12]);
         table.addCell("set processId=`nothup script.txt & | tail -n 1`");
-        return table.toDB2Shape().toString();
+        return table.toString(CharTable.Style.db2);
     }
 
 }

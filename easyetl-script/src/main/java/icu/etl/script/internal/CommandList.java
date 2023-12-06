@@ -10,7 +10,7 @@ import icu.etl.script.command.AbstractSlaveCommand;
  * 脚本命令集合
  */
 public class CommandList extends ArrayList<UniversalScriptCommand> implements Cloneable {
-    private static final long serialVersionUID = 1L;
+    private final static long serialVersionUID = 1L;
 
     /** 脚本命令集合名字 */
     protected String name;

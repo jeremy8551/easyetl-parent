@@ -3,47 +3,60 @@ package icu.etl.ioc;
 import java.util.HashMap;
 import java.util.Set;
 
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.ResourcesUtils;
 
 /**
+ * 组件工厂管理器
+ *
  * @author jeremy8551@qq.com
  * @createtime 2023/10/26
  */
 public class BeanBuilderManager {
+    private final static Log log = LogFactory.getLog(BeanBuilderManager.class);
 
+    /** 容器上下文信息 */
     private EasyContext context;
 
     /** 组件接口与组件工厂类映射关系 */
-    private final HashMap<Class<?>, BeanBuilder<?>> map;
+    private HashMap<Class<?>, EasyBeanBuilder<?>> map;
 
     public BeanBuilderManager(EasyContext context) {
-        this.map = new HashMap<Class<?>, BeanBuilder<?>>();
+        this.map = new HashMap<Class<?>, EasyBeanBuilder<?>>();
         this.context = context;
     }
 
-    public boolean add(Class<?> cls, BeanEventManager register) {
-        /** 如果没有实现 {@linkplain BeanBuilder} 接口 **/
-        if (!BeanBuilder.class.isAssignableFrom(cls)) {
+    /**
+     * 注册组件
+     *
+     * @param type         组件的类信息
+     * @param eventManager 事件管理器
+     * @return 返回true表示注册成功，false表示注册失败
+     */
+    public boolean add(Class<?> type, BeanEventManager eventManager) {
+        // 如果没有实现 EasyBeanBuilder 接口
+        if (!EasyBeanBuilder.class.isAssignableFrom(type)) {
             return false;
         }
 
-        String[] generics = ClassUtils.getInterfaceGenerics(cls, BeanBuilder.class);
+        String[] generics = ClassUtils.getInterfaceGenerics(type, EasyBeanBuilder.class);
         if (generics.length == 1) {
             String className = generics[0]; // BeanBuilder 类的范型
             Class<Object> genCls = ClassUtils.forName(className, true, this.context.getClassLoader());
             if (genCls == null) {
-                if (Ioc.out.isDebugEnabled()) {
-                    Ioc.out.debug(ResourcesUtils.getClassMessage(11, className));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getClassMessage(11, className));
                 }
                 return false;
             }
 
-            BeanBuilder<?> builder = this.context.createBean(cls);
+            EasyBeanBuilder<?> builder = this.context.createBean(type);
             if (this.add(genCls, builder)) {
                 // 如果组件工厂实现了监听接口
                 if (builder instanceof BeanEventListener) {
-                    register.addListener((BeanEventListener) builder);
+                    eventManager.addListener((BeanEventListener) builder);
                 }
                 return true;
             }
@@ -51,34 +64,61 @@ public class BeanBuilderManager {
         return false;
     }
 
-    public boolean add(Class<?> type, BeanBuilder<?> builder) {
-        BeanBuilder<?> factory = this.map.get(type);
+    /**
+     * 注册组件工厂
+     *
+     * @param type    组件的类信息
+     * @param builder 组件工厂类
+     * @return 返回true表示注册成功，false表示注册失败
+     */
+    public boolean add(Class<?> type, EasyBeanBuilder<?> builder) {
+        EasyBeanBuilder<?> factory = this.map.get(type);
         if (factory != null) {
-            if (Ioc.out.isWarnEnabled()) {
-                Ioc.out.warn(ResourcesUtils.getClassMessage(26, type.getName(), builder.getClass().getName(), factory.getClass().getName()));
+            if (log.isWarnEnabled()) {
+                log.warn(ResourcesUtils.getClassMessage(26, type.getName(), builder.getClass().getName(), factory.getClass().getName()));
             }
             return false;
         } else {
-            if (Ioc.out.isDebugEnabled()) {
-                Ioc.out.debug(ResourcesUtils.getClassMessage(19, type.getName(), builder.getClass().getName()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getClassMessage(19, type.getName(), builder.getClass().getName()));
             }
             this.map.put(type, builder);
             return true;
         }
     }
 
-    public BeanBuilder<?> get(Class<?> type) {
+    /**
+     * 返回组件工厂
+     *
+     * @param type 组件的类信息
+     * @return 组件工厂
+     */
+    public EasyBeanBuilder<?> get(Class<?> type) {
         return this.map.get(type);
     }
 
-    public BeanBuilder<?> remove(Class<?> type) {
+    /**
+     * 移除组件工厂
+     *
+     * @param type 组件的类信息
+     * @return 组件工厂
+     */
+    public EasyBeanBuilder<?> remove(Class<?> type) {
         return this.map.remove(type);
     }
 
+    /**
+     * 返回组件的类信息集合
+     *
+     * @return 组件的类信息集合
+     */
     public Set<Class<?>> keySet() {
         return this.map.keySet();
     }
 
+    /**
+     * 清空所有组件工厂
+     */
     public void clear() {
         this.map.clear();
     }

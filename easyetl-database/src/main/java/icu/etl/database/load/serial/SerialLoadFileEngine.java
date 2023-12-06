@@ -7,7 +7,6 @@ import java.util.List;
 import icu.etl.annotation.EasyBean;
 import icu.etl.database.DatabaseTable;
 import icu.etl.database.JdbcDao;
-import icu.etl.database.load.LoadEngine;
 import icu.etl.database.load.LoadEngineContext;
 import icu.etl.database.load.LoadException;
 import icu.etl.database.load.LoadFileMessage;
@@ -23,9 +22,12 @@ import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
+import icu.etl.util.TimeWatch;
 
 /**
  * 按文件中出现顺序读取数据文件并装载到数据库表中
@@ -34,6 +36,7 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean(name = "serial")
 public class SerialLoadFileEngine implements Loader, EasyContextAware {
+    private final static Log log = LogFactory.getLog(SerialLoadFileEngine.class);
 
     /** true表示终止任务 */
     private volatile boolean running;
@@ -77,7 +80,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
 
         DatabaseTable table = dao.getTable(tableCatalog, tableSchema, tableName);
         if (table == null) {
-            throw new Exception(tableCatalog + ", " + tableSchema + ", " + tableName);
+            throw new UnsupportedOperationException(tableCatalog + ", " + tableSchema + ", " + tableName);
         }
 
         LoadTable target = new LoadTable(dao, table);
@@ -112,8 +115,8 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
             DatabaseTable table = target.getTable();
             if (context.getLoadMode() == LoadMode.REPLACE) { // 先清空表在装入数据
                 String sql = dao.deleteTableQuickly(table.getCatalog(), table.getSchema(), table.getName());
-                if (LoadEngine.out.isDebugEnabled()) {
-                    LoadEngine.out.debug(sql);
+                if (log.isDebugEnabled()) {
+                    log.debug(sql);
                 }
                 dao.commit();
             }
@@ -129,14 +132,14 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
                 try {
                     this.execute(context, target, file, null, out);
                 } catch (Throwable e) {
-                    if (LoadEngine.out.isErrorEnabled()) { // 输出批量错误信息
-                        LoadEngine.out.error(filepath, e);
+                    if (log.isErrorEnabled()) { // 输出批量错误信息
+                        log.error(filepath, e);
                     }
 
                     // 需要重新建表
                     if (dao.getDialect().isRebuildTableException(e)) {
-                        if (LoadEngine.out.isDebugEnabled()) {
-                            LoadEngine.out.debug(ResourcesUtils.getLoadMessage(17, table.getFullName()));
+                        if (log.isDebugEnabled()) {
+                            log.debug(ResourcesUtils.getLoadMessage(17, table.getFullName()));
                         }
 
                         RebuildTableExceptionProcessor obj = new RebuildTableExceptionProcessor();
@@ -147,12 +150,13 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
 
                     // 自动处理文件中字段值超长问题
                     if (dao.getDialect().isOverLengthException(e)) {
-                        if (LoadEngine.out.isDebugEnabled()) {
-                            LoadEngine.out.debug(ResourcesUtils.getLoadMessage(18, table.getFullName()));
+                        if (log.isDebugEnabled()) {
+                            log.debug(ResourcesUtils.getLoadMessage(18, table.getFullName()));
                         }
 
-                        OverLengthExceptionProcessor obj = new OverLengthExceptionProcessor();
-                        if (obj.execute(dao, file, target) > 0) { // 扩展字段完成后重新执行装数
+                        int thread = StringUtils.parseInt(context.getAttributes().getAttribute("thread"), 2); // 并发任务数
+                        OverLengthExceptionProcessor obj = new OverLengthExceptionProcessor(thread);
+                        if (obj.execute(this.context, dao, file, target) > 0) { // 扩展字段完成后重新执行装数
                             this.execute(context, target, file, null, out);
                             continue;
                         }
@@ -160,8 +164,8 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
 
                     // 自动处理主键冲突错误
                     if (dao.getDialect().isPrimaryRepeatException(e)) {
-                        if (LoadEngine.out.isDebugEnabled()) {
-                            LoadEngine.out.debug(ResourcesUtils.getLoadMessage(19, table.getFullName()));
+                        if (log.isDebugEnabled()) {
+                            log.debug(ResourcesUtils.getLoadMessage(19, table.getFullName()));
                         }
 
                         PrimaryRepeatExceptionProcessor obj = new PrimaryRepeatExceptionProcessor(context);
@@ -190,6 +194,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
      * @throws Exception
      */
     protected synchronized void execute(LoadEngineContext context, LoadTable target, TextTableFile file, TextTableFileReader reader, DataWriter out) throws Exception {
+        TimeWatch watch = new TimeWatch();
         LoadFileMessage msgfile = new LoadFileMessage(context, file);
 
         // 不能重复加载
@@ -201,17 +206,19 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
                 && msgfile.getStartTime().compareTo(msgfile.getFileModified()) >= 0 //
                 && msgfile.getEndTime().compareTo(msgfile.getStartTime()) >= 0 //
                 && context.getLoadMode() == msgfile.getLoadMode() //
-                && file.getFile().equals(new File(msgfile.getFilepath())) //
+                && file.getFile().equals(new File(msgfile.getFile())) //
         ) {
             String fullName = target.getTable().getFullName();
-            LoadEngine.out.warn(ResourcesUtils.getLoadMessage(20, file.getFile().getAbsolutePath(), fullName));
+            if (log.isWarnEnabled()) {
+                log.warn(ResourcesUtils.getLoadMessage(20, file.getFile().getAbsolutePath(), fullName));
+            }
             return;
         } else {
             msgfile.setEndTime(null);
         }
 
         msgfile.setStartTime(new Date());
-        msgfile.setFilepath(file);
+        msgfile.setFile(file);
         msgfile.setFileModified(file.getFile().lastModified());
         msgfile.setFileType(context.getFiletype());
         msgfile.setFileColumns(target.getFilePositions());
@@ -223,7 +230,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
         msgfile.setTableName(target.getTable().getName());
         msgfile.setTableColumns(target.getTableColumns());
 
-        TextTableFileReader in = null;
+        TextTableFileReader in;
         if (reader == null) {
             in = file.getReader(context.getReadBuffer());
         } else {
@@ -234,7 +241,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
             in.setListener(LoadListenerFactory.create(context));
 
             // 逐行从文件中读取数据
-            TextTableLine line = null;
+            TextTableLine line;
             while (this.running && (line = in.readLine()) != null) {
                 out.write(line);
             }
@@ -251,8 +258,13 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
             msgfile.store();
 
             // 打印消息文件内容
-            if (LoadEngine.out.isDebugEnabled()) {
-                LoadEngine.out.debug(FileUtils.lineSeparator + msgfile.toString());
+            if (log.isDebugEnabled()) {
+                log.debug(FileUtils.lineSeparator + msgfile.toString());
+            }
+
+            // 打印结果
+            if (log.isInfoEnabled()) {
+                log.info(ResourcesUtils.getLoadMessage(21, file.getAbsolutePath(), String.valueOf(msgfile.getReadRows()), String.valueOf(msgfile.getCommitRows()), watch.useTime()));
             }
         } finally {
             in.close();

@@ -7,7 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -17,6 +18,8 @@ import icu.etl.util.ResourcesUtils;
  * @createtime 2014-05-05
  */
 public class TaskList {
+    private final static Log log = LogFactory.getLog(TaskList.class);
+
     private Vector<String> list;
     private Hashtable<String, TimerTask> map;
 
@@ -169,8 +172,8 @@ public class TaskList {
                 task.terminate();
             }
         } catch (TimerException e) {
-            if (STD.out.isErrorEnabled()) {
-                STD.out.error(ResourcesUtils.getTimerMessage(35, task.getTaskId()), e);
+            if (log.isErrorEnabled()) {
+                log.error(ResourcesUtils.getTimerMessage(35, task.getTaskId()), e);
             }
         }
     }

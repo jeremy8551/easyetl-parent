@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import icu.etl.util.Charset;
+import icu.etl.util.CharsetName;
 
 /**
  * 该接口用于描述操作系统的文件操作功能接口<br>
@@ -15,7 +15,7 @@ import icu.etl.util.Charset;
  * @author jeremy8551@qq.com
  * @createtime 2020-09-06
  */
-public interface OSFileCommand extends Charset {
+public interface OSFileCommand extends CharsetName {
 
     /**
      * 使用操作系统当前用户进入到操作系统上指定目录

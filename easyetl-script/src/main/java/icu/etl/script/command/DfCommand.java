@@ -25,7 +25,7 @@ public class DfCommand extends AbstractTraceCommand implements NohupCommandSuppo
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
-        OS os = context.getFactory().getContext().getBean(OS.class);
+        OS os = context.getContainer().getBean(OS.class);
         try {
             CharTable table = new CharTable();
             String[] titles = StringUtils.split(ResourcesUtils.getScriptStdoutMessage(3), ',');
@@ -47,7 +47,7 @@ public class DfCommand extends AbstractTraceCommand implements NohupCommandSuppo
             }
 
             if (session.isEchoEnable() || forceStdout) {
-                stdout.println(table.toShellShape().ltrim().toString());
+                stdout.println(table.toString(CharTable.Style.shell));
             }
             return 0;
         } finally {

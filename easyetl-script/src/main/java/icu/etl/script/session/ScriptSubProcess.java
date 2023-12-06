@@ -1,26 +1,22 @@
 package icu.etl.script.session;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import icu.etl.script.Script;
-import icu.etl.script.UniversalScriptCommand;
-import icu.etl.script.UniversalScriptContext;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.script.UniversalScriptException;
-import icu.etl.script.UniversalScriptSession;
-import icu.etl.script.UniversalScriptStderr;
-import icu.etl.script.UniversalScriptStdout;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
-import icu.etl.util.StringUtils;
 
 /**
  * 子进程
  */
 public class ScriptSubProcess {
+    private final static Log log = LogFactory.getLog(ScriptSubProcess.class);
 
     /** 命令编号与命令的映射关系 */
     private LinkedHashMap<String, ScriptProcess> map;
@@ -35,19 +31,12 @@ public class ScriptSubProcess {
     /**
      * 创建子进程
      *
-     * @param session
-     * @param context
-     * @param stdout
-     * @param stderr
-     * @param forceStdout
-     * @param command
-     * @param logfile
-     * @return
+     * @param environment 运行环境
+     * @return 脚本引擎进程
      */
-    public ScriptProcess create(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, File logfile) {
-        ScriptProcessEnvironment environment = new ScriptProcessEnvironment(session, context, stdout, stderr, forceStdout, command, logfile);
-        ScriptProcessThread thread = new ScriptProcessThread(environment);
-        ScriptProcess process = new ScriptProcess(environment, thread);
+    public ScriptProcess create(ScriptProcessEnvironment environment) {
+        ScriptProcessJob scriptJob = new ScriptProcessJob(environment);
+        ScriptProcess process = new ScriptProcess(environment, scriptJob);
         this.map.put(process.getPid(), process);
         return process;
     }
@@ -69,11 +58,7 @@ public class ScriptSubProcess {
      * @return
      */
     public ScriptProcess get(String pid) {
-        if (StringUtils.isBlank(pid)) {
-            throw new IllegalArgumentException(pid);
-        } else {
-            return this.map.get(pid);
-        }
+        return this.map.get(Ensure.notBlank(pid));
     }
 
     /**
@@ -108,7 +93,9 @@ public class ScriptSubProcess {
                 try {
                     process.terminate();
                 } catch (Throwable e) {
-                    Script.out.error(ResourcesUtils.getScriptStdoutMessage(9, process.getPid()) + " error!", e);
+                    if (log.isErrorEnabled()) {
+                        log.error(ResourcesUtils.getScriptStdoutMessage(9, process.getPid()) + " error!", e);
+                    }
                     exception = e;
                 }
             }

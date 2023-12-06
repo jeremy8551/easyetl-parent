@@ -2,9 +2,10 @@ package icu.etl.script.method;
 
 import java.util.List;
 
-import icu.etl.annotation.ScriptVariableFunction;
-import icu.etl.ioc.BeanInfo;
-import icu.etl.script.Script;
+import icu.etl.annotation.ScriptFunction;
+import icu.etl.ioc.EasyBeanInfo;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptEngineFactory;
 import icu.etl.script.UniversalScriptException;
@@ -19,6 +20,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2021-02-09
  */
 public class VariableMethodScanner {
+    private final static Log log = LogFactory.getLog(VariableMethodScanner.class);
 
     /** 脚本引擎变量方法的工厂类 */
     private VariableMethodRepository repository;
@@ -40,13 +42,13 @@ public class VariableMethodScanner {
         this.repository = repository;
 
         // 显示所有已加载的变量方法
-        List<BeanInfo> beanInfoList = this.factory.getContext().getBeanInfoList(UniversalScriptVariableMethod.class);
-        for (BeanInfo beanInfo : beanInfoList) {
+        List<EasyBeanInfo> beanInfoList = this.factory.getContext().getBeanInfoList(UniversalScriptVariableMethod.class);
+        for (EasyBeanInfo beanInfo : beanInfoList) {
             this.loadVariableMethod(beanInfo.getType());
         }
 
-        if (Script.out.isDebugEnabled() && !this.repository.isEmpty()) {
-            Script.out.debug(this.repository.toString(null, true));
+        if (log.isDebugEnabled() && !this.repository.isEmpty()) {
+            log.debug(this.repository.toString(null));
         }
     }
 
@@ -55,13 +57,13 @@ public class VariableMethodScanner {
      *
      * @param cls 变量方法的Class信息
      */
-    public void loadVariableMethod(Class<? extends UniversalScriptVariableMethod> cls) {
+    public void loadVariableMethod(Class<?> cls) {
         if (this.repository.contains(cls)) {
             return;
         }
 
-        if (cls.isAnnotationPresent(ScriptVariableFunction.class)) {
-            ScriptVariableFunction anno = cls.getAnnotation(ScriptVariableFunction.class);
+        if (cls.isAnnotationPresent(ScriptFunction.class)) {
+            ScriptFunction anno = cls.getAnnotation(ScriptFunction.class);
             String name = StringUtils.trimBlank(anno.name());
             if (StringUtils.isBlank(name)) {
                 return;
@@ -76,8 +78,8 @@ public class VariableMethodScanner {
             try {
                 method = this.context.getFactory().getContext().createBean(cls);
             } catch (Throwable e) {
-                if (Script.out.isWarnEnabled()) {
-                    Script.out.warn(ResourcesUtils.getScriptStdoutMessage(42, cls.getName()), e);
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getScriptStdoutMessage(42, cls.getName()), e);
                 }
                 return;
             }
@@ -85,8 +87,8 @@ public class VariableMethodScanner {
             // 保存变量方法
             this.repository.add(name, method);
 
-            if (Script.out.isDebugEnabled()) {
-                Script.out.debug(ResourcesUtils.getScriptStdoutMessage(51, cls.getName()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getScriptStdoutMessage(51, cls.getName()));
             }
 
             // 添加关键字
@@ -94,8 +96,8 @@ public class VariableMethodScanner {
                 this.factory.getKeywords().add(key);
             }
         } else {
-            if (Script.out.isDebugEnabled()) { // 只有调试模式才会打印警告
-                Script.out.warn(ResourcesUtils.getScriptStderrMessage(52, cls.getName(), UniversalScriptVariableMethod.class.getName(), ScriptVariableFunction.class.getName()));
+            if (log.isDebugEnabled()) { // 只有调试模式才会打印警告
+                log.warn(ResourcesUtils.getScriptStderrMessage(52, cls.getName(), UniversalScriptVariableMethod.class.getName(), ScriptFunction.class.getName()));
             }
         }
     }

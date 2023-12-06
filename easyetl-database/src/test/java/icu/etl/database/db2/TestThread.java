@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.Properties;
 
 import icu.etl.database.DatabaseDialect;
-import icu.etl.time.Timer;
+import icu.etl.util.Dates;
 
 public class TestThread extends Thread {
 
@@ -28,7 +28,7 @@ public class TestThread extends Thread {
 
     @Override
     public void run() {
-        Timer.sleep(2 * 1000);
+        Dates.sleep(2 * 1000);
 
         try {
             if (!this.dialect.terminate(this.conn, this.attrs)) {

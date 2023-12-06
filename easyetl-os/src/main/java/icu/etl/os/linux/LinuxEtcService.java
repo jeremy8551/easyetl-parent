@@ -45,7 +45,7 @@ public class LinuxEtcService implements OSService {
 
         String portAndProtocal = line.substring(portStartPos, portEndPos);
         int index = portAndProtocal.indexOf('/');
-        Ensure.isPosition(index);
+        Ensure.isFromZero(index);
         String port = portAndProtocal.substring(0, index);
         String protocal = portAndProtocal.substring(index + 1);
         ArrayList<String> aliases = (portEndPos >= line.length()) ? new ArrayList<String>() : ArrayUtils.asList(StringUtils.splitByBlank(StringUtils.trimBlank(line.substring(portEndPos))));

@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.util.Iterator;
 import java.util.Properties;
 
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseConfiguration;
 import icu.etl.database.DatabaseConfigurationContainer;
 import icu.etl.database.DatabaseDialect;
@@ -15,6 +14,8 @@ import icu.etl.database.Jdbc;
 import icu.etl.database.internal.StandardDatabaseConfiguration;
 import icu.etl.io.OutputStreamLogger;
 import icu.etl.ioc.EasyContext;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OSAccount;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.IO;
@@ -29,6 +30,7 @@ import icu.etl.util.TimeWatch;
  * @createtime 2012-03-13
  */
 public class Pool implements Closeable {
+    private final static Log log = LogFactory.getLog(Pool.class);
 
     /** 活动数据库连接 */
     protected PoolConnectionList actives;
@@ -70,7 +72,7 @@ public class Pool implements Closeable {
 
         this.context = context;
         this.watch = new TimeWatch();
-        this.out = new PrintWriter(new OutputStreamLogger(DB.out, StringUtils.CHARSET));
+        this.out = new PrintWriter(new OutputStreamLogger(log, StringUtils.CHARSET));
         this.actives = new PoolConnectionList();
         this.idles = new PoolConnectionList();
         this.isClose = true;

@@ -50,7 +50,7 @@ public class UnrarCommand extends AbstractFileCommand implements UniversalScript
             stdout.println("unrar " + file.getAbsolutePath());
         }
 
-        this.c = context.getFactory().getContext().getBean(Compress.class, "rar");
+        this.c = context.getContainer().getBean(Compress.class, "rar");
         try {
             this.c.setFile(file);
             this.c.extract(file.getParent(), Settings.getFileEncoding());

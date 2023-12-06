@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import icu.etl.annotation.ScriptVariableFunction;
+import icu.etl.annotation.ScriptFunction;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -15,7 +15,7 @@ import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
-@ScriptVariableFunction(name = "isDirectory")
+@ScriptFunction(name = "isDirectory")
 public class IsDirectoryMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws IOException, SQLException {

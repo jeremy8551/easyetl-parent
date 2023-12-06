@@ -3,6 +3,8 @@ package icu.etl.expression;
 import icu.etl.util.StringUtils;
 
 /**
+ * 时间表达式
+ *
  * @author jeremy8551@qq.com
  * @createtime 2023/9/20
  */
@@ -20,7 +22,7 @@ public class MillisExpression {
      * @param expression 时间表达式
      */
     public MillisExpression(String expression) {
-        this.value = parse(expression);
+        this.value = this.parse(expression);
     }
 
     /**
@@ -58,10 +60,10 @@ public class MillisExpression {
             time = StringUtils.replaceAll(time, "hou", " * 3600 * 1000");
             time = StringUtils.replaceAll(time, "h", " * 3600 * 1000");
             time = StringUtils.replaceAll(time, "day", " * 3600 * 1000 * 24");
-            return new Expression(time).longValue().longValue();
+            return new Expression(time).longValue();
         } else {
             return 0;
         }
     }
-    
+
 }

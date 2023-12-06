@@ -43,7 +43,7 @@ public class DeclareSSHClientCommand extends AbstractCommand {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
         UniversalScriptAnalysis analysis = session.getAnalysis();
-        OSSecureShellCommand client = context.getFactory().getContext().getBean(OSSecureShellCommand.class);
+        OSSecureShellCommand client = context.getContainer().getBean(OSSecureShellCommand.class);
         if (client.connect(this.host, Integer.parseInt(this.port), this.username, this.password)) {
             if (session.isEchoEnable() || forceStdout) {
                 stdout.println(ResourcesUtils.getScriptStdoutMessage(40, this.name, this.username + "@" + this.host + ":" + this.port + "?password=" + DESEncrypt.encrypt(this.password, context.getCharsetName(), StringUtils.toBytes(Dates.format08(new Date()), context.getCharsetName()))));

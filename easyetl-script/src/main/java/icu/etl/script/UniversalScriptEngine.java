@@ -11,6 +11,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import icu.etl.concurrent.EasyJob;
 import icu.etl.script.internal.ScriptVariable;
 import icu.etl.script.session.ScriptMainProcess;
 import icu.etl.util.IO;
@@ -156,6 +157,23 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
             return (UniversalScriptContext) context;
         } else {
             throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(72, context.getClass().getName(), UniversalScriptContext.class.getName()));
+        }
+    }
+
+    /**
+     * 运行并发任务
+     *
+     * @param executor 并发任务
+     * @param stderr   标准信息输出流
+     * @param stderr   错误信息输出流
+     * @return 返回值, 0-正确 非0-错误
+     */
+    public int eval(EasyJob executor, UniversalScriptStdout stdout, UniversalScriptStderr stderr) {
+        try {
+            return executor.execute();
+        } catch (Exception e) {
+            stderr.println(executor.getName(), e);
+            return UniversalScriptCommand.COMMAND_ERROR;
         }
     }
 

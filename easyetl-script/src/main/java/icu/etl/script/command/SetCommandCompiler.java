@@ -40,7 +40,7 @@ public class SetCommandCompiler extends AbstractGlobalCommandCompiler {
         }
 
         int index = expression.indexOf('=');
-        Ensure.isPosition(index);
+        Ensure.isFromZero(index);
 
         UniversalScriptChecker checker = context.getChecker();
         String name = analysis.trim(expression.substring(0, index), 0, 0);

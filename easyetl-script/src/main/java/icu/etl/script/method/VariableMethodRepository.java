@@ -43,7 +43,7 @@ public class VariableMethodRepository {
      * @param cls 变量方法的类信息
      * @return
      */
-    public boolean contains(Class<? extends UniversalScriptVariableMethod> cls) {
+    public boolean contains(Class<?> cls) {
         for (Iterator<UniversalScriptVariableMethod> it = this.map.values().iterator(); it.hasNext(); ) {
             UniversalScriptVariableMethod method = it.next();
             if (method != null && method.getClass().getName().equals(cls.getName())) {
@@ -82,17 +82,16 @@ public class VariableMethodRepository {
      * 打印所有变量方法的使用说明
      */
     public String toString() {
-        return this.toString(null, false);
+        return this.toString(this.context != null ? this.context.getCharsetName() : null);
     }
 
     /**
      * 返回所有脚本变量方法的使用说明
      *
      * @param charsetName 字符集
-     * @param ltrim       true表示删除表格左侧的空白字符
      * @return
      */
-    public String toString(String charsetName, boolean ltrim) {
+    public String toString(String charsetName) {
         String[] titles = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg004"), ',');
         CharTable ct = new CharTable(charsetName);
         ct.addTitle(titles[0], CharTable.ALIGN_LEFT);
@@ -125,13 +124,7 @@ public class VariableMethodRepository {
             ct.addCell(obj.getClass().getName());
         }
 
-        ct.toStandardShape();
-
-        // 删除表格左侧的空白字符
-        if (ltrim) {
-            ct.ltrim();
-        }
-        return ct.toString();
+        return ct.toString(CharTable.Style.standard);
     }
 
     private class ComparatorImpl implements Comparator<String> {

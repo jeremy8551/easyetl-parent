@@ -12,7 +12,8 @@ import java.util.zip.GZIPOutputStream;
 
 import icu.apache.ant.tar.TarEntry;
 import icu.etl.annotation.EasyBean;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -28,6 +29,7 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean(name = "gz")
 public class GzipCompress implements Compress {
+    private final static Log log = LogFactory.getLog(GzipCompress.class);
 
     /** true 表示已终止压缩或解压 */
     private volatile boolean terminate = false;
@@ -122,11 +124,11 @@ public class GzipCompress implements Compress {
             FileUtils.checkPermission(gzipFile, true, true);
         }
 
-        if (STD.out.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             if (file.getParentFile().equals(gzipFile.getParentFile())) {
-                STD.out.debug("gzip " + file.getAbsolutePath() + " " + gzipFile.getName() + " ..");
+                log.debug("gzip " + file.getAbsolutePath() + " " + gzipFile.getName() + " ..");
             } else {
-                STD.out.debug("gzip " + file.getAbsolutePath() + " " + gzipFile.getAbsolutePath() + " ..");
+                log.debug("gzip " + file.getAbsolutePath() + " " + gzipFile.getAbsolutePath() + " ..");
             }
         }
 
@@ -214,11 +216,11 @@ public class GzipCompress implements Compress {
         FileUtils.createDirectory(dir);
         File file = new File(dir, fileName);
 
-        if (STD.out.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             if (gzipFile.getParentFile().equals(dir)) {
-                STD.out.debug("gunzip file: " + gzipFile.getAbsolutePath() + " ..");
+                log.debug("gunzip file: " + gzipFile.getAbsolutePath() + " ..");
             } else {
-                STD.out.debug("gunzip file: " + gzipFile.getAbsolutePath() + " " + file.getAbsolutePath() + " ..");
+                log.debug("gunzip file: " + gzipFile.getAbsolutePath() + " " + file.getAbsolutePath() + " ..");
             }
         }
 

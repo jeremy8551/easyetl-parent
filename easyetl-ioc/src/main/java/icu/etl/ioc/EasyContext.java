@@ -5,7 +5,7 @@ package icu.etl.ioc;
  *
  * @author jeremy8551@qq.com
  */
-public interface EasyContext extends BeanContext, BeanRegister, BeanInfoContext, BeanBuilderContext, BeanFactory {
+public interface EasyContext extends EasyContainerContext, EasyBeanRegister, EasyBeanInfoContext, EasyBeanBuilderContext, EasyBeanFactory {
 
     /**
      * 设置容器启动参数
@@ -20,6 +20,20 @@ public interface EasyContext extends BeanContext, BeanRegister, BeanInfoContext,
      * @return 启动参数数组
      */
     String[] getArgument();
+
+    /**
+     * 返回上级容器
+     *
+     * @return 上级容器对象
+     */
+    EasyContext getParent();
+
+    /**
+     * 设置上级容器
+     *
+     * @param parent 上级容器
+     */
+    void setParent(EasyContext parent);
 
     /**
      * 设置类加载器
@@ -41,7 +55,7 @@ public interface EasyContext extends BeanContext, BeanRegister, BeanInfoContext,
      * @param ioc 容器实例
      * @return 如果容器重名，则会替换掉重名容器，并返回替换掉的容器
      */
-    IocContext addIoc(IocContext ioc);
+    EasyContainerContext addIoc(EasyContainerContext ioc);
 
     /**
      * 删除容器实例对象
@@ -49,6 +63,6 @@ public interface EasyContext extends BeanContext, BeanRegister, BeanInfoContext,
      * @param name 容器名
      * @return 被删除的容器
      */
-    IocContext removeIoc(String name);
+    EasyContainerContext removeIoc(String name);
 
 }

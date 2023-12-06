@@ -60,7 +60,8 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
         boolean print = session.isEchoEnable() || forceStdout;
         if ("reset".equalsIgnoreCase(this.name)) { // 关闭当前数据库连接
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(7, session.getScriptName(), dataSource.getCatalog()));
+//                stdout.println(ResourcesUtils.getScriptStdoutMessage(7, session.getScriptName(), dataSource.getCatalog()));
+                stdout.println(ResourcesUtils.getScriptStdoutMessage(7, "", dataSource.getCatalog()));
             }
 
             dao.commit();
@@ -80,10 +81,11 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
 
         if (dao.isConnected()) {
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(6, session.getScriptName(), this.name));
+//                stdout.println(ResourcesUtils.getScriptStdoutMessage(6, session.getScriptName(), this.name));
+                stdout.println(ResourcesUtils.getScriptStdoutMessage(6, "", this.name));
             }
 
-            if (dao != null && dao.getDialect() != null) {
+            if (dao.getDialect() != null) {
                 context.getChecker().setDatabaseKeywords(dao.getDialect().getKeyword(dao.getConnection()));
             }
             return 0;

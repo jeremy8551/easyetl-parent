@@ -18,7 +18,8 @@ import java.util.Map;
 import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.jdk.JavaDialectFactory;
-import icu.etl.script.Script;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptFormatter;
 import icu.etl.util.Dates;
@@ -33,6 +34,8 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean(name = "default")
 public class ScriptFormatter extends UniversalScriptFormatter {
+    private final static Log log = LogFactory.getLog(ScriptFormatter.class);
+
     private final static long serialVersionUID = 1L;
 
     /**
@@ -237,7 +240,7 @@ public class ScriptFormatter extends UniversalScriptFormatter {
                 Clob clob = (Clob) obj;
                 return clob.getSubString((long) 1, (int) clob.length());
             } catch (Exception e) {
-                Script.out.error(StringUtils.toString(e));
+                log.error(StringUtils.toString(e));
             }
         }
 

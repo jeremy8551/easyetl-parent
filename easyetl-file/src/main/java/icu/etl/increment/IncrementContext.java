@@ -3,6 +3,7 @@ package icu.etl.increment;
 import java.util.Comparator;
 import java.util.List;
 
+import icu.etl.concurrent.ThreadSource;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
 import icu.etl.printer.Progress;
@@ -28,12 +29,13 @@ public class IncrementContext {
     private TextTableFileWriter delOuter;
     private IncrementPosition position;
     private Comparator<String> comparator;
-    private IncrementLogger logger;
+    private IncrementLoggerListener logger;
     private IncrementReplaceList replaceList;
     private Progress newfileProgress;
     private Progress oldfileProgress;
     private TableFileSortContext oldfileSortContext;
     private TableFileSortContext newfileSortContext;
+    private ThreadSource threadSource;
 
     /**
      * 初始化
@@ -228,7 +230,7 @@ public class IncrementContext {
      *
      * @return
      */
-    public IncrementLogger getLogger() {
+    public IncrementLoggerListener getLogger() {
         return logger;
     }
 
@@ -237,7 +239,7 @@ public class IncrementContext {
      *
      * @param logger
      */
-    public void setLogger(IncrementLogger logger) {
+    public void setLogger(IncrementLoggerListener logger) {
         this.logger = logger;
     }
 
@@ -367,4 +369,21 @@ public class IncrementContext {
         this.sortOldFile = sortOldFile;
     }
 
+    /**
+     * 设置线程池
+     *
+     * @return 线程池
+     */
+    public ThreadSource getThreadSource() {
+        return threadSource;
+    }
+
+    /**
+     * 返回线程池
+     *
+     * @param service 线程池
+     */
+    public void setThreadSource(ThreadSource service) {
+        this.threadSource = service;
+    }
 }

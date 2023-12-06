@@ -11,14 +11,14 @@ public interface IncrementReplace {
     /**
      * 返回修改字段的位置信息
      *
-     * @return
+     * @return 位置信息，从1开始
      */
     int getPosition();
 
     /**
      * 新增数据的字段值
      *
-     * @return
+     * @return 字段值
      */
     String getValue();
 

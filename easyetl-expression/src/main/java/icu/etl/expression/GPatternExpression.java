@@ -3,6 +3,9 @@ package icu.etl.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -13,6 +16,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2021-03-08
  */
 public class GPatternExpression {
+    private final static Log log = LogFactory.getLog(GPatternExpression.class);
 
     /**
      * 判断字符串参数 {@code str} 是否与通配符参数 {@code gpattern} 匹配
@@ -61,23 +65,16 @@ public class GPatternExpression {
      *                 {a,b,c{1,2},d{g..i}} 表示匹配 a 或 b 或 c1 或 c2 或 dg 或 gh 或 gi <br>
      */
     public GPatternExpression(Analysis analysis, String pattern) {
-        if (analysis == null) {
-            throw new NullPointerException();
-        }
-        if (pattern == null) {
-            throw new NullPointerException();
-        }
-
-        this.analysis = analysis;
-        this.pattern = pattern;
-        this.patterns = new ArrayList<String>();
+        this.analysis = Ensure.notNull(analysis);
         this.javaRegexs = new ArrayList<String>();
+        this.pattern = Ensure.notNull(pattern);
+        this.patterns = new ArrayList<String>();
         this.patterns.add(pattern);
         this.expandPattern();
         this.toJavaRegexs();
 
-        if (Expression.out.isDebugEnabled()) {
-            Expression.out.debug(ResourcesUtils.getExpressionMessage(63, pattern, this.patterns, this.javaRegexs));
+        if (log.isTraceEnabled()) {
+            log.trace(ResourcesUtils.getExpressionMessage(63, pattern, this.patterns, this.javaRegexs));
         }
     }
 

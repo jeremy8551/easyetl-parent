@@ -1,7 +1,7 @@
 package icu.etl.expression;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -10,7 +10,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -29,6 +32,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2010-01-19 03:43:16
  */
 public class ArgumentExpression implements Serializable, Cloneable {
+    private final static Log log = LogFactory.getLog(ArgumentExpression.class);
     private final static long serialVersionUID = 1L;
 
     /** 选项名与选项值的映射 */
@@ -46,13 +50,9 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * @param analysis 语句分析器
      */
     public ArgumentExpression(Analysis analysis) {
-        if (analysis == null) {
-            throw new NullPointerException();
-        }
-
+        this.analysis = Ensure.notNull(analysis);
         this.values = new LinkedHashMap<String, String>();
         this.parameterSize = 0;
-        this.analysis = analysis;
     }
 
     /**
@@ -65,7 +65,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
     /**
      * 初始化
      *
-     * @param args
+     * @param args 参数数组
      */
     public ArgumentExpression(String[] args) {
         this(new StandardAnalysis());
@@ -75,7 +75,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
     /**
      * 初始化
      *
-     * @param str
+     * @param str 参数
      */
     public ArgumentExpression(String str) {
         this(new StandardAnalysis());
@@ -86,33 +86,26 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * 先清空参数管理器中所有参数, 解析字符串数组并添加到参数管理器中
      *
      * @param args 字符串数组
+     * @return 返回参数表达式
      */
     public ArgumentExpression addOption(String[] args) {
-        if (args == null) {
-            throw new NullPointerException();
-        } else {
-            ArrayList<String> list = ArrayUtils.asList(args);
-            this.addOptions(list);
-            return this;
-        }
+        this.addOptions(ArrayUtils.asList(Ensure.notNull(args)));
+        return this;
     }
 
     /**
      * 解析字符串参数 str 并添加选项到参数管理器中
      *
      * @param str 字符串, 如: -d 20170101 -c str -p "file path" -a 'it is good!'
+     * @return 返回参数表达式
      */
     public ArgumentExpression addOption(String str) {
-        if (str == null) {
-            throw new NullPointerException();
-        } else {
-            List<String> array = this.analysis.split(str);
-            for (int i = 0; i < array.size(); i++) {
-                array.set(i, this.analysis.unQuotation(array.get(i)));
-            }
-            this.addOptions(array);
-            return this;
+        List<String> list = this.analysis.split(Ensure.notNull(str));
+        for (int i = 0; i < list.size(); i++) {
+            list.set(i, this.analysis.unQuotation(list.get(i)));
         }
+        this.addOptions(list);
+        return this;
     }
 
     /**
@@ -124,46 +117,48 @@ public class ArgumentExpression implements Serializable, Cloneable {
      *
      * @param key   选项名，如: -d
      * @param value 选项值
-     * @return
      */
-    public ArgumentExpression addOption(String key, String value) {
+    public void addOption(String key, String value) {
         String old = this.values.put(key, value);
-        if (old != null && Expression.out.isDebugEnabled()) {
-            Expression.out.debug(ResourcesUtils.getParamMessage(1, key, old, value));
+        if (old != null) {
+            if (log.isTraceEnabled()) {
+                log.trace(ResourcesUtils.getParamMessage(1, key, old, value));
+            }
         }
-        return this;
     }
 
     /**
      * 添加选项名与选项值的映射集合
      *
      * @param options 选项集合（只添加 Map 中 value 是字符串的选项信息）
+     * @return 返回参数表达式
      */
-    public ArgumentExpression addOption(Map<?, ?> options) {
+    public ArgumentExpression addOption(Map<String, String> options) {
         if (options == null || options.size() == 0) {
             return this;
         }
 
-        Set<?> names = options.keySet(); // 选项名
-        for (Object name : names) {
-            Object value = options.get(name); // 选项值
+        Set<String> names = options.keySet(); // 选项名集合
+        for (String name : names) {
+            String value = options.get(name); // 选项值
 
             // 判断选项名是否合法
-            if (!(name instanceof String) || !this.isOption((String) name)) {
-                if (Expression.out.isWarnEnabled()) {
-                    Expression.out.warn(ResourcesUtils.getParamMessage(2, name + "=" + value));
+            if (!this.isOption(name)) {
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getParamMessage(2, name + "=" + value));
                 }
                 continue;
             }
 
             // 判断选项值是否合法
-            if (!(value instanceof String)) {
-                if (Expression.out.isWarnEnabled()) {
-                    Expression.out.warn(ResourcesUtils.getParamMessage(3, name + "=" + value));
+            if (value == null) {
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getParamMessage(3, name + "=null"));
                 }
+                continue;
             }
 
-            this.addOption((String) name, (String) value);
+            this.addOption(name, value);
         }
         return this;
     }
@@ -172,13 +167,14 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * 将参数管理器中的所有选项信息添加到当前对象中
      *
      * @param obj 参数管理器
+     * @return 返回参数表达式
      */
     public ArgumentExpression addOption(ArgumentExpression obj) {
         if (obj != null && !obj.values.isEmpty()) {
-            for (Iterator<Entry<String, String>> it = obj.values.entrySet().iterator(); it.hasNext(); ) {
-                Entry<String, String> e = it.next();
-                String key = e.getKey();
-                String value = e.getValue();
+            Set<Entry<String, String>> entries = obj.values.entrySet();
+            for (Entry<String, String> entry : entries) {
+                String key = entry.getKey();
+                String value = entry.getValue();
 
                 if (this.isOption(key)) {
                     this.addOption(key, value);
@@ -205,10 +201,8 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * 第五个参数值: "-m" <br>
      *
      * @param args 字符串数组，如 public static void main(String[] args) {} 方法的参数数组
-     * @return 成功添加选项的个数
      */
-    protected int addOptions(List<String> args) {
-        int count = 0;
+    protected void addOptions(List<String> args) {
         for (int i = 0; i < args.size(); ) {
             if (this.isOption(args.get(i))) { // 判断是否是选项名
                 String name = args.get(i); // 选项名
@@ -221,13 +215,11 @@ public class ArgumentExpression implements Serializable, Cloneable {
                 }
 
                 this.addOption(name, value);
-                count++;
             } else {
                 this.addParameter(args.get(i));
                 i++;
             }
         }
-        return count;
     }
 
     /**
@@ -265,13 +257,13 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * @return 返回true表示选项名存在 返回false表示不存在
      */
     public boolean containOption(String name) {
-        return this.isOption(name) ? this.values.containsKey(name) : false;
+        return this.isOption(name) && this.values.containsKey(name);
     }
 
     /**
      * 判断是否存在选项名
      *
-     * @return
+     * @return 返回true表示存在选项名
      */
     public boolean existsOption() {
         return this.values.isEmpty();
@@ -328,7 +320,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
     /**
      * 返回参数值的个数
      *
-     * @return
+     * @return 参数个数
      */
     public int getParameterSize() {
         return this.parameterSize;
@@ -341,7 +333,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * @return 返回true表示参数值是 null 或空字符串
      */
     public boolean isParameterBlank(int index) {
-        return (index <= 0 || index >= this.parameterSize) ? true : StringUtils.isBlank(this.values.get(String.valueOf(index)));
+        return index <= 0 || index >= this.parameterSize || StringUtils.isBlank(this.values.get(String.valueOf(index)));
     }
 
     /**
@@ -368,7 +360,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * 且集合中的数据不可修改
      */
     public Map<String, String> values() {
-        return java.util.Collections.unmodifiableMap(this.values);
+        return Collections.unmodifiableMap(this.values);
     }
 
     /**

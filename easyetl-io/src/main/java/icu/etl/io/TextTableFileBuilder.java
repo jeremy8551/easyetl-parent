@@ -1,14 +1,12 @@
 package icu.etl.io;
 
-import java.nio.charset.StandardCharsets;
-
 import icu.etl.annotation.EasyBean;
-import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanInfo;
-import icu.etl.ioc.Codepage;
+import icu.etl.ioc.EasyBeanBuilder;
+import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Attribute;
+import icu.etl.util.CharsetName;
 import icu.etl.util.StringUtils;
 
 /**
@@ -20,7 +18,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  */
 @EasyBean
-public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
+public class TextTableFileBuilder implements EasyBeanBuilder<TextTableFile> {
 
     @SuppressWarnings("unchecked")
     public TextTableFile getBean(EasyContext context, Object... args) throws Exception {
@@ -31,7 +29,7 @@ public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
         }
 
         // 根据文件类型查询对应的组件
-        BeanInfo beanInfo = context.getBeanInfo(TextTableFile.class, name);
+        EasyBeanInfo beanInfo = context.getBeanInfo(TextTableFile.class, name);
         if (beanInfo == null) {
             throw new UnsupportedOperationException(name);
         }
@@ -70,7 +68,7 @@ public class TextTableFileBuilder implements BeanBuilder<TextTableFile> {
 
         if (attribute.contains("escape")) {
             String escape = attribute.getAttribute("escape");
-            if (StringUtils.length(escape, StandardCharsets.ISO_8859_1.name()) == 1) {
+            if (StringUtils.length(escape, CharsetName.ISO_8859_1) == 1) {
                 file.setEscape(escape.charAt(0));
             } else {
                 throw new IllegalArgumentException(escape);

@@ -1,0 +1,54 @@
+<!-- Logback configuration. See http://logback.qos.ch/manual/index.html -->
+<configuration scan="true" scanPeriod="10 seconds">
+
+    <!-- 日志样式 -->
+    <property name="PATTERN"
+              value="|%-5level|%date{yyyy-MM-dd HH:mm:ss}|T%X{req.threadid}|%class.java:%line|SESSIONID %X{req.sessionid}|METHOD %X{req.method}|REQ %X{req.remoteHost}%X{req.requestURI}|USERID %X{req.userId}|FUNC %X{req.requestName}| %msg%n"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoder 默认配置为PatternLayoutEncoder -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS}|%thread|%-5level|%c|%C|%F:%L|%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 打印到日志文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- encoder defaults to ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily 配置日志所生成的目录以及生成文件名的规则 -->
+            <fileNamePattern>${LOG_PATH}/catalina-%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <!-- 启动时自动清理过期日志 -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <!-- 保留日志天数 -->
+            <maxHistory>365</maxHistory>
+            <!-- 单个日志文件暂用最大空间 -->
+            <maxFileSize>3000 MB</maxFileSize>
+            <!-- 所有日志文件暂用最大空间 -->
+            <totalSizeCap>20 GB</totalSizeCap>
+        </rollingPolicy>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>info</level>
+        </filter>
+        <!-- Safely log to the same file from multiple JVMs. Degrades performance! -->
+        <prudent>true</prudent>
+    </appender>
+
+    <!-- Enable FILE and STDOUT appenders for all log messages. By default, only log at level INFO and above. -->
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <!-- For loggers in the these namespaces, log at all levels. -->
+    <!--
+         <logger name="org.springframework.boot" level="ALL" />
+         <logger name="hammock-cafe" level="ALL" />
+         <logger name="user" level="ALL" />
+    -->
+</configuration>

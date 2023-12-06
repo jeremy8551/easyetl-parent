@@ -17,7 +17,11 @@ public class JavaDialectFactory {
      */
     public static JavaDialect getDialect() {
         if (dialect == null) {
-            dialect = new JavaDialectFactory().loadDialect();
+            synchronized (JavaDialectFactory.class) {
+                if (dialect == null) {
+                    dialect = new JavaDialectFactory().loadDialect();
+                }
+            }
         }
         return dialect;
     }
@@ -41,7 +45,7 @@ public class JavaDialectFactory {
         }
 
         if (cls == null) {
-            throw new RuntimeException(className);
+            throw new UnsupportedOperationException(className);
         } else {
             return this.create(className, cls);
         }
@@ -93,7 +97,7 @@ public class JavaDialectFactory {
         try {
             return cls.newInstance();
         } catch (Throwable e) {
-            throw new RuntimeException(className, e);
+            throw new IllegalArgumentException(className, e);
         }
     }
 

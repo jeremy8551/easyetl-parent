@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import icu.apache.mail.search.SearchTerm;
-import icu.etl.util.Charset;
+import icu.etl.util.CharsetName;
 
 /**
  * 用于描述邮件发送功能和查询邮件功能
@@ -12,7 +12,7 @@ import icu.etl.util.Charset;
  * @author jeremy8551@qq.com
  * @createtime 2020-10-01
  */
-public interface MailCommand extends Charset {
+public interface MailCommand extends CharsetName {
 
     /**
      * 设置邮件服务器地址

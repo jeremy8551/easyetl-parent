@@ -108,7 +108,7 @@ public class LsCommand extends AbstractFileCommand implements UniversalScriptInp
             }
         }
 
-        cb.append(table.toSimpleShape().ltrim().toString());
+        cb.append(table.toString(CharTable.Style.simple));
 
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(cb);

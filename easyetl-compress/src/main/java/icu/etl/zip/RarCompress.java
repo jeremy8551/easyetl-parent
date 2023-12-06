@@ -10,13 +10,15 @@ import icu.apache.ant.unrar.Archive;
 import icu.apache.ant.unrar.exception.RarException;
 import icu.apache.ant.unrar.rarfile.FileHeader;
 import icu.etl.annotation.EasyBean;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 
 @EasyBean(name = "rar")
 public class RarCompress implements Compress {
+    private final static Log log = LogFactory.getLog(RarCompress.class);
 
     private volatile boolean terminate = false;
 
@@ -96,14 +98,14 @@ public class RarCompress implements Compress {
         String name = head.isUnicode() ? head.getFileNameW() : head.getFileNameString(); // 文件entryName
         String filepath = FileUtils.replaceFolderSeparator(FileUtils.joinFilepath(outputDir, name));
         if (head.isDirectory()) {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug("unrar " + filepath + " ..");
+            if (log.isDebugEnabled()) {
+                log.debug("unrar " + filepath + " ..");
             }
             File dir = new File(filepath);
             FileUtils.createDirectory(dir);
         } else {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug("unrar " + filepath + " ..");
+            if (log.isDebugEnabled()) {
+                log.debug("unrar " + filepath + " ..");
             }
 
             File file = new File(filepath);
@@ -150,7 +152,7 @@ public class RarCompress implements Compress {
         try {
             this.archive = new Archive(file);
             this.rarFile = file;
-            if (STD.out.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 this.archive.getMainHeader().print();
             }
         } catch (Exception e) {

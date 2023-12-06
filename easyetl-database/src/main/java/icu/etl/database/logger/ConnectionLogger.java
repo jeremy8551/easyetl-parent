@@ -6,7 +6,8 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import icu.etl.database.DB;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
@@ -18,6 +19,7 @@ import icu.etl.util.TimeWatch;
  * @createtime 2011-09-23
  */
 public class ConnectionLogger implements InvocationHandler {
+    private final static Log log = LogFactory.getLog(ConnectionLogger.class);
 
     /**
      * 代理数据库连接对象的序号
@@ -68,16 +70,16 @@ public class ConnectionLogger implements InvocationHandler {
      */
     public Connection getProxy() {
         Connection conn = (Connection) Proxy.newProxyInstance(this.conn.getClass().getClassLoader(), new Class[]{Connection.class}, this);
-        if (DB.out.isInfoEnabled()) {
-            DB.out.info(ResourcesUtils.getDatabaseMessage(34, this.getName(), this.conn.getClass().getName()));
+        if (log.isInfoEnabled()) {
+            log.info(ResourcesUtils.getDatabaseMessage(34, this.getName(), this.conn.getClass().getName()));
         }
         return conn;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String id = this.getName();
-        if (DB.out.isInfoEnabled()) {
-            DB.out.info(ResourcesUtils.getDatabaseMessage(35, id, this.conn.getClass().getName(), StringUtils.toString(method), StringUtils.toString(args)));
+        if (log.isInfoEnabled()) {
+            log.info(ResourcesUtils.getDatabaseMessage(35, id, this.conn.getClass().getName(), StringUtils.toString(method), StringUtils.toString(args)));
         }
 
         TimeWatch watch = new TimeWatch();
@@ -89,8 +91,8 @@ public class ConnectionLogger implements InvocationHandler {
                 return value;
             }
         } finally {
-            if (DB.out.isInfoEnabled()) {
-                DB.out.info(ResourcesUtils.getDatabaseMessage(36, id, this.conn.getClass().getName(), StringUtils.toString(method), value, watch.useTime()));
+            if (log.isInfoEnabled()) {
+                log.info(ResourcesUtils.getDatabaseMessage(36, id, this.conn.getClass().getName(), StringUtils.toString(method), value, watch.useTime()));
             }
         }
     }

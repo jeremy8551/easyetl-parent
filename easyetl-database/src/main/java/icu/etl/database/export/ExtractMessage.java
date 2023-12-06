@@ -3,7 +3,7 @@ package icu.etl.database.export;
 import java.io.File;
 import java.io.IOException;
 
-import icu.etl.concurrent.ExecutorMessage;
+import icu.etl.concurrent.EasyJobMessage;
 import icu.etl.database.SQL;
 import icu.etl.util.CharTable;
 import icu.etl.util.Ensure;
@@ -17,7 +17,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-18
  */
-public class ExtractMessage extends ExecutorMessage {
+public class ExtractMessage extends EasyJobMessage {
 
     /**
      * 初始化
@@ -211,7 +211,6 @@ public class ExtractMessage extends ExecutorMessage {
 
     public String toString() {
         CharTable ct = new CharTable();
-        ct.setDelimiter("   ");
         ct.addTitle("", CharTable.ALIGN_RIGHT);
         ct.addTitle("", CharTable.ALIGN_LEFT);
         ct.addTitle("", CharTable.ALIGN_LEFT);
@@ -238,7 +237,7 @@ public class ExtractMessage extends ExecutorMessage {
             ct.addCell(values[i]);
         }
 
-        return new StringBuilder().append(ct.toSimpleShape().ltrim().toString()).append(FileUtils.lineSeparator).toString();
+        return new StringBuilder().append(ct.toString(CharTable.Style.simple)).append(FileUtils.lineSeparator).toString();
     }
 
 }

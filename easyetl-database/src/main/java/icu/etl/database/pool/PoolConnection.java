@@ -10,8 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseException;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
@@ -24,6 +25,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2012-03-13
  */
 public class PoolConnection implements InvocationHandler {
+    private final static Log log = LogFactory.getLog(PoolConnection.class);
 
     /**
      * 代理数据库连接的序号
@@ -112,8 +114,8 @@ public class PoolConnection implements InvocationHandler {
      */
     private ConnectionProxy createProxy() {
         ConnectionProxy proxy = (ConnectionProxy) Proxy.newProxyInstance(this.conn.getClass().getClassLoader(), new Class[]{ConnectionProxy.class}, this);
-        if (DB.out.isDebugEnabled()) {
-            DB.out.debug(ResourcesUtils.getDatabaseMessage(42, this.getId(), this.conn.getClass().getName()));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getDatabaseMessage(42, this.getId(), this.conn.getClass().getName()));
         }
         return proxy;
     }
@@ -128,8 +130,8 @@ public class PoolConnection implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (DB.out.isDebugEnabled()) {
-            DB.out.debug(ResourcesUtils.getDatabaseMessage(35, this.getId(), this.conn.getClass().getName(), StringUtils.toString(method), StringUtils.toString(args)));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getDatabaseMessage(35, this.getId(), this.conn.getClass().getName(), StringUtils.toString(method), StringUtils.toString(args)));
         }
 
         String methodName = method.getName();
@@ -224,8 +226,8 @@ public class PoolConnection implements InvocationHandler {
                     this.pool.remove(this);
                 }
             } else {
-                if (DB.out.isDebugEnabled()) {
-                    DB.out.debug(ResourcesUtils.getDataSourceMessage(11, this.toString()));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getDataSourceMessage(11, this.toString()));
                 }
 
                 if (this.testConnection(this.conn)) {

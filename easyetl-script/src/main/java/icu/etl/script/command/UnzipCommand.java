@@ -50,7 +50,7 @@ public class UnzipCommand extends AbstractFileCommand implements UniversalScript
             stdout.println("unzip " + file.getAbsolutePath());
         }
 
-        this.c = context.getFactory().getContext().getBean(Compress.class, "zip");
+        this.c = context.getContainer().getBean(Compress.class, "zip");
         try {
             this.c.setFile(file);
             this.c.extract(file.getParent(), Settings.getFileEncoding());

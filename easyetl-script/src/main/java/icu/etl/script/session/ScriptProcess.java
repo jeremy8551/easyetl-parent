@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
+import icu.etl.concurrent.ThreadSource;
 import icu.etl.script.UniversalScriptCommand;
+import icu.etl.util.Ensure;
 
 /**
  * 子进程信息
@@ -38,7 +40,7 @@ public class ScriptProcess {
     private ScriptProcessEnvironment environment;
 
     /** 进程运行线程 */
-    private ScriptProcessThread thread;
+    private ScriptProcessJob scriptJob;
 
     /** 进程的返回值 */
     private Integer exitcode;
@@ -50,20 +52,13 @@ public class ScriptProcess {
      * 初始化
      *
      * @param environment
-     * @param thread
+     * @param scriptJob
      */
-    public ScriptProcess(ScriptProcessEnvironment environment, ScriptProcessThread thread) {
-        if (environment == null) {
-            throw new NullPointerException();
-        }
-        if (thread == null) {
-            throw new NullPointerException();
-        }
-
+    public ScriptProcess(ScriptProcessEnvironment environment, ScriptProcessJob scriptJob) {
         this.pid = String.valueOf(ScriptProcess.getId());
-        this.environment = environment;
-        this.thread = thread;
-        this.thread.setObserver(this);
+        this.environment = Ensure.notNull(environment);
+        this.scriptJob = Ensure.notNull(scriptJob);
+        this.scriptJob.setObserver(this);
         this.lineNumber = this.environment.getSession().getCompiler().getLineNumber();
     }
 
@@ -72,7 +67,7 @@ public class ScriptProcess {
      */
     public void start() {
         this.startTime = new Date();
-        this.thread.start();
+        this.environment.getContext().getContainer().getBean(ThreadSource.class).getExecutorService().submit(this.scriptJob);
     }
 
     /**
@@ -95,7 +90,7 @@ public class ScriptProcess {
      * @throws SQLException
      */
     public boolean terminate() throws IOException, SQLException {
-        return this.thread.terminate();
+        return this.scriptJob.terminate();
     }
 
     /**
@@ -104,7 +99,7 @@ public class ScriptProcess {
      * @return
      */
     public boolean isTerminate() {
-        return this.thread.isTerminate();
+        return this.scriptJob.isTerminate();
     }
 
     /**
@@ -113,7 +108,7 @@ public class ScriptProcess {
      * @return
      */
     public boolean isAlive() {
-        return this.thread.isAlive() || this.thread.isRunning();
+        return this.scriptJob.isAlive() || this.scriptJob.isRunning();
     }
 
     /**
@@ -122,7 +117,7 @@ public class ScriptProcess {
      * @return
      */
     public boolean waitFor() {
-        return this.thread.isAlive() && !this.thread.alreadyRun();
+        return this.scriptJob.isAlive() && !this.scriptJob.alreadyRun();
     }
 
     /**
@@ -132,6 +127,15 @@ public class ScriptProcess {
      */
     public String getPid() {
         return pid;
+    }
+
+    /**
+     * 返回后台线程运行环境
+     *
+     * @return 运行环境信息
+     */
+    public ScriptProcessEnvironment getEnvironment() {
+        return environment;
     }
 
     /**

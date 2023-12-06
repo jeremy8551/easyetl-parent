@@ -15,7 +15,8 @@ import icu.apache.ant.tar.TarEntry;
 import icu.apache.ant.tar.TarInputStream;
 import icu.apache.ant.tar.TarOutputStream;
 import icu.etl.annotation.EasyBean;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Numbers;
@@ -23,6 +24,7 @@ import icu.etl.util.StringUtils;
 
 @EasyBean(name = "tar")
 public class TarCompress implements Compress {
+    private final static Log log = LogFactory.getLog(TarCompress.class);
 
     private volatile boolean terminate = false;
     private File tarFile;
@@ -128,8 +130,8 @@ public class TarCompress implements Compress {
                 }
                 d = d + file.getName() + "/";
 
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug("tar file, create dir: " + d + " ..");
+                if (log.isDebugEnabled()) {
+                    log.debug("tar file, create dir: " + d + " ..");
                 }
 
                 TarEntry entry = new TarEntry(d);
@@ -159,11 +161,11 @@ public class TarCompress implements Compress {
 
                 String tarFile = dir + file.getName();
                 InputStream is = new FileInputStream(file);
-                if (STD.out.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     if (StringUtils.isBlank(dir)) {
-                        STD.out.debug("tar " + file.getAbsolutePath() + " " + this.tarFile.getAbsolutePath() + " ..");
+                        log.debug("tar " + file.getAbsolutePath() + " " + this.tarFile.getAbsolutePath() + " ..");
                     } else {
-                        STD.out.debug("tar " + file.getAbsolutePath() + " " + this.tarFile.getAbsolutePath() + " -> " + dir + " ..");
+                        log.debug("tar " + file.getAbsolutePath() + " " + this.tarFile.getAbsolutePath() + " -> " + dir + " ..");
                     }
                 }
 
@@ -285,7 +287,7 @@ public class TarCompress implements Compress {
      */
     public boolean untar(TarInputStream inputStream, String outputDir, TarEntry entry) throws FileNotFoundException, IOException {
         if (entry == null) {
-            throw new NullPointerException("entry is null!");
+            throw new NullPointerException();
         }
 
         boolean success = true;
@@ -322,8 +324,8 @@ public class TarCompress implements Compress {
      * @throws IOException
      */
     public boolean untar(TarInputStream inputStream, String outputDir, String filename) throws FileNotFoundException, IOException {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug("untar " + FileUtils.replaceFolderSeparator(FileUtils.joinFilepath(outputDir, filename)) + " ..");
+        if (log.isDebugEnabled()) {
+            log.debug("untar " + FileUtils.replaceFolderSeparator(FileUtils.joinFilepath(outputDir, filename)) + " ..");
         }
 
         FileOutputStream fos = null;
@@ -337,7 +339,7 @@ public class TarCompress implements Compress {
             }
             return true;
         } catch (Exception e) {
-            STD.out.error(StringUtils.toString(e));
+            log.error(StringUtils.toString(e));
             return false;
         } finally {
             IO.close(fos);

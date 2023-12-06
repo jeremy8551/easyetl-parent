@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.printer.Progress;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
 public class CommonTextTableFileReaderListener implements TextTableFileReaderListener {
+    private final static Log log = LogFactory.getLog(CommonTextTableFileReaderListener.class);
 
     private Progress progress;
 
@@ -57,8 +59,8 @@ public class CommonTextTableFileReaderListener implements TextTableFileReaderLis
         StringBuilder content = StringUtils.removeLineSeparator(old);
         line.setContext(content.toString());
 
-        if (STD.out.isWarnEnabled()) {
-            STD.out.warn(ResourcesUtils.getIoxMessage(11, file.getAbsolutePath(), lineNumber, StringUtils.join(list, ", "), StringUtils.escapeLineSeparator(old)));
+        if (log.isWarnEnabled()) {
+            log.warn(ResourcesUtils.getIoxMessage(11, file.getAbsolutePath(), lineNumber, StringUtils.join(list, ", "), StringUtils.escapeLineSeparator(old)));
         }
     }
 

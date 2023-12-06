@@ -3,6 +3,7 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 import icu.etl.expression.MillisExpression;
 import icu.etl.script.UniversalCommandCompiler;
@@ -13,7 +14,6 @@ import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.session.ScriptProcess;
-import icu.etl.time.Timer;
 import icu.etl.util.Dates;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.TimeWatch;
@@ -31,6 +31,9 @@ public class WaitCommand extends AbstractTraceCommand {
     /** 脚本命令执行的超时时间，单位: 秒 */
     private String timeout;
 
+    /** 后台线程 */
+    private ScriptProcess process;
+
     public WaitCommand(UniversalCommandCompiler compiler, String command, String id, String timeout) {
         super(compiler, command);
         this.id = id;
@@ -38,36 +41,39 @@ public class WaitCommand extends AbstractTraceCommand {
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+        long compileMillis = session.getCompiler().getCompileMillis();
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String pid = analysis.replaceVariable(session, context, this.id, false);
-        String timeout = analysis.replaceVariable(session, context, this.timeout, false);
+        String timeoutExpression = analysis.replaceVariable(session, context, this.timeout, false);
         boolean print = session.isEchoEnable() || forceStdout;
 
         ScriptProcess process = session.getSubProcess().get(pid);
         if (process == null) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(44, pid));
             return UniversalScriptCommand.COMMAND_ERROR;
+        } else {
+            this.process = process;
         }
 
         // 计算等待命令的超时时间，单位秒
-        UniversalScriptCommand cmd = process.getCommand();
-        if (cmd == null) {
+        UniversalScriptCommand command = process.getCommand();
+        if (command == null) {
             throw new NullPointerException();
         }
 
-        String script = cmd.getScript();
+        String script = command.getScript();
         TimeWatch watch = new TimeWatch();
-        long timeoutSec = new MillisExpression(timeout).value() / 1000;
-        boolean usetimeout = timeoutSec > 0;
+        long timeout = new MillisExpression(timeoutExpression).value();
+        boolean usetimeout = timeout > 0;
         if (usetimeout && print) {
-            stdout.println(ResourcesUtils.getScriptStdoutMessage(36, script, Dates.format(timeoutSec, true)));
+            stdout.println(ResourcesUtils.getScriptStdoutMessage(36, script, Dates.format(timeout, TimeUnit.MILLISECONDS, true)));
         } else {
             stdout.println(ResourcesUtils.getScriptStdoutMessage(37, script));
         }
 
         boolean terminate = false;
         while (process.isAlive()) {
-            if (this.terminate || session.isTerminate() || (usetimeout && (watch.useSeconds() > timeoutSec) && !terminate)) {
+            if (this.terminate || session.isTerminate() || (usetimeout && ((System.currentTimeMillis() - compileMillis) > timeout) && !terminate)) {
                 try {
                     process.terminate();
                     continue;
@@ -79,11 +85,15 @@ public class WaitCommand extends AbstractTraceCommand {
                 }
             }
 
+            // 等待后台线程运行完毕
+            long wait = timeout - (System.currentTimeMillis() - compileMillis);
+            if (wait > 0) {
+                process.getEnvironment().getWaitDone().sleep(wait);
+            }
+
             // 命令被终止 或 用户会话被终止时，直接退出
             if (this.terminate || session.isTerminate()) {
                 break;
-            } else {
-                Timer.sleep(1000);
             }
         }
 
@@ -103,6 +113,10 @@ public class WaitCommand extends AbstractTraceCommand {
 
     public void terminate() throws IOException, SQLException {
         this.terminate = true;
+        if (this.process != null) {
+            this.process.terminate();
+            this.process.getEnvironment().getWaitDone().wakeup();
+        }
     }
 
 }

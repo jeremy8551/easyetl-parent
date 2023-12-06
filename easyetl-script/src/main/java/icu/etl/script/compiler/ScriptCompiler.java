@@ -52,6 +52,9 @@ public class ScriptCompiler implements UniversalScriptCompiler {
     /** 容器上下文信息 */
     protected EasyContext context;
 
+    /** 读取命令的时间戳 */
+    protected long readMillis;
+
     /**
      * 初始化
      */
@@ -82,7 +85,7 @@ public class ScriptCompiler implements UniversalScriptCompiler {
         this.commandRepository.clear();
         this.commandRepository.load(context);
         if (this.commandRepository.getDefault() == null) { // 设置脚本引擎默认命令
-            String script = context.getFactory().getContext().getBean(UniversalScriptConfiguration.class).getDefaultCommand(); // 读取配置信息中的默认脚本语句
+            String script = context.getContainer().getBean(UniversalScriptConfiguration.class).getDefaultCommand(); // 读取配置信息中的默认脚本语句
             if (StringUtils.isNotBlank(script)) {
                 UniversalCommandCompiler compiler = this.commandRepository.get(script);
                 this.commandRepository.setDefault(compiler);
@@ -98,12 +101,13 @@ public class ScriptCompiler implements UniversalScriptCompiler {
     }
 
     public boolean hasNext() throws IOException, SQLException {
+        this.readMillis = System.currentTimeMillis();
         if (this.terminate) {
             this.cache.clear();
             return false;
         } else if (this.cache.size() == 0) {
             UniversalScriptCommand command = this.parser.read();
-            return command == null ? false : this.cache.add(command);
+            return command != null && this.cache.add(command);
         } else {
             return true;
         }
@@ -127,6 +131,10 @@ public class ScriptCompiler implements UniversalScriptCompiler {
 
     public long getLineNumber() {
         return this.reader == null ? 0 : this.reader.getLineNumber();
+    }
+
+    public long getCompileMillis() {
+        return readMillis;
     }
 
     public void close() {

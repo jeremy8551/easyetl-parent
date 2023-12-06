@@ -3,7 +3,6 @@ package icu.etl.os;
 import java.util.List;
 
 import icu.etl.os.macos.MacOS;
-import icu.etl.time.Timer;
 import icu.etl.util.Dates;
 import icu.etl.util.TimeWatch;
 import org.junit.Assert;
@@ -22,8 +21,8 @@ public class MacOSTest {
             OSFileCommand fileCmd = os.getOSFileCommand();
 
             System.out.println("初始化用时: " + watch.useTime());
-            Timer.sleep(2000);
-            
+            Dates.sleep(2000);
+
             System.out.println("current user is " + os.getUser());
             System.out.println("exist / " + fileCmd.exists("/"));
 

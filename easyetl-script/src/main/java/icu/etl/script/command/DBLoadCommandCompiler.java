@@ -21,7 +21,7 @@ import icu.etl.expression.DataUnitExpression;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTable;
 import icu.etl.io.TextTableFile;
-import icu.etl.ioc.BeanInfo;
+import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -301,12 +301,12 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
         // 查找接口对应的的实现类
-        List<BeanInfo> list1 = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
+        List<EasyBeanInfo> list1 = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
         CharTable ct1 = new CharTable(context.getCharsetName());
         ct1.addTitle("");
         ct1.addTitle("");
         ct1.addTitle("");
-        for (BeanInfo beanInfo : list1) {
+        for (EasyBeanInfo beanInfo : list1) {
             ct1.addCell(beanInfo.getName());
             ct1.addCell(beanInfo.getDescription());
             ct1.addCell(beanInfo.getType().getName());
@@ -318,7 +318,7 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
                 , UserListener.class.getName() // 2
                 , JdbcObjectConverter.class.getName() // 3
                 , ExtractWriter.class.getName() // 4
-                , ct1.toSimpleShape().ltrim().toString() // 5
+                , ct1.toString(CharTable.Style.simple) // 5
                 , "" // 6
                 , TextTable.class.getName() // 7
         ));

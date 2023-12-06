@@ -352,7 +352,7 @@ echo ""
 echo ""
 
 sleep 2second
-help script
+# help script
 echo ""
 echo ""
 
@@ -363,8 +363,8 @@ echo ""
 echo ""
 echo ""
 echo ""
-echo "以下是单独打印ssh命令使用说明语句: help ssh"
-help ssh
+# echo "以下是单独打印ssh命令使用说明语句: help ssh"
+# help ssh
 echo ""
 echo ""
 echo ""

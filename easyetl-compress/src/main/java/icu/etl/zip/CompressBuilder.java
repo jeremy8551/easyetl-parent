@@ -3,8 +3,8 @@ package icu.etl.zip;
 import java.io.File;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.ioc.BeanBuilder;
-import icu.etl.ioc.BeanInfo;
+import icu.etl.ioc.EasyBeanBuilder;
+import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.FileUtils;
@@ -17,7 +17,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2021-02-09
  */
 @EasyBean
-public class CompressBuilder implements BeanBuilder<Compress> {
+public class CompressBuilder implements EasyBeanBuilder<Compress> {
 
     public Compress getBean(EasyContext context, Object... args) throws Exception {
         String suffix = null;
@@ -36,7 +36,7 @@ public class CompressBuilder implements BeanBuilder<Compress> {
             suffix = "zip";
         }
 
-        BeanInfo beanInfo = context.getBeanInfo(Compress.class, suffix);
+        EasyBeanInfo beanInfo = context.getBeanInfo(Compress.class, suffix);
         if (beanInfo == null) {
             throw new UnsupportedOperationException(suffix);
         } else {

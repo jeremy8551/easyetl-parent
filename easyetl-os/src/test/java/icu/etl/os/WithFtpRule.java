@@ -10,7 +10,7 @@ public class WithFtpRule extends WithSSHRule {
 
     public Statement apply(Statement statement, Description description) {
         init();
-        return new WithFtpStatement(statement);
+        return new WithFtpStatement(this, statement);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class WithFtpRule extends WithSSHRule {
 
         try {
             String sshhost = (String) environment.get("ftp.host");
-            WithSSHRule.notFindServer = !Ping.ping(sshhost);
+            this.notFindServer = !Ping.ping(sshhost);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -27,14 +27,15 @@ public class WithFtpRule extends WithSSHRule {
 
     public static class WithFtpStatement extends Statement {
         private Statement statment;
+        private WithFtpRule rule;
 
-        public WithFtpStatement(Statement statment) {
+        public WithFtpStatement(WithFtpRule rule, Statement statment) {
             this.statment = statment;
         }
 
         @Override
         public void evaluate() throws Throwable {
-            if (WithFtpRule.notFindServer) {
+            if (rule.notFindServer) {
                 System.out.println("**************** 未找到可用的数据库 ****************");
                 return;
             }

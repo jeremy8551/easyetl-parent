@@ -14,9 +14,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import icu.etl.database.DB;
 import icu.etl.database.Jdbc;
 import icu.etl.io.BufferedLineReader;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OS;
 import icu.etl.os.OSCommand;
 import icu.etl.os.OSCommandException;
@@ -38,6 +39,7 @@ import icu.etl.util.StringUtils;
  * DB2数据库实例
  */
 public class DB2Instance {
+    private final static Log log = LogFactory.getLog(DB2Instance.class);
 
     /**
      * 返回操作系统中DB2数据库实例信息
@@ -212,8 +214,8 @@ public class DB2Instance {
                     key = StringUtils.trimBlank(key);
                     String value = StringUtils.trimBlank(array[1]);
 
-                    if (DB.out.isDebugEnabled()) {
-                        DB.out.debug("db2 database meta data: " + key + " = " + value);
+                    if (log.isDebugEnabled()) {
+                        log.debug("db2 database meta data: " + key + " = " + value);
                     }
                     inst.addConfig(key, value);
                 }
@@ -304,8 +306,8 @@ public class DB2Instance {
                         key = StringUtils.trimBlank(key);
                         String value = StringUtils.trimBlank(array[1]);
 
-                        if (DB.out.isDebugEnabled()) {
-                            DB.out.debug("db2 database meta data: " + key + " = " + value);
+                        if (log.isDebugEnabled()) {
+                            log.debug("db2 database meta data: " + key + " = " + value);
                         }
 
                         if (key.equalsIgnoreCase("SQLSTATE") && value.equalsIgnoreCase("08001")) {
@@ -478,10 +480,10 @@ public class DB2Instance {
             env.append("").append(lineSeperator);
             os.getOSFileCommand().write(filepath, os.getOSFileCommand().getCharsetName(), true, env);
 
-            DB.out.info(ResourcesUtils.getDatabaseMessage(52, username, filepath, db2profile));
+            log.info(ResourcesUtils.getDatabaseMessage(52, username, filepath, db2profile));
             return true;
         } else {
-            DB.out.info(ResourcesUtils.getDatabaseMessage(53, username, profile, db2profile));
+            log.info(ResourcesUtils.getDatabaseMessage(53, username, profile, db2profile));
             return false;
         }
     }
@@ -689,17 +691,17 @@ public class DB2Instance {
         try {
             String handle = this.getApplicationHandle(conn, applicationId);
             if (StringUtils.isBlank(handle)) {
-                DB.out.warn("DB2 ApplicationId = " + applicationId + " not exists!");
+                log.warn("DB2 ApplicationId = " + applicationId + " not exists!");
                 return false;
             } else if (this.forceApplication(conn, handle)) {
-                DB.out.info("terminate DB2 application(" + handle + ") success ..");
+                log.info("terminate DB2 application(" + handle + ") success ..");
                 return true;
             } else {
-                DB.out.info("terminate DB2 application(" + handle + ") fail ..");
+                log.info("terminate DB2 application(" + handle + ") fail ..");
                 return false;
             }
         } catch (Exception e) {
-            DB.out.error("terminate db2 application " + applicationId + " error!", e);
+            log.error("terminate db2 application " + applicationId + " error!", e);
             return false;
         }
     }
@@ -716,8 +718,8 @@ public class DB2Instance {
         try {
             while (in.hasNext()) {
                 String line = in.next();
-                if (DB.out.isDebugEnabled()) {
-                    DB.out.debug(line);
+                if (log.isDebugEnabled()) {
+                    log.debug(line);
                 }
 
                 if (line.indexOf(applicationId) != -1) {
@@ -735,7 +737,7 @@ public class DB2Instance {
         if (StringUtils.isInt(applicationHandle)) {
             return applicationHandle;
         } else {
-            DB.out.error(cmd.getStderr());
+            log.error(cmd.getStderr());
             return null;
         }
     }

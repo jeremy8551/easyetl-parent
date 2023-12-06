@@ -5,6 +5,7 @@ import java.util.Date;
 
 import icu.etl.io.BufferedLineReader;
 import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OSCommandException;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.time.Timer;
@@ -19,6 +20,7 @@ import icu.etl.util.StringUtils;
  * 用于防止 SSH 协议实现类超时中断退出
  */
 public class SecureShellCommandMonitor extends TimerTask {
+    private final static Log log = LogFactory.getLog(SecureShellCommandMonitor.class);
 
     /** 循环检查的周期，默认3分钟 */
     public static int PERIOD = 3 * 60 * 1000;
@@ -31,9 +33,6 @@ public class SecureShellCommandMonitor extends TimerTask {
 
     /** 监听器归属的 SSH 终端 */
     private SecureShellCommand terminal;
-
-    /** 终端使用的日志输出接口 */
-    private Log log;
 
     /** 操作系统host */
     private String host;
@@ -62,7 +61,6 @@ public class SecureShellCommandMonitor extends TimerTask {
      */
     public synchronized boolean startMonitor(SecureShellCommand client) {
         this.terminal = client;
-        this.log = client.getLog();
         this.host = client.getProperty(OSConnectCommand.host);
         this.port = Integer.parseInt(client.getProperty(OSConnectCommand.port));
         this.username = client.getProperty(OSConnectCommand.username);
@@ -99,7 +97,9 @@ public class SecureShellCommandMonitor extends TimerTask {
                 this.terminal.getConfig().setProperty("terminate", "killed");
             }
         } catch (Exception e) {
-            log.warn(ResourcesUtils.getSSH2JschMessage(4), e);
+            if (log.isWarnEnabled()) {
+                log.warn(ResourcesUtils.getSSH2JschMessage(4), e);
+            }
         } finally {
             client.close();
         }
@@ -118,19 +118,25 @@ public class SecureShellCommandMonitor extends TimerTask {
         int exitcode = client.execute(shell, 60000, null, null);
         if (exitcode == 0 || exitcode == 1) {
             if (StringUtils.isBlank(client.getStdout())) { // not exists system process
-                log.info(ResourcesUtils.getSSH2JschMessage(6, pid));
+                if (log.isInfoEnabled()) {
+                    log.info(ResourcesUtils.getSSH2JschMessage(6, pid));
+                }
 
-                Timer.sleep(3000); // wait 3sec
+                Dates.sleep(3000); // wait 3sec
                 this.terminal.terminate(); // terminate task
                 this.cancel();
                 return false;
             } else {
-                log.info(ResourcesUtils.getSSH2JschMessage(5, pid));
+                if (log.isInfoEnabled()) {
+                    log.info(ResourcesUtils.getSSH2JschMessage(5, pid));
+                }
                 this.lastRunningTime = new Date();
                 return true;
             }
         } else {
-            log.warn(ResourcesUtils.getSSH2JschMessage(4, shell + ", exitcode is " + exitcode));
+            if (log.isWarnEnabled()) {
+                log.warn(ResourcesUtils.getSSH2JschMessage(4, shell + ", exitcode is " + exitcode));
+            }
             return true;
         }
     }
@@ -150,10 +156,8 @@ public class SecureShellCommandMonitor extends TimerTask {
                 return true;
             }
         } catch (Exception e) {
-            if (log == null) {
-                e.printStackTrace();
-            } else {
-                log.error("sendKeepAliveMsg error!", e);
+            if (log.isErrorEnabled()) {
+                log.error(e.getLocalizedMessage(), e);
             }
             return false;
         }
@@ -206,13 +210,17 @@ public class SecureShellCommandMonitor extends TimerTask {
                     int shellPidIdx = StringUtils.indexOf(line, pid, killCmdIdx, true);
                     if (shellPidIdx != -1) {
                         if (lastActiveTime == null) {
-                            log.info(ResourcesUtils.getSSH2JschMessage(7, pid, line));
+                            if (log.isInfoEnabled()) {
+                                log.info(ResourcesUtils.getSSH2JschMessage(7, pid, line));
+                            }
                             return true;
                         }
 
                         String dateStr = line.substring(dateStartPos, timeEndPos);
                         if (Dates.parse(dateStr).compareTo(lastActiveTime) >= 0) {
-                            log.info(ResourcesUtils.getSSH2JschMessage(7, pid, line));
+                            if (log.isInfoEnabled()) {
+                                log.info(ResourcesUtils.getSSH2JschMessage(7, pid, line));
+                            }
                             return true;
                         }
                     }

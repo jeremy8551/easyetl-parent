@@ -3,7 +3,6 @@ package icu.etl.script.io;
 import java.io.Writer;
 import java.text.Format;
 
-import icu.etl.log.Log;
 import icu.etl.printer.StandardPrinter;
 import icu.etl.script.UniversalScriptStdout;
 
@@ -16,26 +15,19 @@ public class ScriptStdout extends StandardPrinter implements UniversalScriptStdo
 
     /**
      * 初始化
-     *
-     * @param log
      */
-    public ScriptStdout(Log log) {
-        if (log == null) {
-            throw new NullPointerException();
-        } else {
-            this.log = log;
-        }
+    public ScriptStdout() {
+        super();
     }
 
     /**
      * 初始化
      *
-     * @param log
-     * @param writer
-     * @param format
+     * @param writer 输出流
+     * @param format 格式化工具
      */
-    public ScriptStdout(Log log, Writer writer, Format format) {
-        this(log);
+    public ScriptStdout(Writer writer, Format format) {
+        this();
         this.setWriter(writer);
         this.setFormatter(format);
     }

@@ -8,7 +8,7 @@ import icu.etl.script.UniversalScriptProgram;
 import icu.etl.util.IO;
 
 public class ScriptProgram extends HashMap<String, Object> implements Map<String, Object> {
-    private static final long serialVersionUID = 1L;
+    private final static long serialVersionUID = 1L;
 
     public ScriptProgram() {
         super();

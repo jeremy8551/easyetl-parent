@@ -2,18 +2,22 @@ package icu.etl.increment;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import icu.etl.concurrent.Executor;
-import icu.etl.expression.OrderByExpression;
+import icu.etl.concurrent.AbstractJob;
 import icu.etl.io.CommonTextTableFileReaderListener;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableFileWriter;
+import icu.etl.io.TextTableLine;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.printer.Progress;
+import icu.etl.sort.OrderByExpression;
+import icu.etl.sort.TableFileDeduplicateSorter;
 import icu.etl.sort.TableFileSortContext;
-import icu.etl.sort.TableFileSorter;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.TimeWatch;
 
@@ -23,7 +27,8 @@ import icu.etl.util.TimeWatch;
  * @author jeremy8551@qq.com
  * @createtime 2010-01-19 02:45:22
  */
-public class Increment extends Executor {
+public class Increment extends AbstractJob {
+    private final static Log log = LogFactory.getLog(Increment.class);
 
     /** 任务的配置信息 */
     private IncrementContext context;
@@ -31,16 +36,17 @@ public class Increment extends Executor {
     /**
      * 初始化
      *
-     * @param context
-     * @throws IOException
+     * @param context 上下文信息
+     * @throws IOException 访问文件错误
      */
     public Increment(IncrementContext context) throws IOException {
         super();
-        this.context = new IncrementValidator(context).getContext();
+        new IncrementContextValidator(context);
+        this.context = context;
         this.setName(context.getName());
     }
 
-    public void execute() throws IOException {
+    public int execute() throws IOException {
         TimeWatch watch = new TimeWatch();
         TextTableFile oldfile = this.context.getOldFile();
         TextTableFile newfile = this.context.getNewFile();
@@ -53,7 +59,7 @@ public class Increment extends Executor {
         IncrementPosition position = this.context.getPosition();
         List<IncrementListener> listeners = this.context.getListeners();
         IncrementReplaceList replaceList = this.context.getReplaceList();
-        IncrementLogger logger = this.context.getLogger();
+        IncrementLoggerListener logger = this.context.getLogger();
         Progress newfileProgress = this.context.getNewfileProgress();
         Progress oldfileProgress = this.context.getOldfileProgress();
         TableFileSortContext newfileCxt = this.context.getNewfileSortContext();
@@ -73,30 +79,26 @@ public class Increment extends Executor {
 
         try {
             if (sortNewFile) { // 排序新数据
-                if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getIncrementMessage(1, this.getName()));
-                }
-
-                TableFileSorter tfs = new TableFileSorter(newfileCxt);
+                TableFileDeduplicateSorter tfs = new TableFileDeduplicateSorter(newfileCxt);
                 try {
-                    this.observers.add(tfs);
-                    afterSortNewfile = tfs.sort(newfile, this.valueOf(position.getNewIndexPosition(), comparator, true));
+                    this.status.add(tfs);
+                    OrderByExpression[] orders = this.valueOf(position.getNewIndexPosition(), comparator, true);
+                    afterSortNewfile = tfs.execute(newfile, orders);
+//                    this.check(newfileCxt, newfile, afterSortNewfile, orders);
                 } finally {
-                    this.observers.remove(tfs);
+                    this.status.remove(tfs);
                 }
             }
         } finally {
             if (sortOldFile) { // 排序旧数据
-                if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getIncrementMessage(2, this.getName()));
-                }
-
-                TableFileSorter tfs = new TableFileSorter(oldfileCxt);
+                TableFileDeduplicateSorter tfs = new TableFileDeduplicateSorter(oldfileCxt);
                 try {
-                    this.observers.add(tfs);
-                    afterSortOldfile = tfs.sort(oldfile, this.valueOf(position.getOldIndexPosition(), comparator, true));
+                    this.status.add(tfs);
+                    OrderByExpression[] orders = this.valueOf(position.getOldIndexPosition(), comparator, true);
+                    afterSortOldfile = tfs.execute(oldfile, orders);
+//                    this.check(oldfileCxt, oldfile, afterSortOldfile, orders);
                 } finally {
-                    this.observers.remove(tfs);
+                    this.status.remove(tfs);
                 }
             }
         }
@@ -105,9 +107,9 @@ public class Increment extends Executor {
             log.debug(ResourcesUtils.getIncrementMessage(3, this.getName()));
         }
 
-        // 开始执行剥离增量数据
+        // 开始执行增量剥离
         try {
-            this.observers.add(arith);
+            this.status.add(arith);
 
             // 使用排序后的文件作为剥离增量依据
             oldfile.setAbsolutePath(afterSortOldfile.getAbsolutePath());
@@ -121,9 +123,13 @@ public class Increment extends Executor {
 
             IncrementHandler out = new IncrementFileWriter(newfile, oldfile, listeners, logger, replaceList, newOuter, updOuter, delOuter);
             arith.execute(ruler, newIn, oldIn, out);
-            log.debug(ResourcesUtils.getIncrementMessage(4, this.getName(), this.getId(), watch.useTime()));
+
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getIncrementMessage(4, this.getName(), watch.useTime()));
+            }
+            return 0;
         } finally {
-            this.observers.remove(arith);
+            this.status.remove(arith);
 
             // 排序后的文件与源文件路径不同，删除排序后的文件
             if (!afterSortOldfile.equals(beforeSortOldfile) && beforeSortOldfile.exists()) {
@@ -132,6 +138,62 @@ public class Increment extends Executor {
             if (!afterSortNewfile.equals(beforeSortNewfile) && beforeSortNewfile.exists()) {
                 afterSortNewfile.delete();
             }
+        }
+    }
+
+    /**
+     * 检查表格型文件中是否有重复数据
+     *
+     * @param cxt       上下文信息
+     * @param tableFile 数据文件（需要排序的文件）
+     * @param sortfile  排序后的文件
+     * @param array     唯一索引字段
+     * @throws IOException 有重复数据时抛出异常
+     */
+    public void check(TableFileSortContext cxt, TextTableFile tableFile, File sortfile, OrderByExpression... array) throws IOException {
+        String[] indexs = new String[array.length];
+        Arrays.fill(indexs, "");
+
+        TextTableFile clone = tableFile.clone();
+        clone.setAbsolutePath(sortfile.getAbsolutePath());
+        TextTableFileReader in = clone.getReader(cxt.getReaderBuffer());
+        try {
+            String ls = "";
+            TextTableLine line;
+            while ((line = in.readLine()) != null) {
+                boolean equals = true;
+                for (int i = 0; i < array.length; i++) {
+                    OrderByExpression field = array[i];
+                    String value = line.getColumn(field.getPosition());
+                    if (!indexs[i].equals(value)) {
+                        equals = false;
+                    }
+                }
+
+                if (equals) {
+                    StringBuilder buf = new StringBuilder(100);
+                    buf.append("数据文件剥离增量失败!\n");
+                    buf.append("数据文件: ").append(sortfile.getAbsolutePath()).append('\n');
+                    buf.append("唯一索引: ");
+                    for (int i = 0; i < array.length; i++) {
+                        OrderByExpression field = array[i];
+                        buf.append("第").append(field.getPosition()).append("个字段");//.append(':').append(indexs[i]);
+                        if (i < array.length - 1) {
+                            buf.append(", ");
+                        }
+                    }
+                    buf.append('\n');
+//                    buf.append("重复数据: \n").append(ls).append('\n').append(line.getContent());
+                    throw new IOException(buf.toString());
+                } else {
+                    ls = line.getContent();
+                    for (int i = 0; i < array.length; i++) {
+                        indexs[i] = line.getColumn(array[i].getPosition());
+                    }
+                }
+            }
+        } finally {
+            in.close();
         }
     }
 
@@ -150,10 +212,6 @@ public class Increment extends Executor {
      */
     public IncrementContext getContext() {
         return context;
-    }
-
-    public int getPRI() {
-        return 0;
     }
 
 }

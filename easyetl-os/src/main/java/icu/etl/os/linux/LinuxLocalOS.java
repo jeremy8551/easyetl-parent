@@ -3,7 +3,6 @@ package icu.etl.os.linux;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +37,7 @@ import icu.etl.os.internal.OSMemoryImpl;
 import icu.etl.os.internal.OSNetworkCardImpl;
 import icu.etl.os.internal.OSProcessorImpl;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.CharsetName;
 import icu.etl.util.CollectionUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
@@ -88,7 +88,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
      */
     protected void init() throws IOException {
         File file = new File("/proc/version");
-        String kernelStr = FileUtils.readline(file, StandardCharsets.ISO_8859_1.name(), 0);
+        String kernelStr = FileUtils.readline(file, CharsetName.ISO_8859_1, 0);
         String[] array = StringUtils.splitByBlank(kernelStr);
         this.name = array[0];
         this.kernel = array[2];
@@ -145,7 +145,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     }
 
     public List<OSUserGroup> getGroups() {
-        BufferedLineReader in = new BufferedLineReader(new File("/etc/group"), StandardCharsets.ISO_8859_1.name());
+        BufferedLineReader in = new BufferedLineReader(new File("/etc/group"), CharsetName.ISO_8859_1);
         try {
             List<OSUserGroup> list = new ArrayList<OSUserGroup>();
             while (in.hasNext()) {
@@ -196,7 +196,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     }
 
     public List<OSUser> getUsers() {
-        BufferedLineReader in = new BufferedLineReader(new File("/etc/passwd"), StandardCharsets.ISO_8859_1.name());
+        BufferedLineReader in = new BufferedLineReader(new File("/etc/passwd"), CharsetName.ISO_8859_1);
         try {
             List<OSUser> list = new ArrayList<OSUser>();
             while (in.hasNext()) {
@@ -258,7 +258,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     }
 
     public List<OSService> getOSServices() {
-        BufferedLineReader in = new BufferedLineReader(new File("/etc/services"), StandardCharsets.ISO_8859_1.name());
+        BufferedLineReader in = new BufferedLineReader(new File("/etc/services"), CharsetName.ISO_8859_1);
         try {
             List<OSService> list = new ArrayList<OSService>();
             while (in.hasNext()) {
@@ -431,7 +431,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
 
         // /etc/resolv.conf
         String dns1 = "", dns2 = "";
-        BufferedLineReader in = new BufferedLineReader(new File("/etc/resolv.conf"), StandardCharsets.ISO_8859_1.name());
+        BufferedLineReader in = new BufferedLineReader(new File("/etc/resolv.conf"), CharsetName.ISO_8859_1);
         try {
             while (in.hasNext()) {
                 String line = in.next();
@@ -450,7 +450,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
 
         for (File eth : files) {
             Map<String, String> map = new CaseSensitivMap<String>();
-            BufferedLineReader cin = new BufferedLineReader(eth, StandardCharsets.ISO_8859_1.name());
+            BufferedLineReader cin = new BufferedLineReader(eth, CharsetName.ISO_8859_1);
             try {
                 while (cin.hasNext()) {
                     String line = cin.next();
@@ -536,7 +536,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     }
 
     public List<OSCpu> getOSCpus() {
-        BufferedLineReader in = new BufferedLineReader(new File("/proc/cpuinfo"), StandardCharsets.ISO_8859_1.name());
+        BufferedLineReader in = new BufferedLineReader(new File("/proc/cpuinfo"), CharsetName.ISO_8859_1);
         try {
             List<OSCpu> list = new ArrayList<OSCpu>();
             Map<String, String> map = new CaseSensitivMap<String>();
@@ -606,7 +606,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     }
 
     public OSMemory getOSMemory() {
-        BufferedLineReader in = new BufferedLineReader(new File("/proc/meminfo"), StandardCharsets.ISO_8859_1.name());
+        BufferedLineReader in = new BufferedLineReader(new File("/proc/meminfo"), CharsetName.ISO_8859_1);
         try {
             OSMemoryImpl obj = new OSMemoryImpl();
             while (in.hasNext()) {

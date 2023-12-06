@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 
 import icu.etl.annotation.EasyBean;
@@ -18,6 +17,7 @@ import icu.etl.ioc.EasyContext;
 import icu.etl.os.OSAccount;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.os.OSShellCommand;
+import icu.etl.util.Ensure;
 
 /**
  * 数据库连接信息集合
@@ -33,7 +33,7 @@ public class StandardDatabaseConfigurationContainer implements DatabaseConfigura
 
     public StandardDatabaseConfigurationContainer(EasyContext context) {
         this.map = new CaseSensitivMap<DatabaseConfiguration>();
-        this.context = Objects.requireNonNull(context);
+        this.context = Ensure.notNull(context);
     }
 
     public DatabaseConfiguration add(Properties p) {

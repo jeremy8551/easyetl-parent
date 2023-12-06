@@ -15,7 +15,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import icu.etl.collection.CaseSensitivSet;
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseDDL;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.DatabaseException;
@@ -29,9 +28,11 @@ import icu.etl.database.DatabaseTypeSet;
 import icu.etl.database.Jdbc;
 import icu.etl.database.JdbcDao;
 import icu.etl.database.SQL;
-import icu.etl.time.Timer;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.CollectionUtils;
+import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Property;
@@ -39,8 +40,7 @@ import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
 public abstract class AbstractDialect implements DatabaseDialect {
-
-    protected final static String ROW_NUMBER_NAME = "$_rownum_$";
+    private final static Log log = LogFactory.getLog(AbstractDialect.class);
 
     /** 关键字字符串集合 */
     protected Set<String> keyword;
@@ -76,7 +76,7 @@ public abstract class AbstractDialect implements DatabaseDialect {
                 JdbcDao.execute(connection, sql);
                 break;
             } catch (Throwable e) {
-                Timer.sleep(2000);
+                Dates.sleep(2000);
                 continue;
             }
         }
@@ -585,8 +585,8 @@ public abstract class AbstractDialect implements DatabaseDialect {
             }
             return true;
         } catch (Throwable e) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(StringUtils.toString(p), e);
+            if (log.isDebugEnabled()) {
+                log.debug(StringUtils.toString(p), e);
             }
             return false;
         }

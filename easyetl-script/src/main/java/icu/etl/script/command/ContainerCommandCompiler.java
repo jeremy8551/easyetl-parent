@@ -12,10 +12,10 @@ import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptException;
+import icu.etl.script.UniversalScriptJob;
 import icu.etl.script.UniversalScriptParser;
 import icu.etl.script.UniversalScriptReader;
 import icu.etl.script.UniversalScriptSession;
-import icu.etl.script.UniversalScriptThread;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -56,7 +56,7 @@ public class ContainerCommandCompiler extends AbstractCommandCompiler {
         String body = it.readOther();
         List<UniversalScriptCommand> cmdlist = parser.read(body);
         for (UniversalScriptCommand cmd : cmdlist) {
-            if (!(cmd instanceof UniversalScriptThread)) {
+            if (!(cmd instanceof UniversalScriptJob)) {
                 throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "container to execute tasks in parallel .. begin .. end", cmd.getScript()));
             }
         }

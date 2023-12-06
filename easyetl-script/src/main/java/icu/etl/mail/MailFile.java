@@ -2,10 +2,10 @@ package icu.etl.mail;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import icu.apache.mail.common.EmailAttachment;
 import icu.etl.ioc.EasyContext;
+import icu.etl.util.CharsetName;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.zip.Compress;
@@ -67,7 +67,7 @@ public class MailFile {
         Compress compress = context.getBean(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
         try {
             compress.setFile(compressFile);
-            compress.archiveFile(fileOrDir, null, StringUtils.defaultString(charsetName, StandardCharsets.UTF_8.name()));
+            compress.archiveFile(fileOrDir, null, StringUtils.defaultString(charsetName, CharsetName.UTF_8));
         } finally {
             compress.close();
         }

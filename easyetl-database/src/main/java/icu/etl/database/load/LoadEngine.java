@@ -1,29 +1,25 @@
 package icu.etl.database.load;
 
-import icu.etl.concurrent.Executor;
-import icu.etl.database.DB;
+import icu.etl.concurrent.AbstractJob;
 import icu.etl.database.load.inernal.StandardLoadEngineContext;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
-import icu.etl.log.Log;
 
 /**
- * 装数引擎
+ * 数据装载引擎
  *
  * @author jeremy8551@qq.com
  * @createtime 2021-03-03
  */
-public class LoadEngine extends Executor implements EasyContextAware {
+public class LoadEngine extends AbstractJob implements EasyContextAware {
 
-    /** 装数引擎默认日志接口 */
-    public static Log out = DB.out;
-
-    /** 加载程序的上下文信息 */
+    /** 数据装载引擎的上下文信息 */
     protected LoadEngineContext context;
 
-    /** 装数引擎 */
+    /** 数据装载器 */
     protected Loader loader;
 
+    /** 容器上下文信息 */
     protected EasyContext ioccxt;
 
     /**
@@ -38,10 +34,11 @@ public class LoadEngine extends Executor implements EasyContextAware {
         this.ioccxt = context;
     }
 
-    public void execute() throws Exception {
-        String mode = this.context.getAttributes().contains("thread") ? "parallel" : "serial";
-        this.loader = this.ioccxt.getBean(Loader.class, mode);
+    public int execute() throws Exception {
+        // 经测试发现：使用并发分段读取文件的方式，再批量插入的方式速度并不快，反而低，所以默认使用单线程读取数据文件
+        this.loader = this.ioccxt.getBean(Loader.class, "serial");
         this.loader.execute(this.context);
+        return 0;
     }
 
     public void terminate() {
@@ -57,10 +54,6 @@ public class LoadEngine extends Executor implements EasyContextAware {
      */
     public LoadEngineContext getContext() {
         return this.context;
-    }
-
-    public int getPRI() {
-        return 0;
     }
 
 }

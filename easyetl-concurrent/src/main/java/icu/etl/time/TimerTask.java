@@ -2,7 +2,8 @@ package icu.etl.time;
 
 import java.util.Date;
 
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.Dates;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -15,6 +16,7 @@ import icu.etl.util.TimeWatch;
  * @createtime 2014-05-04
  */
 public abstract class TimerTask implements Runnable {
+    private final static Log log = LogFactory.getLog(TimerTask.class);
 
     /**
      * 系统默认参数值
@@ -118,15 +120,15 @@ public abstract class TimerTask implements Runnable {
      */
     public boolean start() {
         if (isRunning()) {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(48, this.getTaskId()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(48, this.getTaskId()));
             }
             return false;
         }
 
         if (isCancel()) {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(49, this.getTaskId()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(49, this.getTaskId()));
             }
             return false;
         }
@@ -135,23 +137,23 @@ public abstract class TimerTask implements Runnable {
             if (this.runThread instanceof TimerTaskThread) {
                 TimerTaskThread thread = (TimerTaskThread) this.runThread;
                 if (thread.isRunning()) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getTimerMessage(50, this.getTaskId()));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getTimerMessage(50, this.getTaskId()));
                     }
                     return false;
                 }
             }
 
             if (this.runThread.isAlive()) { // 如果线程已经执行 start
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getTimerMessage(51, this.getTaskId()));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getTimerMessage(51, this.getTaskId()));
                 }
                 return false;
             }
         }
 
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getTimerMessage(13, this.getTaskId()));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getTimerMessage(13, this.getTaskId()));
         }
 
         calcNextRunMillis();
@@ -278,8 +280,8 @@ public abstract class TimerTask implements Runnable {
         String taskId = this.getTaskId();
         TimeoutMonitor monitor = null;
         try {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(20, taskId));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(20, taskId));
             }
 
             if (existsQueue()) {
@@ -290,8 +292,8 @@ public abstract class TimerTask implements Runnable {
 
             execute();
 
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(21, taskId));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(21, taskId));
             }
         } catch (Throwable e) {
             throw new TimerException(ResourcesUtils.getTimerMessage(22, taskId));
@@ -333,8 +335,8 @@ public abstract class TimerTask implements Runnable {
                 monitor.waitRunning();
             }
         } catch (Exception e) {
-            if (STD.out.isErrorEnabled()) {
-                STD.out.error(ResourcesUtils.getTimerMessage(23, this.getTaskId()), e);
+            if (log.isErrorEnabled()) {
+                log.error(ResourcesUtils.getTimerMessage(23, this.getTaskId()), e);
             }
         }
     }
@@ -355,8 +357,8 @@ public abstract class TimerTask implements Runnable {
                 getQueue().syncQueue(this);
             }
 
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(24, this.getTaskId()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(24, this.getTaskId()));
             }
             return true;
         }
@@ -371,8 +373,8 @@ public abstract class TimerTask implements Runnable {
                 notifyAll();
             }
         } catch (Throwable e) {
-            if (STD.out.isErrorEnabled()) {
-                STD.out.error(ResourcesUtils.getTimerMessage(25, this.getTaskId()), e);
+            if (log.isErrorEnabled()) {
+                log.error(ResourcesUtils.getTimerMessage(25, this.getTaskId()), e);
             }
         }
     }
@@ -386,8 +388,8 @@ public abstract class TimerTask implements Runnable {
             try {
                 thread.interrupt();
             } catch (Throwable e) {
-                if (STD.out.isErrorEnabled()) {
-                    STD.out.error(ResourcesUtils.getTimerMessage(26, this.getTaskId()), e);
+                if (log.isErrorEnabled()) {
+                    log.error(ResourcesUtils.getTimerMessage(26, this.getTaskId()), e);
                 }
             }
         }
@@ -641,15 +643,15 @@ public abstract class TimerTask implements Runnable {
             if (thread.isRunning()) {
                 if (type != 1) {
                     type = 1;
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getTimerMessage(52, this.getTaskId()));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getTimerMessage(52, this.getTaskId()));
                     }
                 }
             } else {
                 if (type != 2) {
                     type = 2;
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getTimerMessage(53, this.getTaskId()));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getTimerMessage(53, this.getTaskId()));
                     }
                 }
             }
@@ -680,8 +682,8 @@ public abstract class TimerTask implements Runnable {
      */
     void setNextRunMillis(long nextRunMillis) {
         this.nextRunMillis = nextRunMillis;
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getTimerMessage(33, this.getTaskId(), Dates.format19(new Date(this.nextRunMillis))));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getTimerMessage(33, this.getTaskId(), Dates.format19(new Date(this.nextRunMillis))));
         }
     }
 

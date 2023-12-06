@@ -45,7 +45,7 @@ public enum IndexMode {
      * @param str
      * @return
      */
-    public final static IndexMode valueof(String str) {
+    public static IndexMode valueof(String str) {
         if ("rebuild".equalsIgnoreCase(str)) {
             return REBUILD;
         } else if ("incremental".equalsIgnoreCase(str)) {
@@ -53,7 +53,7 @@ public enum IndexMode {
         } else if ("autoselect".equalsIgnoreCase(str)) {
             return AUTOSELECT;
         } else {
-            throw new UnsupportedOperationException(ResourcesUtils.getLoadMessage(16, REBUILD.getName(), INCREMENTAL.getName(), AUTOSELECT.getName())); // TODO
+            throw new UnsupportedOperationException(ResourcesUtils.getLoadMessage(16, REBUILD.getName(), INCREMENTAL.getName(), AUTOSELECT.getName()));
         }
     }
 
@@ -63,15 +63,13 @@ public enum IndexMode {
      * @param str
      * @return
      */
-    public final static boolean isMode(String str) {
+    public static boolean isMode(String str) {
         if ("rebuild".equalsIgnoreCase(str)) {
             return true;
         } else if ("incremental".equalsIgnoreCase(str)) {
             return true;
-        } else if ("autoselect".equalsIgnoreCase(str)) {
-            return true;
         } else {
-            return false;
+            return "autoselect".equalsIgnoreCase(str);
         }
     }
 

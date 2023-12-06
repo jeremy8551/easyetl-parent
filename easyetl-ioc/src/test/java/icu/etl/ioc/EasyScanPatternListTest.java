@@ -2,6 +2,8 @@ package icu.etl.ioc;
 
 import java.util.Arrays;
 
+import icu.etl.ioc.scan.ClassScanner;
+import icu.etl.ioc.scan.EasyScanPatternList;
 import icu.etl.util.Settings;
 import org.junit.Assert;
 import org.junit.Test;

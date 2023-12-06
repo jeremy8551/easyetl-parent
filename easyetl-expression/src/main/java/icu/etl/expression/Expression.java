@@ -6,7 +6,7 @@ import java.util.Date;
 import icu.etl.expression.parameter.ExpressionParameter;
 import icu.etl.expression.parameter.Parameter;
 import icu.etl.log.Log;
-import icu.etl.log.STD;
+import icu.etl.log.LogFactory;
 import icu.etl.util.Dates;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -109,9 +109,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2014-05-14 11:39:37
  */
 public class Expression {
-
-    /** 表达式模块的日志输出接口 */
-    public static Log out = STD.out;
+    private final static Log log = LogFactory.getLog(Expression.class);
 
     /** 表达式 */
     protected String expression;
@@ -135,11 +133,11 @@ public class Expression {
      * 初始化
      *
      * @param format 表达式解析器
-     * @param str    表达式语句
+     * @param str    表达式
      */
     public Expression(Parser format, String str) {
-        if (Expression.out.isDebugEnabled()) {
-            Expression.out.debug(ResourcesUtils.getExpressionMessage(6, str));
+        if (log.isTraceEnabled()) {
+            log.trace(ResourcesUtils.getExpressionMessage(6, str));
         }
 
         this.expression = str;
@@ -148,9 +146,9 @@ public class Expression {
     }
 
     /**
-     * 返回计算公式
+     * 返回运算公式
      *
-     * @return
+     * @return 运算公式
      */
     public Formula getFormula() {
         return this.formula;
@@ -185,7 +183,7 @@ public class Expression {
      * 如果运算结果是 long 类型，转换为 BigDecimal 类型 <br>
      * 如果运算结果是 String 类型，转换为 BigDecimal 类型 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public BigDecimal decimalValue() {
         if (this.result == null) {
@@ -195,9 +193,9 @@ public class Expression {
         int type = this.result.getType();
         switch (type) {
             case Parameter.DOUBLE:
-                return new BigDecimal(this.result.doubleValue().doubleValue());
+                return BigDecimal.valueOf(this.result.doubleValue());
             case Parameter.LONG:
-                return new BigDecimal(this.result.longValue().longValue());
+                return new BigDecimal(this.result.longValue());
             case Parameter.STRING:
                 return new BigDecimal(this.result.stringValue());
             default:
@@ -212,7 +210,7 @@ public class Expression {
      * 如果运算结果是 long 类型，转换为 Double 类型 <br>
      * 如果运算结果是 String 类型，转换为 Double 类型 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public Double doubleValue() {
         if (this.result == null) {
@@ -224,7 +222,7 @@ public class Expression {
             case Parameter.DOUBLE:
                 return this.result.doubleValue();
             case Parameter.LONG:
-                return Double.valueOf(this.result.longValue().doubleValue());
+                return this.result.longValue().doubleValue();
             case Parameter.STRING:
                 return new Double(this.result.stringValue());
             default:
@@ -239,7 +237,7 @@ public class Expression {
      * 如果运算结果是 long 类型，转换为 Float 类型 <br>
      * 如果运算结果是 String 类型，转换为 Float 类型 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public Float floatValue() {
         if (this.result == null) {
@@ -249,9 +247,9 @@ public class Expression {
         int type = this.result.getType();
         switch (type) {
             case Parameter.DOUBLE:
-                return Float.valueOf(this.result.doubleValue().floatValue());
+                return this.result.doubleValue().floatValue();
             case Parameter.LONG:
-                return Float.valueOf(this.result.longValue().floatValue());
+                return this.result.longValue().floatValue();
             case Parameter.STRING:
                 return new Float(this.result.stringValue());
             default:
@@ -266,7 +264,7 @@ public class Expression {
      * 如果运算结果是 long 类型，转换为 Integer 类型 <br>
      * 如果运算结果是 String 类型，转换为 Integer 类型 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public Integer intValue() {
         if (this.result == null) {
@@ -276,9 +274,9 @@ public class Expression {
         int type = this.result.getType();
         switch (type) {
             case Parameter.DOUBLE:
-                return Integer.valueOf(this.result.doubleValue().intValue());
+                return this.result.doubleValue().intValue();
             case Parameter.LONG:
-                return Integer.valueOf(this.result.longValue().intValue());
+                return this.result.longValue().intValue();
             case Parameter.STRING:
                 return new Integer(this.result.stringValue());
             default:
@@ -294,7 +292,7 @@ public class Expression {
      * 如果运算结果是 String 类型，转换为 Long 类型 <br>
      * 如果运算结果是 Date 类型，返回日期的时间戳 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public Long longValue() {
         if (this.result == null) {
@@ -304,7 +302,7 @@ public class Expression {
         int type = this.result.getType();
         switch (type) {
             case Parameter.DOUBLE:
-                return Long.valueOf(this.result.doubleValue().longValue());
+                return this.result.doubleValue().longValue();
             case Parameter.LONG:
                 return this.result.longValue();
             case Parameter.STRING:
@@ -323,7 +321,7 @@ public class Expression {
      * 如果运算结果是 long 类型，会抛出异常 <br>
      * 如果运算结果是 String 类型，转换为 Boolean 类型 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public Boolean booleanValue() {
         if (this.result == null) {
@@ -348,7 +346,7 @@ public class Expression {
      * 如果运算结果是 long 类型，转换为 Short 类型 <br>
      * 如果运算结果是 String 类型，转换为 Short 类型 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public Short shortValue() {
         if (this.result == null) {
@@ -358,9 +356,9 @@ public class Expression {
         int type = this.result.getType();
         switch (type) {
             case Parameter.DOUBLE:
-                return Short.valueOf(this.result.doubleValue().shortValue());
+                return this.result.doubleValue().shortValue();
             case Parameter.LONG:
-                return Short.valueOf(this.result.longValue().shortValue());
+                return this.result.longValue().shortValue();
             case Parameter.STRING:
                 return new Short(this.result.stringValue());
             default:
@@ -376,7 +374,7 @@ public class Expression {
      * 如果运算结果是 String 类型，转换为 String 类型 <br>
      * 如果运算结果是 Date 类型，转换为 String 类型 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public String stringValue() {
         if (this.result == null) {
@@ -406,7 +404,7 @@ public class Expression {
      * 如果运算结果是 String 类型，转换为 Date 类型 <br>
      * 如果运算结果是 Date 类型，直接返回 <br>
      *
-     * @return
+     * @return 运算结果
      */
     public Date dateValue() {
         if (this.result == null) {

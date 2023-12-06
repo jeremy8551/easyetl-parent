@@ -16,18 +16,6 @@
         <maven.compiler.charset>${project.build.sourceEncoding}</maven.compiler.charset>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>icu.etl</groupId>
-            <artifactId>easyetl-ioc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>icu.etl</groupId>
-            <artifactId>easyetl-tool</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

@@ -45,7 +45,7 @@ public class StringConverter extends icu.etl.database.export.converter.StringCon
 
         public Messy(String charsetName) {
             this.buffer = new CharBuffer(100, 30);
-            Charset charset = java.nio.charset.Charset.forName(charsetName);
+            Charset charset = Charset.forName(charsetName);
             this.encoder = charset.newEncoder();
         }
 

@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 import javax.script.SimpleBindings;
 
@@ -13,6 +12,7 @@ import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.FileUtils;
+import icu.etl.util.ObjectUtils;
 import icu.etl.util.StringUtils;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -21,20 +21,20 @@ import org.junit.runners.model.Statement;
 public class WithDBRule implements TestRule {
 
     /** 容器上下文信息 */
-    private static EasyBeanContext context;
+    private EasyBeanContext context;
 
     /** 脚本引擎的环境变量集合 */
-    private static WithDBConfig environment;
+    private WithDBConfig environment;
 
     /** true表示找不到数据库 */
-    private static boolean notFindDatabase;
+    private boolean notFindDatabase;
 
     public WithDBRule() {
     }
 
     public Statement apply(Statement statement, Description description) {
         init();
-        return new WithDBStatement(statement);
+        return new WithDBStatement(this, statement);
     }
 
     /**
@@ -69,7 +69,7 @@ public class WithDBRule implements TestRule {
         return conn;
     }
 
-    private static void init() {
+    private void init() {
         if (context == null) {
             context = new EasyBeanContext("sout:info");
 
@@ -84,9 +84,9 @@ public class WithDBRule implements TestRule {
             String password = (String) environment.get("password");
             JdbcDao dao = new JdbcDao(context);
             try {
-                WithDBRule.notFindDatabase = !dao.connect(url, 0, username, password);
+                this.notFindDatabase = !dao.connect(url, 0, username, password);
             } catch (Exception e) {
-                WithDBRule.notFindDatabase = true;
+                this.notFindDatabase = true;
                 e.printStackTrace();
             } finally {
                 dao.commit();
@@ -97,14 +97,15 @@ public class WithDBRule implements TestRule {
 
     public static class WithDBStatement extends Statement {
         private Statement statment;
+        private WithDBRule rule;
 
-        public WithDBStatement(Statement statment) {
+        public WithDBStatement(WithDBRule rule, Statement statment) {
             this.statment = statment;
+            this.rule = rule;
         }
 
-        @Override
         public void evaluate() throws Throwable {
-            if (WithDBRule.notFindDatabase) {
+            if (rule.notFindDatabase) {
                 System.out.println("**************** 未找到可用的数据库 ****************");
                 return;
             }
@@ -168,7 +169,7 @@ public class WithDBRule implements TestRule {
             p.load(ClassUtils.getResourceAsStream("/testconfig.properties"));
 
             String envmode = WithDBRule.class.getPackage().getName() + ".test.mode";
-            String mode = Optional.ofNullable(System.getProperty(envmode)).orElse("home");
+            String mode = ObjectUtils.coalesce(System.getProperty(envmode), "home");
             InputStream in = ClassUtils.getResourceAsStream("/testconfig-" + mode + ".properties");
             if (in != null) {
                 p.load(in);

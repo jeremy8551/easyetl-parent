@@ -6,7 +6,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import icu.etl.concurrent.ExecutorLogger;
 import icu.etl.database.Jdbc;
 import icu.etl.database.JdbcConverterMapper;
 import icu.etl.database.JdbcDao;
@@ -18,6 +17,8 @@ import icu.etl.database.export.ExtracterContext;
 import icu.etl.database.export.converter.AbstractConverter;
 import icu.etl.io.TextTable;
 import icu.etl.ioc.EasyContext;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.printer.Progress;
 import icu.etl.util.CharTable;
 import icu.etl.util.FileUtils;
@@ -26,6 +27,7 @@ import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
 public class DatabaseReader implements ExtractReader {
+    private final static Log log = LogFactory.getLog(DatabaseReader.class);
 
     /** 数据库操作类 */
     private JdbcDao dao;
@@ -168,7 +170,7 @@ public class DatabaseReader implements ExtractReader {
             converter.init();
         }
 
-        ExecutorLogger log = context.getExtracter().getLogger();
+//        ExecutorLogger log = context.getExtracter().getLogger();
         if (log.isDebugEnabled()) {
             log.debug(this.toDetailMessage(context, this.resultSet, this.columns));
         }
@@ -245,8 +247,8 @@ public class DatabaseReader implements ExtractReader {
         cb.addTitle("");
         cb.addCell(ResourcesUtils.getExtractMessage(5, source));
         cb.addCell(ResourcesUtils.getExtractMessage(6, target));
-        cb.addCell(table.toStandardShape().ltrim().toString());
-        return FileUtils.lineSeparator + cb.toSimpleShape().toString();
+        cb.addCell(table.toString(CharTable.Style.standard));
+        return FileUtils.lineSeparator + cb.toString(CharTable.Style.simple);
     }
 
     public boolean isColumnBlank(int position) {

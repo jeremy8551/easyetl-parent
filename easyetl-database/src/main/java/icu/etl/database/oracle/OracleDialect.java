@@ -197,7 +197,7 @@ public class OracleDialect extends AbstractDialect {
      */
     @SuppressWarnings("unchecked")
     public List<DatabaseURL> parseJdbcUrl(String url) {
-        int index = (int) Ensure.isPosition(url.indexOf("@"));
+        int index = (int) Ensure.isFromZero(url.indexOf("@"));
         List<DatabaseURL> list = new ArrayList<DatabaseURL>(1);
         StandardDatabaseURL obj = new StandardDatabaseURL(url);
 
@@ -247,7 +247,7 @@ public class OracleDialect extends AbstractDialect {
             obj.setServerName(part2[2]);
             obj.setDatabaseName(part2[2]);
         } else {
-            Ensure.isPosition(endfix.toUpperCase().indexOf("DESCRIPTION"));
+            Ensure.isFromZero(endfix.toUpperCase().indexOf("DESCRIPTION"));
 
             /**
              * rac 集群配置 <br>

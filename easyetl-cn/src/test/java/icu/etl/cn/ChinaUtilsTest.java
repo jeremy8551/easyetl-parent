@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import icu.etl.util.CharsetName;
 import icu.etl.util.Ensure;
 import icu.etl.util.Property;
 import icu.etl.util.StringUtils;
@@ -177,7 +178,7 @@ public class ChinaUtilsTest {
             Ensure.isTrue(StringUtils.isNotBlank(name) && name.length() <= 4);
 
             // 格式化输出信息 身份证号 手机号 姓名
-            System.out.println(StringUtils.left(name, 10, StandardCharsets.UTF_8.name(), ' ') + " " + idcard + " " + mobile);
+            System.out.println(StringUtils.left(name, 10, CharsetName.UTF_8, ' ') + " " + idcard + " " + mobile);
         }
         System.out.println("use " + watch.useTime());
     }

@@ -18,7 +18,8 @@ import icu.apache.ant.zip.ZipEntry;
 import icu.apache.ant.zip.ZipFile;
 import icu.apache.ant.zip.ZipOutputStream;
 import icu.etl.annotation.EasyBean;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -31,6 +32,7 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean(name = "zip")
 public class ZipCompress implements Compress {
+    private final static Log log = LogFactory.getLog(ZipCompress.class);
 
     private volatile boolean terminate = false;
     private File zipFile;
@@ -100,8 +102,8 @@ public class ZipCompress implements Compress {
                 }
                 d = d + file.getName() + "/";
 
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug("zip file, create dir: " + d + " ..");
+                if (log.isDebugEnabled()) {
+                    log.debug("zip file, create dir: " + d + " ..");
                 }
                 ZipEntry entry = new ZipEntry(d);
                 this.zos.putNextEntry(entry);
@@ -126,11 +128,11 @@ public class ZipCompress implements Compress {
 
                 String zipFile = dir + file.getName();
                 InputStream is = new FileInputStream(file);
-                if (STD.out.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     if (StringUtils.isBlank(dir)) {
-                        STD.out.debug("zip " + file.getAbsolutePath() + " " + this.zipFile.getAbsolutePath() + " ..");
+                        log.debug("zip " + file.getAbsolutePath() + " " + this.zipFile.getAbsolutePath() + " ..");
                     } else {
-                        STD.out.debug("zip " + file.getAbsolutePath() + " " + this.zipFile.getAbsolutePath() + " -> " + dir + " ..");
+                        log.debug("zip " + file.getAbsolutePath() + " " + this.zipFile.getAbsolutePath() + " -> " + dir + " ..");
                     }
                 }
 
@@ -175,8 +177,8 @@ public class ZipCompress implements Compress {
 
         ZipFile file = null;
         try {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug("unzip " + zipFile + " " + outputDir + " ..");
+            if (log.isDebugEnabled()) {
+                log.debug("unzip " + zipFile + " " + outputDir + " ..");
             }
 
             file = new ZipFile(zipFile, charsetName);
@@ -190,13 +192,13 @@ public class ZipCompress implements Compress {
 
                 String filePath = FileUtils.joinFilepath(outputDir, entry.getName());
                 if (entry.isDirectory()) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug("unzip " + entry.getName() + " " + outputDir + " ..");
+                    if (log.isDebugEnabled()) {
+                        log.debug("unzip " + entry.getName() + " " + outputDir + " ..");
                     }
                     FileUtils.createDirectory(new File(filePath));
                 } else {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug("unzip " + entry.getName() + " " + outputDir + " ..");
+                    if (log.isDebugEnabled()) {
+                        log.debug("unzip " + entry.getName() + " " + outputDir + " ..");
                     }
                     zipEntry2File(file, entry, filePath, buf);
                 }
@@ -232,8 +234,8 @@ public class ZipCompress implements Compress {
 
         ZipFile file = null;
         try {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug("unzip " + zipFile + " -> " + entryName + " " + outputDir + " ..");
+            if (log.isDebugEnabled()) {
+                log.debug("unzip " + zipFile + " -> " + entryName + " " + outputDir + " ..");
             }
 
             file = new ZipFile(zipFile, charsetName);
@@ -312,8 +314,8 @@ public class ZipCompress implements Compress {
 
             ZipFile file = null;
             try {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug("delete zipfile " + zipFile + "'s entry: " + StringUtils.join(entryName, ", ") + " ..");
+                if (log.isDebugEnabled()) {
+                    log.debug("delete zipfile " + zipFile + "'s entry: " + StringUtils.join(entryName, ", ") + " ..");
                 }
 
                 /** 解压缩文件 */

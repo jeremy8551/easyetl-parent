@@ -10,7 +10,8 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.expression.DataUnitExpression;
 import icu.etl.expression.Expression;
 import icu.etl.io.BufferedLineReader;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OSCommandStdouts;
 import icu.etl.os.OSCpu;
 import icu.etl.os.OSDisk;
@@ -32,6 +33,7 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean(name = "macos")
 public class MacOS extends LinuxLocalOS {
+    private final static Log log = LogFactory.getLog(MacOS.class);
 
     public MacOS() throws IOException {
         super();
@@ -60,8 +62,8 @@ public class MacOS extends LinuxLocalOS {
             this.cmd.execute("uname -a");
             this.kernel = StringUtils.trimBlank(StringUtils.splitByBlank(this.cmd.getStdout())[2]);
 
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(this.name + " " + this.kernel + " " + this.release);
+            if (log.isDebugEnabled()) {
+                log.debug(this.name + " " + this.kernel + " " + this.release);
             }
         } finally {
             IO.close(in);

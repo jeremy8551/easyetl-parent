@@ -9,7 +9,8 @@ import java.util.Properties;
 
 import icu.etl.collection.ByteBuffer;
 import icu.etl.io.BufferedLineReader;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OSCommand;
 import icu.etl.os.OSCommandException;
 import icu.etl.os.OSCommandStdouts;
@@ -30,11 +31,11 @@ import icu.etl.util.TimeWatch;
  * @createtime 2010-03-15
  */
 public class LinuxCommand implements OSCommand {
+    private final static Log log = LogFactory.getLog(LinuxCommand.class);
 
     protected ByteBuffer stdout;
     protected ByteBuffer stderr;
     private Properties config;
-    protected LinuxFileCommand fileCmd = new LinuxFileCommand();
     protected OutputStream stdoutOS;
     protected OutputStream stderrOS;
     protected String charsetName;
@@ -84,8 +85,8 @@ public class LinuxCommand implements OSCommand {
                 this.execute(command); // 执行命令
                 String stdout = this.getStdout(); // 标准输出
 
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(stdout);
+                if (log.isDebugEnabled()) {
+                    log.debug(stdout);
                 }
 
                 BufferedLineReader in = new BufferedLineReader(stdout);
@@ -101,8 +102,8 @@ public class LinuxCommand implements OSCommand {
             }
             return map;
         } else { // 如果执行合并命令报错则执行分布命令
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(allStdout);
+            if (log.isDebugEnabled()) {
+                log.debug(allStdout);
             }
             return OSCommandUtils.splitMultiCommandStdout(allStdout);
         }
@@ -117,8 +118,8 @@ public class LinuxCommand implements OSCommand {
     }
 
     public synchronized int execute(String command, long timeout, OutputStream stdout, OutputStream stderr) throws OSCommandException {
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getOSMessage(3, command, timeout));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getOSMessage(3, command, timeout));
         }
 
         this.terminate = false;
@@ -139,8 +140,8 @@ public class LinuxCommand implements OSCommand {
             InputStream in = process.getInputStream();
             for (int len = in.read(array, 0, array.length); len != -1; len = in.read(array, 0, array.length)) {
                 if (timeout > 0 && watch.useSeconds() > timeoutSec) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getOSMessage(7, cmd));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getOSMessage(7, cmd));
                     }
                     break;
                 }
@@ -148,8 +149,8 @@ public class LinuxCommand implements OSCommand {
                 int size = this.extractPid(array, len);
                 this.stdout.append(array, 0, size);
 
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(new String(array, 0, size, this.getCharsetName()));
+                if (log.isDebugEnabled()) {
+                    log.debug(new String(array, 0, size, this.getCharsetName()));
                 }
 
                 if (stdout != null) {
@@ -161,16 +162,16 @@ public class LinuxCommand implements OSCommand {
             InputStream is = process.getErrorStream();
             for (int len = is.read(array, 0, array.length); len != -1; len = is.read(array, 0, array.length)) {
                 if (timeout > 0 && watch.useSeconds() > timeoutSec) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getOSMessage(8, cmd));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getOSMessage(8, cmd));
                     }
                     break;
                 }
 
                 this.stderr.append(array, 0, len);
 
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(new String(array, 0, len, this.getCharsetName()));
+                if (log.isDebugEnabled()) {
+                    log.debug(new String(array, 0, len, this.getCharsetName()));
                 }
 
                 if (stderr != null) {
@@ -182,18 +183,18 @@ public class LinuxCommand implements OSCommand {
             if (timeout > 0) {
                 int count = 0;
                 while (process.waitFor() != 0) {
-                    if (++count <= 100 && STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getOSMessage(6, cmd));
+                    if (++count <= 100 && log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getOSMessage(6, cmd));
                     }
                 }
                 // while (!process.waitFor(timeout, TimeUnit.MILLISECONDS)) {
-                // if (++count <= 100 && Std.out.isDebugEnabled()) {
-                // Std.out.debug(ResourcesUtils.getOSMessage(6, cmd));
+                // if (++count <= 100 && log.isDebugEnabled()) {
+                // log.debug(ResourcesUtils.getOSMessage(6, cmd));
                 // }
                 // }
             } else {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getOSMessage(6, cmd));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getOSMessage(6, cmd));
                 }
                 process.waitFor();
             }
@@ -205,8 +206,8 @@ public class LinuxCommand implements OSCommand {
             if (process != null) {
                 process.destroy();
             }
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getOSMessage(9, command, this.getStdout(), this.getStderr()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getOSMessage(9, command, this.getStdout(), this.getStderr()));
             }
         }
     }
@@ -219,8 +220,8 @@ public class LinuxCommand implements OSCommand {
         }
 
         String pid = this.getPid();
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug("kill porcess and pid is " + pid);
+        if (log.isDebugEnabled()) {
+            log.debug("kill porcess and pid is " + pid);
         }
 
         if (StringUtils.isBlank(pid)) {
@@ -240,8 +241,8 @@ public class LinuxCommand implements OSCommand {
             if (process != null) {
                 process.destroy();
             }
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getOSMessage(5, command));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getOSMessage(5, command));
             }
         }
     }
@@ -273,8 +274,8 @@ public class LinuxCommand implements OSCommand {
             String pid = StringUtils.trimBlank(logstr.substring(start, end)); // 截取进程编号
             if (StringUtils.isNotBlank(pid)) {
                 this.setPid(pid);
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getSSH2JschMessage(8, "localhost", pid));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getSSH2JschMessage(8, "localhost", pid));
                 }
                 int next = end + 1; // 中括号的结束位置的下一个位置
                 if (next >= logstr.length()) {
@@ -296,7 +297,6 @@ public class LinuxCommand implements OSCommand {
      * @param pid
      */
     protected void setPid(String pid) {
-        // System.out.println("进程编号: " + pid);
         this.config.setProperty("pid", pid);
     }
 
@@ -368,8 +368,8 @@ public class LinuxCommand implements OSCommand {
                 buf.append("; ");
             }
         }
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug("source profiles command is " + buf);
+        if (log.isDebugEnabled()) {
+            log.debug("source profiles command is " + buf);
         }
         this.config.setProperty(OSShellCommand.profiles, buf.toString());
 

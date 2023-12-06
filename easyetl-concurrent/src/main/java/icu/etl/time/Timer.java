@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -16,6 +17,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2014-05-03
  */
 public class Timer {
+    private final static Log log = LogFactory.getLog(Timer.class);
 
     /**
      * 在指定的时间执行某个任务（非循环任务），如果已经错过了开始执行时间则立即执行 schedule(task,time)
@@ -83,25 +85,6 @@ public class Timer {
     public final static int START_EXCEPTION = 4;
 
     /**
-     * 使线程进入休眠
-     *
-     * @param millis 毫秒数
-     * @return 返回异常信息, 返回null表示没有发生错误
-     */
-    public static Throwable sleep(long millis) {
-        long begin = System.currentTimeMillis();
-        try {
-            Thread.sleep(millis);
-            return null;
-        } catch (Throwable e) {
-            e.printStackTrace();
-            while ((System.currentTimeMillis() - begin) <= millis) {
-            }
-            return e;
-        }
-    }
-
-    /**
      * true表示计时器已启动 false表示计时器已终止
      */
     protected volatile boolean start;
@@ -110,11 +93,6 @@ public class Timer {
      * 定时任务队列
      */
     protected TimerTaskQueue queue;
-
-    /**
-     * 同步锁
-     */
-    protected final Object lock = new Object();
 
     /**
      * 初始化定时器
@@ -140,8 +118,8 @@ public class Timer {
         if (this.isStart()) {
             return;
         }
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getTimerMessage(1));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getTimerMessage(1));
         }
 
         this.setStartOrStop(true);
@@ -159,32 +137,32 @@ public class Timer {
         if (this.isStop()) {
             return;
         } else {
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(2));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(2));
             }
             this.queue.cancelAllTasks(); // 取消所有任务
 
             if (isForce) {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getTimerMessage(3));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getTimerMessage(3));
                 }
                 this.queue.killRunningTask();
             }
 
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(4));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(4));
             }
             while (this.queue.getRunningTaskSize() > 0) {
             }
 
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(5));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(5));
             }
             this.queue.removeTask();
 
             this.setStartOrStop(false);
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getTimerMessage(6));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getTimerMessage(6));
             }
         }
     }

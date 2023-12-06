@@ -69,6 +69,7 @@ public abstract class Parser {
         Parser.defaultFormat = format;
     }
 
+    /** 分析器 */
     protected Analysis analysis;
 
     /**
@@ -337,7 +338,7 @@ public abstract class Parser {
                 }
                 int index = this.analysis.indexOfQuotation(str, i);
                 if (index == -1) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(27, String.valueOf(str), next), next);
+                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(27, str, next), next);
                 }
 
                 String content = this.analysis.unescapeString(str.substring(next, index));
@@ -354,7 +355,7 @@ public abstract class Parser {
                 }
                 int index = this.analysis.indexOfDoubleQuotation(str, i);
                 if (index == -1) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(27, String.valueOf(str), next), next);
+                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(27, str, next), next);
                 }
 
                 String content = this.analysis.unescapeString(str.substring(next, index));
@@ -379,18 +380,17 @@ public abstract class Parser {
                             throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
                         }
 
-                        datas.add(new ExpressionParameter(Parameter.LONG, new Long(Long.parseLong(str.substring(start, index), 16))));
+                        datas.add(new ExpressionParameter(Parameter.LONG, Long.parseLong(str.substring(start, index), 16)));
                         i = index - 1;
                         isData = true;
                         continue;
                     } else if ("0123456789".indexOf(nc) != -1) { // 八进制
-                        int start = next;
-                        int index = this.analysis.indexOfOctal(str, start);
+                        int index = this.analysis.indexOfOctal(str, next);
                         if (index == -1) {
                             throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
                         }
 
-                        datas.add(new ExpressionParameter(Parameter.LONG, new Long(Long.parseLong(str.substring(start, index), 8))));
+                        datas.add(new ExpressionParameter(Parameter.LONG, Long.parseLong(str.substring(next, index), 8)));
                         i = index - 1;
                         isData = true;
                         continue;
@@ -612,9 +612,9 @@ public abstract class Parser {
     /**
      * 将数据代入公式执行运算并返回结果数值
      *
-     * @param datas
-     * @param operations
-     * @return
+     * @param datas      参数集合
+     * @param operations 操作集合
+     * @return 计算公式
      */
     protected Formula calc(ArrayList<Parameter> datas, ArrayList<Operator> operations) {
         return new Formula(datas, operations);

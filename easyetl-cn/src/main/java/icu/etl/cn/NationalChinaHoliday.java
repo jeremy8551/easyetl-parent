@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.ioc.NationalHoliday;
 import icu.etl.util.Dates;
 
 @EasyBean(name = "zh_cn", description = "2013-2023中国法定节假日")

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>icu.etl</groupId>
+        <artifactId>easyetl-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../easyetl-parent</relativePath>
+    </parent>
+
+    <artifactId>easyetl-crypto</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-tool</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-concurrent</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 禁用source插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 禁用javadoc插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 禁用打包插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 禁用安装插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 禁用发布插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 禁用GPG签名插件,对项目最后生成的jar包进行签名 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>none</phase> <!-- 验证阶段 -->
+                        <goals>
+                            <goal>sign</goal> <!-- 插件目标: 在验证阶段执行 GPG 签名操作 -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 禁用sonatype插件，用于登录验证、上传jar到sonatype的maven仓库 -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <configuration>
+                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

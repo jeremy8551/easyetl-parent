@@ -3,7 +3,6 @@ package icu.etl.script.io;
 import java.io.Writer;
 import java.text.Format;
 
-import icu.etl.log.Log;
 import icu.etl.script.UniversalScriptStderr;
 
 /**
@@ -13,12 +12,21 @@ import icu.etl.script.UniversalScriptStderr;
  */
 public class ScriptStderr extends ScriptStdout implements UniversalScriptStderr {
 
-    public ScriptStderr(Log log, Writer writer, Format f) {
-        super(log, writer, f);
+    /**
+     * 初始化
+     */
+    public ScriptStderr() {
+        super();
     }
 
-    public ScriptStderr(Log log) {
-        super(log);
+    /**
+     * 初始化
+     *
+     * @param writer 输出流
+     * @param format 格式化工具
+     */
+    public ScriptStderr(Writer writer, Format format) {
+        super(writer, format);
     }
 
 }

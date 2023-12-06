@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import icu.etl.concurrent.ThreadSource;
+import icu.etl.ioc.EasyBeanContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 import org.junit.Assert;
@@ -170,6 +172,7 @@ public class CsvFileTest {
 
     @Test
     public void test3() throws IOException {
+        EasyBeanContext context = new EasyBeanContext();
         String charsetName = "UTF-8";
         File file = this.createfile();
 
@@ -186,7 +189,7 @@ public class CsvFileTest {
         csvfile.setCharsetName(charsetName);
         TextTableFileWriter out = csvfile.getWriter(true, 100);
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         list.add("1");
         list.add("2");
         list.add("3");
@@ -233,7 +236,7 @@ public class CsvFileTest {
         System.out.println("增加行之后: ");
         System.out.println(FileUtils.readline(file, charsetName, 0));
 
-        long rows = new TextTableFileCounter().execute(file, charsetName);
+        long rows = new TextTableFileCounter(context.getBean(ThreadSource.class), 2).execute(file, charsetName);
         Assert.assertEquals("1,2,3,4,5,\"\"\"6\"\"\"7", FileUtils.readline(file, charsetName, rows));
     }
 

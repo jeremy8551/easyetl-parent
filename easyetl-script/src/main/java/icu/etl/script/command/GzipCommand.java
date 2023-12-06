@@ -50,7 +50,7 @@ public class GzipCommand extends AbstractFileCommand implements UniversalScriptI
             stdout.println("gzip " + file.getAbsolutePath());
         }
 
-        this.c = context.getFactory().getContext().getBean(Compress.class, "gz");
+        this.c = context.getContainer().getBean(Compress.class, "gz");
         try {
             this.c.setFile(new File(file.getParentFile(), FileUtils.changeFilenameExt(file.getName(), "gz")));
             this.c.archiveFile(file, null);

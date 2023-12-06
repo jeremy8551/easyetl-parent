@@ -5,17 +5,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import icu.etl.concurrent.Executor;
-import icu.etl.concurrent.ExecutorReader;
+import icu.etl.concurrent.EasyJob;
+import icu.etl.concurrent.EasyJobReader;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
+import icu.etl.script.UniversalScriptJob;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
-import icu.etl.script.UniversalScriptThread;
 import icu.etl.script.command.ContainerCommand;
-import icu.etl.time.Timer;
+import icu.etl.util.Dates;
 
 /**
  * 容器任务的输入流
@@ -23,14 +23,14 @@ import icu.etl.time.Timer;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-20
  */
-public class ScriptContainerReader implements ExecutorReader {
+public class ScriptContainerReader implements EasyJobReader {
 
     private UniversalScriptContext context;
     private UniversalScriptSession session;
     private UniversalScriptStdout stdout;
     private UniversalScriptStderr stderr;
 
-    private Executor executor;
+    private EasyJob job;
     private ContainerCommand container;
     private List<UniversalScriptCommand> list;
     private volatile boolean terminate;
@@ -55,7 +55,10 @@ public class ScriptContainerReader implements ExecutorReader {
     }
 
     public synchronized boolean hasNext() throws IOException, SQLException {
-        this.executor = null;
+        if (this.job != null) {
+            return true;
+        }
+
         while (true) {
             if (this.terminate) {
                 return false;
@@ -64,11 +67,11 @@ public class ScriptContainerReader implements ExecutorReader {
             UniversalScriptAnalysis analysis = this.session.getAnalysis();
             for (int i = 0; !this.terminate && i < this.list.size(); i++) {
                 UniversalScriptCommand command = this.list.remove(i);
-                UniversalScriptThread thread = (UniversalScriptThread) command;
+                UniversalScriptJob job = (UniversalScriptJob) command;
 
                 // 判断命令是否已准备好执行
-                if (thread.start(this.session, this.context, this.stdout, this.stderr, this.container)) {
-                    this.executor = thread.getExecutor();
+                if (job.hasJob(this.session, this.context, this.stdout, this.stderr, this.container)) {
+                    this.job = job.getJob();
                     this.stdout.println(analysis.replaceShellVariable(this.session, this.context, command.getScript(), true, false, true, false));
                     return true;
                 }
@@ -77,22 +80,19 @@ public class ScriptContainerReader implements ExecutorReader {
             if (this.terminate || this.list.isEmpty()) {
                 return false; // 已全部执行完毕
             } else {
-                Timer.sleep(2000); // 还有未准备就绪的任务, 等待2秒后再查询是否有准备就绪任务
+                Dates.sleep(2000); // 还有未准备就绪的任务, 等待2秒后再查询是否有准备就绪任务
             }
         }
     }
 
-    public synchronized Executor next() throws IOException, SQLException {
-        Executor value = this.executor;
+    public synchronized EasyJob next() throws IOException, SQLException {
+        EasyJob value = this.job;
         if (value == null) {
             if (this.hasNext()) {
-                value = this.executor;
-            } else {
-                value = null;
+                value = this.job;
             }
         }
-
-        this.executor = null;
+        this.job = null;
         return value;
     }
 

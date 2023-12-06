@@ -13,28 +13,14 @@
     <artifactId>easyetl-ioc</artifactId>
 
     <dependencies>
-        <!-- slf4j日志门面 -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- logback日志 -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <optional>true</optional>
+            <groupId>icu.etl</groupId>
+            <artifactId>easyetl-tool</artifactId>
         </dependency>
 
         <dependency>
             <groupId>icu.etl</groupId>
             <artifactId>easyetl-logger</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>icu.etl</groupId>
-            <artifactId>easyetl-tool</artifactId>
         </dependency>
     </dependencies>
 

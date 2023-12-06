@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import icu.etl.annotation.EasyBean;
-import icu.etl.ioc.NationalHoliday;
+import icu.etl.cn.NationalHoliday;
 import icu.etl.util.Dates;
 
 @EasyBean(name = "zh_cn")
@@ -17,12 +17,10 @@ public class ConstructorTypeHoliday implements NationalHoliday {
     public ConstructorTypeHoliday() {
     }
 
-    @Override
     public Set<Date> getRestDays() {
         return set1;
     }
 
-    @Override
     public Set<Date> getWorkDays() {
         return set2;
     }

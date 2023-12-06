@@ -65,14 +65,14 @@ public abstract class AbstractTraceCommand extends AbstractCommand {
             File outfile = null;
             if (this.stdout != null) {
                 autoCloseOut = true;
-                stdout = new ScriptStdout(context.getFactory().getStdoutLog(), this.stdout.build(session, context), stdout.getFormatter());
+                stdout = new ScriptStdout(this.stdout.build(session, context), stdout.getFormatter());
                 outfile = this.stdout.getFile();
             }
 
             File errfile = null;
             if (this.stderr != null) {
                 autoCloseErr = true;
-                stderr = new ScriptStderr(context.getFactory().getStderrLog(), this.stderr.build(session, context), stderr.getFormatter());
+                stderr = new ScriptStderr(this.stderr.build(session, context), stderr.getFormatter());
                 errfile = this.stderr.getFile();
             }
 

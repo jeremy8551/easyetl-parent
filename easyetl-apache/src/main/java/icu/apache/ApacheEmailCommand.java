@@ -1,7 +1,6 @@
 package icu.apache;
 
 import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 
 import icu.apache.mail.activation.registries.MailcapFile;
 import icu.apache.mail.activation.registries.MimeTypeFile;
@@ -35,7 +34,7 @@ public class ApacheEmailCommand {
             buf.append("image/jpeg;;		x-java-view=").append(ImageViewer.class.getName()).append('\n');
             buf.append("text/*;;		x-java-view=").append(TextViewer.class.getName()).append('\n');
             buf.append("text/*;;		x-java-edit=").append(TextEditor.class.getName()).append('\n');
-            return new MailcapFile(new ByteArrayInputStream(buf.toString().getBytes(StandardCharsets.ISO_8859_1.name())));
+            return new MailcapFile(new ByteArrayInputStream(buf.toString().getBytes("ISO-8859-1")));
         } catch (Exception e) {
             throw new RuntimeException("set mailcap.default fail!", e);
         }
@@ -69,7 +68,7 @@ public class ApacheEmailCommand {
             buf.append("video/mpeg		mpeg mpg mpe").append('\n');
             buf.append("video/quicktime		qt mov").append('\n');
             buf.append("video/x-msvideo		avi").append('\n');
-            return new MimeTypeFile(new ByteArrayInputStream(buf.toString().getBytes(StandardCharsets.ISO_8859_1.name())));
+            return new MimeTypeFile(new ByteArrayInputStream(buf.toString().getBytes("ISO-8859-1")));
         } catch (Exception e) {
             throw new RuntimeException("mimetypes.default", e);
         }
@@ -87,7 +86,7 @@ public class ApacheEmailCommand {
             buf.append("multipart/*;;	x-java-content-handler=").append(multipart_mixed.class.getName()).append("; x-java-fallback-entry=true").append('\n');
             buf.append("message/rfc822;;	x-java-content-handler=").append(message_rfc822.class.getName()).append('\n');
             buf.append("").append(TextEditor.class.getName()).append('\n');
-            return new MailcapFile(new ByteArrayInputStream(buf.toString().getBytes(StandardCharsets.ISO_8859_1.name())));
+            return new MailcapFile(new ByteArrayInputStream(buf.toString().getBytes("ISO-8859-1")));
         } catch (Exception e) {
             throw new RuntimeException("set mailcap fail!", e);
         }

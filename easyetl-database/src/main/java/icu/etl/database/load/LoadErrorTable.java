@@ -18,6 +18,8 @@ import icu.etl.database.JdbcDao;
 import icu.etl.database.JdbcQueryStatement;
 import icu.etl.database.JdbcStringConverter;
 import icu.etl.database.load.converter.AbstractConverter;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -29,6 +31,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2021-06-17
  */
 public class LoadErrorTable {
+    private final static Log log = LogFactory.getLog(LoadErrorTable.class);
 
     /** 数据库操作接口 */
     private JdbcDao dao;
@@ -224,30 +227,30 @@ public class LoadErrorTable {
             return Jdbc.getColumnClassName(query.getResultSet());
         } catch (Throwable e) {
             if (dao.getDialect().isRebuildTableException(e)) {
-                if (LoadEngine.out.isWarnEnabled()) {
-                    LoadEngine.out.warn(ResourcesUtils.getLoadMessage(8, tableName));
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getLoadMessage(8, tableName));
                 }
 
                 DatabaseTableDDL ddl = this.getTableDDL();
 
                 // 先删除数据库表
                 String sql1 = dao.dropTable(this.table);
-                if (LoadEngine.out.isDebugEnabled()) {
-                    LoadEngine.out.debug(sql1);
+                if (log.isDebugEnabled()) {
+                    log.debug(sql1);
                 }
 
                 // 执行数据库建表语句
                 List<String> list = dao.createTable(ddl);
                 for (String sql2 : list) {
-                    if (LoadEngine.out.isDebugEnabled()) {
-                        LoadEngine.out.debug(sql2);
+                    if (log.isDebugEnabled()) {
+                        log.debug(sql2);
                     }
                 }
                 dao.commit();
 
                 return this.toJavaClassName(dao, columns);
             } else {
-                LoadEngine.out.error(tableName, e);
+                log.error(tableName, e);
                 throw new SQLException(tableName);
             }
         } finally {
@@ -286,8 +289,8 @@ public class LoadErrorTable {
         sql += " from ";
 
         // 打印 SQL 语句
-        if (LoadEngine.out.isDebugEnabled()) {
-            LoadEngine.out.debug(sql);
+        if (log.isDebugEnabled()) {
+            log.debug(sql);
         }
         return dao.getConnection().prepareStatement(sql);
     }

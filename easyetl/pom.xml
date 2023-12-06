@@ -47,28 +47,43 @@
                 <artifactId>easyetl-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>generate-jar</id>
-                        <phase>generate-sources</phase>
+                        <id>easyetl-lastupdated</id>
+                        <phase>clean</phase>
                         <goals>
-                            <goal>sources</goal> <!-- 复制同级别的子模源代码块到当前的模块中 -->
+                            <goal>lastupdated</goal> <!-- 删除所有lastupdated结尾的文件 -->
                         </goals>
                     </execution>
                     <execution>
-                        <id>reset-project</id>
+                        <id>easyetl-clean</id>
                         <phase>clean</phase>
                         <goals>
                             <goal>reset</goal> <!-- 删除当前模块中的所有源代码和测试代码 -->
                         </goals>
                     </execution>
                     <execution>
-                        <id>uninstall-project</id>
+                        <id>easyetl-uninstall</id>
                         <phase>clean</phase>
                         <goals>
                             <goal>uninstall</goal> <!-- 从本地仓库中卸载jar包 -->
                         </goals>
                     </execution>
+                    <execution>
+                        <id>easyetl-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>sources</goal> <!-- 复制同级别的子模源代码块到当前的模块中 -->
+                        </goals>
+                    </execution>
+                    <!--                    <execution>-->
+                    <!--                        <id>easyetl-install</id>-->
+                    <!--                        <phase>install</phase>-->
+                    <!--                        <goals>-->
+                    <!--                            <goal>reset</goal> &lt;!&ndash; 删除当前模块中的所有源代码和测试代码 &ndash;&gt;-->
+                    <!--                        </goals>-->
+                    <!--                    </execution>-->
                 </executions>
             </plugin>
+
 
             <!--            <plugin>-->
             <!--                <groupId>org.apache.maven.plugins</groupId>-->

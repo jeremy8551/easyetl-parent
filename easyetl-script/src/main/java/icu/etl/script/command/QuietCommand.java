@@ -6,7 +6,8 @@ import java.io.Reader;
 import java.sql.SQLException;
 import java.util.List;
 
-import icu.etl.script.Script;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -30,6 +31,7 @@ import icu.etl.util.StringUtils;
  * 以静默方式执行下一个命令，即使下一个命令执行报错也不会输出任何信息
  */
 public class QuietCommand extends AbstractTraceCommand implements UniversalScriptInputStream, LoopCommandSupported, JumpCommandSupported, NohupCommandSupported {
+    private final static Log log = LogFactory.getLog(QuietCommand.class);
 
     /** 子命令 */
     private UniversalScriptCommand subcommand;
@@ -62,8 +64,8 @@ public class QuietCommand extends AbstractTraceCommand implements UniversalScrip
         try {
             this.subcommand.execute(session, context, new ScriptNullStdout(stdout), new ScriptNullStderr(stderr), forceStdout);
         } catch (Throwable e) {
-            if (Script.out.isDebugEnabled() && this.subcommand != null) {
-                Script.out.debug(this.subcommand.getScript(), e);
+            if (log.isDebugEnabled() && this.subcommand != null) {
+                log.debug(this.subcommand.getScript(), e);
             }
         }
         return 0;

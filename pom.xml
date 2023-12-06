@@ -16,14 +16,16 @@
 
     <!-- 模块信息 -->
     <modules>
+        <module>easyetl-apache</module>
+        <module>easyetl-jdk</module>
         <module>easyetl-logger</module>
-        <module>easyetl-ioc</module>
+        <module>easyetl-concurrent</module>
         <module>easyetl-expression</module>
+        <module>easyetl-crypto</module>
+        <module>easyetl-printer</module>
+        <module>easyetl-ioc</module>
         <module>easyetl-io</module>
         <module>easyetl-cn</module>
-        <module>easyetl-jdk</module>
-        <module>easyetl-concurrent</module>
-        <module>easyetl-apache</module>
         <module>easyetl-os</module>
         <module>easyetl-database</module>
         <module>easyetl-file</module>
@@ -76,7 +78,7 @@
                 <artifactId>easyetl-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>uninstall-project</id>
+                        <id>easyetl-uninstall</id>
                         <phase>clean</phase>
                         <goals>
                             <goal>uninstall</goal> <!-- 从本地仓库中卸载jar包 -->

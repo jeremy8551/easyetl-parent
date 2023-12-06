@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
+import icu.etl.concurrent.ThreadSource;
 import icu.etl.io.BufferedLineWriter;
 import icu.etl.io.CommonTextTableFile;
 import icu.etl.io.CommonTextTableFileReaderListener;
@@ -158,7 +159,6 @@ public class TextTableFileTest {
 //		tablefile.setIgnoreCRLF(false); // = false;
         TextTableFileReader in = tablefile.getReader(IO.FILE_BYTES_BUFFER_SIZE);
         in.setListener(new CommonTextTableFileReaderListener() {
-            @Override
             public void processLineSeparator(TextTableFile file, TextTableLine line, long lineNumber) throws IOException {
             }
         });
@@ -194,22 +194,23 @@ public class TextTableFileTest {
         file.setDelimiter(",");
         file.setCharsetName(StringUtils.CHARSET);
 
-        TableFileSortContext obj = new TableFileSortContext();
-        obj.setWriterBuffer(50);
-        obj.setMaxRows(10000);
-        obj.setDeleteFile(true);
-        obj.setThreadNumber(1);
-        obj.setFileCount(2);
-        obj.setReaderBuffer(8192);
+        TableFileSortContext cxt = new TableFileSortContext();
+        cxt.setWriterBuffer(50);
+        cxt.setMaxRows(10000);
+        cxt.setDeleteFile(true);
+        cxt.setThreadNumber(1);
+        cxt.setFileCount(2);
+        cxt.setReaderBuffer(8192);
+        cxt.setThreadSource(context.getBean(ThreadSource.class));
 
-        TableFileSorter s = new TableFileSorter(obj);
+        TableFileSorter sorter = new TableFileSorter(cxt);
 
         File f0 = this.getTestFile(file);
         file.setAbsolutePath(f0.getAbsolutePath());
         try {
-            obj.setThreadNumber(1);
-            obj.setFileCount(2);
-            File rs = s.sort(context, file, "1");
+            cxt.setThreadNumber(1);
+            cxt.setFileCount(2);
+            File rs = sorter.sort(context, file, "1");
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
@@ -220,9 +221,9 @@ public class TextTableFileTest {
 
         try {
             this.getTestFile(file);
-            obj.setThreadNumber(2);
-            obj.setFileCount(2);
-            File rs = s.sort(context, file, "1");
+            cxt.setThreadNumber(2);
+            cxt.setFileCount(2);
+            File rs = sorter.sort(context, file, "1");
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
@@ -233,9 +234,9 @@ public class TextTableFileTest {
 
         try {
             this.getTestFile(file);
-            obj.setThreadNumber(5);
-            obj.setFileCount(2);
-            File rs = s.sort(context, file, "1");
+            cxt.setThreadNumber(5);
+            cxt.setFileCount(2);
+            File rs = sorter.sort(context, file, "1");
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
@@ -246,9 +247,9 @@ public class TextTableFileTest {
 
         try {
             this.getTestFile(file);
-            obj.setThreadNumber(3);
-            obj.setFileCount(3);
-            File rs = s.sort(context, file, "1");
+            cxt.setThreadNumber(3);
+            cxt.setFileCount(3);
+            File rs = sorter.sort(context, file, "1");
 
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
@@ -260,7 +261,7 @@ public class TextTableFileTest {
 
         try {
             this.getTestFile(file);
-            File rs = s.sort(context, file, "1");
+            File rs = sorter.sort(context, file, "1");
             CommonTextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
@@ -283,16 +284,17 @@ public class TextTableFileTest {
         File f = this.getTestFile(file);
         file.setAbsolutePath(f.getAbsolutePath());
 
-        TableFileSortContext obj = new TableFileSortContext();
-        obj.setWriterBuffer(50);
-        obj.setMaxRows(10000);
-        obj.setDeleteFile(true);
-        obj.setThreadNumber(3);
-        obj.setFileCount(3);
-        obj.setReaderBuffer(8192);
-        obj.setKeepSource(false);
+        TableFileSortContext cxt = new TableFileSortContext();
+        cxt.setWriterBuffer(50);
+        cxt.setMaxRows(10000);
+        cxt.setDeleteFile(true);
+        cxt.setThreadNumber(3);
+        cxt.setFileCount(3);
+        cxt.setReaderBuffer(8192);
+        cxt.setKeepSource(false);
+        cxt.setThreadSource(context.getBean(ThreadSource.class));
 
-        TableFileSorter s = new TableFileSorter(obj);
+        TableFileSorter s = new TableFileSorter(cxt);
         try {
             s.sort(context, file, "1 desc");
             int i = 50000;
@@ -324,8 +326,6 @@ public class TextTableFileTest {
 
     /**
      * 测试从指定位置开始读取文件
-     *
-     * @throws IOException
      */
     @Test
     public void test2() throws IOException {

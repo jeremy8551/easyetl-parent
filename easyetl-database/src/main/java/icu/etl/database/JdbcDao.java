@@ -19,8 +19,10 @@ import javax.sql.RowSetReader;
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.internal.StandardRowSetInternal;
 import icu.etl.ioc.EasyContext;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.os.OSConnectCommand;
-import icu.etl.time.Timer;
+import icu.etl.util.Dates;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -32,6 +34,7 @@ import icu.etl.util.TimeWatch;
  * @author jeremy8551@qq.com
  */
 public class JdbcDao implements OSConnectCommand {
+    private final static Log log = LogFactory.getLog(JdbcDao.class);
 
     /** 数据库连接 */
     private Connection conn;
@@ -192,8 +195,8 @@ public class JdbcDao implements OSConnectCommand {
             this.setConnection(conn, true);
             return this.existsConnection();
         } catch (Throwable e) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(url, e);
+            if (log.isDebugEnabled()) {
+                log.debug(url, e);
             }
             return false;
         }
@@ -795,8 +798,8 @@ public class JdbcDao implements OSConnectCommand {
         try {
             return new Integer(this.executeUpdate(sql));
         } catch (Throwable e) {
-            if (DB.out.isWarnEnabled()) {
-                DB.out.warn(sql, e);
+            if (log.isWarnEnabled()) {
+                log.warn(sql, e);
             }
             return null;
         }
@@ -813,8 +816,8 @@ public class JdbcDao implements OSConnectCommand {
         try {
             return new Integer(this.executeUpdate(sql));
         } catch (Throwable e) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(sql, e);
+            if (log.isDebugEnabled()) {
+                log.debug(sql, e);
             }
             return null;
         }
@@ -882,8 +885,8 @@ public class JdbcDao implements OSConnectCommand {
         try {
             return this.execute(sql);
         } catch (Throwable e) {
-            if (DB.out.isWarnEnabled()) {
-                DB.out.warn(sql, e);
+            if (log.isWarnEnabled()) {
+                log.warn(sql, e);
             }
             return false;
         }
@@ -899,8 +902,8 @@ public class JdbcDao implements OSConnectCommand {
         try {
             return this.execute(sql);
         } catch (Throwable e) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(sql, e);
+            if (log.isDebugEnabled()) {
+                log.debug(sql, e);
             }
             return false;
         }
@@ -961,7 +964,7 @@ public class JdbcDao implements OSConnectCommand {
                 }
             }
 
-            if (DB.out.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 StringBuilder buf = new StringBuilder();
                 for (DatabaseProcedureParameter param : parameters) {
                     if (param.isOutMode()) {
@@ -969,7 +972,7 @@ public class JdbcDao implements OSConnectCommand {
                     }
                 }
 
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(16, call, watch.useTime(), buf.toString()));
+                log.debug(ResourcesUtils.getDatabaseMessage(16, call, watch.useTime(), buf.toString()));
             }
 
             return procedure;
@@ -1034,7 +1037,7 @@ public class JdbcDao implements OSConnectCommand {
                 this.execute(sql);
                 break;
             } catch (Throwable e) {
-                Timer.sleep(3000);
+                Dates.sleep(3000);
                 continue;
             }
         }

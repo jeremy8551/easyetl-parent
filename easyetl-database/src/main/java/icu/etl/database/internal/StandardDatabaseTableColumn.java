@@ -3,9 +3,10 @@ package icu.etl.database.internal;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseTableColumn;
 import icu.etl.database.DatabaseType;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.Numbers;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -17,6 +18,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2012-03-06
  */
 public class StandardDatabaseTableColumn implements Cloneable, Comparable<DatabaseTableColumn>, DatabaseTableColumn {
+    private final static Log log = LogFactory.getLog(StandardDatabaseTableColumn.class);
 
     private String name;
     private int sqlType;
@@ -357,58 +359,58 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
 
         int nameCompare = column1.getName().compareTo(column2.getName());
         if (nameCompare != 0) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName()));
             }
             return nameCompare;
         }
 
         if (column1.getSqlType() != column2.getSqlType()) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getSqlType(), column2.getSqlType()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getSqlType(), column2.getSqlType()));
             }
             return column1.getSqlType() - column2.getSqlType();
         }
 
         int typeNameCompare = column1.getFieldType().compareTo(column2.getFieldType());
         if (typeNameCompare != 0) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getFieldType(), column2.getFieldType()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getFieldType(), column2.getFieldType()));
             }
             return typeNameCompare;
         }
 
         if (column1.length() != column2.length()) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.length(), column2.length()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.length(), column2.length()));
             }
             return column1.length() - column2.length();
         }
 
         if (column1.getMaxLength() != column2.getMaxLength()) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getMaxLength(), column2.getMaxLength()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getMaxLength(), column2.getMaxLength()));
             }
             return column1.getMaxLength() - column2.getMaxLength();
         }
 
         if (column1.getPosition() != column2.getPosition()) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getPosition(), column2.getPosition()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getPosition(), column2.getPosition()));
             }
             return column1.getPosition() - column2.getPosition();
         }
 
         if (column1.getDigit() != column2.getDigit()) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getDigit(), column2.getDigit()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getDigit(), column2.getDigit()));
             }
             return column1.getDigit() - column2.getDigit();
         }
 
         if (column1.getRadix() != column2.getRadix()) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getRadix(), column2.getRadix()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getRadix(), column2.getRadix()));
             }
             return column1.getRadix() - column2.getRadix();
         }

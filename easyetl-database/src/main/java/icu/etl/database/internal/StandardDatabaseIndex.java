@@ -3,11 +3,13 @@ package icu.etl.database.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import icu.etl.database.DB;
 import icu.etl.database.DatabaseIndex;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 
 public class StandardDatabaseIndex implements DatabaseIndex {
+    private final static Log log = LogFactory.getLog(StandardDatabaseIndex.class);
 
     private String fullName;
     private String indexSchema;
@@ -176,8 +178,8 @@ public class StandardDatabaseIndex implements DatabaseIndex {
             return 0;
         }
         if (index1 == null || index2 == null) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug((index1 == null) + " != " + (index2 == null));
+            if (log.isDebugEnabled()) {
+                log.debug((index1 == null) + " != " + (index2 == null));
             }
             return index1 == null ? -1 : 1;
         }
@@ -188,14 +190,14 @@ public class StandardDatabaseIndex implements DatabaseIndex {
         List<Integer> icsList2 = index2.getDirections();
 
         if (nameList1.size() != nameList2.size()) { // 判断字段数
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(39, index1.getName(), index2.getName(), nameList1.size(), nameList2.size()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(39, index1.getName(), index2.getName(), nameList1.size(), nameList2.size()));
             }
             return nameList1.size() - nameList2.size();
         }
         if (icsList1.size() != icsList2.size()) { // 判断字段数
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(39, index1.getName(), index2.getName(), icsList1.size(), icsList2.size()));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(39, index1.getName(), index2.getName(), icsList1.size(), icsList2.size()));
             }
             return icsList1.size() - icsList2.size();
         }
@@ -203,8 +205,8 @@ public class StandardDatabaseIndex implements DatabaseIndex {
         for (int i = 0; i < nameList1.size(); i++) { // 判断字段名
             int c = nameList1.get(i).compareTo(nameList2.get(i));
             if (c != 0) {
-                if (DB.out.isDebugEnabled()) {
-                    DB.out.debug(ResourcesUtils.getDatabaseMessage(40, index1.getName(), index2.getName(), (i + 1), nameList1.get(i), nameList2.get(i)));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getDatabaseMessage(40, index1.getName(), index2.getName(), (i + 1), nameList1.get(i), nameList2.get(i)));
                 }
                 return c;
             }
@@ -213,8 +215,8 @@ public class StandardDatabaseIndex implements DatabaseIndex {
         for (int i = 0; i < icsList1.size(); i++) { // 判断字段排序方式
             int c = icsList1.get(i).compareTo(icsList2.get(i));
             if (c != 0) {
-                if (DB.out.isDebugEnabled()) {
-                    DB.out.debug(ResourcesUtils.getDatabaseMessage(41, index1.getName(), index2.getName(), (i + 1), icsList1.get(i), icsList2.get(i)));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getDatabaseMessage(41, index1.getName(), index2.getName(), (i + 1), icsList1.get(i), icsList2.get(i)));
                 }
                 return c;
             }

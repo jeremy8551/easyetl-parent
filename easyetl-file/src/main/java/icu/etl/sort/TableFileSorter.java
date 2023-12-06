@@ -5,18 +5,20 @@ import java.io.File;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import icu.etl.concurrent.Executor;
-import icu.etl.concurrent.ExecutorContainer;
-import icu.etl.concurrent.ExecutorReader;
+import icu.etl.concurrent.AbstractJob;
+import icu.etl.concurrent.EasyJobReader;
+import icu.etl.concurrent.EasyJobReaderImpl;
+import icu.etl.concurrent.EasyJobService;
+import icu.etl.concurrent.Terminate;
+import icu.etl.concurrent.Terminates;
+import icu.etl.concurrent.ThreadSource;
 import icu.etl.expression.Analysis;
-import icu.etl.expression.OrderByExpression;
 import icu.etl.expression.StandardAnalysis;
 import icu.etl.io.BufferedLineWriter;
 import icu.etl.io.TableLine;
@@ -30,8 +32,6 @@ import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
-import icu.etl.util.Terminate;
-import icu.etl.util.TerminateObserver;
 
 /**
  * 表格文件排序
@@ -48,7 +48,7 @@ public class TableFileSorter implements Terminate {
     private volatile boolean terminate;
 
     /** 观察者 */
-    protected TerminateObserver observers;
+    protected Terminates observers;
 
     /** 表格型记录排序规则 */
     private RecordComparator recordComparator;
@@ -67,15 +67,8 @@ public class TableFileSorter implements Terminate {
 
         this.context = context;
         this.terminate = false;
-        this.observers = new TerminateObserver();
+        this.observers = new Terminates();
         this.recordComparator = new RecordComparator();
-    }
-
-    /**
-     * 初始化
-     */
-    public TableFileSorter() {
-        this(new TableFileSortContext());
     }
 
     /**
@@ -89,7 +82,7 @@ public class TableFileSorter implements Terminate {
 
     public void terminate() {
         this.terminate = true;
-        this.observers.terminate(false);
+        this.observers.terminate();
     }
 
     public boolean isTerminate() {
@@ -109,7 +102,7 @@ public class TableFileSorter implements Terminate {
         Analysis analysis = new StandardAnalysis();
         OrderByExpression[] array = new OrderByExpression[orders.length];
         for (int i = 0; i < orders.length; i++) {
-            array[i] = new OrderByExpression(context, analysis, orders[i], true);
+            array[i] = new OrderByExpression(context, analysis, orders[i]);
         }
         return this.sort(file, array);
     }
@@ -189,11 +182,11 @@ public class TableFileSorter implements Terminate {
     }
 
     /**
-     * 将大文件中内容分批写入小文件中，同时对小文件内容进行排序, 将小文件绝对路径写入清单文件
+     * 将大文件中内容写入到小文件中，同时对小文件内容进行排序, 将小文件绝对路径写入清单文件
      *
-     * @param file
+     * @param file 数据文件
      * @return 临时文件的清单文件(清单文件内容是所有临时文件的绝对路径 ， 路径分隔符是回车或换行符)
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     private File divide(TextTableFile file) throws IOException {
         TextTableFileReader in = file.getReader(this.context.getReaderBuffer());
@@ -223,11 +216,11 @@ public class TableFileSorter implements Terminate {
      * @param file     文件
      * @param listfile 清单文件(清单文件内容是所有临时文件的绝对路径，路径分隔符是回车或换行符)
      * @return 合并后的文件
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     private synchronized File merge(TextTableFile file, File listfile) throws IOException {
         while (true) {
-            long number = new TextTableFileCounter().execute(listfile, file.getCharsetName());
+            long number = new TextTableFileCounter(this.context.getThreadSource(), this.context.getThreadNumber()).execute(listfile, file.getCharsetName());
             if (number == 0) {
                 throw new IOException(ResourcesUtils.getIoxMessage(18, listfile.getAbsolutePath()));
             } else if (number == 1) {
@@ -240,7 +233,7 @@ public class TableFileSorter implements Terminate {
                     throw new IOException(ResourcesUtils.getIoxMessage(20, listfile));
                 }
                 if (this.context.getMergeLineNumber() == 0) { // 如果是单线程
-                    this.context.setMergeLineNumber(new TextTableFileCounter().execute(newfile, file.getCharsetName()));
+                    this.context.setMergeLineNumber(new TextTableFileCounter(this.context.getThreadSource(), this.context.getThreadNumber()).execute(newfile, file.getCharsetName()));
                 }
                 return newfile;
             } else {
@@ -251,15 +244,13 @@ public class TableFileSorter implements Terminate {
                             in.next().execute();
                         }
                     } else { // 使用线程池并行执行
-                        ExecutorContainer container = new ExecutorContainer(in);
+                        ThreadSource threadSource = this.context.getThreadSource();
+                        EasyJobService runner = threadSource.getJobService(this.context.getThreadNumber());
                         try {
-                            this.observers.add(container);
-                            container.execute(this.context.getThreadNumber());
-                            if (container.hasError()) {
-                                throw new IOException(ResourcesUtils.getIoxMessage(21));
-                            }
+                            this.observers.add(runner);
+                            runner.executeForce(new EasyJobReaderImpl(in));
                         } finally {
-                            this.observers.remove(container);
+                            this.observers.remove(runner);
                         }
                     }
                 } finally {
@@ -280,9 +271,9 @@ public class TableFileSorter implements Terminate {
     /**
      * 生成清单文件
      *
-     * @param file
-     * @return
-     * @throws IOException
+     * @param file 数据文件
+     * @return 清单文件
+     * @throws IOException 访问文件错误
      */
     private static synchronized File toListfile(TextTableFile file) throws IOException {
         String newfilename = FileUtils.getFilenameNoSuffix(file.getAbsolutePath()) + ".list" + StringUtils.toRandomUUID();
@@ -300,9 +291,9 @@ public class TableFileSorter implements Terminate {
     /**
      * 生成合并后的临时文件
      *
-     * @param file
-     * @return
-     * @throws IOException
+     * @param file 数据文件
+     * @return 临时文件
+     * @throws IOException 访问文件错误
      */
     private static synchronized File toMergeFile(TextTableFile file) throws IOException {
         String newfilename = FileUtils.getFilenameNoSuffix(file.getAbsolutePath()) + ".merge" + Dates.format17(new Date()) + StringUtils.toRandomUUID();
@@ -411,7 +402,7 @@ public class TableFileSorter implements Terminate {
     /**
      * 合并文件任务信息输入类
      */
-    protected class MergeExecutorReader implements ExecutorReader {
+    protected class MergeExecutorReader implements EasyJobReader {
 
         /** 排序组件 */
         private TableFileSortContext context;
@@ -635,7 +626,7 @@ public class TableFileSorter implements Terminate {
     /**
      * 合并数据文件
      */
-    protected class MergeExecutor extends Executor {
+    protected class MergeExecutor extends AbstractJob {
 
         /** 待合并数据文件 */
         private ArrayList<TextTableFile> files = new ArrayList<TextTableFile>();
@@ -674,7 +665,7 @@ public class TableFileSorter implements Terminate {
             this.readerBuffer = context.getReaderBuffer();
         }
 
-        public void execute() throws IOException {
+        public int execute() throws IOException {
             this.tmpFiles.clear();
             TextTableFile file = this.merge(this.files); // 合并文件
             this.out.writeLine(file.getAbsolutePath(), FileUtils.lineSeparator); // 将合并后文件写入清单文件
@@ -692,6 +683,8 @@ public class TableFileSorter implements Terminate {
                     }
                 }
             }
+
+            return 0;
         }
 
         /**
@@ -809,10 +802,6 @@ public class TableFileSorter implements Terminate {
             return mergeLines;
         }
 
-        public int getPRI() {
-            return 0;
-        }
-
         /**
          * 添加待合并数据文件
          *
@@ -829,20 +818,8 @@ public class TableFileSorter implements Terminate {
      */
     class ListfileWriter extends BufferedLineWriter {
 
-        public ListfileWriter(File file, String charsetName, boolean append, int cache) throws IOException {
-            super(file, charsetName, append, cache);
-        }
-
         public ListfileWriter(File file, String charsetName, int cache) throws IOException {
             super(file, charsetName, cache);
-        }
-
-        public ListfileWriter(File file, String charsetName) throws IOException {
-            super(file, charsetName);
-        }
-
-        public ListfileWriter(Writer out, int cache) throws IOException {
-            super(out, cache);
         }
 
         public synchronized void write(String str) {

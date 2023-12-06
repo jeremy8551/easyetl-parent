@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import icu.etl.annotation.ScriptVariableFunction;
+import icu.etl.annotation.ScriptFunction;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -16,7 +16,7 @@ import icu.etl.util.ArrayUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
-@ScriptVariableFunction(name = "split")
+@ScriptFunction(name = "split")
 public class SplitMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws IOException, SQLException {

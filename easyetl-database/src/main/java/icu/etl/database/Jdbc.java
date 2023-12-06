@@ -31,6 +31,8 @@ import icu.etl.database.pool.PoolConnection;
 import icu.etl.database.pool.SimpleDatasource;
 import icu.etl.ioc.EasyContext;
 import icu.etl.jdk.JavaDialectFactory;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CharTable;
 import icu.etl.util.ClassUtils;
@@ -46,6 +48,7 @@ import icu.etl.util.StringUtils;
  * @createtime 2009-12-19 3:55:15
  */
 public class Jdbc {
+    private final static Log log = LogFactory.getLog(Jdbc.class);
 
     public final static String driver = "driver";
     public final static String driverClassName = "driverClassName";
@@ -74,8 +77,8 @@ public class Jdbc {
             throw new IllegalArgumentException(url);
         }
 
-        if (DB.out.isDebugEnabled()) {
-            DB.out.debug(ResourcesUtils.getDatabaseMessage(26, url, username, password));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getDatabaseMessage(26, url, username, password));
         }
 
         try {
@@ -190,8 +193,8 @@ public class Jdbc {
                 }
             }
         } catch (Throwable e) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(StringUtils.toString(e));
+            if (log.isDebugEnabled()) {
+                log.debug(StringUtils.toString(e));
             }
             return false;
         } finally {
@@ -255,7 +258,7 @@ public class Jdbc {
             }
         }
 
-        return table.toDB2Shape().toString();
+        return table.toString(CharTable.Style.db2);
     }
 
     /**
@@ -286,8 +289,8 @@ public class Jdbc {
         try {
             return conn != null && !conn.isClosed();
         } catch (Throwable e) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(e.getLocalizedMessage(), e);
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
             }
             return false;
         }
@@ -336,8 +339,8 @@ public class Jdbc {
             try {
                 conn.commit();
             } catch (Throwable e) {
-                if (DB.out.isWarnEnabled()) {
-                    DB.out.warn(ResourcesUtils.getDatabaseMessage(30), e);
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getDatabaseMessage(30), e);
                 }
             }
         }
@@ -353,8 +356,8 @@ public class Jdbc {
             try {
                 conn.commit();
             } catch (Throwable e) {
-                if (DB.out.isDebugEnabled()) {
-                    DB.out.debug(e.getLocalizedMessage(), e);
+                if (log.isDebugEnabled()) {
+                    log.debug(e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -400,8 +403,8 @@ public class Jdbc {
             try {
                 conn.rollback();
             } catch (Throwable e) {
-                if (DB.out.isWarnEnabled()) {
-                    DB.out.warn(ResourcesUtils.getDatabaseMessage(31), e);
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getDatabaseMessage(31), e);
                 }
             }
         }
@@ -417,8 +420,8 @@ public class Jdbc {
             try {
                 conn.rollback();
             } catch (Throwable e) {
-                if (DB.out.isDebugEnabled()) {
-                    DB.out.debug(e.getLocalizedMessage(), e);
+                if (log.isDebugEnabled()) {
+                    log.debug(e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -439,8 +442,8 @@ public class Jdbc {
                 try {
                     Jdbc.closeDataSource(dataSource);
                 } catch (Throwable e) {
-                    if (DB.out.isWarnEnabled()) {
-                        DB.out.warn(ResourcesUtils.getDatabaseMessage(27, dataSource), e);
+                    if (log.isWarnEnabled()) {
+                        log.warn(ResourcesUtils.getDatabaseMessage(27, dataSource), e);
                     }
                 }
             }
@@ -462,8 +465,8 @@ public class Jdbc {
             try {
                 Jdbc.closeDataSource(dataSource);
             } catch (Throwable e) {
-                if (DB.out.isErrorEnabled()) {
-                    DB.out.error(ResourcesUtils.getDatabaseMessage(27, dataSource), e);
+                if (log.isErrorEnabled()) {
+                    log.error(ResourcesUtils.getDatabaseMessage(27, dataSource), e);
                 }
 
                 list.add(e);
@@ -487,8 +490,8 @@ public class Jdbc {
 
         // 关闭数据库连接池
         if (SimpleDatasource.instanceOf(dataSource)) {
-            if (DB.out.isDebugEnabled()) {
-                DB.out.debug(ResourcesUtils.getDatabaseMessage(24, dataSource));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getDatabaseMessage(24, dataSource));
             }
 
             IO.close(dataSource);

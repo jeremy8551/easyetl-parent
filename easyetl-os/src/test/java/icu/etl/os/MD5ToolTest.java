@@ -32,7 +32,7 @@ public class MD5ToolTest {
 
         try {
             String str = "测试字符串阿斯蒂芬阿斯兰的军开发lkjsadlfsadlfj就";
-            String md5 = MD5Encrypt.encrypt(str, null);
+            String md5 = MD5Encrypt.encrypt(str);
             System.out.println("MD5Encrypt.encrypt value is " + md5);
 
             OSSecureShellCommand shell = rule.getContext().getBean(OSSecureShellCommand.class);
@@ -58,8 +58,39 @@ public class MD5ToolTest {
      */
     @Test
     public void test1() throws IOException, OSCommandException { // 对MD5功能进行测试
-        String filename = "md5testfile.txt";
-        File file = new File(FileUtils.getTempDir(this.getClass()), filename);
+        File file = this.createfile();
+        String md5 = MD5Encrypt.encrypt(file, null);
+        System.out.println("md5: " + md5);
+
+        SimpleBindings env = rule.getEnvironment();
+        String host = (String) env.get("ssh.host");
+        int port = Integer.parseInt((String) env.get("ssh.port"));
+        String username = (String) env.get("ssh.username");
+        String password = (String) env.get("ssh.password");
+        String homedir = (String) env.get("ssh.homedir");
+
+        OSSecureShellCommand shell = rule.getContext().getBean(OSSecureShellCommand.class);
+        try {
+            Assert.assertTrue(shell.connect(host, port, username, password));
+
+            OSFileCommand filecmd = shell.getFileCommand();
+            System.out.println(filecmd.pwd());
+            filecmd.cd(homedir);
+            filecmd.rm(homedir + "/" + file.getName());
+            filecmd.upload(file, homedir);
+
+            shell.execute("md5sum `pwd`/" + file.getName()); // 判断md5值与linux上是否一致
+            String md5value = shell.getStdout();
+            System.out.println("ssh2 stdout: " + md5value);
+            String linuxMD5 = StringUtils.splitByBlank(StringUtils.trimBlank(md5value))[0];
+            Assert.assertEquals(linuxMD5.toLowerCase(), md5.toLowerCase());
+        } finally {
+            shell.close();
+        }
+    }
+
+    private File createfile() throws IOException {
+        File file = new File(FileUtils.getTempDir(this.getClass()), "md5testfile.txt");
         System.out.println("filepath: " + file.getAbsolutePath());
 
         BufferedLineWriter os = new BufferedLineWriter(file, StringUtils.CHARSET);
@@ -73,31 +104,6 @@ public class MD5ToolTest {
             os.writeLine(buf.toString(), String.valueOf(FileUtils.lineSeparator));
         }
         os.close();
-
-        String md5 = MD5Encrypt.encrypt(file, null);
-        System.out.println("md5: " + md5);
-
-        SimpleBindings env = rule.getEnvironment();
-        String host = (String) env.get("ssh.host");
-        int port = Integer.parseInt((String) env.get("ssh.port"));
-        String username = (String) env.get("ssh.username");
-        String password = (String) env.get("ssh.password");
-        String homedir = (String) env.get("ftp.homedir");
-
-        OSSecureShellCommand shell = rule.getContext().getBean(OSSecureShellCommand.class);
-        try {
-            Assert.assertTrue(shell.connect(host, port, username, password));
-
-            OSFileCommand filecmd = shell.getFileCommand();
-            filecmd.upload(file, homedir);
-
-            shell.execute("md5sum `pwd`/" + filename); // 判断md5值与linux上是否一致
-            String md5value = shell.getStdout();
-            System.out.println("ssh2 stdout: " + md5value);
-            String linuxMD5 = StringUtils.splitByBlank(StringUtils.trimBlank(md5value))[0];
-            Assert.assertEquals(linuxMD5.toLowerCase(), md5.toLowerCase());
-        } finally {
-            shell.close();
-        }
+        return file;
     }
 }

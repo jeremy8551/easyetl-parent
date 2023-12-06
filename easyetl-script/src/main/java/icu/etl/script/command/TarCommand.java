@@ -82,7 +82,7 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
             stdout.println("tar -zcvf " + file.getAbsolutePath());
         }
 
-        this.c = context.getFactory().getContext().getBean(Compress.class, "tar");
+        this.c = context.getContainer().getBean(Compress.class, "tar");
         try {
             this.c.setFile(tarfile);
             this.c.archiveFile(file, null);
@@ -110,7 +110,7 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
             stdout.println("tar -xvf " + file.getAbsolutePath());
         }
 
-        this.c = context.getFactory().getContext().getBean(Compress.class, "tar");
+        this.c = context.getContainer().getBean(Compress.class, "tar");
         try {
             this.c.setFile(file);
             this.c.extract(file.getParent(), Settings.getFileEncoding());

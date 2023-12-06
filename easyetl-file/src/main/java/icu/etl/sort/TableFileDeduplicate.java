@@ -3,6 +3,7 @@ package icu.etl.sort;
 import java.io.IOException;
 import java.util.Arrays;
 
+import icu.etl.concurrent.Terminate;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
@@ -10,7 +11,6 @@ import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
-import icu.etl.util.Terminate;
 
 /**
  * 工具类：用于检查表格型数据文件中是否有重复行
@@ -20,7 +20,7 @@ import icu.etl.util.Terminate;
  */
 public class TableFileDeduplicate implements Terminate {
 
-    private static Log log = LogFactory.getLog(TableFileDeduplicate.class);
+    private final static Log log = LogFactory.getLog(TableFileDeduplicate.class);
 
     /** 默认模式：全量检查所有重复数据 */
     public static final int DEFAULT_MODE = 0;

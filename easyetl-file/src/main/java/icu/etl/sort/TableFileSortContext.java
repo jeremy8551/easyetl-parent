@@ -3,7 +3,9 @@ package icu.etl.sort;
 import java.io.File;
 
 import icu.etl.collection.CaseSensitivMap;
+import icu.etl.concurrent.ThreadSource;
 import icu.etl.io.TextTableFile;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 
 /**
@@ -49,10 +51,20 @@ public class TableFileSortContext {
     /** 其他属性信息集合 */
     protected CaseSensitivMap<Object> values;
 
+    /** 线程池 */
+    protected ThreadSource threadSource;
+
+    /** 是否检查重复数据 */
+    private boolean duplicate;
+
+    /** 是否自动移除右侧生成的行号 */
+    private boolean removeRightField;
+
     /**
      * 创建一个表格文件排序配置信息
      */
     public TableFileSortContext() {
+        this.duplicate = true;
         this.deleteFile = true;
         this.maxRows = 10000;
         this.cacheRows = 100;
@@ -63,6 +75,7 @@ public class TableFileSortContext {
         this.keepSource = false;
         this.readerBuffer = IO.FILE_BYTES_BUFFER_SIZE;
         this.values = new CaseSensitivMap<Object>();
+        this.removeRightField = false;
     }
 
     /**
@@ -71,10 +84,7 @@ public class TableFileSortContext {
      * @param n 缓存行数
      */
     public void setWriterBuffer(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException(String.valueOf(n));
-        }
-        this.cacheRows = n;
+        this.cacheRows = Ensure.isFromOne(n);
     }
 
     /**
@@ -101,10 +111,7 @@ public class TableFileSortContext {
      * @param n
      */
     public void setReaderBuffer(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException(String.valueOf(n));
-        }
-        this.readerBuffer = n;
+        this.readerBuffer = Ensure.isFromOne(n);
     }
 
     /**
@@ -113,10 +120,7 @@ public class TableFileSortContext {
      * @param n
      */
     public void setMaxRows(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException(String.valueOf(n));
-        }
-        this.maxRows = n;
+        this.maxRows = Ensure.isFromOne(n);
     }
 
     /**
@@ -173,10 +177,7 @@ public class TableFileSortContext {
      * @param n 线程数
      */
     public void setThreadNumber(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException(String.valueOf(n));
-        }
-        this.threadNumber = n;
+        this.threadNumber = Ensure.isFromOne(n);
     }
 
     /**
@@ -312,4 +313,57 @@ public class TableFileSortContext {
         this.values.put(key, value);
     }
 
+    /**
+     * 返回线程池
+     *
+     * @return 线程池
+     */
+    public ThreadSource getThreadSource() {
+        return threadSource;
+    }
+
+    /**
+     * 设置线程池
+     *
+     * @param executorService 线程池
+     */
+    public void setThreadSource(ThreadSource executorService) {
+        this.threadSource = executorService;
+    }
+
+    /**
+     * 是否需要检查有重复数据
+     *
+     * @return true表示检查重复数据 false表示不检查重复数据
+     */
+    public boolean isDuplicate() {
+        return duplicate;
+    }
+
+    /**
+     * 是否需要检查有重复数据
+     *
+     * @param duplicate true表示检查重复数据 false表示不检查重复数据
+     */
+    public void setDuplicate(boolean duplicate) {
+        this.duplicate = duplicate;
+    }
+
+    /**
+     * 是否自动移除右侧生成的行号
+     *
+     * @return 返回true表示自动移除
+     */
+    public boolean isRemoveLastField() {
+        return this.removeRightField;
+    }
+
+    /**
+     * 设置是否自动移除右侧生成的行号
+     *
+     * @param b true表示自动移除
+     */
+    public void setRemoveLastField(boolean b) {
+        this.removeRightField = b;
+    }
 }

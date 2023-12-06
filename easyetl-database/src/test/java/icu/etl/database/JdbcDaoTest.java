@@ -13,7 +13,6 @@ import icu.etl.database.internal.StandardDatabaseIndex;
 import icu.etl.database.internal.StandardDatabaseProcedureParameter;
 import icu.etl.database.pool.SimpleDatasource;
 import icu.etl.ioc.EasyBeanContext;
-import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -480,7 +479,6 @@ public class JdbcDaoTest {
 
     @Test
     public void testExecuteByJdbcQuiet() {
-        LogFactory.turnOff();
         JdbcDao dao = new JdbcDao(rule.getContext(), this.connection);
         try {
             dao.executeQuiet("drop table tabletestseljlskjdflk ");
@@ -490,8 +488,6 @@ public class JdbcDaoTest {
             dao.rollback();
             e.printStackTrace();
             Assert.fail();
-        } finally {
-            LogFactory.turnOn();
         }
     }
 

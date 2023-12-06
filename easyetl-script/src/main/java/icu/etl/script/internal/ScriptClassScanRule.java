@@ -3,9 +3,9 @@ package icu.etl.script.internal;
 import java.lang.reflect.Modifier;
 
 import icu.etl.annotation.ScriptCommand;
-import icu.etl.annotation.ScriptVariableFunction;
-import icu.etl.ioc.BeanRegister;
-import icu.etl.ioc.ClassScanRule;
+import icu.etl.annotation.ScriptFunction;
+import icu.etl.ioc.EasyBeanRegister;
+import icu.etl.ioc.scan.ClassScanRule;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptVariableMethod;
 
@@ -24,7 +24,7 @@ public class ScriptClassScanRule implements ClassScanRule {
     public ScriptClassScanRule() {
     }
 
-    public boolean process(Class<?> cls, BeanRegister register) {
+    public boolean process(Class<?> cls, EasyBeanRegister register) {
         if (cls == null) {
             return false;
         }
@@ -41,7 +41,7 @@ public class ScriptClassScanRule implements ClassScanRule {
         }
 
         // 脚本引擎变量方法的实现类
-        if (cls.isAnnotationPresent(ScriptVariableFunction.class) //
+        if (cls.isAnnotationPresent(ScriptFunction.class) //
                 && UniversalScriptVariableMethod.class.isAssignableFrom(cls) //
                 && !Modifier.isAbstract(cls.getModifiers()) //
                 && register.addBean(cls) //

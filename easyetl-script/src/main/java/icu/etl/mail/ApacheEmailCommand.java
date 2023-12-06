@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,8 +44,10 @@ import icu.apache.mail.internet.MimeUtility;
 import icu.apache.mail.search.SearchTerm;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.expression.GPatternExpression;
-import icu.etl.log.STD;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.CharsetName;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -63,6 +64,7 @@ import icu.etl.util.StringUtils;
  * @author jeremy8551@qq.com
  */
 public class ApacheEmailCommand implements MailCommand {
+    private final static Log log = LogFactory.getLog(ApacheEmailCommand.class);
 
     /**
      * Load mailcap.default
@@ -70,7 +72,7 @@ public class ApacheEmailCommand implements MailCommand {
     public static MailcapFile loadMailcapDefault() {
         try {
             ByteBuffer bytes = new ByteBuffer();
-            bytes.setCharsetName(StandardCharsets.ISO_8859_1.name());
+            bytes.setCharsetName(CharsetName.ISO_8859_1);
             bytes.append("image/gif;;		x-java-view=").append(ImageViewer.class.getName()).append(FileUtils.lineSeparatorUnix);
             bytes.append("image/jpeg;;		x-java-view=").append(ImageViewer.class.getName()).append(FileUtils.lineSeparatorUnix);
             bytes.append("text/*;;		x-java-view=").append(TextViewer.class.getName()).append(FileUtils.lineSeparatorUnix);
@@ -87,7 +89,7 @@ public class ApacheEmailCommand implements MailCommand {
     public static MimeTypeFile loadMimetypesDefault() {
         try {
             ByteBuffer bytes = new ByteBuffer();
-            bytes.setCharsetName(StandardCharsets.ISO_8859_1.name());
+            bytes.setCharsetName(CharsetName.ISO_8859_1);
             bytes.append("text/html		html htm HTML HTM").append(FileUtils.lineSeparatorUnix);
             bytes.append("text/plain		txt text TXT TEXT").append(FileUtils.lineSeparatorUnix);
             bytes.append("image/gif		gif GIF").append(FileUtils.lineSeparatorUnix);
@@ -122,7 +124,7 @@ public class ApacheEmailCommand implements MailCommand {
     public static MailcapFile loadMailcap() {
         try {
             ByteBuffer bytes = new ByteBuffer();
-            bytes.setCharsetName(StandardCharsets.ISO_8859_1.name());
+            bytes.setCharsetName(CharsetName.ISO_8859_1);
             bytes.append("text/plain;;		x-java-content-handler=").append(text_plain.class.getName()).append(FileUtils.lineSeparatorUnix);
             bytes.append("text/html;;		x-java-content-handler=").append(text_html.class.getName()).append(FileUtils.lineSeparatorUnix);
             bytes.append("text/xml;;		x-java-content-handler=").append(text_xml.class.getName()).append(FileUtils.lineSeparatorUnix);
@@ -212,7 +214,7 @@ public class ApacheEmailCommand implements MailCommand {
         Store store = null;
         try {
             Properties config = new Properties();
-            config.setProperty("mail.debug", String.valueOf(STD.out.isDebugEnabled()));
+            config.setProperty("mail.debug", String.valueOf(log.isDebugEnabled()));
             config.setProperty("mail.store.protocol", protocol);
             config.setProperty("mail." + protocol + ".host", host);
             config.setProperty("mail." + protocol + ".auth", "true");
@@ -290,11 +292,11 @@ public class ApacheEmailCommand implements MailCommand {
         try {
             if (attachments.length == 0) {
                 SimpleEmail mail = new SimpleEmail();
-                mail.setDebug(STD.out.isDebugEnabled());
+                mail.setDebug(log.isDebugEnabled());
                 mail.setHostName(this.host);
                 mail.setAuthentication(this.username, this.password);// 邮件服务器验证：用户名/密码
                 mail.setSSL(ssl);
-                mail.setCharset(StringUtils.defaultString(this.charsetName, StandardCharsets.UTF_8.name()));// 必须放在前面，否则乱码
+                mail.setCharset(StringUtils.defaultString(this.charsetName, CharsetName.UTF_8));// 必须放在前面，否则乱码
                 if (ssl) {
                     mail.setSslSmtpPort(String.valueOf(port));
                 } else {
@@ -312,18 +314,18 @@ public class ApacheEmailCommand implements MailCommand {
                 mail.setMsg(content.toString());
 
                 String messageId = mail.send();
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getMailMessage(1));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getMailMessage(1));
                 }
                 return messageId;
             } else {
                 // Create the email message
                 MultiPartEmail mail = new MultiPartEmail();
-                mail.setDebug(STD.out.isDebugEnabled());
+                mail.setDebug(log.isDebugEnabled());
                 mail.setHostName(this.host);
                 mail.setAuthentication(this.username, this.password);// 邮件服务器验证：用户名/密码
                 mail.setSSL(ssl);
-                mail.setCharset(StringUtils.defaultString(this.charsetName, StandardCharsets.UTF_8.name()));// 必须放在前面，否则乱码
+                mail.setCharset(StringUtils.defaultString(this.charsetName, CharsetName.UTF_8));// 必须放在前面，否则乱码
 
                 for (String str : receivers) {
                     String[] array = toAddress(str);
@@ -344,8 +346,8 @@ public class ApacheEmailCommand implements MailCommand {
                         attachment.setDescription(file.getDescription());
                         attachment.setName(MimeUtility.encodeText(file.getName()));
 
-                        if (STD.out.isDebugEnabled()) {
-                            STD.out.debug(ResourcesUtils.getMailMessage(10, file.getPath(), file.getName()));
+                        if (log.isDebugEnabled()) {
+                            log.debug(ResourcesUtils.getMailMessage(10, file.getPath(), file.getName()));
                         }
 
                         mail.attach(attachment);
@@ -354,8 +356,8 @@ public class ApacheEmailCommand implements MailCommand {
 
                 // send the email
                 String messageId = mail.send();
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getMailMessage(1));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getMailMessage(1));
                 }
                 return messageId;
             }
@@ -372,7 +374,7 @@ public class ApacheEmailCommand implements MailCommand {
         Store store = null;
         try {
             Properties config = new Properties();
-            config.setProperty("mail.debug", String.valueOf(STD.out.isDebugEnabled()));
+            config.setProperty("mail.debug", String.valueOf(log.isDebugEnabled()));
             config.setProperty("mail.store.protocol", protocol);
             if (port > 0) {
                 config.setProperty("mail." + protocol + ".port", String.valueOf(port));
@@ -399,8 +401,8 @@ public class ApacheEmailCommand implements MailCommand {
         if (name == null) {
             folder = this.getDefaultFolder(store.getDefaultFolder());
             name = folder.getFullName();
-            if (STD.out.isDebugEnabled()) {
-                STD.out.debug(ResourcesUtils.getMailMessage(9, name));
+            if (log.isDebugEnabled()) {
+                log.debug(ResourcesUtils.getMailMessage(9, name));
             }
         } else {
             folder = store.getFolder(name);
@@ -580,7 +582,7 @@ public class ApacheEmailCommand implements MailCommand {
         Store store = null;
         try {
             Properties config = new Properties();
-            config.setProperty("mail.debug", String.valueOf(STD.out.isDebugEnabled()));
+            config.setProperty("mail.debug", String.valueOf(log.isDebugEnabled()));
             config.setProperty("mail.store.protocol", mailFolder.getProtocol());
             // mail.transport.protocol
 
@@ -590,8 +592,8 @@ public class ApacheEmailCommand implements MailCommand {
 
             Folder folder = store.getFolder(folderName);
             if (folder == null) {
-                if (STD.out.isDebugEnabled()) {
-                    STD.out.debug(ResourcesUtils.getMailMessage(8, folderName));
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getMailMessage(8, folderName));
                 }
                 return null;
             }
@@ -600,8 +602,8 @@ public class ApacheEmailCommand implements MailCommand {
                 folder.open(Folder.READ_ONLY);
                 Message message = folder.getMessage(messageId);
                 if (message == null) {
-                    if (STD.out.isDebugEnabled()) {
-                        STD.out.debug(ResourcesUtils.getMailMessage(7, messageId));
+                    if (log.isDebugEnabled()) {
+                        log.debug(ResourcesUtils.getMailMessage(7, messageId));
                     }
                     return null;
                 } else {
@@ -648,8 +650,8 @@ public class ApacheEmailCommand implements MailCommand {
         }
 
         File file = new File(parent, filename);
-        if (STD.out.isDebugEnabled()) {
-            STD.out.debug(ResourcesUtils.getMailMessage(4, file));
+        if (log.isDebugEnabled()) {
+            log.debug(ResourcesUtils.getMailMessage(4, file));
         }
 
         BufferedOutputStream out = null;
