@@ -113,9 +113,9 @@ public class TableFileDeduplicateSorter implements Terminate {
      * @param file    数据文件
      * @param orders  排序字段表达式数组
      * @return 排序后的文件
-     * @throws IOException IO错误
+     * @throws Exception 发生错误
      */
-    public synchronized File execute(EasyContext context, TextTableFile file, String... orders) throws IOException {
+    public synchronized File execute(EasyContext context, TextTableFile file, String... orders) throws Exception {
         Analysis analysis = new StandardAnalysis();
         OrderByExpression[] array = new OrderByExpression[orders.length];
         for (int i = 0; i < orders.length; i++) {
@@ -130,14 +130,12 @@ public class TableFileDeduplicateSorter implements Terminate {
      * @param file   数据文件
      * @param orders 排序字段表达式数组
      * @return 排序后的文件
-     * @throws IOException IO错误
+     * @throws Exception 发生错误
      */
-    public synchronized File execute(TextTableFile file, OrderByExpression... orders) throws IOException {
+    public synchronized File execute(TextTableFile file, OrderByExpression... orders) throws Exception {
         Ensure.notNull(file);
         Ensure.notEmpty(orders);
-        if (!FileUtils.isFile(file.getFile())) {
-            throw new IllegalArgumentException(file.getFile().getAbsolutePath());
-        }
+        FileUtils.assertFile(file.getFile());
 
         if (log.isDebugEnabled()) {
             log.debug(ResourcesUtils.getIoxMessage(56, file.getAbsolutePath(), Arrays.toString(orders)));
@@ -168,9 +166,9 @@ public class TableFileDeduplicateSorter implements Terminate {
      * @param file    文件
      * @param creator 临时文件工厂
      * @return 排序后文件
-     * @throws IOException 排序发生错误
+     * @throws Exception 发生错误
      */
-    protected File execute(TextTableFile file, TempFileCreator creator) throws IOException {
+    protected File execute(TextTableFile file, TempFileCreator creator) throws Exception {
         TimeWatch watch = new TimeWatch();
 
         // 排序前文件信息
@@ -189,7 +187,7 @@ public class TableFileDeduplicateSorter implements Terminate {
 
         // 是否自动删除右端的行号字段
         if (this.context.isRemoveLastField()) {
-            File removefile = this.removeLineNumber(file, creator, mergefile);
+            File removefile = this.removeLineNumber(file, mergefile);
             FileUtils.deleteFile(mergefile);
             mergefile = removefile;
         }
@@ -223,23 +221,12 @@ public class TableFileDeduplicateSorter implements Terminate {
                 log.debug(ResourcesUtils.getIoxMessage(54, oldfile.getAbsolutePath(), mergefile.getAbsolutePath(), oldfile.getAbsolutePath(), watch.useTime()));
             }
 
-            /**
-             * 不保留源文件时:
-             * 1.将原文件（oldfile）重命名为一个带 bak 扩展名的文件
-             * 2.将排序后文件（mergefile）重命名为原文件名（oldfile）
-             * 3.再删除带 bak 扩展名的文件
-             */
+            // 不保留源文件的处理逻辑:
+            // 1.将原文件（oldfile）重命名为一个带 bak 扩展名的文件
+            // 2.将排序后文件（mergefile）重命名为原文件名（oldfile）
+            // 3.再删除带 bak 扩展名的文件
             File bakfile = creator.toBakfile();
-            if (!oldfile.renameTo(bakfile)) { // 原文件名 修改为 备份文件名
-                throw new IOException(ResourcesUtils.getIoxMessage(35, oldfile.getAbsolutePath(), bakfile.getAbsolutePath()));
-            }
-
-            if (!mergefile.renameTo(oldfile)) { // 新排序的文件名 修改为 原文件名
-                bakfile.renameTo(oldfile); // 不能重命名时，需要将 备份文件名 恢复为 原文件名
-                throw new IOException(ResourcesUtils.getIoxMessage(35, mergefile.getAbsolutePath(), oldfile.getAbsolutePath()));
-            }
-
-            if (bakfile.delete()) { // 删除备份文件
+            if (FileUtils.rename(mergefile, oldfile, bakfile) && bakfile.delete()) { // 删除备份文件
                 return oldfile;
             } else {
                 throw new IOException(ResourcesUtils.getIoxMessage(16, bakfile.getAbsolutePath()));
@@ -247,32 +234,40 @@ public class TableFileDeduplicateSorter implements Terminate {
         }
     }
 
-    private File removeLineNumber(TextTableFile file, TempFileCreator creator, File result) throws IOException {
-        File sortfile = creator.toSortfile();
+    /**
+     * 删除表格文件的最右侧的一列
+     *
+     * @param file     表格文件
+     * @param sortfile 排序后文件
+     * @return 删除列后的文件
+     * @throws IOException 访问文件错误
+     */
+    private File removeLineNumber(TextTableFile file, File sortfile) throws IOException {
+        File mergefile = FileUtils.createNewFile(sortfile.getParentFile(), sortfile.getName());
         TextTableFile clone = file.clone();
-        clone.setAbsolutePath(sortfile.getAbsolutePath());
+        clone.setAbsolutePath(mergefile.getAbsolutePath());
 
-        TextTableFileWriter out = clone.getWriter(false, this.context.getWriterBuffer());
+        TextTableFile clonefile = file.clone();
+        clonefile.setAbsolutePath(sortfile.getAbsolutePath());
+        TextTableFileReader in = clonefile.getReader(this.context.getReaderBuffer());
         try {
-            TextTableFile mergefile = file.clone();
-            mergefile.setAbsolutePath(result.getAbsolutePath());
-            TextTableFileReader in = mergefile.getReader(this.context.getReaderBuffer());
+            TextTableFileWriter out = clone.getWriter(false, this.context.getWriterBuffer());
             try {
                 TextTableLine line;
                 while ((line = in.readLine()) != null) {
                     String content = line.getContent();
-                    String delimiter = mergefile.getDelimiter();
+                    String delimiter = clonefile.getDelimiter();
                     int end = Ensure.isFromZero(content.lastIndexOf(delimiter));
                     String str = content.substring(0, end);
                     out.addLine(str); // 截取字符串，删除最后一个字段（行号）
                 }
                 out.flush();
-                return sortfile;
+                return mergefile;
             } finally {
-                in.close();
+                out.close();
             }
         } finally {
-            out.close();
+            in.close();
         }
     }
 
@@ -304,6 +299,7 @@ public class TableFileDeduplicateSorter implements Terminate {
                         line = in.readLine();
                     }
                 }
+                out.flush();
                 return listfile;
             } finally {
                 out.close();
@@ -349,8 +345,8 @@ public class TableFileDeduplicateSorter implements Terminate {
      * @return 合并后的文件
      * @throws IOException 合并临时文件发生错误
      */
-    private File merge(File listfile, String charsetName) throws IOException {
-        long number = new TextTableFileCounter(this.context.getThreadSource(), this.context.getThreadNumber()).execute(listfile, charsetName);
+    private File merge(File listfile, String charsetName) throws Exception {
+        long number = FileUtils.count(listfile, charsetName);
         if (number == 0) {
             throw new IOException(ResourcesUtils.getIoxMessage(18, listfile.getAbsolutePath()));
         }
@@ -358,29 +354,27 @@ public class TableFileDeduplicateSorter implements Terminate {
         // 清单文件中只有一个文件路径时
         if (number == 1) {
             File newfile = new File(StringUtils.trimBlank(FileUtils.readline(listfile, charsetName, 0)));
-            if (!newfile.exists() || !newfile.isFile() || !newfile.canRead()) {
-                throw new IOException(ResourcesUtils.getIoxMessage(19, newfile.getAbsolutePath()));
+            FileUtils.assertFile(newfile);
+            this.deleteListfile(listfile);
+            Long mergeLines = this.context.getAttribute(FILELINE_NUMBER); // 最后一次合并的文件记录数作为最终值
+            if (mergeLines == null) {
+                this.context.setMergeLineNumber(new TextTableFileCounter(this.context.getThreadSource(), this.context.getThreadNumber()).execute(newfile, charsetName));
             } else {
-                this.deleteListfile(listfile);
-                Long mergeLines = this.context.getAttribute(FILELINE_NUMBER); // 最后一次合并的文件记录数作为最终值
-                if (mergeLines == null) {
-                    this.context.setMergeLineNumber(new TextTableFileCounter(this.context.getThreadSource(), this.context.getThreadNumber()).execute(newfile, charsetName));
-                } else {
-                    this.context.setMergeLineNumber(mergeLines);
-                }
-                return newfile;
+                this.context.setMergeLineNumber(mergeLines);
             }
+            return newfile;
         }
 
-        // 清单文件中有很多文件路径
+        // 合并清单文件中记录的文件
         else {
             TempFileCreator creator = this.context.getAttribute(TEMPFILE_CREATOR);
             File newlistfile = creator.toListfile(); // 合并后的清单文件
-            ListfileWriter listfileout = new ListfileWriter(newlistfile, charsetName);
+            ListfileWriter out = new ListfileWriter(newlistfile, charsetName);
             try {
-                this.merge(listfile, listfileout);
+                this.merge(listfile, out);
+                out.flush();
             } finally {
-                listfileout.close();
+                out.close();
                 this.deleteListfile(listfile); // 合并完清单文件后，需要删除清单文件
             }
 
@@ -391,12 +385,12 @@ public class TableFileDeduplicateSorter implements Terminate {
     /**
      * 合并清单文件 {@code listfile} 中的临时文件, 并将合并后结果（也就是新产生的临时文件路径）写入到 {@code listfileout} 输出流中
      *
-     * @param listfile    清单文件
-     * @param listfileout 新清单文件输出流
+     * @param listfile 清单文件
+     * @param out      清单文件输出流
      * @throws IOException 访问文件错误
      */
-    protected void merge(File listfile, ListfileWriter listfileout) throws IOException {
-        MergeJobReader in = new MergeJobReader(this.context, listfile, listfileout, this.recordComparator);
+    protected void merge(File listfile, ListfileWriter out) throws Exception {
+        MergeJobReader in = new MergeJobReader(this.context, listfile, out, this.recordComparator);
         try {
             if (this.context.getThreadNumber() <= 1) { // 串行执行
                 while (in.hasNext() && !this.terminate) {
@@ -412,7 +406,7 @@ public class TableFileDeduplicateSorter implements Terminate {
                 EasyJobService service = this.context.getThreadSource().getJobService(this.context.getThreadNumber());
                 try {
                     this.observers.add(service);
-                    service.executeForce(new EasyJobReaderImpl(in));
+                    service.execute(new EasyJobReaderImpl(in));
                 } finally {
                     this.observers.remove(service);
                 }
@@ -426,12 +420,9 @@ public class TableFileDeduplicateSorter implements Terminate {
      * 删除清单文件
      *
      * @param listfile 清单文件
-     * @throws IOException 删除文件时发生错误
      */
-    private void deleteListfile(File listfile) throws IOException {
-        if (this.context.isDeleteFile() && !listfile.delete()) { // 删除清单文件
-            throw new IOException(ResourcesUtils.getIoxMessage(20, listfile));
-        }
+    private void deleteListfile(File listfile) {
+        FileUtils.delete(listfile, 5, 200);
     }
 
     protected static class RecordComparator implements Comparator<TableLine> {
@@ -524,21 +515,18 @@ public class TableFileDeduplicateSorter implements Terminate {
         /**
          * 初始化
          *
-         * @param context          待排序文件
-         * @param listfile         清单文件
-         * @param listfileout      清单文件输出流（用于存储合并后产生的临时文件绝对路径）
-         * @param recordComparator 记录排序规则
+         * @param context  待排序文件
+         * @param listfile 清单文件
+         * @param out      清单文件输出流（用于存储合并后产生的临时文件绝对路径）
+         * @param c        记录排序规则
          * @throws IOException 访问文件错误
          */
-        public MergeJobReader(TableFileSortContext context, File listfile, ListfileWriter listfileout, RecordComparator recordComparator) throws IOException {
-            if (listfile == null || !listfile.exists()) {
-                throw new IllegalArgumentException(ResourcesUtils.getIoxMessage(23, listfile));
-            }
-
-            this.context = context;
+        public MergeJobReader(TableFileSortContext context, File listfile, ListfileWriter out, RecordComparator c) throws IOException {
+            this.context = Ensure.notNull(context);
+            FileUtils.assertExists(listfile);
             this.in = IO.getBufferedReader(listfile, this.context.getFile().getCharsetName());
-            this.listfileout = listfileout;
-            this.recordComparator = recordComparator;
+            this.listfileout = Ensure.notNull(out);
+            this.recordComparator = Ensure.notNull(c);
         }
 
         public synchronized boolean hasNext() throws IOException {
@@ -568,8 +556,10 @@ public class TableFileDeduplicateSorter implements Terminate {
         }
 
         public synchronized void close() throws IOException {
-            this.in.close();
-            this.in = null;
+            if (this.in != null) {
+                this.in.close();
+                this.in = null;
+            }
             this.task = null;
         }
 
@@ -607,7 +597,7 @@ public class TableFileDeduplicateSorter implements Terminate {
         /** 缓冲区数组的容量 */
         private int capacity;
 
-        /** 清单文件写入流 */
+        /** 清单文件输出流 */
         private BufferedLineWriter listfileout;
 
         /** 表格型记录排序规则 */
@@ -635,10 +625,10 @@ public class TableFileDeduplicateSorter implements Terminate {
         private boolean duplicate;
 
         public TempFileWriter(TableFileSortContext context, TextTableFile file, TempFileCreator creator, File listfile, String lineSeparator, RecordComparator recordComparator) throws IOException {
+            this.size = 0;
             this.context = Ensure.notNull(context);
             this.file = Ensure.notNull(file);
-            this.size = 0;
-            this.creator = creator;
+            this.creator = Ensure.notNull(creator);
             this.listfileout = new BufferedLineWriter(listfile, file.getCharsetName(), 1);
             this.capacity = context.getMaxRows();
             this.array = new TextTableLine[this.capacity];
@@ -675,6 +665,7 @@ public class TableFileDeduplicateSorter implements Terminate {
                 } finally {
                     if (file.exists()) {
                         this.listfileout.writeLine(file.getAbsolutePath()); // 将临时文件绝对路径写入到清单文件
+                        this.listfileout.flush();
                     }
                 }
                 this.size = 0;
@@ -767,9 +758,9 @@ public class TableFileDeduplicateSorter implements Terminate {
         /**
          * 初始化
          *
-         * @param in               任务所属的输入流
+         * @param in               任务输入流
          * @param name             任务名
-         * @param listfileout      文件清单的输出流（将产生的临时文件绝对路径写入到输出流中）
+         * @param out              文件清单的输出流（将产生的临时文件绝对路径写入到输出流中）
          * @param deleteTempFile   是否删除临时文件
          * @param readerBuffer     输入流缓冲区大小
          * @param creator          临时文件工厂
@@ -777,13 +768,13 @@ public class TableFileDeduplicateSorter implements Terminate {
          * @param list             记录排序规则
          * @param duplicate        是否检查重复数据
          */
-        public MergeJob(MergeJobReader in, String name, TextTableFile file, ListfileWriter listfileout, boolean deleteTempFile, int readerBuffer, TempFileCreator creator, RecordComparator recordComparator, List<TextTableFile> list, boolean duplicate) {
+        public MergeJob(MergeJobReader in, String name, TextTableFile file, ListfileWriter out, boolean deleteTempFile, int readerBuffer, TempFileCreator creator, RecordComparator recordComparator, List<TextTableFile> list, boolean duplicate) {
             super();
             this.setName(name);
             this.file = file;
             this.reader = in;
             this.files = list;
-            this.out = listfileout;
+            this.out = out;
             this.comp = recordComparator;
             this.deleteTempFile = deleteTempFile;
             this.readerBuffer = readerBuffer;
@@ -795,6 +786,7 @@ public class TableFileDeduplicateSorter implements Terminate {
             TextTableFile file = this.merge(this.files); // 合并文件
             if (file != null) {
                 this.out.writeLine(file.getAbsolutePath()); // 将合并后文件写入清单文件
+                this.out.flush();
             }
             return 0;
         }
@@ -835,17 +827,12 @@ public class TableFileDeduplicateSorter implements Terminate {
 
                 TextTableFile file1 = files.get(i); // 第二个数据文件
                 list.add(this.merge(file0, file1)); // 合并后的文件保存到 list 中
-                if (this.status.isTerminate()) {
-                    return null;
-                }
 
-                if (this.deleteTempFile) { // 删除已合并的临时文件
-                    if (!file0.delete()) {
-                        throw new IOException(ResourcesUtils.getIoxMessage(25, file0.getAbsolutePath()));
-                    }
-                    if (!file1.delete()) {
-                        throw new IOException(ResourcesUtils.getIoxMessage(25, file1.getAbsolutePath()));
-                    }
+                if (!file0.delete()) {
+                    throw new IOException(ResourcesUtils.getIoxMessage(25, file0.getAbsolutePath()));
+                }
+                if (!file1.delete()) {
+                    throw new IOException(ResourcesUtils.getIoxMessage(25, file1.getAbsolutePath()));
                 }
             }
 

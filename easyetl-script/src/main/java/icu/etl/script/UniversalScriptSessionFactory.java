@@ -1,6 +1,5 @@
 package icu.etl.script;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Set;
 
@@ -46,19 +45,17 @@ public interface UniversalScriptSessionFactory {
     /**
      * 终止所有会话信息
      *
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    void terminate() throws IOException, SQLException;
+    void terminate() throws Exception;
 
     /**
      * 终止会话信息
      *
      * @param id 会话编号
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    void terminate(String id) throws IOException, SQLException;
+    void terminate(String id) throws Exception;
 
     /**
      * 清空所有用户会话信息

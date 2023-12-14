@@ -1,8 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandResultSet;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -36,7 +33,7 @@ public class WhileCommand extends AbstractCommand implements WithBodyCommandSupp
         this.body.setOwner(this);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         try {
             ScriptMainProcess process = session.getMainProcess();
             boolean isbreak = false, iscontinue = false;
@@ -93,7 +90,7 @@ public class WhileCommand extends AbstractCommand implements WithBodyCommandSupp
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.command != null) {
             this.command.terminate();
         }

@@ -1,8 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -39,9 +36,9 @@ public abstract class AbstractCommand implements UniversalScriptCommand {
         this.command = script;
     }
 
-    public abstract int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException;
+    public abstract int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception;
 
-    public abstract void terminate() throws IOException, SQLException;
+    public abstract void terminate() throws Exception;
 
     public UniversalCommandCompiler getCompiler() {
         return this.compiler;

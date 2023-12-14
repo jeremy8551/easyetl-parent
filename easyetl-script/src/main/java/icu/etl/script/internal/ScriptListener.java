@@ -1,8 +1,6 @@
 package icu.etl.script.internal;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -79,14 +77,14 @@ public class ScriptListener implements UniversalScriptListener {
         return this.map.get(cls);
     }
 
-    public void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws IOException, SQLException {
+    public void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws Exception {
         for (int i = 0, size = this.list.size(); i < size; i++) {
             UniversalCommandListener listener = this.list.get(i);
             listener.startScript(session, context, stdout, stderr, forceStdout, in);
         }
     }
 
-    public boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws IOException, SQLException {
+    public boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws Exception {
         boolean value = true;
         for (int i = 0, size = this.list.size(); i < size; i++) {
             UniversalCommandListener listener = this.list.get(i);
@@ -97,14 +95,14 @@ public class ScriptListener implements UniversalScriptListener {
         return value;
     }
 
-    public void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws IOException, SQLException {
+    public void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception {
         for (int i = 0, size = this.list.size(); i < size; i++) {
             UniversalCommandListener listener = this.list.get(i);
             listener.afterCommand(session, context, stdout, stderr, forceStdout, command, result);
         }
     }
 
-    public void catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws IOException, SQLException {
+    public void catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Exception e) throws Exception {
         String script = (command == null) ? "" : command.getScript();
         if (this.list.isEmpty()) {
             throw new UniversalScriptException(script, e);
@@ -118,12 +116,12 @@ public class ScriptListener implements UniversalScriptListener {
             }
 
             if (!value) { // 没有执行任何业务逻辑时，抛出异常信息
-                throw new UniversalScriptException(script, e);
+                throw e;
             }
         }
     }
 
-    public void catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws IOException, SQLException {
+    public void catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Exception e) throws Exception {
         String script = (command == null) ? "" : command.getScript();
         if (this.list.isEmpty()) {
             throw new UniversalScriptException(script, e);
@@ -137,12 +135,12 @@ public class ScriptListener implements UniversalScriptListener {
             }
 
             if (!value) { // 没有执行任何业务逻辑时，抛出异常信息
-                throw new UniversalScriptException(script, e);
+                throw e;
             }
         }
     }
 
-    public void exitScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws IOException, SQLException {
+    public void exitScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception {
         for (int i = 0, size = this.list.size(); i < size; i++) {
             UniversalCommandListener listener = this.list.get(i);
             listener.exitScript(session, context, stdout, stderr, forceStdout, command, result);
@@ -154,24 +152,24 @@ public class ScriptListener implements UniversalScriptListener {
      */
     class DefaultListener implements UniversalCommandListener {
 
-        public void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws IOException, SQLException {
+        public void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws Exception {
             if (context.getEngine().isClose()) { // 脚本引擎已关闭
                 throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(999, IO.read(in, new StringBuilder())));
             }
         }
 
-        public boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws IOException, SQLException {
+        public boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws Exception {
             return true;
         }
 
-        public void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws IOException, SQLException {
+        public void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception {
         }
 
-        public boolean catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws IOException, SQLException {
+        public boolean catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws Exception {
             return false;
         }
 
-        public boolean catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws IOException, SQLException {
+        public boolean catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws Exception {
             return false;
         }
 

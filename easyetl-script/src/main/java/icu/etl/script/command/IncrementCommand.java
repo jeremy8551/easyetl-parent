@@ -85,7 +85,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
         this.writeExpr = writeExpr;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (!this.hasJob(session, context, stdout, stderr, null)) {
             return UniversalScriptCommand.COMMAND_ERROR;
         }
@@ -95,7 +95,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, false, true, false));
         }
 
-        int value = context.getEngine().eval(this.executor, stdout, stderr);
+        int value = this.executor.execute();
         return this.executor.isTerminate() ? UniversalScriptCommand.TERMINATE : (value == 0 ? 0 : UniversalScriptCommand.COMMAND_ERROR);
     }
 
@@ -208,47 +208,47 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             }
 
             // 剥离增量上下文信息
-            IncrementContext cxt = new IncrementContext();
-            cxt.setName(newfile.getAbsolutePath());
-            cxt.setNewFile(newfile);
-            cxt.setOldFile(oldfile);
-            cxt.setPosition(position);
-            cxt.setNewWriter(newout);
-            cxt.setUpdWriter(updout);
-            cxt.setDelWriter(delout);
-            cxt.setSortNew(!this.newfileExpr.contains("nosort"));
-            cxt.setSortOld(!this.oldfileExpr.contains("nosort"));
-            cxt.setSortNewContext(this.newfileExpr.createSortContext());
-            cxt.setSortOldContext(this.oldfileExpr.createSortContext());
-            cxt.setReplaceList(replaceList);
-            cxt.setThreadSource(context.getContainer().getBean(ThreadSource.class));
+            IncrementContext inccxt = new IncrementContext();
+            inccxt.setName(ResourcesUtils.getMessage("increment.standard.output.msg006", newfile.getAbsolutePath()));
+            inccxt.setNewFile(newfile);
+            inccxt.setOldFile(oldfile);
+            inccxt.setPosition(position);
+            inccxt.setNewWriter(newout);
+            inccxt.setUpdWriter(updout);
+            inccxt.setDelWriter(delout);
+            inccxt.setSortNew(!this.newfileExpr.contains("nosort"));
+            inccxt.setSortOld(!this.oldfileExpr.contains("nosort"));
+            inccxt.setSortNewContext(this.newfileExpr.createSortContext());
+            inccxt.setSortOldContext(this.oldfileExpr.createSortContext());
+            inccxt.setReplaceList(replaceList);
+            inccxt.setThreadSource(context.getContainer().getBean(ThreadSource.class));
 
             // 设置新文件的读取进度
             if (this.newfileExpr.contains("progress")) {
                 String progress = this.newfileExpr.getAttribute("progress");
-                cxt.setNewfileProgress(ProgressMap.getProgress(context, progress));
+                inccxt.setNewfileProgress(ProgressMap.getProgress(context, progress));
             }
 
             // 设置旧文件的读取进度
             if (this.oldfileExpr.contains("progress")) {
                 String progress = this.oldfileExpr.getAttribute("progress");
-                cxt.setOldfileProgress(ProgressMap.getProgress(context, progress));
+                inccxt.setOldfileProgress(ProgressMap.getProgress(context, progress));
             }
 
             // 设置日志输出接口
             if (StringUtils.isNotBlank(logfilepath)) {
                 if ("stdout".equalsIgnoreCase(logfilepath)) {
-                    cxt.setLogger(new IncrementLoggerListener(stdout, position, oldfile, newfile));
+                    inccxt.setLogger(new IncrementLoggerListener(stdout, position, oldfile, newfile));
                 } else if ("stderr".equalsIgnoreCase(logfilepath)) {
-                    cxt.setLogger(new IncrementLoggerListener(stderr, position, oldfile, newfile));
+                    inccxt.setLogger(new IncrementLoggerListener(stderr, position, oldfile, newfile));
                 } else {
                     String charsetName = StringUtils.defaultString(newfile.getCharsetName(), context.getCharsetName()); // 新文件的字符集编码
                     StandardFilePrinter out = new StandardFilePrinter(new File(logfilepath), charsetName, false);
-                    cxt.setLogger(new IncrementLoggerListener(out, position, oldfile, newfile));
+                    inccxt.setLogger(new IncrementLoggerListener(out, position, oldfile, newfile));
                 }
             }
 
-            this.executor = new Increment(cxt);
+            this.executor = new Increment(inccxt);
         }
 
         IncrementContext cxt = this.executor.getContext();

@@ -27,8 +27,7 @@ public class TextTableFileCounterTest {
      * 使用指定用户名创建一个文件
      */
     public File createfile() throws IOException {
-        File dir = FileUtils.getTempDir(CsvFile.class);
-        FileUtils.createDirectory(dir);
+        File dir = FileUtils.getTempDir("test" + TextTableFileCounter.class.getSimpleName());
         File file = new File(dir, TextTableFileCounter.class.getSimpleName() + StringUtils.toRandomUUID() + ".csv");
         FileUtils.createFile(file);
         System.out.println(TextTableFileCounter.class.getSimpleName() + " testfile: " + file.getAbsolutePath());
@@ -36,7 +35,7 @@ public class TextTableFileCounterTest {
     }
 
     @Test
-    public void testCalcTextFileLinesFile() throws IOException {
+    public void testCalcTextFileLinesFile() throws Exception {
         EasyBeanContext context = new EasyBeanContext();
         ThreadSource threadSource = context.getBean(ThreadSource.class);
         File file = this.createfile();
@@ -70,7 +69,7 @@ public class TextTableFileCounterTest {
     }
 
     @Test
-    public void testCountTextFileLinesFile() throws IOException {
+    public void testCountTextFileLinesFile() throws Exception {
         EasyBeanContext context = new EasyBeanContext();
         ThreadSource threadSource = context.getBean(ThreadSource.class);
         File file = createfile();
@@ -107,7 +106,7 @@ public class TextTableFileCounterTest {
     }
 
     @Test
-    public void test110() throws IOException {
+    public void test110() throws Exception {
         EasyBeanContext context = new EasyBeanContext();
         ThreadSource threadSource = context.getBean(ThreadSource.class);
         File file = new File(Settings.getUserHome(), "TEST_FILE_BIG.txt");

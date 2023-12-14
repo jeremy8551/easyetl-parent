@@ -1,15 +1,12 @@
 package icu.etl.database;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import icu.etl.collection.CaseSensitivSet;
 import icu.etl.util.Dates;
-import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 import org.junit.After;
@@ -125,7 +122,7 @@ public class JdbcUtilsTest {
         String tablename = "";
         JdbcDao dao = new JdbcDao(rule.getContext(), this.connection);
         try {
-            tablename = "test".toUpperCase() + Dates.format17(new Date());
+            tablename = "test".toUpperCase() + Dates.format17();
             dao.execute("create table " + tablename + "(f1 char(100) not null, f2 char(10), primary key(f1) ) ");
             dao.commit();
 
@@ -165,7 +162,7 @@ public class JdbcUtilsTest {
         try {
             assertTrue(dao.testConnection());
 
-            tablename = "test".toUpperCase() + Dates.format17(new Date());
+            tablename = "test".toUpperCase() + Dates.format17();
             dao.execute("create table " + tablename + "(f1 char(100) not null, f2 char(10), primary key(f1) ) ");
             dao.commit();
             dao.execute("create index " + tablename + "idx on " + tablename + "(f2)");
@@ -188,7 +185,7 @@ public class JdbcUtilsTest {
             assertTrue(dao.testConnection());
             System.out.println("finsih test ");
 
-            tablename = "test" + Dates.format17(new Date());
+            tablename = "test" + Dates.format17();
             dao.execute("create table " + tablename + "(f1 char(100), f2 char(10) ) ");
             dao.commit();
             System.out.println("finsih create table");
@@ -212,34 +209,6 @@ public class JdbcUtilsTest {
             } finally {
                 dao.close();
             }
-        }
-    }
-
-    /**
-     * 返回一个临时文件
-     *
-     * @return
-     */
-    public static File getFile() {
-        return getFile(null);
-    }
-
-    /**
-     * 使用指定用户名创建一个文件
-     *
-     * @param name
-     * @return
-     */
-    public static File getFile(String name) {
-        if (StringUtils.isBlank(name)) {
-            name = FileUtils.getFilenameRandom("testfile", "_tmp") + ".txt";
-        }
-
-        File dir = new File(FileUtils.getTempDir(FileUtils.class), "单元测试");
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new RuntimeException("创建目录 " + dir.getAbsolutePath() + " 失败!");
-        } else {
-            return new File(dir, name); // 返回一个临时文件信息
         }
     }
 

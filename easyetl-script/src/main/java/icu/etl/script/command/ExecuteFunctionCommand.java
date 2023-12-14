@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.script.UniversalCommandCompiler;
@@ -34,7 +32,7 @@ public class ExecuteFunctionCommand extends AbstractTraceCommand implements Nohu
         this.parameters = parameters;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String str = analysis.trim(analysis.replaceShellVariable(session, context, this.parameters, false, true, true, false), 0, 1);
         List<String> list = analysis.split(str);
@@ -70,10 +68,9 @@ public class ExecuteFunctionCommand extends AbstractTraceCommand implements Nohu
      * @param body        自定义方法内容
      * @param args        自定义方法的参数, 第一个值是方法名, 从第二个值开始是方法参数
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body, String[] args) throws IOException, SQLException {
+    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body, String[] args) throws Exception {
         try {
             if (session.isTerminate()) {
                 return UniversalScriptCommand.TERMINATE;
@@ -120,7 +117,7 @@ public class ExecuteFunctionCommand extends AbstractTraceCommand implements Nohu
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.command != null) {
             this.command.terminate();
         }

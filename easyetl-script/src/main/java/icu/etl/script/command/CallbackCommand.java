@@ -73,7 +73,7 @@ public class CallbackCommand extends AbstractGlobalCommand implements LoopComman
             return true;
         }
 
-        public void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws IOException, SQLException {
+        public void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception {
             if (result.getExitcode() != 0) { // 如果上一个命令返回值是非0
                 return;
             } else if (command instanceof CallbackCommandSupported) {

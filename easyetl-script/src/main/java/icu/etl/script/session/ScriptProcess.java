@@ -9,7 +9,7 @@ import icu.etl.script.UniversalScriptCommand;
 import icu.etl.util.Ensure;
 
 /**
- * 子进程信息
+ * 子线程信息
  *
  * @author jeremy8551@qq.com
  */

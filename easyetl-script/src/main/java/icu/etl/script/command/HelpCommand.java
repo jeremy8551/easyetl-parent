@@ -227,7 +227,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         } else {
             String classpath = ClassUtils.getClasspath(JavaDialect.class);
             String packageName = JavaDialect.class.getPackage().getName().replace('.', File.separatorChar);
-            File dir = new File(FileUtils.joinFilepath(classpath, packageName));
+            File dir = new File(FileUtils.joinPath(classpath, packageName));
 
             File[] files = FileUtils.array(dir.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {

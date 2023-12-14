@@ -96,7 +96,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
         this.attrs = attributes;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.hasJob(session, context, stdout, stderr, null)) {
             if (session.isEchoEnable() || forceStdout) {
                 String newTarget = FileUtils.replaceFolderSeparator(this.dataTarget);
@@ -105,7 +105,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
                 stdout.println(analysis.replaceShellVariable(session, context, newCommand, true, true, true, true));
             }
 
-            int value = context.getEngine().eval(this.engine, stdout, stderr);
+            int value = this.engine.execute();
             return this.engine.isTerminate() ? UniversalScriptCommand.TERMINATE : (value == 0 ? 0 : UniversalScriptCommand.COMMAND_ERROR);
         } else {
             return UniversalScriptCommand.COMMAND_ERROR;
@@ -121,18 +121,22 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
     public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
         if (this.engine == null) {
             this.engine = new ExportEngine(context.getFactory().getContext());
-//            this.executor.getLogger().setStdout(stdout);
-//            this.executor.getLogger().setStderr(stderr);
 
             UniversalScriptAnalysis analysis = session.getAnalysis();
             String newTarget = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.dataTarget, true, true, true, false));
             String dataType = analysis.replaceShellVariable(session, context, this.dataType, true, true, true, false);
             String dataSource = analysis.replaceShellVariable(session, context, this.dataSource, true, true, true, true);
             CommandAttribute attribute = this.attrs.clone(session, context);
-
             TextTableFile format = context.getContainer().getBean(TextTableFile.class, dataType, attribute);
+
+            // 消息文件
             String messagefilepath = attribute.getAttribute("message");
-            File msgfile = FileUtils.createFile(messagefilepath, 3, "messagefile", "export");
+            File messagefile = null;
+            if (StringUtils.isNotBlank(messagefilepath)) {
+                messagefile = new File(messagefilepath);
+                FileUtils.assertCreateFile(messagefile);
+            }
+
             JdbcConverterMapper mapper = new StandardJdbcConverterMapper(attribute.getAttribute("convert"), String.valueOf(analysis.getSegment()), String.valueOf(analysis.getMapdel()));
             UserListenerList listeners = new UserListenerList(context.getFactory().getContext(), attribute.getAttribute("listener"));
 
@@ -142,7 +146,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             cxt.setSource(dataSource);
             cxt.setFormat(format);
             cxt.setConverters(mapper);
-            cxt.setMessagefile(msgfile);
+            cxt.setMessagefile(messagefile);
             cxt.setListener(listeners);
             cxt.setAppend(attribute.contains("append"));
             cxt.setCacheLines(attribute.contains("writebuf") ? attribute.getIntAttribute("writebuf") : 100);

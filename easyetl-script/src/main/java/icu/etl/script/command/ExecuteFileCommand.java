@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptContext;
@@ -29,7 +27,7 @@ public class ExecuteFileCommand extends AbstractTraceCommand implements NohupCom
         this.filepath = filepath;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext parent, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext parent, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         String charsetName = parent.getCharsetName();
         ScriptFileExpression file = new ScriptFileExpression(session, parent, this.filepath);
 
@@ -62,10 +60,9 @@ public class ExecuteFileCommand extends AbstractTraceCommand implements NohupCom
      * @param file        脚本文件表达式
      * @param charsetName 脚本文件字符集
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    public int execute(UniversalScriptSession session, UniversalScriptEngine engine, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, ScriptFileExpression file, String charsetName) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptEngine engine, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, ScriptFileExpression file, String charsetName) throws Exception {
         this.session = session.subsession();
         try {
             this.session.setScriptFile(file); // 设置脚本文件
@@ -83,7 +80,7 @@ public class ExecuteFileCommand extends AbstractTraceCommand implements NohupCom
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.session != null) {
             this.session.terminate();
         }

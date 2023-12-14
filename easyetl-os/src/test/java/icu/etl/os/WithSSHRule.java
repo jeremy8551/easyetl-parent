@@ -1,10 +1,10 @@
 package icu.etl.os;
 
+import javax.script.SimpleBindings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Properties;
-import javax.script.SimpleBindings;
 
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
@@ -112,8 +112,8 @@ public class WithSSHRule implements TestRule {
             String dbusername = p.getProperty("database.admin");
             String dbuserpass = p.getProperty("database.adminPw");
 
-            this.put("curr_dir_path", FileUtils.joinFilepath(ClassUtils.getClasspath(WithSSHRule.class), "script"));
-            this.put("temp", FileUtils.getTempDir(WithDBConfig.class).getAbsolutePath());
+            this.put("curr_dir_path", FileUtils.joinPath(ClassUtils.getClasspath(WithSSHRule.class), "script"));
+            this.put("temp", FileUtils.getTempDir("test", WithDBConfig.class.getSimpleName()).getAbsolutePath());
             this.put("databaseDriverName", driverClassname);
             this.put("databaseUrl", jdbcUrl);
             this.put("username", dbusername);

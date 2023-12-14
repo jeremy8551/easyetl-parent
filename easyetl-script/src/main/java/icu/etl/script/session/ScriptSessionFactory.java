@@ -1,7 +1,5 @@
 package icu.etl.script.session;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
@@ -47,7 +45,7 @@ public class ScriptSessionFactory implements UniversalScriptSessionFactory {
         return false;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         Set<String> set = this.map.keySet();
         for (String id : set) { // 遍历脚本引擎中所有用户会话信息
             UniversalScriptSession session = this.map.get(id);
@@ -57,7 +55,7 @@ public class ScriptSessionFactory implements UniversalScriptSessionFactory {
         }
     }
 
-    public void terminate(String id) throws IOException, SQLException {
+    public void terminate(String id) throws Exception {
         UniversalScriptSession session = this.map.get(id);
         if (session != null) {
             session.terminate();

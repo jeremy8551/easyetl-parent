@@ -1,6 +1,5 @@
 package icu.etl.database.parallel;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +17,6 @@ import icu.etl.database.load.inernal.DataWriterFactory;
 import icu.etl.io.TextTableFile;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
-import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBean(name = "replace")
@@ -107,7 +105,7 @@ public class ParallelLoadFileEngine implements Loader, EasyContextAware {
 
             // 将任务添加到容齐中并行执行装数任务
             EasyJobService container = this.ioccxt.getBean(ThreadSource.class).getJobService(thread);
-            int error = container.execute(new EasyJobReaderImpl(in));
+            container.execute(new EasyJobReaderImpl(in));
 
             // 并行同时执行多个任务
             msg.setEndTime(new Date());
@@ -117,22 +115,18 @@ public class ParallelLoadFileEngine implements Loader, EasyContextAware {
             msg.setErrorRows(result.getErrorCount());
             msg.setSkipRows(result.getSkipCount());
 
-            if (error == 0) {
 //				for (LoaderListener listener : this.listeners) {
 //					listener.catchExecption(dao, txtfile, out);
 //				}
 
-                msg.setEndTime(new Date());
-                msg.setFileRange(null);
-                msg.setReadRows(result.getReadCount());
-                msg.setCommitRows(result.getCommitCount());
-                msg.setDeleteRows(result.getDeleteCount());
-                msg.setErrorRows(result.getErrorCount());
-                msg.setSkipRows(result.getSkipCount());
-                return result;
-            } else {
-                throw new IOException(ResourcesUtils.getLoadMessage(11));
-            }
+            msg.setEndTime(new Date());
+            msg.setFileRange(null);
+            msg.setReadRows(result.getReadCount());
+            msg.setCommitRows(result.getCommitCount());
+            msg.setDeleteRows(result.getDeleteCount());
+            msg.setErrorRows(result.getErrorCount());
+            msg.setSkipRows(result.getSkipCount());
+            return result;
         } finally {
             msg.store();
         }

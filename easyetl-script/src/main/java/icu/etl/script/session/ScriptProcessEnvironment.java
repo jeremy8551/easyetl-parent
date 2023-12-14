@@ -2,7 +2,7 @@ package icu.etl.script.session;
 
 import java.io.File;
 
-import icu.etl.concurrent.JobStatus;
+import icu.etl.concurrent.EasyJobStatus;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
@@ -33,14 +33,14 @@ public class ScriptProcessEnvironment {
     protected boolean forceStdout;
 
     /** 等待后台线程启动 */
-    protected JobStatus waitRun;
+    protected EasyJobStatus waitRun;
 
     /** 等待后台线程运行结束 */
-    protected JobStatus waitDone;
+    protected EasyJobStatus waitDone;
 
     public ScriptProcessEnvironment(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, File logfile) {
-        this.waitRun = new JobStatus();
-        this.waitDone = new JobStatus();
+        this.waitRun = new EasyJobStatus();
+        this.waitDone = new EasyJobStatus();
         this.session = session;
         this.context = context;
         this.stdout = stdout;
@@ -78,11 +78,11 @@ public class ScriptProcessEnvironment {
         return forceStdout;
     }
 
-    public JobStatus getWaitRun() {
+    public EasyJobStatus getWaitRun() {
         return waitRun;
     }
 
-    public JobStatus getWaitDone() {
+    public EasyJobStatus getWaitDone() {
         return waitDone;
     }
 

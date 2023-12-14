@@ -1,13 +1,13 @@
 package icu.etl.script;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import icu.etl.cn.ChineseRandom;
 import icu.etl.io.BufferedLineWriter;
@@ -20,15 +20,15 @@ import org.junit.Test;
 public class IncrementScriptTest {
 
     public synchronized File[] getTempFiles(int rows) throws IOException {
-        File tempDir = FileUtils.getTempDir(IncrementScriptTest.class);
+        File tempDir = FileUtils.getTempDir("test", IncrementScriptTest.class.getSimpleName());
 
-        File newfile = FileUtils.getFileNoRepeat(tempDir, "NEWFILE.txt");
+        File newfile = FileUtils.allocate(tempDir, "NEWFILE.txt");
         FileUtils.createFile(newfile);
 
-        File oldfile = FileUtils.getFileNoRepeat(tempDir, "OLDFILE.txt");
+        File oldfile = FileUtils.allocate(tempDir, "OLDFILE.txt");
         FileUtils.createFile(oldfile);
 
-        File resultfile = FileUtils.getFileNoRepeat(tempDir, "RESULT.txt");
+        File resultfile = FileUtils.allocate(tempDir, "RESULT.txt");
         FileUtils.createFile(resultfile);
 
         Date start = Dates.parse("1960-01-01");

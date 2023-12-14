@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import icu.etl.concurrent.AbstractJob;
@@ -96,9 +95,9 @@ public class TableFileSorter implements Terminate {
      * @param file    数据文件
      * @param orders  排序字段表达式数组
      * @return 排序后的文件
-     * @throws IOException
+     * @throws Exception 发生错误
      */
-    public synchronized File sort(EasyContext context, TextTableFile file, String... orders) throws IOException {
+    public synchronized File sort(EasyContext context, TextTableFile file, String... orders) throws Exception {
         Analysis analysis = new StandardAnalysis();
         OrderByExpression[] array = new OrderByExpression[orders.length];
         for (int i = 0; i < orders.length; i++) {
@@ -113,9 +112,9 @@ public class TableFileSorter implements Terminate {
      * @param file   数据文件
      * @param orders 排序字段表达式数组
      * @return 排序后的文件
-     * @throws IOException
+     * @throws Exception 发生错误
      */
-    public synchronized File sort(TextTableFile file, OrderByExpression... orders) throws IOException {
+    public synchronized File sort(TextTableFile file, OrderByExpression... orders) throws Exception {
         if (file == null) {
             throw new NullPointerException();
         }
@@ -165,7 +164,7 @@ public class TableFileSorter implements Terminate {
                 throw new IOException(ResourcesUtils.getIoxMessage(16, oldfile.getAbsolutePath()));
             }
         } else { // 保留排序前的文件
-            String newfilename = FileUtils.getFilenameNoSuffix(oldfile.getName()) + ".bak" + Dates.format17(new Date()) + StringUtils.toRandomUUID();
+            String newfilename = FileUtils.getFilenameNoSuffix(oldfile.getName()) + ".bak" + Dates.format17() + StringUtils.toRandomUUID();
             File bakfile = new File(oldfile.getParentFile(), newfilename);
             if (!oldfile.renameTo(bakfile)) {
                 throw new IOException(ResourcesUtils.getIoxMessage(35, oldfile.getAbsolutePath(), bakfile.getAbsolutePath()));
@@ -216,11 +215,11 @@ public class TableFileSorter implements Terminate {
      * @param file     文件
      * @param listfile 清单文件(清单文件内容是所有临时文件的绝对路径，路径分隔符是回车或换行符)
      * @return 合并后的文件
-     * @throws IOException 访问文件错误
+     * @throws Exception 发生错误
      */
-    private synchronized File merge(TextTableFile file, File listfile) throws IOException {
+    private synchronized File merge(TextTableFile file, File listfile) throws Exception {
         while (true) {
-            long number = new TextTableFileCounter(this.context.getThreadSource(), this.context.getThreadNumber()).execute(listfile, file.getCharsetName());
+            long number = FileUtils.count(listfile, file.getCharsetName());
             if (number == 0) {
                 throw new IOException(ResourcesUtils.getIoxMessage(18, listfile.getAbsolutePath()));
             } else if (number == 1) {
@@ -248,7 +247,7 @@ public class TableFileSorter implements Terminate {
                         EasyJobService runner = threadSource.getJobService(this.context.getThreadNumber());
                         try {
                             this.observers.add(runner);
-                            runner.executeForce(new EasyJobReaderImpl(in));
+                            runner.execute(new EasyJobReaderImpl(in));
                         } finally {
                             this.observers.remove(runner);
                         }
@@ -296,7 +295,7 @@ public class TableFileSorter implements Terminate {
      * @throws IOException 访问文件错误
      */
     private static synchronized File toMergeFile(TextTableFile file) throws IOException {
-        String newfilename = FileUtils.getFilenameNoSuffix(file.getAbsolutePath()) + ".merge" + Dates.format17(new Date()) + StringUtils.toRandomUUID();
+        String newfilename = FileUtils.getFilenameNoSuffix(file.getAbsolutePath()) + ".merge" + Dates.format17() + StringUtils.toRandomUUID();
         File dir = new File(file.getAbsolutePath()).getParentFile();
         File mergefile = new File(dir, newfilename);
         if (mergefile.exists()) {
@@ -316,7 +315,7 @@ public class TableFileSorter implements Terminate {
      * @throws IOException
      */
     private static synchronized File toTempFile(String filepath) throws IOException {
-        String newfilename = FileUtils.getFilenameNoSuffix(filepath) + ".temp" + Dates.format17(new Date()) + StringUtils.toRandomUUID();
+        String newfilename = FileUtils.getFilenameNoSuffix(filepath) + ".temp" + Dates.format17() + StringUtils.toRandomUUID();
         File dir = new File(filepath).getParentFile();
         File file = new File(dir, newfilename);
         if (file.exists()) {

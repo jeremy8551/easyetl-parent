@@ -20,7 +20,7 @@ public class QuickTest {
      * 因为涉及到多线程计算，所以重复测试30次，防止出现并发问题
      */
     @Test
-    public void test() {
+    public void test() throws Exception {
         for (int i = 0; i < 30; i++) {
             this.run();
             log.info("");
@@ -29,7 +29,7 @@ public class QuickTest {
         }
     }
 
-    public void run() {
+    public void run() throws Exception {
         LogFactory.getContext().updateLevel("*", LogLevel.DEBUG);
         ThreadSourceImpl source = new ThreadSourceImpl();
         EasyJobService service = source.getJobService(5);
@@ -40,7 +40,7 @@ public class QuickTest {
             list.add(new Task(i + 1));
         }
 
-        service.executeForce(new EasyJobReaderImpl(list));
+        service.execute(new EasyJobReaderImpl(list));
         IO.close(source);
 
         Assert.assertEquals(0, service.getAliveJob());

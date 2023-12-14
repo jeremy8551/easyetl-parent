@@ -1,19 +1,16 @@
 package icu.etl.script;
 
-import java.io.CharArrayReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.Reader;
-import java.sql.SQLException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptException;
+import java.io.CharArrayReader;
+import java.io.Closeable;
+import java.io.Reader;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import icu.etl.concurrent.EasyJob;
 import icu.etl.script.internal.ScriptVariable;
 import icu.etl.script.session.ScriptMainProcess;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -53,12 +50,8 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
      * @param factory 脚本引擎工厂类
      */
     public UniversalScriptEngine(UniversalScriptEngineFactory factory) {
-        if (factory == null) {
-            throw new NullPointerException();
-        }
-
+        this.factory = Ensure.notNull(factory);
         this.memo = UniversalScriptEngine.class.getSimpleName() + "@" + StringUtils.toRandomUUID();
-        this.factory = factory;
         this.close = new AtomicBoolean(false);
         this.context = new UniversalScriptContext(this);
         this.sessionFactory = factory.buildSessionFactory();
@@ -150,7 +143,7 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
      * 将输入参数强制转换为脚本引擎上下文信息
      *
      * @param context 脚本引擎上下文信息
-     * @return
+     * @return 脚本引擎上下文信息
      */
     protected UniversalScriptContext castScriptContext(ScriptContext context) {
         if (context instanceof UniversalScriptContext) {
@@ -160,58 +153,41 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
         }
     }
 
-    /**
-     * 运行并发任务
-     *
-     * @param executor 并发任务
-     * @param stderr   标准信息输出流
-     * @param stderr   错误信息输出流
-     * @return 返回值, 0-正确 非0-错误
-     */
-    public int eval(EasyJob executor, UniversalScriptStdout stdout, UniversalScriptStderr stderr) {
-        try {
-            return executor.execute();
-        } catch (Exception e) {
-            stderr.println(executor.getName(), e);
-            return UniversalScriptCommand.COMMAND_ERROR;
-        }
-    }
-
-    public Integer eval(String script) throws ScriptException {
+    public Integer eval(String script) {
         CharArrayReader in = new CharArrayReader(script.toCharArray());
         return this.eval(in, this.context);
     }
 
-    public Integer eval(String script, ScriptContext scriptContext) throws ScriptException {
+    public Integer eval(String script, ScriptContext scriptContext) {
         CharArrayReader in = new CharArrayReader(script.toCharArray());
         return this.eval(in, this.castScriptContext(scriptContext));
     }
 
-    public Integer eval(String script, Bindings bindings) throws ScriptException {
+    public Integer eval(String script, Bindings bindings) {
         this.setBindings(bindings, UniversalScriptContext.ENGINE_SCOPE);
         CharArrayReader in = new CharArrayReader(script.toCharArray());
         return this.eval(in, this.context);
     }
 
-    public Integer eval(Reader in, Bindings bindings) throws ScriptException {
+    public Integer eval(Reader in, Bindings bindings) {
         this.setBindings(bindings, UniversalScriptContext.ENGINE_SCOPE);
         return this.eval(in, this.context);
     }
 
-    public Integer eval(Reader in) throws ScriptException {
+    public Integer eval(Reader in) {
         return this.eval(in, this.context);
     }
 
-    public Integer eval(Reader in, ScriptContext cxt) throws ScriptException {
-        UniversalScriptContext context = this.castScriptContext(cxt);
+    public Integer eval(Reader in, ScriptContext scriptContext) {
+        UniversalScriptContext context = this.castScriptContext(scriptContext);
         context.setReader(in);
 
         int value = -1;
         UniversalScriptSession session = this.sessionFactory.build();
         try {
             value = this.eval(session, context, context.getStdout(), context.getStderr(), false, in);
-        } catch (Exception e) {
-            throw new ScriptException(e);
+        } catch (Throwable e) {
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr146", session.getMainProcess().getErrorScript(), e.getLocalizedMessage()), e);
         } finally {
             session.close();
         }
@@ -219,7 +195,7 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
         if (value == 0) {
             return value;
         } else {
-            throw new ScriptException("return " + value);
+            throw new UniversalScriptException(String.valueOf(value));
         }
     }
 
@@ -233,10 +209,9 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param in          语句输入流
      * @return 返回0表示正确, 返回非0表示不正确
-     * @throws IOException  文件访问错误
-     * @throws SQLException 数据库错误
+     * @throws Exception 文件访问错误
      */
-    public int eval(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws IOException, SQLException {
+    public int eval(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws Exception {
         context.getCommandListeners().startScript(session, context, stdout, stderr, forceStdout, in);
         UniversalScriptCompiler oldCompiler = session.getCompiler(); // 保存当前使用的编译器
         UniversalScriptCommand command = null;
@@ -252,14 +227,12 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
                 resultSet = process.execute(session, context, stdout, stderr, forceStdout, command);
                 if (resultSet.isExitSession()) {
                     break;
-                } else {
-                    continue;
                 }
             }
 
             context.getCommandListeners().exitScript(session, context, stdout, stderr, forceStdout, command, resultSet);
             return resultSet.getExitcode();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             context.getCommandListeners().catchScript(session, context, stdout, stderr, forceStdout, command, resultSet, e);
             return UniversalScriptCommand.ERROR;
         } finally {

@@ -1,7 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,7 +59,7 @@ public class ForCommand extends AbstractCommand implements WithBodyCommandSuppor
         this.body = body;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String variableName = analysis.replaceShellVariable(session, context, this.name, true, true, true, false);
         String collection = analysis.replaceShellVariable(session, context, this.collection, true, true, true, true);
@@ -131,7 +129,7 @@ public class ForCommand extends AbstractCommand implements WithBodyCommandSuppor
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.command != null) {
             this.command.terminate();
         }

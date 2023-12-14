@@ -31,15 +31,15 @@ public class IncrementTest {
     private final static Log log = LogFactory.getLog(IncrementTest.class);
 
     public synchronized File[] getTempFiles(int rows) throws IOException {
-        File tempDir = FileUtils.getTempDir(IncrementTest.class);
+        File tempDir = FileUtils.getTempDir("test", IncrementTest.class.getSimpleName());
 
-        File newfile = FileUtils.getFileNoRepeat(tempDir, "NEWFILE.txt");
+        File newfile = FileUtils.allocate(tempDir, "NEWFILE.txt");
         FileUtils.createFile(newfile);
 
-        File oldfile = FileUtils.getFileNoRepeat(tempDir, "OLDFILE.txt");
+        File oldfile = FileUtils.allocate(tempDir, "OLDFILE.txt");
         FileUtils.createFile(oldfile);
 
-        File resultfile = FileUtils.getFileNoRepeat(tempDir, "RESULT.txt");
+        File resultfile = FileUtils.allocate(tempDir, "RESULT.txt");
         FileUtils.createFile(resultfile);
 
         Date start = Dates.parse("1960-01-01");
@@ -135,7 +135,7 @@ public class IncrementTest {
     }
 
     @Test
-    public void test() throws IOException {
+    public void test() throws Exception {
         EasyBeanContext ioc = new EasyBeanContext("debug:sout+");
         File[] files = this.getTempFiles(100000);
         File oldfile = files[0];

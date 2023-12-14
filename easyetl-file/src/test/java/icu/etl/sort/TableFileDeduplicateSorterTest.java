@@ -21,7 +21,7 @@ public class TableFileDeduplicateSorterTest {
 
     protected void createTestFile(TextTableFile file) throws IOException {
         TimeWatch watch = new TimeWatch();
-        File tmpfile = FileUtils.createTempfile(TableFileDeduplicateSorterTest.class, "txt");
+        File tmpfile = FileUtils.createTempFile(".txt");
         FileUtils.delete(tmpfile);
         FileUtils.createFile(tmpfile);
         file.setAbsolutePath(tmpfile.getAbsolutePath());
@@ -46,7 +46,7 @@ public class TableFileDeduplicateSorterTest {
     }
 
     @Test
-    public void test() throws IOException {
+    public void test() throws Exception {
         EasyBeanContext ioc = new EasyBeanContext("debug:sout+");
 
         TextTableFile file = ioc.getBean(TextTableFile.class, "txt");

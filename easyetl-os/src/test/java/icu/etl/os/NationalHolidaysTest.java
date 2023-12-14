@@ -28,7 +28,7 @@ public class NationalHolidaysTest {
         }
 
         EasyBeanContext context = rule.getContext();
-        File dir = FileUtils.getTempDir(NationalHolidaysTest.class);
+        File parent = FileUtils.getTempDir("test", NationalHolidaysTest.class.getSimpleName());
 
         String charsetName = StringUtils.CHARSET;
         String className = "USHolidays";
@@ -36,7 +36,7 @@ public class NationalHolidaysTest {
         System.out.println(uri);
         String source = new ByteBuffer().append(ClassUtils.getResourceAsStream(uri)).toString();
 
-        File javafile = new File(dir, className + ".java");
+        File javafile = new File(parent, className + ".java");
         System.out.println("javafile: " + javafile.getAbsolutePath());
         Assert.assertTrue(FileUtils.deleteFile(javafile));
         Assert.assertTrue(FileUtils.write(javafile, StringUtils.CHARSET, false, source));
@@ -46,7 +46,7 @@ public class NationalHolidaysTest {
         String testClassesDir = ClassUtils.getClasspath(NationalHolidaysTest.class);
         System.out.println("Test class dir: " + testClassesDir);
 
-        File classfile = new File(FileUtils.joinFilepath(testClassesDir, FileUtils.changeFilenameExt(uri, "class")));
+        File classfile = new File(FileUtils.joinPath(testClassesDir, FileUtils.changeFilenameExt(uri, "class")));
         FileUtils.delete(classfile);
         System.out.println("classes path: " + classfile.getAbsolutePath());
 

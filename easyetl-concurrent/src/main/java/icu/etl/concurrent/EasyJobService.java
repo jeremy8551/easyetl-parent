@@ -3,7 +3,7 @@ package icu.etl.concurrent;
 /**
  * 并发任务容器
  * <p>
- * 指定同时运行的并行任务个数，运行期会将并行任务提交到线程池中运行
+ * 可以指定并行运行的任务个数，运行器会将并发任务提交到线程池中运行
  *
  * @author jeremy8551@qq.com
  * @createtime 2023/11/28
@@ -21,24 +21,9 @@ public interface EasyJobService extends Terminate {
      * 运行任务，如果任务发生错误，则抛出异常
      *
      * @param in 任务输入流
+     * @throws Exception 发生错误
      */
-    void executeForce(EasyJobReader in);
-
-    /**
-     * 运行任务，如果任务发生错误，则抛出异常
-     *
-     * @param in  任务输入流
-     * @param out 错误信息输出流
-     */
-    void executeForce(EasyJobReader in, EasyJobWriter out);
-
-    /**
-     * 运行任务
-     *
-     * @param in 任务输入流
-     * @return 发生错误的任务个数
-     */
-    int execute(EasyJobReader in);
+    void execute(EasyJobReader in) throws Exception;
 
     /**
      * 执行任务
@@ -46,8 +31,9 @@ public interface EasyJobService extends Terminate {
      * @param in  并发任务的输入流
      * @param out 错误信息输出流
      * @return 返回发生错误的任务数, 返回0表示没有错误
+     * @throws Exception 发生错误
      */
-    int execute(EasyJobReader in, EasyJobWriter out);
+    int execute(EasyJobReader in, EasyJobWriter out) throws Exception;
 
     /**
      * 如果并发任务容器已进入休眠，则会唤醒容器

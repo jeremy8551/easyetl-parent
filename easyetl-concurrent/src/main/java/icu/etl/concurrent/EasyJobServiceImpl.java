@@ -6,6 +6,7 @@ import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
+import icu.etl.util.TimeWatch;
 
 /**
  * 接口的实现类
@@ -47,7 +48,7 @@ public class EasyJobServiceImpl implements EasyJobService {
     private ExecutorService service;
 
     /** 状态 */
-    private final JobStatus state = new JobStatus();
+    private final EasyJobStatus state = new EasyJobStatus();
 
     public EasyJobServiceImpl(String id, ExecutorService service, int count) {
         this.id = Ensure.notNull(id);
@@ -60,31 +61,22 @@ public class EasyJobServiceImpl implements EasyJobService {
         }
     }
 
-    public void executeForce(EasyJobReader in) {
+    public void execute(EasyJobReader in) throws Exception {
+        TimeWatch watch = new TimeWatch();
         EasyJobWriterImpl out = new EasyJobWriterImpl();
         int error = this.execute(in, out);
         if (error > 0) {
-            throw out.toException(ResourcesUtils.getMessage("concurrent.job.executor.finish.error", this.id, this.error.get()));
+            throw out.toException(ResourcesUtils.getMessage("concurrent.job.executor.finish.error", this.id, watch.useTime(), this.error.get()));
         }
     }
 
-    public void executeForce(EasyJobReader in, EasyJobWriter out) {
-        int error = this.execute(in, out);
-        if (error > 0) {
-            throw new EasyJobException(ResourcesUtils.getMessage("concurrent.job.executor.finish.error", this.id, this.error.get()));
-        }
-    }
-
-    public int execute(EasyJobReader in) {
-        return this.execute(in, null);
-    }
-
-    public synchronized int execute(EasyJobReader in, EasyJobWriter out) {
+    public synchronized int execute(EasyJobReader in, EasyJobWriter out) throws Exception {
         this.reader = Ensure.notNull(in);
         if (log.isDebugEnabled()) {
             log.debug(ResourcesUtils.getMessage("concurrent.job.executor.execute.message", this.id, this.count));
         }
 
+        TimeWatch watch = new TimeWatch();
         this.writer = out;
         this.alive = new EasyCounter(0);
         this.start = new EasyCounter(0);
@@ -135,13 +127,11 @@ public class EasyJobServiceImpl implements EasyJobService {
                 }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getMessage("concurrent.job.executor.finish.error", this.id, this.error.get()));
+                    log.debug(ResourcesUtils.getMessage("concurrent.job.executor.finish.error", this.id, watch.useTime(), this.error.get()));
                 }
             }
 
             return this.error.get();
-        } catch (Throwable e) {
-            throw new EasyJobException(e.getLocalizedMessage(), e);
         } finally {
             this.reader = null;
             this.writer = null;
@@ -196,10 +186,14 @@ public class EasyJobServiceImpl implements EasyJobService {
      * @param message 错误信息
      * @param e       异常信息
      */
-    public void writeError(String name, String message, Throwable e) {
+    public void writeError(String name, String message, Exception e) {
         this.error.incrementAndGet();
         if (this.writer != null) {
             this.writer.addError(name, message, e);
+        } else {
+            if (log.isErrorEnabled()) {
+                log.error(message, e);
+            }
         }
     }
 

@@ -16,7 +16,7 @@ public class StandardFilePrinterTest {
      * @return
      */
     public File createfile() throws IOException {
-        File dir = FileUtils.getTempDir(StandardFilePrinter.class);
+        File dir = FileUtils.getTempDir("test", StandardFilePrinter.class.getSimpleName());
         FileUtils.createDirectory(dir);
         File file = new File(dir, StandardFilePrinter.class.getSimpleName() + StringUtils.toRandomUUID() + ".log");
         FileUtils.createFile(file);

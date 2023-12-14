@@ -1,5 +1,6 @@
 package icu.etl.zip;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -36,39 +37,14 @@ import java.util.List;
  * @author jeremy8551@qq.com
  * @createtime 2014-07-23 16:21:38
  */
-public interface Compress extends java.io.Closeable {
-
-    /**
-     * zip文件格式
-     */
-    public final static String ZIP_FORMAT_FILE = "ZIP";
-
-    /**
-     * tar文件格式
-     */
-    public final static String TAR_FORMAT_FILE = "TAR";
-
-    /**
-     * rar文件格式
-     */
-    public final static String RAR_FORMAT_FILE = "RAR";
-
-    /**
-     * tar.gz 文件格式
-     */
-    public final static String TARGZ_FORMAT_FILE = "TAR.GZ";
-
-    /**
-     * .gz 文件格式
-     */
-    public final static String GZ_FORMAT_FILE = "GZ";
+public interface Compress extends Closeable {
 
     /**
      * 设置压缩文件
      *
-     * @param file
+     * @param file 压缩文件
      */
-    void setFile(File file);
+    void setFile(File file) throws IOException;
 
     /**
      * 把文件或目录压缩添加到压缩文件的指定目录（默认使用file.encoding字符集作为默认字符集）
@@ -77,28 +53,28 @@ public interface Compress extends java.io.Closeable {
      * @param dir  文件在压缩文件中的目录 <br>
      *             null或空字符串表zip文件的根目录 <br>
      *             字符串的第一个字符不能是 ‘/’ 符号 <br>
-     * @throws IOException
+     * @throws IOException 文件访问错误
      */
     void archiveFile(File file, String dir) throws IOException;
 
     /**
      * 添加文件到压缩包中指定目录
      *
-     * @param file    文件
-     * @param dir     文件在压缩文件中的目录 <br>
-     *                null或空字符串表zip文件的根目录 <br>
-     *                字符串的第一个字符不能是 ‘/’ 符号 <br>
-     * @param charset 文件的字符集编码
-     * @throws IOException
+     * @param file        文件
+     * @param dir         文件在压缩文件中的目录 <br>
+     *                    null或空字符串表zip文件的根目录 <br>
+     *                    字符串的第一个字符不能是 ‘/’ 符号 <br>
+     * @param charsetName 文件的字符集编码
+     * @throws IOException 文件访问错误
      */
-    void archiveFile(File file, String dir, String charset) throws IOException;
+    void archiveFile(File file, String dir, String charsetName) throws IOException;
 
     /**
      * 解压压缩包到指定目录
      *
      * @param outputDir   解压目录
      * @param charsetName zip文件字符编码(如： UTF-8等)
-     * @throws IOException
+     * @throws IOException 文件访问错误
      */
     void extract(String outputDir, String charsetName) throws IOException;
 
@@ -108,7 +84,7 @@ public interface Compress extends java.io.Closeable {
      * @param outputDir   解压目录
      * @param charsetName zip文件字符编码(如： UTF-8等)
      * @param entryName   entry名（如：zipfile/test.txt）
-     * @throws IOException
+     * @throws IOException 文件访问错误
      */
     void extract(String outputDir, String charsetName, String entryName) throws IOException;
 
@@ -118,17 +94,17 @@ public interface Compress extends java.io.Closeable {
      * @param charsetName 文件字符集
      * @param filename    文件名
      * @param ignoreCase  true忽略文件名的大小写
-     * @return
+     * @return 集合
      */
-    List<?> getEntrys(String charsetName, String filename, boolean ignoreCase);
+    List<?> getEntrys(String charsetName, String filename, boolean ignoreCase) throws IOException;
 
     /**
      * 删除压缩包中的文件
      *
      * @param charsetName 文件字符集
      * @param entryName   待删除文件名（如： cshi/SEC.sql）
-     * @return
-     * @throws IOException
+     * @return 返回true表示操作成功 false表示操作失败
+     * @throws IOException 文件访问错误
      */
     boolean removeEntry(String charsetName, String... entryName) throws IOException;
 
@@ -138,9 +114,9 @@ public interface Compress extends java.io.Closeable {
     void terminate();
 
     /**
-     * 返回 true 表示已终止操作
+     * 终止操作
      *
-     * @return
+     * @return 返回true表示已终止操作 false表示还未执行终止操作
      */
     boolean isTerminate();
 

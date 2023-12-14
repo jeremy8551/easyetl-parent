@@ -53,11 +53,8 @@ public class EasyJobServiceTask implements Runnable, Terminate {
 
         try {
             this.job.execute();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             String message = ResourcesUtils.getMessage("concurrent.job.executor.finish.right3", this.job.getName(), watch.useTime());
-            if (log.isErrorEnabled()) {
-                log.error(message, e);
-            }
             this.service.writeError(this.job.getName(), message, e);
         } finally {
             if (log.isDebugEnabled()) {

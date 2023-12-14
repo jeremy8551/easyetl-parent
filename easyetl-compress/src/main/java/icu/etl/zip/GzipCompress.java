@@ -14,8 +14,8 @@ import icu.apache.ant.tar.TarEntry;
 import icu.etl.annotation.EasyBean;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
-import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 
 /**
@@ -46,6 +46,9 @@ public class GzipCompress implements Compress {
     public GzipCompress() {
     }
 
+    /**
+     * 初始化操作
+     */
     protected void initBuffer() {
         if (this.buffer == null) {
             this.buffer = new byte[512];
@@ -55,16 +58,24 @@ public class GzipCompress implements Compress {
     public void archiveFile(File file, String dir) throws IOException {
         if (file.isFile()) {
             this.gzipFile(file, this.gzipFile, true);
-        } else if (file.isDirectory()) {
+            return;
+        }
+
+        if (file.isDirectory()) {
             this.gzipDir(file, this.gzipFile, true, true);
+            return;
         }
     }
 
-    public void archiveFile(File file, String dir, String charset) throws IOException {
+    public void archiveFile(File file, String dir, String charsetName) throws IOException {
         if (file.isFile()) {
             this.gzipFile(file, this.gzipFile, true);
-        } else if (file.isDirectory()) {
+            return;
+        }
+
+        if (file.isDirectory()) {
             this.gzipDir(file, this.gzipFile, true, true);
+            return;
         }
     }
 
@@ -75,16 +86,15 @@ public class GzipCompress implements Compress {
      * @param gzipDir 文件压缩后存储的目录，如果为null表示存储在文件所在的目录
      * @param delete  true表示压缩文件后删除原文件
      * @param loop    true表示循环遍历压缩目录下的所有文件 false表示只压缩目录下一级文件
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     public void gzipDir(File dir, File gzipDir, boolean delete, boolean loop) throws IOException {
-        if (!dir.isDirectory() || !dir.exists()) {
-            throw new RuntimeException(gzipDir.getAbsolutePath() + " invalid!");
-        }
+        FileUtils.assertDirectory(dir);
+
         if (gzipDir == null) {
             gzipDir = dir;
         } else {
-            FileUtils.createDirectory(gzipDir);
+            FileUtils.assertCreateDirectory(gzipDir);
         }
 
         File[] files = FileUtils.array(dir.listFiles());
@@ -95,7 +105,7 @@ public class GzipCompress implements Compress {
 
             if (file.isFile() && file.canRead()) {
                 File gz = new File(gzipDir, file.getName() + ".gz");
-                FileUtils.createFile(gz);
+                FileUtils.assertCreateFile(gz);
                 this.gzipFile(file, gz, delete);
                 continue;
             }
@@ -113,15 +123,13 @@ public class GzipCompress implements Compress {
      * @param file     待压缩文件
      * @param gzipFile 压缩后 gz 文件; 为null默认为 file文件同级目录
      * @param delete   true表示压缩文件后删除原文件
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     public void gzipFile(File file, File gzipFile, boolean delete) throws IOException {
-        FileUtils.createFile(gzipFile);
-        FileUtils.checkPermission(file, true, false);
+        FileUtils.assertCreateFile(gzipFile);
+
         if (gzipFile == null) {
             gzipFile = new File(file.getParentFile(), file.getName() + ".gz");
-        } else {
-            FileUtils.checkPermission(gzipFile, true, true);
         }
 
         if (log.isDebugEnabled()) {
@@ -132,22 +140,24 @@ public class GzipCompress implements Compress {
             }
         }
 
-        BufferedInputStream in = null;
-        BufferedOutputStream out = null;
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         try {
-            in = new BufferedInputStream(new FileInputStream(file));
-            out = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(gzipFile)));
-            this.initBuffer();
-            int count = -1;
-            while (!this.terminate && (count = in.read(this.buffer)) != -1) {
-                out.write(this.buffer, 0, count);
+            BufferedOutputStream out = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(gzipFile)));
+            try {
+                this.initBuffer();
+                int len;
+                while (!this.terminate && (len = in.read(this.buffer)) != -1) {
+                    out.write(this.buffer, 0, len);
+                }
+            } finally {
+                out.close();
             }
         } finally {
-            IO.close(out, in);
+            in.close();
         }
 
         if (delete) {
-            file.delete();
+            FileUtils.delete(file);
         }
     }
 
@@ -159,23 +169,14 @@ public class GzipCompress implements Compress {
         this.gunzipFile(this.gzipFile, new File(outputDir), null, true);
     }
 
-    /**
-     * 解压目录中的gz文件
-     *
-     * @param gzipDir
-     * @param dir
-     * @param delete
-     * @param loop
-     * @throws IOException
-     */
+    // 解压目录中的gz文件
     public void gunzipDir(File gzipDir, File dir, boolean delete, boolean loop) throws IOException {
-        if (!gzipDir.isDirectory() || !gzipDir.exists()) {
-            throw new RuntimeException(gzipDir.getAbsolutePath() + " invalid!");
-        }
+        FileUtils.assertDirectory(gzipDir);
+
         if (dir == null) {
             dir = gzipDir;
         } else {
-            FileUtils.createDirectory(dir);
+            FileUtils.assertCreateDirectory(dir);
         }
 
         File[] files = FileUtils.array(gzipDir.listFiles());
@@ -201,21 +202,20 @@ public class GzipCompress implements Compress {
      *
      * @param gzipFile gz文件
      * @param dir      解压后的目录
-     * @param fileName 解压后文件名（null表示默认名）
+     * @param filename 解压后文件名（null表示使用默认的文件名）
      * @param delete   true表示解压后删除gz文件
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
-    public void gunzipFile(File gzipFile, File dir, String fileName, boolean delete) throws IOException {
-        FileUtils.checkPermission(gzipFile, true, false);
+    public void gunzipFile(File gzipFile, File dir, String filename, boolean delete) throws IOException {
         if (dir == null) {
             dir = gzipFile.getParentFile();
         }
-        if (StringUtils.isBlank(fileName)) {
-            fileName = FileUtils.getFilenameNoExt(gzipFile.getName());
+        if (StringUtils.isBlank(filename)) {
+            filename = FileUtils.getFilenameNoExt(gzipFile.getName());
         }
-        FileUtils.createDirectory(dir);
-        File file = new File(dir, fileName);
 
+        FileUtils.assertCreateDirectory(dir);
+        File file = new File(dir, filename);
         if (log.isDebugEnabled()) {
             if (gzipFile.getParentFile().equals(dir)) {
                 log.debug("gunzip file: " + gzipFile.getAbsolutePath() + " ..");
@@ -224,12 +224,11 @@ public class GzipCompress implements Compress {
             }
         }
 
-        GZIPInputStream gis = null;
+        GZIPInputStream in = new GZIPInputStream(new FileInputStream(gzipFile));
         try {
-            gis = new GZIPInputStream(new FileInputStream(gzipFile));
-            this.gunzip(gis, file);
+            this.gunzip(in, file);
         } finally {
-            IO.close(gis);
+            in.close();
         }
 
         if (delete) {
@@ -238,14 +237,13 @@ public class GzipCompress implements Compress {
     }
 
     public void gunzip(GZIPInputStream in, File file) throws IOException {
-        BufferedOutputStream out = null;
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
         try {
-            out = new BufferedOutputStream(new FileOutputStream(file));
             this.initBuffer();
-            int count = -1;
-            while ((count = in.read(this.buffer)) != -1) {
-                out.write(this.buffer, 0, count);
+            for (int len; (len = in.read(this.buffer)) != -1; ) {
+                out.write(this.buffer, 0, len);
             }
+            out.flush();
         } finally {
             out.close();
         }

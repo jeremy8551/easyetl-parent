@@ -24,12 +24,12 @@ public class SortByRepeat1_Test {
     private final static Log log = LogFactory.getLog(SortByRepeat1_Test.class);
 
     @Test
-    public void test() throws IOException {
+    public void test() throws Exception {
         TimeWatch watch = new TimeWatch();
         EasyBeanContext ioc = new EasyBeanContext("debug:sout+");
         TextTableFile txt = ioc.getBean(TextTableFile.class, "txt");
 
-        File tmpfile = FileUtils.createTempfile(SortByRepeat1_Test.class, "txt");
+        File tmpfile = FileUtils.createTempFile(".txt");
         FileUtils.delete(tmpfile);
         FileUtils.createFile(tmpfile);
         txt.setAbsolutePath(tmpfile.getAbsolutePath());

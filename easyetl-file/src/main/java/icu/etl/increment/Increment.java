@@ -1,8 +1,6 @@
 package icu.etl.increment;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -11,13 +9,13 @@ import icu.etl.io.CommonTextTableFileReaderListener;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableFileWriter;
-import icu.etl.io.TextTableLine;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.printer.Progress;
 import icu.etl.sort.OrderByExpression;
 import icu.etl.sort.TableFileDeduplicateSorter;
 import icu.etl.sort.TableFileSortContext;
+import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.TimeWatch;
 
@@ -37,16 +35,15 @@ public class Increment extends AbstractJob {
      * 初始化
      *
      * @param context 上下文信息
-     * @throws IOException 访问文件错误
      */
-    public Increment(IncrementContext context) throws IOException {
+    public Increment(IncrementContext context) {
         super();
         new IncrementContextValidator(context);
         this.context = context;
         this.setName(context.getName());
     }
 
-    public int execute() throws IOException {
+    public int execute() throws Exception {
         TimeWatch watch = new TimeWatch();
         TextTableFile oldfile = this.context.getOldFile();
         TextTableFile newfile = this.context.getNewFile();
@@ -82,9 +79,8 @@ public class Increment extends AbstractJob {
                 TableFileDeduplicateSorter tfs = new TableFileDeduplicateSorter(newfileCxt);
                 try {
                     this.status.add(tfs);
-                    OrderByExpression[] orders = this.valueOf(position.getNewIndexPosition(), comparator, true);
+                    OrderByExpression[] orders = this.valueOf(position.getNewIndexPosition(), comparator);
                     afterSortNewfile = tfs.execute(newfile, orders);
-//                    this.check(newfileCxt, newfile, afterSortNewfile, orders);
                 } finally {
                     this.status.remove(tfs);
                 }
@@ -94,9 +90,8 @@ public class Increment extends AbstractJob {
                 TableFileDeduplicateSorter tfs = new TableFileDeduplicateSorter(oldfileCxt);
                 try {
                     this.status.add(tfs);
-                    OrderByExpression[] orders = this.valueOf(position.getOldIndexPosition(), comparator, true);
+                    OrderByExpression[] orders = this.valueOf(position.getOldIndexPosition(), comparator);
                     afterSortOldfile = tfs.execute(oldfile, orders);
-//                    this.check(oldfileCxt, oldfile, afterSortOldfile, orders);
                 } finally {
                     this.status.remove(tfs);
                 }
@@ -133,74 +128,18 @@ public class Increment extends AbstractJob {
 
             // 排序后的文件与源文件路径不同，删除排序后的文件
             if (!afterSortOldfile.equals(beforeSortOldfile) && beforeSortOldfile.exists()) {
-                afterSortOldfile.delete();
+                FileUtils.deleteFile(afterSortOldfile);
             }
             if (!afterSortNewfile.equals(beforeSortNewfile) && beforeSortNewfile.exists()) {
-                afterSortNewfile.delete();
+                FileUtils.deleteFile(afterSortNewfile);
             }
         }
     }
 
-    /**
-     * 检查表格型文件中是否有重复数据
-     *
-     * @param cxt       上下文信息
-     * @param tableFile 数据文件（需要排序的文件）
-     * @param sortfile  排序后的文件
-     * @param array     唯一索引字段
-     * @throws IOException 有重复数据时抛出异常
-     */
-    public void check(TableFileSortContext cxt, TextTableFile tableFile, File sortfile, OrderByExpression... array) throws IOException {
-        String[] indexs = new String[array.length];
-        Arrays.fill(indexs, "");
-
-        TextTableFile clone = tableFile.clone();
-        clone.setAbsolutePath(sortfile.getAbsolutePath());
-        TextTableFileReader in = clone.getReader(cxt.getReaderBuffer());
-        try {
-            String ls = "";
-            TextTableLine line;
-            while ((line = in.readLine()) != null) {
-                boolean equals = true;
-                for (int i = 0; i < array.length; i++) {
-                    OrderByExpression field = array[i];
-                    String value = line.getColumn(field.getPosition());
-                    if (!indexs[i].equals(value)) {
-                        equals = false;
-                    }
-                }
-
-                if (equals) {
-                    StringBuilder buf = new StringBuilder(100);
-                    buf.append("数据文件剥离增量失败!\n");
-                    buf.append("数据文件: ").append(sortfile.getAbsolutePath()).append('\n');
-                    buf.append("唯一索引: ");
-                    for (int i = 0; i < array.length; i++) {
-                        OrderByExpression field = array[i];
-                        buf.append("第").append(field.getPosition()).append("个字段");//.append(':').append(indexs[i]);
-                        if (i < array.length - 1) {
-                            buf.append(", ");
-                        }
-                    }
-                    buf.append('\n');
-//                    buf.append("重复数据: \n").append(ls).append('\n').append(line.getContent());
-                    throw new IOException(buf.toString());
-                } else {
-                    ls = line.getContent();
-                    for (int i = 0; i < array.length; i++) {
-                        indexs[i] = line.getColumn(array[i].getPosition());
-                    }
-                }
-            }
-        } finally {
-            in.close();
-        }
-    }
-
-    private OrderByExpression[] valueOf(int[] positions, Comparator<String> comparator, boolean asc) {
+    private OrderByExpression[] valueOf(int[] positions, Comparator<String> comparator) {
         OrderByExpression[] array = new OrderByExpression[positions.length];
         for (int i = 0; i < positions.length; i++) {
-            array[i] = new OrderByExpression(positions[i], comparator, asc);
+            array[i] = new OrderByExpression(positions[i], comparator, true);
         }
         return array;
     }
@@ -208,7 +147,7 @@ public class Increment extends AbstractJob {
     /**
      * 返回剥离增量任务的上下文信息
      *
-     * @return
+     * @return 上下文信息
      */
     public IncrementContext getContext() {
         return context;

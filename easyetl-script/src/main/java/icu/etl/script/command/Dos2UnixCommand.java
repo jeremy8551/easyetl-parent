@@ -31,9 +31,11 @@ public class Dos2UnixCommand extends AbstractTraceCommand implements JumpCommand
 
         String str = analysis.replaceShellVariable(session, context, this.value, true, true, true, false);
         if (FileUtils.isFile(str)) {
-            FileUtils.dos2unix(new File(str), context.getCharsetName());
+            FileUtils.dos2unix(new File(str), context.getCharsetName(), new File(session.getTempDir(), "dos2unix"));
         } else {
-            FileUtils.dos2unix(str);
+            if (session.isEchoEnable() || forceStdout) {
+                stdout.println(FileUtils.replaceLineSeparator(str, FileUtils.lineSeparatorUnix));
+            }
         }
         return 0;
     }

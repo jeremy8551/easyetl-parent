@@ -73,7 +73,7 @@ public class PSCommand extends AbstractTraceCommand implements NohupCommandSuppo
 //		table.addTitle(CharTable.ALIGN_RIGHT, "exitcode");
 //		table.addTitle("command");
 
-        // 打印主进程
+        // 打印主线程
         ScriptMainProcess mainProcess = session.getMainProcess();
         for (Iterator<UniversalScriptCommand> it = mainProcess.iterator(); it.hasNext(); ) {
             UniversalScriptCommand obj = it.next();
@@ -87,7 +87,7 @@ public class PSCommand extends AbstractTraceCommand implements NohupCommandSuppo
             table.addCell(obj.getScript());
         }
 
-        // 打印子进程
+        // 打印子线程
         ScriptSubProcess subProcess = session.getSubProcess();
         for (Iterator<ScriptProcess> it = subProcess.iterator(); it.hasNext(); ) {
             ScriptProcess obj = it.next();

@@ -1,8 +1,6 @@
 package icu.etl.script;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface UniversalScriptListener {
@@ -61,10 +59,9 @@ public interface UniversalScriptListener {
      * @param stderr
      * @param forceStdout
      * @param in
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws IOException, SQLException;
+    void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws Exception;
 
     /**
      * 脚本命令执行前的运行的业务逻辑
@@ -76,10 +73,9 @@ public interface UniversalScriptListener {
      * @param command
      * @return 返回 true 表示可以执行 {@linkplain UniversalScriptCommand#execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean)} 方法 <br>
      * 返回 false 表示跳过 {@linkplain UniversalScriptCommand#execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean)} 方法执行下一个命令
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws IOException, SQLException;
+    boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws Exception;
 
     /**
      * 脚本命令执行后运行的业务逻辑
@@ -91,10 +87,9 @@ public interface UniversalScriptListener {
      * @param forceStdout
      * @param command
      * @param result
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws IOException, SQLException;
+    void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception;
 
     /**
      * 脚本引擎命令执行抛出异常时运行的业务逻辑
@@ -107,10 +102,9 @@ public interface UniversalScriptListener {
      * @param command
      * @param result
      * @param e
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    void catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws IOException, SQLException;
+    void catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Exception e) throws Exception;
 
     /**
      * 脚本引擎命令执行抛出异常时运行的业务逻辑
@@ -123,10 +117,9 @@ public interface UniversalScriptListener {
      * @param command
      * @param result
      * @param e
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    void catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws IOException, SQLException;
+    void catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Exception e) throws Exception;
 
     /**
      * 退出脚本引擎前执行的业务逻辑
@@ -138,7 +131,8 @@ public interface UniversalScriptListener {
      * @param forceStdout
      * @param command
      * @param result
+     * @throws Exception
      */
-    void exitScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws IOException, SQLException;
+    void exitScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception;
 
 }

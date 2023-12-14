@@ -1,8 +1,8 @@
 package icu.etl.os;
 
+import javax.script.SimpleBindings;
 import java.io.File;
 import java.io.IOException;
-import javax.script.SimpleBindings;
 
 import icu.etl.crypto.MD5Encrypt;
 import icu.etl.io.BufferedLineWriter;
@@ -90,7 +90,8 @@ public class MD5ToolTest {
     }
 
     private File createfile() throws IOException {
-        File file = new File(FileUtils.getTempDir(this.getClass()), "md5testfile.txt");
+        File parent = FileUtils.getTempDir("test", this.getClass().getSimpleName());
+        File file = new File(parent, "md5testfile.txt");
         System.out.println("filepath: " + file.getAbsolutePath());
 
         BufferedLineWriter os = new BufferedLineWriter(file, StringUtils.CHARSET);

@@ -71,7 +71,7 @@ public class QuietCommand extends AbstractTraceCommand implements UniversalScrip
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.subcommand != null) {
             this.subcommand.terminate();
         }

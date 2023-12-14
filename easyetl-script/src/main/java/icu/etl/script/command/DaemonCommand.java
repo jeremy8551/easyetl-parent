@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptContext;
@@ -21,11 +19,11 @@ public class DaemonCommand extends ExecuteFileCommand {
         super(compiler, command, filepath);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext parent, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext parent, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         return super.execute(session, parent, stdout, stderr, forceStdout, outfile, errfile);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptEngine engine, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, ScriptFileExpression file, String charsetName) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptEngine engine, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, ScriptFileExpression file, String charsetName) throws Exception {
         try {
             return super.execute(session, engine, context, stdout, stderr, forceStdout, file, charsetName);
         } finally {
@@ -38,7 +36,7 @@ public class DaemonCommand extends ExecuteFileCommand {
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         super.terminate();
     }
 

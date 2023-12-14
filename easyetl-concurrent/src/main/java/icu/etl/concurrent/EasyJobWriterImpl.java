@@ -21,7 +21,7 @@ public class EasyJobWriterImpl implements EasyJobWriter {
     private List<String> taskNames;
 
     /** 异常集合 */
-    private List<Throwable> throwables;
+    private List<Exception> throwables;
 
     /**
      * 初始化
@@ -30,14 +30,14 @@ public class EasyJobWriterImpl implements EasyJobWriter {
         int size = 10;
         this.messages = new ArrayList<String>(size);
         this.taskNames = new ArrayList<String>(size);
-        this.throwables = new ArrayList<Throwable>(size);
+        this.throwables = new ArrayList<Exception>(size);
     }
 
     public boolean hasError() {
         return this.messages.size() > 0 || this.taskNames.size() > 0 || this.throwables.size() > 0;
     }
 
-    public void addError(String name, String message, Throwable e) {
+    public void addError(String name, String message, Exception e) {
         this.taskNames.add(name);
         this.messages.add(message);
         this.throwables.add(e);
@@ -60,7 +60,7 @@ public class EasyJobWriterImpl implements EasyJobWriter {
         return Collections.unmodifiableList(this.taskNames);
     }
 
-    public List<Throwable> getThrowables() {
+    public List<Exception> getThrowables() {
         return Collections.unmodifiableList(this.throwables);
     }
 
@@ -70,10 +70,9 @@ public class EasyJobWriterImpl implements EasyJobWriter {
      * @param message 错误信息
      * @return 异常信息
      */
-    public Throwables toException(String message) {
+    public Exception toException(String message) {
         Throwables es = new Throwables(message);
         for (int i = 0; i < this.taskNames.size(); i++) {
-//            String name = this.taskNames.get(i);
             String msg = this.messages.get(i);
             Throwable e = this.throwables.get(i);
             es.add(msg, e);

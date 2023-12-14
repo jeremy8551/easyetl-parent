@@ -15,7 +15,7 @@ public interface EasyJobWriter {
      * @param message 错误提示信息
      * @param e       异常信息
      */
-    void addError(String name, String message, Throwable e);
+    void addError(String name, String message, Exception e);
 
     /**
      * 判断是否有错误信息

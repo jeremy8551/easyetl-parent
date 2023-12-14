@@ -1,10 +1,11 @@
-package icu.etl.sort;
+package icu.etl.script;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import icu.etl.concurrent.ThreadSource;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
 import icu.etl.ioc.EasyBeanContext;
@@ -18,18 +19,20 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 文件中有重复数据，且重复数据所在行号是跨度比较大（需要在merge阶段检查重复数据）
+ * 增量剥离测试：第一个与最后一个字段作为联合唯一索引, 测试有重复数据时测试是否能正确抛出异常
  */
-public class SortByRepeat2_Test {
-    private final static Log log = LogFactory.getLog(SortByRepeat2_Test.class);
+public class IncrementScript1Test {
+    private final static Log log = LogFactory.getLog(IncrementScript1Test.class);
 
     @Test
     public void test() throws IOException {
         TimeWatch watch = new TimeWatch();
-        EasyBeanContext ioc = new EasyBeanContext("debug:sout+");
+        EasyBeanContext ioc = new EasyBeanContext("info:sout+");
         TextTableFile txt = ioc.getBean(TextTableFile.class, "txt");
 
-        File tmpfile = FileUtils.createTempFile(".txt");
+        File parent = FileUtils.getTempDir("test", IncrementScript1Test.class.getSimpleName());
+        FileUtils.assertClearDirectory(parent);
+        File tmpfile = FileUtils.createNewFile(parent, ".txt");
         FileUtils.delete(tmpfile);
         FileUtils.createFile(tmpfile);
         txt.setAbsolutePath(tmpfile.getAbsolutePath());
@@ -81,37 +84,57 @@ public class SortByRepeat2_Test {
         //
         // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        File txtfile = new File(txt.getAbsolutePath());
-        File bakfile = new File(txtfile.getParentFile(), FileUtils.changeFilenameExt(txtfile.getName(), "bak"));
-        Assert.assertTrue(FileUtils.deleteFile(bakfile));
-        Assert.assertTrue(FileUtils.copy(txtfile, bakfile));
+        int column = txt.countColumn(); // 总列数
 
-        TableFileSortContext context = new TableFileSortContext();
-        context.setThreadSource(ioc.getBean(ThreadSource.class));
-        context.setFileCount(2);
-        context.setThreadNumber(2);
-        context.setDeleteFile(true);
-        context.setKeepSource(true);
-        context.setReaderBuffer(1024 * 1024 * 100);
-        context.setWriterBuffer(1024 * 1024 * 100);
-        context.setMaxRows(1000);
-        context.setWriterBuffer(800);
-        context.setRemoveLastField(false);
+        File newfile = FileUtils.allocate(tmpfile.getParentFile(), "NEWFILE.txt");
+        File oldfile = FileUtils.allocate(tmpfile.getParentFile(), "OLDFILE.txt");
 
-        TableFileDeduplicateSorter sorter = new TableFileDeduplicateSorter(context);
+        Assert.assertTrue(FileUtils.copy(tmpfile, newfile));
+        Assert.assertTrue(FileUtils.copy(tmpfile, oldfile));
+        FileUtils.assertDelete(tmpfile);
+
+        File logfile = new File(newfile.getParentFile(), FileUtils.changeFilenameExt(newfile.getName(), "log"));
+        File incfile = new File(newfile.getParentFile(), "INC_" + newfile.getName());
+
+        log.info("");
+        log.info(FileUtils.readline(newfile, StringUtils.CHARSET, 1));
+        log.info(FileUtils.readline(oldfile, StringUtils.CHARSET, 1));
+        log.info("");
+        log.info("新文件: " + newfile);
+        log.info("旧文件: " + oldfile);
+        log.info("增量文件: " + incfile.getAbsolutePath());
+        log.info("日志文件: " + logfile.getAbsolutePath());
+        log.info("");
+
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByExtension("etl");
         try {
-            sorter.execute(ioc, txt, "int(1) desc");
+            // 设置命令中使用的文件路径与索引字段位置信息
+            engine.eval("set newfile='" + newfile.getAbsolutePath() + "'");
+            engine.eval("set oldfile='" + oldfile.getAbsolutePath() + "'");
+            engine.eval("set incfile='" + incfile.getAbsolutePath() + "'");
+            engine.eval("set index='1," + column + "'");
+            engine.eval("set compare=");
+
+            // 增量剥离命令
+            String inccmd = "";
+            inccmd += "extract increment compare ";
+            inccmd += " $newfile of txt modified by index=$index ";
+            inccmd += " and";
+            inccmd += " $oldfile of txt modified by index=$index ";
+            inccmd += " write new and upd and del into $incfile ";
+            inccmd += " write log into " + logfile.getAbsolutePath();
+            engine.eval(inccmd);
             Assert.fail();
         } catch (Throwable e) {
             String message = StringUtils.toString(e);
-            System.out.println(message);
+//            System.out.println(message);
             String[] array = StringUtils.splitByBlank(message);
             Assert.assertTrue(StringUtils.inArrayIgnoreCase(String.valueOf(line), array));
             Assert.assertTrue(StringUtils.inArrayIgnoreCase(String.valueOf(next), array));
-            System.err.println(e.getMessage());
+//            System.err.println(e.getMessage());
             e.printStackTrace();
         }
-
     }
 
 }

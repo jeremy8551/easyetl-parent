@@ -1,10 +1,11 @@
 package icu.etl.script;
 
-import java.io.IOException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.IOException;
 
+import icu.etl.util.ArrayUtils;
 import icu.etl.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,10 +22,10 @@ public class ScriptEngineNoSQLTest {
             engine.setBindings(rule.getEnvironment(), UniversalScriptContext.ENVIRONMENT_SCOPE);
             engine.eval(". classpath:/script/testNoDB.sql");
             Assert.fail();
-        } catch (ScriptException se) {
+        } catch (UniversalScriptException se) {
             se.printStackTrace(System.out);
             Assert.assertEquals("1000", engine.getContext().getAttribute("testvalue000"));
-            Assert.assertEquals("333", StringUtils.splitByBlank(se.getMessage())[1]);
+            Assert.assertEquals("333", ArrayUtils.lastElement(StringUtils.splitByBlank(se.getMessage())));
         } catch (Throwable e) {
             e.printStackTrace();
             Assert.fail();

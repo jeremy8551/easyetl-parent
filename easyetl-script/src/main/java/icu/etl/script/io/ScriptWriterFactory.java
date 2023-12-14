@@ -10,7 +10,6 @@ import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
-import icu.etl.util.ResourcesUtils;
 
 /**
  * 日志文件输出流
@@ -64,11 +63,8 @@ public class ScriptWriterFactory {
         if ("/dev/null".equals(filepath)) {
             this.out = new NullWriter();
         } else {
-            if (FileUtils.createFile(this.logfile)) {
-                this.out = IO.getFileWriter(this.logfile, context.getCharsetName(), this.append);
-            } else {
-                throw new IOException(ResourcesUtils.getScriptStderrMessage(62, this.logfile.getAbsolutePath()));
-            }
+            FileUtils.assertCreateFile(this.logfile);
+            this.out = IO.getFileWriter(this.logfile, context.getCharsetName(), this.append);
         }
         return this.out;
     }

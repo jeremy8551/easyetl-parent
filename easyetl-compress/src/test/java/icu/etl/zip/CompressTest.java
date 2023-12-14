@@ -19,13 +19,8 @@ public class CompressTest {
      * @return 返回临时文件
      */
     private File createfile(String suffix) throws IOException {
-        String name = FileUtils.getFilenameRandom("CompressTestfile", "_tmp") + "." + suffix;
-        File dir = FileUtils.getTempDir(FileUtils.class);
-        FileUtils.createDirectory(dir);
-        FileUtils.clearDirectory(dir);
-        File file = new File(dir, name);
-        FileUtils.createFile(file);
-        System.out.println(Compress.class.getSimpleName() + " testfile: " + file.getAbsolutePath());
+        File file = FileUtils.createTempFile("CompressTestfile." + suffix);
+        System.out.println(file.getAbsolutePath());
         return file;
     }
 

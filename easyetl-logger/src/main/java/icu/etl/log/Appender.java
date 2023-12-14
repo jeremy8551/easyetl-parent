@@ -13,7 +13,7 @@ public interface Appender {
      * 将当前日志记录器安装到日志模块中
      *
      * @param context 日志模块的上下文信息
-     * @return
+     * @return 日志记录器
      */
     Appender setup(LogContext context);
 

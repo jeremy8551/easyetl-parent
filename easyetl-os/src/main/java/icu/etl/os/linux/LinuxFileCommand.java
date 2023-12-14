@@ -14,6 +14,7 @@ import icu.etl.os.OSFile;
 import icu.etl.os.OSFileCommand;
 import icu.etl.os.OSFileFilter;
 import icu.etl.os.internal.OSFileImpl;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.NetUtils;
@@ -53,7 +54,7 @@ public class LinuxFileCommand implements OSFileCommand {
     }
 
     public boolean mkdir(String filepath) {
-        return FileUtils.createDirectory(new File(FileUtils.replaceFolderSeparator(filepath)));
+        return FileUtils.createDirectory(FileUtils.replaceFolderSeparator(filepath));
     }
 
     public boolean rm(String filepath) {
@@ -193,12 +194,9 @@ public class LinuxFileCommand implements OSFileCommand {
                 }
             }
         } else {
-            if (FileUtils.createDirectory(localfile)) {
-                File copyfile = new File(localfile, file.getName());
-                return FileUtils.copy(file, copyfile) ? copyfile : null;
-            } else {
-                return null;
-            }
+            FileUtils.assertCreateDirectory(localfile);
+            File copyfile = new File(localfile, file.getName());
+            return FileUtils.copy(file, copyfile) ? copyfile : null;
         }
     }
 

@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import icu.etl.collection.CharBuffer;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 
 /**
@@ -71,7 +72,7 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
      * @throws IOException 访问文件发生错误
      */
     public BufferedLineWriter(File file, String charsetName, boolean append, int cache) throws IOException {
-        FileUtils.createFile(file);
+        FileUtils.assertCreateFile(file);
         this.out = new OutputStreamWriter(new FileOutputStream(file, append), charsetName);
         this.buffer = new CharBuffer(8192, 512);
         this.cacheRows = cache <= 0 ? 20 : cache;
@@ -88,16 +89,9 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
      * @throws IOException 访问文件发生错误
      */
     public BufferedLineWriter(Writer out, int cache) throws IOException {
-        if (out == null) {
-            throw new NullPointerException();
-        }
-        if (cache <= 0) {
-            throw new IllegalArgumentException(String.valueOf(cache));
-        }
-
         this.buffer = new CharBuffer(8192, 512);
-        this.out = out;
-        this.cacheRows = cache;
+        this.out = Ensure.notNull(out);
+        this.cacheRows = Ensure.isFromOne(cache);
         this.count = 0;
         this.lineSeparator = FileUtils.lineSeparator;
     }

@@ -1,10 +1,10 @@
 package icu.etl.script;
 
-import java.io.File;
-import java.io.IOException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.File;
+import java.io.IOException;
 
 import icu.etl.database.db2.DB2ExportFile;
 import icu.etl.io.TextTableFileReader;
@@ -19,7 +19,7 @@ public class DB2ExportFileReaderTest {
     public void test() throws ScriptException, IOException {
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByExtension("etl");
-        File tempfile = FileUtils.createTempfile(DB2ExportFileReaderTest.class, "del");
+        File tempfile = FileUtils.createTempFile(".del");
         engine.eval("cp classpath:/bhc_finish.del " + tempfile.getAbsolutePath());
         DB2ExportFile file = new DB2ExportFile(tempfile);
         TextTableFileReader in = file.getReader(IO.READER_BUFFER_SIZE);

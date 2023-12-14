@@ -1,10 +1,7 @@
 package icu.etl.io;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
@@ -20,6 +17,7 @@ import icu.etl.concurrent.ThreadSource;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.Ensure;
+import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Numbers;
 import icu.etl.util.ResourcesUtils;
@@ -55,7 +53,7 @@ public class TextTableFileCounter {
      * @return 文件中的行数
      * @throws IOException 访问文件错误
      */
-    public long execute(File file, String charsetName) throws IOException {
+    public long execute(File file, String charsetName) throws Exception {
         if (file == null) {
             throw new NullPointerException();
         }
@@ -82,16 +80,7 @@ public class TextTableFileCounter {
      * @throws IOException 读取文件发生错误
      */
     protected long executeSerial(File file, String charsetName) throws IOException {
-        long count = 0;
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName), IO.FILE_BYTES_BUFFER_SIZE);
-        try {
-            while (in.readLine() != null) {
-                count++;
-            }
-            return count;
-        } finally {
-            in.close();
-        }
+        return FileUtils.count(file, charsetName);
     }
 
     /**
@@ -102,7 +91,7 @@ public class TextTableFileCounter {
      * @param readBuffer 输入流缓冲区长度，单位字符
      * @return 文件行数
      */
-    protected long executeParallel(File file, long unit, int readBuffer) {
+    protected long executeParallel(File file, long unit, int readBuffer) throws Exception {
         Long divide = Numbers.divide(file.length(), (long) 12);
         long partSize = Math.max(divide, 92160);
         if (partSize > unit) {
@@ -139,7 +128,7 @@ public class TextTableFileCounter {
         }
 
         // 并发统计行数
-        this.threadSource.getJobService(this.concurrernt).executeForce(new ReadLineExecutorReader(list));
+        this.threadSource.getJobService(this.concurrernt).execute(new ReadLineExecutorReader(list));
 
         // 统计行数
         long total = 0;

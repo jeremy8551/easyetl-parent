@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import icu.etl.database.JdbcDao;
 import icu.etl.database.JdbcQueryStatement;
@@ -45,7 +43,7 @@ public class CursorCommand extends AbstractCommand implements WithBodyCommandSup
         this.body.setOwner(this);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String name = analysis.replaceVariable(session, context, this.name, false);
         CursorMap map = CursorMap.get(context);
@@ -64,7 +62,7 @@ public class CursorCommand extends AbstractCommand implements WithBodyCommandSup
         }
     }
 
-    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body) throws IOException, SQLException {
+    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body) throws Exception {
         try {
             ScriptMainProcess process = session.getMainProcess();
             boolean isbreak = false, iscontinue = false;
@@ -126,7 +124,7 @@ public class CursorCommand extends AbstractCommand implements WithBodyCommandSup
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.command != null) {
             this.command.terminate();
         }

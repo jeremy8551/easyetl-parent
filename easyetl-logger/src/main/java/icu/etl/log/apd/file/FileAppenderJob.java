@@ -36,7 +36,7 @@ public class FileAppenderJob implements Runnable {
                 this.out.write();
             }
             this.out.flush();
-        } catch (Throwable e) { // 如果打开3次输出流都不行，则退出
+        } catch (Throwable e) {
             if (JUL.isErrorEnabled()) {
                 JUL.error(e.getLocalizedMessage(), e);
             }

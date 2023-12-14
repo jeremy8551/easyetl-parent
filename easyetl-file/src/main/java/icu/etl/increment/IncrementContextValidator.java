@@ -1,7 +1,6 @@
 package icu.etl.increment;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +10,7 @@ import icu.etl.io.TableColumnComparator;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
 import icu.etl.sort.TableFileSortContext;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -23,13 +23,10 @@ public class IncrementContextValidator {
     /**
      * 初始化
      *
-     * @param context
-     * @throws IOException
+     * @param context 上下文信息
      */
-    public IncrementContextValidator(IncrementContext context) throws IOException {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+    public IncrementContextValidator(IncrementContext context) {
+        Ensure.notNull(context);
 
         IncrementArith arith = context.getArith();
         if (arith == null) {
@@ -146,9 +143,8 @@ public class IncrementContextValidator {
      * 校验位置信息
      *
      * @param context
-     * @throws IOException
      */
-    protected void checkPosition(IncrementContext context) throws IOException {
+    protected void checkPosition(IncrementContext context) {
         IncrementPosition position = context.getPosition();
         if (position == null || position.getNewIndexPosition().length == 0 || position.getOldIndexPosition().length == 0) {
             throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(25));

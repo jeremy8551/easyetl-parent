@@ -34,8 +34,8 @@ public class FtpClientCase {
         }
         Assert.assertTrue(ftp.mkdir(testDir0));
 
-        File dir = FileUtils.getTempDir(SftpClientTest.class);
-        File tempDir = FileUtils.getFileNoRepeat(dir, "f" + Dates.format14(new Date()));
+        File dir = FileUtils.getTempDir("test", SftpClientTest.class.getSimpleName());
+        File tempDir = FileUtils.allocate(dir, "f" + Dates.format14(new Date()));
         FileUtils.createDirectory(tempDir);
 
         File tdf1 = new File(tempDir, "test.txt");
@@ -56,7 +56,7 @@ public class FtpClientCase {
         List<OSFile> ls = ftp.ls(testDir0);
         assertEquals(2, ls.size());
 
-        File tempDir1 = FileUtils.getFileNoRepeat(dir, "f" + Dates.format08(new Date()));
+        File tempDir1 = FileUtils.allocate(dir, "f" + Dates.format08(new Date()));
         FileUtils.createDirectory(tempDir1);
 
         File dest3 = ftp.download(testDir0 + "/" + tempDir.getName(), tempDir1);

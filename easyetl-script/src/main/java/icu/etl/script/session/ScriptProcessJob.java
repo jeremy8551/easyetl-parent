@@ -59,7 +59,7 @@ public class ScriptProcessJob implements Runnable {
     }
 
     /**
-     * 设置子进程
+     * 设置子线程
      *
      * @param process
      */
@@ -110,7 +110,7 @@ public class ScriptProcessJob implements Runnable {
             if (this.terminate) {
                 exitcode = UniversalScriptCommand.TERMINATE;
             } else {
-                FileUtils.createFile(logfile); // 创建日志文件
+                FileUtils.assertCreateFile(logfile); // 创建日志文件
 
                 // 标准信息与错误信息均写入日志文件
                 ScriptWriterFactory factory = new ScriptWriterFactory(logfile.getAbsolutePath(), true);

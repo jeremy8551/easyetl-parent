@@ -3,8 +3,6 @@ package icu.etl.script.command;
 import java.io.BufferedReader;
 import java.io.CharArrayReader;
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandResultSet;
@@ -23,7 +21,6 @@ import icu.etl.script.io.ScriptStdbuf;
 import icu.etl.script.session.ScriptMainProcess;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
-import icu.etl.util.StringUtils;
 
 /**
  * {@literal while read line do ... done < filename}
@@ -46,7 +43,7 @@ public class ReadCommand extends AbstractCommand implements WithBodyCommandSuppo
         this.inputStr = inputExpr;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         File file = new ScriptFile(session, context, this.inputStr);
         UniversalScriptAnalysis analysis = session.getAnalysis();
 
@@ -96,10 +93,9 @@ public class ReadCommand extends AbstractCommand implements WithBodyCommandSuppo
      * @param in          脚本语句输入流
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, BufferedReader in, boolean forceStdout, CommandList body) throws IOException, SQLException {
+    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, BufferedReader in, boolean forceStdout, CommandList body) throws Exception {
         try {
             ScriptMainProcess process = session.getMainProcess();
             boolean isbreak = false, iscontinue = false;
@@ -157,7 +153,7 @@ public class ReadCommand extends AbstractCommand implements WithBodyCommandSuppo
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.command != null) {
             this.command.terminate();
         }

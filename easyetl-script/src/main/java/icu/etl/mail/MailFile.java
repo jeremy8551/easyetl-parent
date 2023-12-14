@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import icu.apache.mail.common.EmailAttachment;
 import icu.etl.ioc.EasyContext;
-import icu.etl.util.CharsetName;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.zip.Compress;
@@ -37,13 +37,11 @@ public class MailFile {
     }
 
     public MailFile(EasyContext context, File file) throws IOException {
-        if (file == null) {
-            throw new NullPointerException();
-        }
-
+        Ensure.notNull(file);
         if (file.exists() && file.isDirectory()) {
-            File compressFile = FileUtils.getFileNoRepeat(FileUtils.getTempDir(MailFile.class), FileUtils.changeFilenameExt(file.getName(), "zip"));
-            FileUtils.createFile(compressFile);
+            File parent = FileUtils.getTempDir("mail", "file");
+            File compressFile = FileUtils.allocate(parent, FileUtils.changeFilenameExt(file.getName(), "zip"));
+            FileUtils.assertCreateFile(compressFile);
             this.compress(context, file, compressFile, StringUtils.CHARSET, false);
             this.file = compressFile;
             this.name = FileUtils.changeFilenameExt(file.getName(), "zip");
@@ -57,37 +55,23 @@ public class MailFile {
      * 将文件或目录参数 fileOrDir 压缩到参数 compressFile 文件中
      *
      * @param context      容器上下文信息
-     * @param fileOrDir    文件或目录
+     * @param file         文件或目录
      * @param compressFile 压缩文件（依据压缩文件后缀rar, zip, tar, gz等自动选择压缩算法）
      * @param charsetName  压缩文件字符集（为空时默认使用UTF-8）
      * @param delete       true表示文件全部压缩成功后自动删除 {@code fileOrDir}
-     * @throws IOException
+     * @throws IOException 压缩文件错误
      */
-    public void compress(EasyContext context, File fileOrDir, File compressFile, String charsetName, boolean delete) throws IOException {
-        Compress compress = context.getBean(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
+    public void compress(EasyContext context, File file, File compressFile, String charsetName, boolean delete) throws IOException {
+        Compress c = context.getBean(Compress.class, FileUtils.getFilenameSuffix(compressFile.getName()));
         try {
-            compress.setFile(compressFile);
-            compress.archiveFile(fileOrDir, null, StringUtils.defaultString(charsetName, CharsetName.UTF_8));
+            c.setFile(compressFile);
+            c.archiveFile(file, null, charsetName);
         } finally {
-            compress.close();
+            c.close();
         }
 
         if (delete) {
-            if (fileOrDir.isFile()) {
-                if (FileUtils.deleteFile(fileOrDir)) {
-                    return;
-                } else {
-                    throw new RuntimeException("compress(" + fileOrDir + ", " + compressFile + ", " + charsetName + ", " + delete + ")");
-                }
-            }
-
-            if (fileOrDir.isDirectory()) {
-                if (FileUtils.clearDirectory(fileOrDir) && fileOrDir.delete()) {
-                    return;
-                } else {
-                    throw new RuntimeException("compress(" + fileOrDir + ", " + compressFile + ", " + charsetName + ", " + delete + ")");
-                }
-            }
+            FileUtils.assertDelete(file);
         }
     }
 
@@ -104,7 +88,7 @@ public class MailFile {
     }
 
     public String getDescription() {
-        return StringUtils.defaultString(description, this.file.getName());
+        return StringUtils.defaultString(this.description, this.file.getName());
     }
 
     public String getName() {

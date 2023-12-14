@@ -41,7 +41,7 @@ public class NohupCommand extends AbstractCommand {
             logfile = new File(Settings.getUserHome(), logfile.getName());
         }
 
-        // 创建子进程
+        // 创建子线程
         ScriptProcessEnvironment environment = new ScriptProcessEnvironment(session, context, stdout, stderr, forceStdout, this.subcommand, logfile);
         ScriptProcess process = session.getSubProcess().create(environment);
         process.start();

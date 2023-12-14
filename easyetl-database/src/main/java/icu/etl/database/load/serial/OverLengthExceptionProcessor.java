@@ -1,7 +1,6 @@
 package icu.etl.database.load.serial;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,13 +50,12 @@ public class OverLengthExceptionProcessor {
      * @param file    数据文件
      * @param target  目标表
      * @return 返回已修改字段个数
-     * @throws IOException  文件访问错误
-     * @throws SQLException 数据库错误
+     * @throws Exception 发生错误
      */
-    public int execute(EasyContext context, JdbcDao dao, TextTableFile file, LoadTable target) throws IOException, SQLException {
+    public int execute(EasyContext context, JdbcDao dao, TextTableFile file, LoadTable target) throws Exception {
         // 扫描数据文件中的长度字段
         ExpandLengthJobReader in = new ExpandLengthJobReader(file, target, DataUnitExpression.parse("100M").longValue());
-        context.getBean(ThreadSource.class).getJobService(this.concurrent).executeForce(new EasyJobReaderImpl(in));
+        context.getBean(ThreadSource.class).getJobService(this.concurrent).execute(new EasyJobReaderImpl(in));
         List<DatabaseTableColumn> columns = in.getColumns();
         in.close();
 

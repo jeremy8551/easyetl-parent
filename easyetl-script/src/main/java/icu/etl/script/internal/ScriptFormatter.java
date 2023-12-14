@@ -22,6 +22,7 @@ import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptFormatter;
+import icu.etl.script.UniversalScriptSession;
 import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
@@ -38,16 +39,7 @@ public class ScriptFormatter extends UniversalScriptFormatter {
 
     private final static long serialVersionUID = 1L;
 
-    /**
-     * 将Jdbc参数 object 转为脚本引擎内部类型
-     *
-     * @param context 脚本引擎上下文信息
-     * @param object  Jdbc参数对象
-     * @return
-     * @throws IOException
-     * @throws SQLException
-     */
-    public Object formatJdbcParameter(UniversalScriptContext context, Object object) throws IOException, SQLException {
+    public Object formatJdbcParameter(UniversalScriptSession session, UniversalScriptContext context, Object object) throws IOException, SQLException {
         if (object == null) {
             return null;
         }
@@ -70,7 +62,7 @@ public class ScriptFormatter extends UniversalScriptFormatter {
                 byte[] array = (byte[]) object;
                 return StringUtils.toString(array, context.getCharsetName());
             } else {
-                return (Object[]) object;
+                return object;
             }
         } else if (object instanceof java.io.InputStream) {
             java.io.InputStream in = (java.io.InputStream) object;
@@ -80,7 +72,9 @@ public class ScriptFormatter extends UniversalScriptFormatter {
             return IO.read(in, new StringBuilder()).toString();
         } else if (object instanceof java.sql.Blob) {
             java.sql.Blob blob = (java.sql.Blob) object;
-            File file = new File(FileUtils.getTempDir(UniversalScriptContext.class), FileUtils.getFilenameRandom("ScriptConvert_", ".blob"));
+            File tempDir = session.getTempDir();
+            File parent = FileUtils.createDirectory(tempDir, ScriptFormatter.class.getSimpleName(), Dates.format17());
+            File file = FileUtils.createNewFile(parent, "ScriptConvert.blob");
             IO.write(blob.getBinaryStream(), new FileOutputStream(file));
             return file.getAbsolutePath();
         } else if (object instanceof java.net.URL) {

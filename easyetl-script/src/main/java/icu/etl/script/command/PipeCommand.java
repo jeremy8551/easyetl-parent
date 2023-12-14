@@ -1,7 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.script.UniversalCommandCompiler;
@@ -28,7 +26,7 @@ public class PipeCommand extends AbstractCommand implements NohupCommandSupporte
         this.list = commands;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         int size = this.list.size();
         int last = size - 1;
         UniversalScriptParser parser = session.getCompiler().getParser();
@@ -55,7 +53,7 @@ public class PipeCommand extends AbstractCommand implements NohupCommandSupporte
         return this.terminate ? UniversalScriptCommand.TERMINATE : 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         this.terminate = true;
         if (this.run != null) {
             this.run.terminate();

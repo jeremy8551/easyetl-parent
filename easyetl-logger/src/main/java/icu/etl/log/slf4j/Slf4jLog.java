@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icu.etl.log.Log;
-import icu.etl.util.ClassUtils;
 import icu.etl.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class Slf4jLog implements Log {
         this.log = LoggerFactory.getLogger(type);
 
         // 如果对 Slf4j，log4j等日志进行封装，会导致日志输出代码行数、代码所在的类名、代码所在的方法，不准确，就需要用这个方法对日志中的 fqcn 字段进行调整
-        ClassUtils.setField(this.log, "FQCN.*", String.class, fqcn == null ? Slf4jLog.FQCN : fqcn);
+//        ClassUtils.setField(this.log, "FQCN.*", String.class, fqcn == null ? Slf4jLog.FQCN : fqcn);
     }
 
     public String getName() {

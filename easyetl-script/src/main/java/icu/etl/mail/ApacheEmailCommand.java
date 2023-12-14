@@ -644,7 +644,7 @@ public class ApacheEmailCommand implements MailCommand {
 
     private File saveFile(File parent, String filename, InputStream in) throws IOException {
         if (parent == null) {
-            parent = FileUtils.getTempDir(MailCommand.class);
+            parent = FileUtils.getTempDir("mail", "attach");
         } else {
             Ensure.isTrue(parent.exists() && parent.isDirectory(), parent, filename, in);
         }

@@ -251,7 +251,7 @@ public class ClassScanner {
 
             if (log.isTraceEnabled()) {
                 if (file.isDirectory()) {
-                    log.trace(ResourcesUtils.getClassMessage(24, packageName, filename, FileUtils.joinFilepath(StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename)));
+                    log.trace(ResourcesUtils.getClassMessage(24, packageName, filename, FileUtils.joinPath(StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename)));
 //                } else { 与下面日志重复，需要注释掉
 //                    log.trace(ResourcesUtils.getClassMessage(7, StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename, packageName));
                 }
@@ -481,28 +481,27 @@ public class ClassScanner {
 
             // 扫描 jar 中嵌套的 jar 文件
             else if ("jar".equalsIgnoreCase(extname) && !entry.isDirectory()) {
-                File tmpdir = FileUtils.getTempDir(ClassScanner.class);
-                JarFile innerjarfile = null;
+                File tempDir = FileUtils.getTempDir(ClassScanner.class.getSimpleName(), "jar");
+                File unzipJarfile = FileUtils.allocate(tempDir, filename); // 解压后的jar文件
+
+                if (log.isDebugEnabled()) {
+                    log.debug(ResourcesUtils.getClassMessage(14, jarfile.getName(), filename, unzipJarfile.getParentFile()));
+                }
+
+                FileUtils.assertCreateFile(unzipJarfile);
+                JarFile newJarfile = null;
                 try {
-                    File innerfile = new File(tmpdir, filename);
-                    File jarfileParent = innerfile.getParentFile();
-                    FileUtils.createDirectory(jarfileParent);
-
-                    if (log.isTraceEnabled()) {
-                        log.trace(ResourcesUtils.getClassMessage(14, jarfile.getName(), filename, jarfileParent));
-                    }
-
-                    IO.write(jarfile.getInputStream(entry), new FileOutputStream(innerfile)); // 解压 jar 文件
-                    innerfile.deleteOnExit();
-                    innerjarfile = new JarFile(innerfile);
+                    IO.write(jarfile.getInputStream(entry), new FileOutputStream(unzipJarfile)); // 解压jar包中的jar文件
+                    newJarfile = new JarFile(unzipJarfile);
                 } catch (Throwable e) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getClassMessage(30, jarfile.getName(), entry.getName()));
+                        log.debug(ResourcesUtils.getClassMessage(30, jarfile.getName(), entry.getName()), e);
                     }
                     continue;
                 }
 
-                count += this.scanJarfile(loader, innerjarfile, jarfile.getName() + "!/" + filename); // 扫描 jar 文件
+                // 扫描解压后的jar文件
+                count += this.scanJarfile(loader, newJarfile, jarfile.getName() + "!/" + filename); // 扫描 jar 文件
             }
         }
         return count;

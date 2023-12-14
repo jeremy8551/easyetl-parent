@@ -1,7 +1,5 @@
 package icu.etl.script.session;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -18,7 +16,7 @@ import icu.etl.script.internal.CommandResultSet;
 import icu.etl.util.StringUtils;
 
 /**
- * 主进程
+ * 主线程
  *
  * @author jeremy8551@qq.com
  */
@@ -63,10 +61,9 @@ public class ScriptMainProcess {
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param command     脚本命令
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    public UniversalCommandResultSet execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command) throws IOException, SQLException {
+    public UniversalCommandResultSet execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command) throws Exception {
         String key = StringUtils.toRandomUUID();
         try {
             this.cache.put(key, command);
@@ -86,7 +83,8 @@ public class ScriptMainProcess {
                 }
 
                 context.getCommandListeners().afterCommand(session, context, stdout, stderr, forceStdout, command, resultSet); // 脚本命令执行完毕后执行的逻辑代码
-            } catch (Throwable e) { // 脚本命令执行报错后执行的逻辑代码
+            } catch (Exception e) { // 脚本命令执行报错后执行的逻辑代码
+                this.failCommand = command;
                 context.getCommandListeners().catchCommand(session, context, stdout, stderr, forceStdout, command, resultSet, e);
             }
 
@@ -99,10 +97,9 @@ public class ScriptMainProcess {
     /**
      * 终止所有命令
      *
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         Set<String> keys = this.cache.keySet();
         for (String key : keys) {
             UniversalScriptCommand command = this.cache.get(key);
@@ -122,7 +119,7 @@ public class ScriptMainProcess {
     }
 
     /**
-     * 主进程创建时间
+     * 主线程创建时间
      *
      * @return
      */
@@ -142,7 +139,7 @@ public class ScriptMainProcess {
     /**
      * 返回最后执行的语句
      *
-     * @return
+     * @return 脚本语句
      */
     public String getErrorScript() {
         return this.failCommand == null ? null : this.failCommand.getScript();

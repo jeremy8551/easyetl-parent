@@ -56,7 +56,7 @@ public class ExportCommand extends AbstractCommand {
         this.subcommand = null;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         if (this.subcommand == null) { // 表示将局部用户自定义方法转为全局自定义方法
             UniversalScriptAnalysis analysis = session.getAnalysis();
             String name = analysis.replaceShellVariable(session, context, this.functionName, true, true, true, false);

@@ -53,7 +53,7 @@ public class JschChannel {
     }
 
     /**
-     * If it is a temporary channel, close the channel
+     * 如果是临时通道，就关闭该通道
      */
     public void closeTempChannel() {
         if (this.isTmp) {

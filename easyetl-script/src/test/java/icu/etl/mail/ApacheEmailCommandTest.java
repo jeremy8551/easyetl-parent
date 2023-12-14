@@ -1,9 +1,9 @@
 package icu.etl.mail;
 
+import javax.script.SimpleBindings;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import javax.script.SimpleBindings;
 
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.script.WithDBRule;
@@ -39,15 +39,15 @@ public class ApacheEmailCommandTest {
         msg.append("3、测试单成功数量：6").append("\r\n\t");
         msg.append("统计时间：1 ").append(Dates.currentTimeStamp());
 
-        File txt = new File(FileUtils.getTempDir(ApacheEmailCommandTest.class), "test测试.txt");
+        File txt = FileUtils.getTempDir("test", ApacheEmailCommandTest.class.getSimpleName(), "test测试.txt");
         FileUtils.write(txt, StringUtils.CHARSET, false, msg);
 
-        File dir = new File(FileUtils.getTempDir(ApacheEmailCommandTest.class), "目录12test");
+        File dir = FileUtils.getTempDir("test", ApacheEmailCommandTest.class.getSimpleName(), "目录12test");
         Assert.assertTrue(FileUtils.createDirectory(dir));
         File f1 = new File(dir, "test测试.txt");
         FileUtils.write(f1, StringUtils.CHARSET, false, msg);
 
-        File txt1 = new File(FileUtils.getTempDir(ApacheEmailCommandTest.class), "testsetest.txt");
+        File txt1 = FileUtils.getTempDir("test", ApacheEmailCommandTest.class.getSimpleName(), "testsetest.txt");
         FileUtils.write(txt1, StringUtils.CHARSET, false, msg);
 
         cmd.drafts("imap", 0, true, "etl@foxmail.com", ArrayUtils.asList("410336929@qq.com"), "测试单统计信息-" + Dates.currentTimeStamp(), msg, new MailFile(context, txt1, "tt1.txt", "file"));
@@ -70,10 +70,10 @@ public class ApacheEmailCommandTest {
         msg.append("3、测试单成功数量：6").append("\r\n\t");
         msg.append("统计时间：1 ").append(Dates.currentTimeStamp());
 
-        File txt = new File(FileUtils.getTempDir(ApacheEmailCommandTest.class), "test测试.txt");
+        File txt = FileUtils.getTempDir("test", ApacheEmailCommandTest.class.getSimpleName(), "test测试.txt");
         FileUtils.write(txt, StringUtils.CHARSET, false, msg);
 
-        File dir = new File(FileUtils.getTempDir(ApacheEmailCommandTest.class), "目录12test");
+        File dir = FileUtils.getTempDir("test", ApacheEmailCommandTest.class.getSimpleName(), "目录12test");
         Assert.assertTrue(FileUtils.createDirectory(dir));
         File f1 = new File(dir, "test测试.txt");
         FileUtils.write(f1, StringUtils.CHARSET, false, msg);

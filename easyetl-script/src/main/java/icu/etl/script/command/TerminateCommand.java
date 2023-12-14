@@ -33,7 +33,7 @@ public class TerminateCommand extends AbstractTraceCommand {
         this.processid = processid;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         // 终止后台进程
         boolean print = session.isEchoEnable() || forceStdout;
         UniversalScriptAnalysis analysis = session.getAnalysis();

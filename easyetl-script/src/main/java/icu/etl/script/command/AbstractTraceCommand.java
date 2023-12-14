@@ -58,7 +58,7 @@ public abstract class AbstractTraceCommand extends AbstractCommand {
         this.same = same;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         boolean autoCloseOut = false;
         boolean autoCloseErr = false;
         try {
@@ -102,6 +102,6 @@ public abstract class AbstractTraceCommand extends AbstractCommand {
      * @throws IOException
      * @throws SQLException
      */
-    public abstract int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException;
+    public abstract int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception;
 
 }

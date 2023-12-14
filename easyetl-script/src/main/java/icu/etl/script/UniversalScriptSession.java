@@ -1,11 +1,10 @@
 package icu.etl.script;
 
+import javax.script.ScriptEngine;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
-import javax.script.ScriptEngine;
 
 import icu.etl.script.io.ScriptFileExpression;
 import icu.etl.script.session.ScriptMainProcess;
@@ -57,7 +56,7 @@ public interface UniversalScriptSession {
     boolean isScriptFile();
 
     /**
-     * 返回主进程
+     * 返回主线程
      *
      * @return
      */
@@ -238,10 +237,9 @@ public interface UniversalScriptSession {
     /**
      * 终止用户会话
      *
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    void terminate() throws IOException, SQLException;
+    void terminate() throws Exception;
 
     /**
      * 清空所有信息
@@ -261,5 +259,12 @@ public interface UniversalScriptSession {
      * @return
      */
     Date getEndTime();
+
+    /**
+     * 返回临时文件目录
+     *
+     * @return 目录
+     */
+    File getTempDir();
 
 }

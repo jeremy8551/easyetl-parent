@@ -1,8 +1,6 @@
 package icu.etl.script.session;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -11,11 +9,11 @@ import java.util.Map;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCompiler;
 import icu.etl.script.UniversalScriptEngine;
-import icu.etl.script.UniversalScriptException;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptSessionFactory;
 import icu.etl.script.UniversalScriptVariable;
 import icu.etl.script.io.ScriptFileExpression;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.Settings;
@@ -43,10 +41,10 @@ public class ScriptSession implements UniversalScriptSession {
     /** 会话结束时间 */
     private Date endTime;
 
-    /** 主进程 */
+    /** 主线程 */
     private ScriptMainProcess main;
 
-    /** 子进程 */
+    /** 子线程 */
     private ScriptSubProcess subs;
 
     /** 用户自定义方法的参数 */
@@ -76,6 +74,9 @@ public class ScriptSession implements UniversalScriptSession {
     /** 脚本引擎名（可以不唯一） */
     private String name;
 
+    /** 临时文件存储目录 */
+    private File tempDir;
+
     /**
      * 初始化
      */
@@ -91,9 +92,10 @@ public class ScriptSession implements UniversalScriptSession {
         this.subs = new ScriptSubProcess();
         this.echoEnabled = true;
         this.terminate = false;
+        this.tempDir = FileUtils.getTempDir(UniversalScriptEngine.class.getSimpleName(), "engine", "session", this.id);
 
         this.setDirectory(Settings.getUserHome()); // 会话当前目录
-        this.addVariable(UniversalScriptVariable.SESSION_VARNAME_TEMP, FileUtils.getTempDir(UniversalScriptEngine.class).getAbsolutePath()); // 临时文件目录
+        this.addVariable(UniversalScriptVariable.SESSION_VARNAME_TEMP, this.tempDir.getAbsolutePath()); // 临时文件目录
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_HOME, Settings.getUserHome()); // 用户目录
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_USER, Settings.getUserName()); // 当前用户名
     }
@@ -112,9 +114,8 @@ public class ScriptSession implements UniversalScriptSession {
      * 设置脚本文件信息
      *
      * @param file 脚本文件表达式
-     * @throws IOException
      */
-    public void setScriptFile(ScriptFileExpression file) throws IOException {
+    public void setScriptFile(ScriptFileExpression file) {
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_SCRIPTNAME, file.getName());
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_SCRIPTFILE, file.getAbsolutePath());
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_LINESEPARATOR, file.getLineSeparator());
@@ -202,21 +203,16 @@ public class ScriptSession implements UniversalScriptSession {
     }
 
     public void setDirectory(File dir) {
-        if (FileUtils.isDirectory(dir)) {
-            this.addVariable(UniversalScriptVariable.SESSION_VARNAME_PWD, dir.getAbsolutePath());
-        } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(7, dir));
-        }
+        FileUtils.assertDirectory(dir);
+        this.addVariable(UniversalScriptVariable.SESSION_VARNAME_PWD, dir.getAbsolutePath());
     }
 
     public String getDirectory() {
         return this.getVariable(UniversalScriptVariable.SESSION_VARNAME_PWD);
     }
 
-    public void terminate() throws IOException, SQLException {
-        if (this.terminate) {
-            return;
-        } else {
+    public void terminate() throws Exception {
+        if (!this.terminate) {
             this.terminate = true;
             if (this.compiler != null) {
                 this.compiler.terminate();
@@ -227,12 +223,8 @@ public class ScriptSession implements UniversalScriptSession {
     }
 
     public void setCompiler(UniversalScriptCompiler compiler) {
-        if (compiler == null) {
-            throw new NullPointerException();
-        } else {
-            this.compiler = compiler;
-            this.anlaysis = compiler.getAnalysis();
-        }
+        this.compiler = Ensure.notNull(compiler);
+        this.anlaysis = compiler.getAnalysis();
     }
 
     public UniversalScriptCompiler getCompiler() {
@@ -264,6 +256,10 @@ public class ScriptSession implements UniversalScriptSession {
         return this.variable.containsKey(name);
     }
 
+    public File getTempDir() {
+        return this.tempDir;
+    }
+
     public Date getCreateTime() {
         return this.startTime;
     }
@@ -281,7 +277,7 @@ public class ScriptSession implements UniversalScriptSession {
         session.anlaysis = this.anlaysis;
         session.compiler = null;
         session.variable.putAll(this.variable);
-        session.subs = this.subs; // 同步子进程
+        session.subs = this.subs; // 同步子线程
         this.factory.add(session);
         return session;
     }

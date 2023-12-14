@@ -9,7 +9,7 @@ import java.util.List;
 import icu.etl.util.CharsetName;
 
 /**
- * 该接口用于描述操作系统的文件操作功能接口<br>
+ * 操作系统的文件操作功能接口<br>
  * 操作系统可以是本地操作系统，也可以是远程linux，windows，unix，macos
  *
  * @author jeremy8551@qq.com
@@ -61,7 +61,7 @@ public interface OSFileCommand extends CharsetName {
      *
      * @param filepath 目录的绝对路径
      * @return 返回true表示创建目录成功 返回false表示创建目录失败
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     boolean mkdir(String filepath) throws IOException;
 
@@ -70,7 +70,7 @@ public interface OSFileCommand extends CharsetName {
      *
      * @param filepath 文件或目录的绝对路径
      * @return 返回true表示删除成功 返回false表示删除失败
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     boolean rm(String filepath) throws IOException;
 
@@ -79,7 +79,7 @@ public interface OSFileCommand extends CharsetName {
      *
      * @param filepath 文件或目录的绝对路径
      * @return 返回文件列表信息集合
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     List<OSFile> ls(String filepath) throws IOException;
 
@@ -89,17 +89,17 @@ public interface OSFileCommand extends CharsetName {
      * @param localFile 文件或目录
      * @param filepath  操作系统上的目录绝对路径
      * @return 返回true表示上传文件成功 返回false表示上传文件失败
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     boolean upload(File localFile, String filepath) throws IOException;
 
     /**
      * 上传文件到操作系统上的指定目录下
      *
-     * @param in
-     * @param remote
-     * @return
-     * @throws IOException
+     * @param in     输入流
+     * @param remote 文件路径
+     * @return 返回true表示上传文件成功 返回false表示上传文件失败
+     * @throws IOException 访问文件错误
      */
     boolean upload(InputStream in, String remote) throws IOException;
 
@@ -108,18 +108,18 @@ public interface OSFileCommand extends CharsetName {
      *
      * @param filepath 在操作系统上的文件或目录的绝对路径
      * @param localDir 本地目录
-     * @return 返回true表示下载文件成功 返回false表示下载文件失败
-     * @throws IOException
+     * @return 返回下载后的文件, 返回null表示下载文件失败
+     * @throws IOException 访问文件错误
      */
     File download(String filepath, File localDir) throws IOException;
 
     /**
      * 从操作系统上下载文件
      *
-     * @param remote
-     * @param out
-     * @return
-     * @throws IOException
+     * @param remote 文件路径
+     * @param out    输出流
+     * @return 返回true表示下载文件成功 false表示下载文件失败
+     * @throws IOException 访问文件错误
      */
     boolean download(String remote, OutputStream out) throws IOException;
 
@@ -129,7 +129,7 @@ public interface OSFileCommand extends CharsetName {
      * @param filepath    在操作系统上的文件或目录的绝对路径
      * @param newfilepath 重命名后的文件或目录的绝对路径
      * @return 返回true表示重命名文件成功 返回false表示重命名文件失败
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     boolean rename(String filepath, String newfilepath) throws IOException;
 
@@ -141,7 +141,7 @@ public interface OSFileCommand extends CharsetName {
      * @param type      类型：d-表示目录 f-表示文件
      * @param filter    表示文件过滤器
      * @return 返回符合查询条件的文件集合
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     List<OSFile> find(String directory, String filename, char type, OSFileFilter filter) throws IOException;
 
@@ -152,7 +152,7 @@ public interface OSFileCommand extends CharsetName {
      * @param charsetName 文件的字符集
      * @param lineno      读取的行号, 0 表示读取全部内容, -1 表示读取最后一行
      * @return 返回读取文件的内容
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     String read(String filepath, String charsetName, int lineno) throws IOException;
 
@@ -164,7 +164,7 @@ public interface OSFileCommand extends CharsetName {
      * @param append      <code>true</code>表示向文件中追加写入，false表示覆盖文件内容
      * @param content     字符信息
      * @return 返回true表示写文件成功 返回false表示写入失败
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     boolean write(String filepath, String charsetName, boolean append, CharSequence content) throws IOException;
 
@@ -174,7 +174,7 @@ public interface OSFileCommand extends CharsetName {
      * @param filepath  文件的绝对路径
      * @param directory 操作系统上的目录
      * @return 返回true表示复制成功 返回false表示复制失败
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     boolean copy(String filepath, String directory) throws IOException;
 

@@ -9,12 +9,12 @@ import icu.etl.log.LogFactory;
  * @author jeremy8551@qq.com
  * @createtime 2023/12/1
  */
-public class JobStatus {
-    private final static Log log = LogFactory.getLog(JobStatus.class);
+public class EasyJobStatus {
+    private final static Log log = LogFactory.getLog(EasyJobStatus.class);
 
     private final Object lock = new Object();
 
-    public JobStatus() {
+    public EasyJobStatus() {
     }
 
     /**

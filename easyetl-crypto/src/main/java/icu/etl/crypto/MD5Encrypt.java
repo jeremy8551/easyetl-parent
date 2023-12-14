@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.security.MessageDigest;
 
 import icu.etl.concurrent.Terminate;
-import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Numbers;
 import icu.etl.util.ResourcesUtils;
@@ -38,7 +37,6 @@ public class MD5Encrypt {
      * @return 返回字符串的MD5值
      */
     public static String encrypt(File file, int radix, Terminate obj) {
-        FileUtils.checkPermission(file, true, false);
         if (!Numbers.inArray(radix, 16, 32, 128)) {
             throw new RuntimeException(ResourcesUtils.getCryptoMessage(6, radix));
         }

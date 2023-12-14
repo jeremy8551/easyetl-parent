@@ -1,7 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,7 +112,7 @@ public class IfCommand extends AbstractCommand implements LoopCommandKind, WithB
         this.setOwner(this.elseCmds);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         ScriptMainProcess process = session.getMainProcess();
         this.type = 0;
@@ -193,7 +191,7 @@ public class IfCommand extends AbstractCommand implements LoopCommandKind, WithB
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.command != null) {
             this.command.terminate();
         }

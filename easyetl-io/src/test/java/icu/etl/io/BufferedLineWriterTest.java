@@ -14,24 +14,9 @@ import static org.junit.Assert.assertNull;
 
 public class BufferedLineWriterTest {
 
-    /**
-     * 使用指定用户名创建一个文件
-     *
-     * @return 返回临时文件
-     */
-    private File createfile() throws IOException {
-        String name = FileUtils.getFilenameRandom("testfile", "_tmp") + ".txt";
-        File dir = FileUtils.getTempDir(FileUtils.class);
-        FileUtils.createDirectory(dir);
-        File file = new File(dir, name);
-        FileUtils.createFile(file);
-        System.out.println(BufferedLineWriter.class.getSimpleName() + " testfile: " + file.getAbsolutePath());
-        return file;
-    }
-
     @Test
     public void test() throws IOException {
-        File file = this.createfile();
+        File file = FileUtils.createTempFile("testfile.txt");
 
         BufferedLineWriter out = new BufferedLineWriter(file, "UTF-8", false, 2);
         out.write("0");
@@ -54,7 +39,7 @@ public class BufferedLineWriterTest {
 
     @Test
     public void test1() throws IOException {
-        File file = this.createfile();
+        File file = FileUtils.createTempFile("testfile.txt");
 
         OutputStreamWriter writer = IO.getFileWriter(file, "UTF-8", false);
         BufferedLineWriter out = new BufferedLineWriter(writer, 2);
@@ -78,7 +63,7 @@ public class BufferedLineWriterTest {
 
     @Test
     public void test2() throws IOException {
-        File file = this.createfile();
+        File file = FileUtils.createTempFile("testfile.txt");
 
         BufferedLineWriter out = new BufferedLineWriter(file, "UTF-8", 2);
         out.write("0");
@@ -101,7 +86,7 @@ public class BufferedLineWriterTest {
 
     @Test
     public void test3() throws IOException {
-        File file = this.createfile();
+        File file = FileUtils.createTempFile("testfile.txt");
 
         BufferedLineWriter out = new BufferedLineWriter(file, "UTF-8");
         out.write("0");
@@ -125,7 +110,7 @@ public class BufferedLineWriterTest {
     @Test
     public void test0() throws IOException {
         try {
-            File file = this.createfile();
+            File file = FileUtils.createTempFile("testfile.txt");
             OutputStreamWriter writer = IO.getFileWriter(file, "UTF-8", false);
             new BufferedLineWriter(writer, 0);
             Assert.fail();

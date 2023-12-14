@@ -13,7 +13,7 @@ import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 /**
- * 子进程
+ * 子线程
  */
 public class ScriptSubProcess {
     private final static Log log = LogFactory.getLog(ScriptSubProcess.class);
@@ -29,7 +29,7 @@ public class ScriptSubProcess {
     }
 
     /**
-     * 创建子进程
+     * 创建子线程
      *
      * @param environment 运行环境
      * @return 脚本引擎进程

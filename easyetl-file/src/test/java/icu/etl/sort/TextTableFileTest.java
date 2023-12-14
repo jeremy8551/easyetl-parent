@@ -88,11 +88,11 @@ public class TextTableFileTest {
 
     @Test
     public void testMergeLine() throws IOException {
-        File parent = FileUtils.getTempDir(this.getClass());
+        File parent = FileUtils.getTempDir("test", TextTableFileTest.class.getSimpleName());
         File dir = new File(parent, Dates.format08(new Date()));
-        dir.mkdirs();
+        FileUtils.assertCreateDirectory(dir);
 
-        File file = new File(dir, "SortTableFileTestMergeLine" + Dates.format17(new Date()) + ".txt");
+        File file = new File(dir, "SortTableFileTestMergeLine" + Dates.format17() + ".txt");
         FileWriter fw = new FileWriter(file);
         fw.write("1,11,12,13,14" + "\r\n");
         fw.write("2,2\r1,22,23,24" + "\r\n");
@@ -141,10 +141,10 @@ public class TextTableFileTest {
 
     @Test
     public void testMergeLine1() throws IOException {
-        File parent = FileUtils.getTempDir(this.getClass());
+        File parent = FileUtils.getTempDir("test", TextTableFileTest.class.getSimpleName());
         File dir = new File(parent, Dates.format08(new Date()));
         dir.mkdirs();
-        File file = new File(dir, "SortTableFileTestMergeLine" + Dates.format17(new Date()) + ".txt");
+        File file = new File(dir, "SortTableFileTestMergeLine" + Dates.format17() + ".txt");
         FileWriter fw = new FileWriter(file);
         fw.write("1,11,12,13,14" + "\r\n");
         fw.write("2,2\r1,22,23,24" + "\r\n");
@@ -275,7 +275,7 @@ public class TextTableFileTest {
      * 测试倒序排序
      */
     @Test
-    public void test1() throws IOException {
+    public void test1() throws Exception {
         EasyBeanContext context = new EasyBeanContext();
         CommonTextTableFile file = new CommonTextTableFile();
         file.setDelimiter(",");
@@ -420,13 +420,10 @@ public class TextTableFileTest {
     }
 
     protected File getTestFile(TextTableFile file) throws IOException {
-//		System.out.println("temp directory: " + JavaUtils.getTempDir().getAbsolutePath());
-        File parent = FileUtils.getTempDir(TextTableFile.class);
-        FileUtils.createDirectory(parent);
-
+        File parent = FileUtils.getTempDir("test", TextTableFileTest.class.getSimpleName());
         File dir = new File(parent, Dates.format08(new Date()));
-        FileUtils.createDirectory(dir);
-        File f0 = new File(dir, "SortTableFile" + Dates.format17(new Date()) + StringUtils.toRandomUUID() + ".txt");
+        FileUtils.assertCreateDirectory(dir);
+        File f0 = new File(dir, "SortTableFile" + Dates.format17() + StringUtils.toRandomUUID() + ".txt");
 
         FileUtils.delete(f0);
         FileUtils.createFile(f0);
@@ -453,7 +450,7 @@ public class TextTableFileTest {
     @Test
     public void testGetTextTableFileColumn() throws IOException {
         CommonTextTableFile txt = new CommonTextTableFile();
-        File file = getFile();
+        File file = FileUtils.createTempFile("testfile.txt");
 
         FileUtils.write(file, StringUtils.CHARSET, false, "1\n2");
         txt.setAbsolutePath(file.getAbsolutePath());
@@ -490,7 +487,7 @@ public class TextTableFileTest {
 
     @Test
     public void testDeleteFileTableFile() throws IOException {
-        File file = getFile();
+        File file = FileUtils.createTempFile("testfile.txt");
         FileUtils.write(file, StringUtils.CHARSET, false, "1,2,3\na,b,c"); // 写入表格行数据文件内容
 
         TextTableFile tf = new CommonTextTableFile();
@@ -503,31 +500,4 @@ public class TextTableFileTest {
         Assert.assertFalse(file.exists());
     }
 
-    /**
-     * 返回一个临时文件
-     *
-     * @return
-     */
-    public static File getFile() {
-        return getFile(null);
-    }
-
-    /**
-     * 使用指定用户名创建一个文件
-     *
-     * @param name
-     * @return
-     */
-    public static File getFile(String name) {
-        if (StringUtils.isBlank(name)) {
-            name = FileUtils.getFilenameRandom("testfile", "_tmp") + ".txt";
-        }
-
-        File dir = new File(FileUtils.getTempDir(FileUtils.class), "单元测试");
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new RuntimeException("创建目录 " + dir.getAbsolutePath() + " 失败!");
-        } else {
-            return new File(dir, name); // 返回一个临时文件信息
-        }
-    }
 }

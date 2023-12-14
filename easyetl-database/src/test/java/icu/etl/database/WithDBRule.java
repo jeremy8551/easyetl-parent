@@ -1,12 +1,12 @@
 package icu.etl.database;
 
+import javax.script.SimpleBindings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import javax.script.SimpleBindings;
 
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
@@ -136,8 +136,8 @@ public class WithDBRule implements TestRule {
             String dbusername = p.getProperty("database.admin");
             String dbuserpass = p.getProperty("database.adminPw");
 
-            this.put("curr_dir_path", FileUtils.joinFilepath(ClassUtils.getClasspath(WithDBRule.class), "script"));
-            this.put("temp", FileUtils.getTempDir(WithDBConfig.class).getAbsolutePath());
+            this.put("curr_dir_path", FileUtils.joinPath(ClassUtils.getClasspath(WithDBRule.class), "script"));
+            this.put("temp", FileUtils.getTempDir("test", WithDBConfig.class.getSimpleName()).getAbsolutePath());
             this.put("host", host);
             this.put("databaseName", databaseName);
             this.put("databaseDriverName", driverClassname);

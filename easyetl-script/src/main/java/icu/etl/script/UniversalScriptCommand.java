@@ -1,8 +1,5 @@
 package icu.etl.script;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 /**
  * 脚本引擎的命令接口
  *
@@ -25,7 +22,7 @@ public interface UniversalScriptCommand {
     /**
      * 返回脚本命令对应的编译器
      *
-     * @return
+     * @return 返回命令对应的编译器
      */
     UniversalCommandCompiler getCompiler();
 
@@ -38,23 +35,21 @@ public interface UniversalScriptCommand {
      * @param stderr      错误信息输出接口
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @return 返回0表示正确, 返回非0表示不正确
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 命令运行发生错误
      */
-    int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException;
+    int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception;
 
     /**
-     * 终止 {@link #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean)} 方法执行
+     * 终止 {@link #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean)} 方法的运行
      *
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 终止命令发生错误
      */
-    void terminate() throws IOException, SQLException;
+    void terminate() throws Exception;
 
     /**
      * 返回语句
      *
-     * @return
+     * @return 脚本命令
      */
     String getScript();
 

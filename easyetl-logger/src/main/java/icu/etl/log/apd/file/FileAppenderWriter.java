@@ -53,7 +53,7 @@ public class FileAppenderWriter {
      */
     public FileAppenderWriter(String logfile, String charsetName, BlockingQueue<LogEvent> queue, Layout layout) throws IOException {
         if (StringUtils.isBlank(logfile)) {
-            logfile = FileUtils.joinFilepath(Settings.getUserHome().getAbsolutePath(), "." + Settings.getApplicationName(), Settings.getUserName() + ".log");
+            logfile = FileUtils.joinPath(Settings.getUserHome().getAbsolutePath(), "." + Settings.getApplicationName(), Settings.getUserName() + ".log");
         }
 
         this.charsetName = ObjectUtils.coalesce(charsetName, StringUtils.CHARSET);
@@ -69,14 +69,10 @@ public class FileAppenderWriter {
      * @throws IOException 访问日志文件错误
      */
     public void open() throws IOException {
-        File file = new File(this.logfile);
-        if (FileUtils.createFile(file)) {
-            IO.flushQuiet(this.out);
-            IO.closeQuiet(this.out);
-            this.out = new OutputStreamWriter(new FileOutputStream(file, true), this.charsetName);
-        } else {
-            throw new IOException(this.logfile);
-        }
+        File file = FileUtils.assertCreateFile(this.logfile);
+        IO.flushQuiet(this.out);
+        IO.closeQuiet(this.out);
+        this.out = new OutputStreamWriter(new FileOutputStream(file, true), this.charsetName);
     }
 
     /**

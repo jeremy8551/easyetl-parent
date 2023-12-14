@@ -1,19 +1,17 @@
 package icu.etl.script;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
-import icu.etl.util.Dates;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -72,7 +70,7 @@ public class SortTableFileCommandTest {
     }
 
     protected File createfile(TextTableFile tableFile) throws IOException {
-        File file = FileUtils.createTempfile(TextTableFile.class, "txt", "SortTableFile" + Dates.format17(new Date()));
+        File file = FileUtils.createTempFile("SortTableFile.txt");
         FileUtils.clearDirectory(file.getParentFile());
         FileUtils.createFile(file);
 

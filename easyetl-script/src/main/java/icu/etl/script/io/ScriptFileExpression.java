@@ -63,7 +63,7 @@ public class ScriptFileExpression {
         String filepath0 = analysis.replaceShellVariable(session, context, pathname, true, true, true, false);
         String filepath1 = FileUtils.replaceFolderSeparator(filepath0);
         String parent = FileUtils.getParent(filepath1);
-        String filepath = parent == null ? FileUtils.joinFilepath(session.getDirectory(), filepath1) : filepath1;
+        String filepath = parent == null ? FileUtils.joinPath(session.getDirectory(), filepath1) : filepath1;
         return StringUtils.trimBlank(filepath);
     }
 

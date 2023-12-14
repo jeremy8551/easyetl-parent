@@ -39,7 +39,7 @@ public class SortTableFileCommand extends AbstractTraceCommand {
         this.map = map;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(session.getAnalysis().replaceShellVariable(session, context, this.command, true, true, true, false));
         }

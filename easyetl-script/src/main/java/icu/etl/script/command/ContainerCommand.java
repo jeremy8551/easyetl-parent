@@ -16,9 +16,7 @@ import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.command.feature.WithBodyCommandSupported;
 import icu.etl.script.internal.ScriptContainerReader;
-import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
-import icu.etl.util.TimeWatch;
 
 /**
  * container to execute tasks in parallel using thread=3 dropIndex buildIndex freq=day batch=10000 rollback begin ... end
@@ -42,8 +40,7 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
         this.cmdlist = cmdlist;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
-        TimeWatch watch = new TimeWatch();
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String thread = analysis.replaceShellVariable(session, context, this.attributes.get("thread"), true, true, true, false);
         int number = StringUtils.parseInt(thread, 3);
@@ -56,18 +53,8 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
         ScriptContainerReader in = new ScriptContainerReader(session, context, stdout, stderr, this);
         try {
             this.container = context.getContainer().getBean(ThreadSource.class).getJobService(number);
-            if (this.container.execute(in) == 0) {
-                if (print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(47, this.container.getStartJob(), watch.useTime()));
-                }
-                return 0;
-            } else {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(105, this.container.getStartJob(), this.container.getErrorJob(), watch.useTime()));
-                return UniversalScriptCommand.COMMAND_ERROR;
-            }
-        } catch (Exception e) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(105, this.container.getStartJob(), this.container.getErrorJob(), watch.useTime()), e);
-            return UniversalScriptCommand.COMMAND_ERROR;
+            this.container.execute(in);
+            return 0;
         } finally {
             in.close();
         }

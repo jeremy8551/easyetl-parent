@@ -34,10 +34,7 @@ import icu.etl.util.NetUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
-/**
- * FTP协议的实现类
- */
-@EasyBean(name = "ftp")
+@EasyBean(name = "ftp", description = "FTP协议的实现类")
 public class FtpCommand implements OSFtpCommand, EasyContextAware {
     private final static Log log = LogFactory.getLog(FtpCommand.class);
 
@@ -152,11 +149,11 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
     }
 
     /**
-     * Return remote path information
+     * 返回远程文件信息
      *
-     * @param filepath
-     * @return
-     * @throws IOException
+     * @param filepath 文件路径
+     * @return 文件信息
+     * @throws IOException 访问文件错误
      */
     protected synchronized ApacheFtpFile toFtpFile(String filepath) throws IOException {
         String status = this.client.getStatus(filepath);
@@ -296,10 +293,10 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
     }
 
     /**
-     * Format time
+     * 格式化时间
      *
-     * @param array
-     * @return
+     * @param array 字符串数组
+     * @return 时间
      */
     protected Date formatDate(String[] array) {
         StringBuilder buf = new StringBuilder();
@@ -315,7 +312,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
             } else {
                 buf.append(Dates.getYear(new Date()));
                 buf.append(" at ");
-                buf.append(time + ":00");
+                buf.append(time).append(":00");
             }
         } else {
             buf.append(Dates.getYear(new Date()));
@@ -466,11 +463,15 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
                 return false;
             }
 
-            File localfile = this.downfile(filepath, FileUtils.getTempDir(FtpCommand.class));
+            File downfile = this.downfile(filepath, FileUtils.getTempDir("ftp", "download", Dates.format17()));
+            if (downfile == null) {
+                return false;
+            }
+
             try {
-                return this.uploadfile(localfile, directory);
+                return this.uploadfile(downfile, directory);
             } finally {
-                localfile.delete();
+                FileUtils.delete(downfile);
             }
         } catch (Exception e) {
             throw new OSFileCommandException("copy " + filepath + " " + directory, e);
@@ -522,12 +523,12 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
     }
 
     /**
-     * Upload localFile to the remote server directory
+     * 上传文件
      *
-     * @param localFile
-     * @param remoteDir
-     * @return
-     * @throws IOException
+     * @param localFile 本地文件
+     * @param remoteDir 远程目录
+     * @return 返回true表示上传成功 false表示上传失败
+     * @throws IOException 访问文件错误或IO错误
      */
     protected synchronized boolean putFile(File localFile, String remoteDir) throws IOException {
         FileInputStream in = new FileInputStream(localFile);
@@ -567,53 +568,53 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
         }
     }
 
-    protected synchronized File downfile(String filepath, File localFile) throws IOException {
+    protected synchronized File downfile(String filepath, File localDir) throws IOException {
         filepath = FileUtils.rtrimFolderSeparator(filepath);
         ApacheFtpFile remotefile = this.toFtpFile(filepath);
         if (remotefile == null) {
-            if (log.isDebugEnabled()) {
-                log.debug("downfile " + filepath + " fail: file not exists!");
-            }
             return null;
-        } else if (remotefile.isDirectory()) {
+        }
+
+        if (remotefile.isDirectory()) {
             String newfilepath = FileUtils.rtrimFolderSeparator(filepath);
-            File localfile = new File(localFile, FileUtils.getFilename(newfilepath));
+            File localfile = new File(localDir, FileUtils.getFilename(newfilepath));
             if (!FileUtils.createDirectory(localfile)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("downfile " + filepath + " fail: can not create dir " + localfile);
-                }
                 return null;
             }
 
-            List<OSFile> listFiles = remotefile.listFiles();
-            for (OSFile file : listFiles) {
-                if (file.isDirectory()) {
-                    if (this.downfile(newfilepath + this.folderSeperator + file.getName(), localfile) == null) {
+            List<OSFile> filelist = remotefile.listFiles();
+            for (OSFile osfile : filelist) {
+                if (osfile.isDirectory()) {
+                    if (this.downfile(newfilepath + this.folderSeperator + osfile.getName(), localfile) == null) {
                         return null;
                     }
                 } else {
-                    if (this.writefile(newfilepath + this.folderSeperator + file.getName(), localfile) == null) {
+                    if (this.writefile(newfilepath + this.folderSeperator + osfile.getName(), localfile) == null) {
                         return null;
                     }
                 }
             }
             return localfile;
         } else {
-            return this.writefile(filepath, localFile);
+            return this.writefile(filepath, localDir);
         }
     }
 
-    protected synchronized File writefile(String filepath, File localfile) throws IOException {
-        File file = new File(localfile, FileUtils.getFilename(filepath));
-        FileOutputStream fos = new FileOutputStream(file, false);
+    protected synchronized File writefile(String filepath, File localDir) throws IOException {
+        if (log.isDebugEnabled()) {
+            log.debug("download {} {}", filepath, localDir.getAbsolutePath());
+        }
+
+        File file = new File(localDir, FileUtils.getFilename(filepath));
+        FileOutputStream out = new FileOutputStream(file, false);
         try {
-            if (this.client.retrieveFile(filepath, fos)) {
+            if (this.client.retrieveFile(filepath, out)) {
                 return file;
             } else {
                 return null;
             }
         } finally {
-            fos.close();
+            out.close();
         }
     }
 
@@ -631,8 +632,8 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
         }
 
         try {
-            File file = this.downfile(filepath, FileUtils.getTempDir(FtpCommand.class));
-            if (file == null || !file.exists() || !file.isFile()) {
+            File file = this.downfile(filepath, FileUtils.getTempDir("ftp", "download", Dates.format17()));
+            if (!FileUtils.isFile(file)) {
                 return null;
             } else {
                 return FileUtils.readline(file, charsetName, lineno);
@@ -654,8 +655,8 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
             }
 
             if (append) {
-                File file = this.downfile(filepath, FileUtils.getTempDir(FtpCommand.class));
-                if (file == null || !file.exists() || !file.isFile()) {
+                File file = this.downfile(filepath, FileUtils.getTempDir("ftp", "download", Dates.format17()));
+                if (!FileUtils.isFile(file)) {
                     return false;
                 } else if (FileUtils.write(file, charsetName, append, content)) {
                     return this.uploadfile(file, FileUtils.getParent(filepath));
@@ -663,7 +664,8 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
                     return false;
                 }
             } else {
-                File file = new File(FileUtils.getTempDir(FtpCommand.class), FileUtils.getFilename(filepath));
+                File parent = FileUtils.getTempDir("ftp", "localfile", Dates.format17());
+                File file = FileUtils.createNewFile(parent, FileUtils.getFilename(filepath));
                 return FileUtils.write(file, charsetName, append, content) && this.uploadfile(file, FileUtils.getParent(filepath));
             }
         } catch (Exception e) {

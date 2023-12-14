@@ -20,6 +20,7 @@ import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.io.ScriptFile;
 import icu.etl.script.io.ScriptNullStdout;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -89,7 +90,7 @@ public class FindCommand extends AbstractTraceCommand {
             }
         } else {
             File logfile = new ScriptFile(session, context, this.outputFile);
-            FileUtils.createFile(logfile);
+            FileUtils.assertCreateFile(logfile);
             this.out = new FileOutputStream(logfile);
         }
 

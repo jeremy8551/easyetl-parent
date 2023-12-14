@@ -133,7 +133,9 @@ public class LogContextImpl implements LogContext {
                     try {
                         next.close();
                     } catch (Exception e) {
-                        JUL.error(String.valueOf(where), e);
+                        if (JUL.isErrorEnabled()) {
+                            JUL.error(String.valueOf(where), e);
+                        }
                     }
                 }
             }

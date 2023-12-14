@@ -1,7 +1,6 @@
 package icu.etl.script.internal;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,10 +54,9 @@ public class CallbackMap implements UniversalScriptProgram {
      * @param cls         脚本命令
      * @param args        脚本命令对应的参数
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    public int executeCallback(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Class<?> cls, String[] args) throws IOException, SQLException {
+    public int executeCallback(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Class<?> cls, String[] args) throws Exception {
         Callback obj = this.get(cls);
         return obj.executeCallback(session, context, stdout, stderr, forceStdout, args);
     }

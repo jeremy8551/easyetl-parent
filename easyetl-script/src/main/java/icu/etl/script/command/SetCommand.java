@@ -1,12 +1,12 @@
 package icu.etl.script.command;
 
+import javax.script.Bindings;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.script.Bindings;
 
 import icu.etl.database.JdbcDao;
 import icu.etl.script.UniversalCommandCompiler;
@@ -127,7 +127,7 @@ public class SetCommand extends AbstractGlobalCommand {
 
         // 执行查询并将结果集保存到变量域
         Object value = dao.queryFirstRowFirstCol(sql);
-        Object newvalue = context.getFormatter().formatJdbcParameter(context, value);
+        Object newvalue = context.getFormatter().formatJdbcParameter(session, context, value);
         if (this.isGlobal()) {
             context.addGlobalVariable(this.name, newvalue);
         } else {

@@ -128,7 +128,8 @@ public class CommonTextTableFile implements TextTableFile, EasyContextAware {
     }
 
     public boolean delete() {
-        return FileUtils.deleteFile(this.getFile());
+        File file = this.getFile();
+        return file == null || FileUtils.deleteFile(file);
     }
 
     public String getLineSeparator() {
@@ -198,7 +199,7 @@ public class CommonTextTableFile implements TextTableFile, EasyContextAware {
     /**
      * 复制所有属性到参数 obj 中
      *
-     * @param obj
+     * @param obj 实例对象
      */
     public void clone(TextTableFile obj) {
         if (obj instanceof EasyContextAware) {

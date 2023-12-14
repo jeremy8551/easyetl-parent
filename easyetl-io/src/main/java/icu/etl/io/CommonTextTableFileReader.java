@@ -12,7 +12,6 @@ import icu.etl.collection.NatureRandomList;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.Ensure;
-import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Numbers;
 import icu.etl.util.ResourcesUtils;
@@ -113,7 +112,6 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
     protected void open(TextTableFile file) throws IOException {
         this.ensureClose();
         File txtfile = file.getFile();
-        FileUtils.checkPermission(txtfile, true, false);
         this.in = new CacheLineReader(txtfile, file.getCharsetName(), this.bufferSize);
         this.createFieldList();
     }

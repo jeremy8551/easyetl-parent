@@ -15,12 +15,13 @@ public abstract class UniversalScriptFormatter extends Format {
     /**
      * 将 JDBC 参数 object 转为脚本引擎内部类型
      *
+     * @param session 会话信息
      * @param context 脚本引擎上下文信息
      * @param object  Jdbc参数对象
-     * @return
-     * @throws IOException
-     * @throws SQLException
+     * @return 对象
+     * @throws IOException  IO错误
+     * @throws SQLException 数据库错误
      */
-    public abstract Object formatJdbcParameter(UniversalScriptContext context, Object object) throws IOException, SQLException;
+    public abstract Object formatJdbcParameter(UniversalScriptSession session, UniversalScriptContext context, Object object) throws IOException, SQLException;
 
 }

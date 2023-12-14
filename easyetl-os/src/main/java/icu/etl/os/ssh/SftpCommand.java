@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -64,9 +64,6 @@ public class SftpCommand implements OSFtpCommand {
     /** 字符集 */
     protected String charsetName;
 
-    /** Parameter name collection */
-//	private final static HashSet<String> PARAMS_NAME_SET = new HashSet<String>(Arrays.toList("lang.s2c", "lang.c2s", "random", "CheckCiphers", "kex", "CheckKexes", "server_host_key", "cipher.c2s", "cipher.s2c", "mac.c2s", "mac.s2c", "compression.c2s", "compression.s2c", "compression_level", "StrictHostKeyChecking", "HashKnownHosts", "PreferredAuthentications", "MaxAuthTries", "ClearAllForwardings", "HostKeyAlias", "UserKnownHostsFile", "IdentityFile", "ServerAliveInterval"));
-
     /**
      * 初始化
      */
@@ -120,22 +117,30 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     /**
-     * Open a channel
+     * 打开信道
      */
     public void openChannelSftp() {
         this.channel = new JschChannel(this.createChannelSftp(), false);
     }
 
+    /**
+     * 判断是否已打开信道
+     *
+     * @return 返回true表示已打开信道 false表示未打开信道
+     */
     protected boolean isChannelConnected() {
         try {
             return this.channel != null && this.channel.isConnected();
         } catch (Exception e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
             return false;
         }
     }
 
     /**
-     * close a channel
+     * 关闭信道
      */
     public void closeChannelSftp() {
         if (this.channel != null) {
@@ -145,9 +150,9 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     /**
-     * Returns the current sftp channel
+     * 返回sftp信道
      *
-     * @return
+     * @return 信道
      */
     public JschChannel getChannelSftp() {
         if (this.channel == null) {
@@ -157,9 +162,9 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     /**
-     * Create and open a channel
+     * 创建一个信道
      *
-     * @return
+     * @return 信道
      */
     protected Channel createChannelSftp() {
         try {
@@ -167,7 +172,7 @@ public class SftpCommand implements OSFtpCommand {
             channel.connect();
             return channel;
         } catch (Exception e) {
-            throw new OSFileCommandException("connect channel fail!", e);
+            throw new OSFileCommandException(e.getLocalizedMessage(), e);
         }
     }
 
@@ -179,7 +184,7 @@ public class SftpCommand implements OSFtpCommand {
 //	}
 
     /**
-     * Setting parameters
+     * 设置参数
      */
     protected void setParameters() {
         if (!this.params.containsKey("StrictHostKeyChecking")) {
@@ -188,10 +193,10 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     /**
-     * Return the path information of the remote server
+     * 返回远程服务器上文件信息
      *
-     * @param filepath
-     * @return
+     * @param filepath 文件路径
+     * @return 文件信息
      */
     protected OSFile toOSFile(String filepath) {
         JschChannel channel = this.getChannelSftp();
@@ -211,13 +216,13 @@ public class SftpCommand implements OSFtpCommand {
         try {
             SftpATTRS stat = sftp.stat(this.toFilepath(filepath));
             if (stat == null) {
-                return null;
+                return null; // 文件不存在
             } else {
                 return this.toOSFile(FileUtils.getFilename(filepath), FileUtils.getParent(filepath), stat, null);
             }
         } catch (SftpException e) {
             if (this.isNoSuchFileError(e)) {
-                return null;
+                return null; // 文件不存在
             } else {
                 throw new OSException(filepath, e);
             }
@@ -225,13 +230,13 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     /**
-     * Return the path information of the remote server
+     * 返回远程服务器上文件信息
      *
-     * @param filename
-     * @param parent
-     * @param attr
-     * @param longname
-     * @return
+     * @param filename 文件名
+     * @param parent   文件所在目录
+     * @param attr     属性
+     * @param longname 文件表达式, 如: drwxr-xr-x  50 user  staff   1.6K 12-11_16:30 .
+     * @return 文件信息
      */
     private OSFile toOSFile(String filename, String parent, SftpATTRS attr, String longname) {
         OSFileImpl file = new OSFileImpl();
@@ -258,21 +263,17 @@ public class SftpCommand implements OSFtpCommand {
 
     public void terminate() {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "terminate"));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "terminate"));
         }
 
         if (this.channel != null) {
             this.channel.closeSftp();
+            this.channel = null;
         }
-        this.channel = null;
     }
 
     public boolean exists(String filepath) {
-        try {
-            return this.toOSFile(filepath) != null;
-        } catch (Exception e) {
-            return false;
-        }
+        return this.toOSFile(filepath) != null;
     }
 
     public boolean isFile(String filepath) {
@@ -287,7 +288,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean mkdir(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "mkdir " + filepath));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "mkdir " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -307,16 +308,14 @@ public class SftpCommand implements OSFtpCommand {
             sftp.mkdir(filepath);
             file = this.toOSFile(sftp, filepath);
             return file != null && file.isDirectory();
-        } else if (file.isDirectory()) {
-            return true;
         } else {
-            return false;
+            return file.isDirectory();
         }
     }
 
     public boolean cd(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "cd " + filepath));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "cd " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -325,10 +324,7 @@ public class SftpCommand implements OSFtpCommand {
             sftp.cd(filepath);
             return true;
         } catch (SftpException e) {
-            if (log.isErrorEnabled()) {
-                log.error("cd " + filepath + " fail!", e);
-            }
-            return false;
+            throw new OSFileCommandException("cd " + filepath, e);
         } finally {
             channel.closeTempChannel();
         }
@@ -336,7 +332,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean rm(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "rm " + filepath));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "rm " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -351,29 +347,31 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     /**
-     * Delete the entire directory
+     * 删除远程服务器上的文件
      *
-     * @param sftp
-     * @param filepath Remote server directory
-     * @throws SftpException
+     * @param sftp     SFTP信道
+     * @param filepath 文件路径
+     * @throws SftpException SFTP错误
      */
     protected boolean rmfile(ChannelSftp sftp, String filepath) throws SftpException {
         OSFile file = this.toOSFile(sftp, filepath);
         if (file == null) {
             return true;
-        } else if (!file.isDirectory()) {
+        }
+
+        if (!file.isDirectory()) {
             sftp.rm(filepath);
             return this.toOSFile(sftp, filepath) == null;
         } else {
             List<OSFile> list = this.ls(sftp, filepath);
-            for (OSFile cfile : list) {
-                if (cfile.isDirectory()) {
-                    this.rmfile(sftp, cfile.getAbsolutePath());
+            for (OSFile osfile : list) {
+                if (osfile.isDirectory()) {
+                    this.rmfile(sftp, osfile.getAbsolutePath());
                 } else {
                     if (log.isDebugEnabled()) {
-                        log.debug("rm " + cfile.getAbsolutePath());
+                        log.debug("rm " + osfile.getAbsolutePath());
                     }
-                    sftp.rm(cfile.getAbsolutePath());
+                    sftp.rm(osfile.getAbsolutePath());
                 }
             }
 
@@ -384,7 +382,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public String pwd() {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "pwd"));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "pwd"));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -399,7 +397,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public List<OSFile> ls(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "ls " + filepath));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "ls " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -421,13 +419,11 @@ public class SftpCommand implements OSFtpCommand {
             }
 
             if (stat.isDir()) {
-                for (Iterator<?> it = sftp.ls(filepath).iterator(); it.hasNext(); ) {
-                    ChannelSftp.LsEntry entry = (ChannelSftp.LsEntry) it.next();
+                Vector<?> filelist = sftp.ls(filepath);
+                for (Object obj : filelist) {
+                    ChannelSftp.LsEntry entry = (ChannelSftp.LsEntry) obj;
                     OSFile file = this.toOSFile(entry.getFilename(), filepath, entry.getAttrs(), entry.getLongname());
                     if (!LinuxLocalOS.KEY_FILENAMES.contains(file.getName())) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("ls result: " + file.toString());
-                        }
                         list.add(file);
                     }
                 }
@@ -435,9 +431,6 @@ public class SftpCommand implements OSFtpCommand {
                 filepath = this.toFilepath(filepath);
                 OSFile file = this.toOSFile(FileUtils.getFilename(filepath), FileUtils.getParent(filepath), stat, null);
                 if (!LinuxLocalOS.KEY_FILENAMES.contains(file.getName())) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("ls result: " + file.toString());
-                    }
                     list.add(file);
                 }
             }
@@ -452,7 +445,7 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     protected boolean isNoSuchFileError(SftpException e) {
-        return e.getMessage().indexOf("No such file") != -1;
+        return e.getMessage().contains("No such file");
     }
 
     public synchronized boolean upload(InputStream in, String remote) {
@@ -483,10 +476,10 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean upload(File localFile, String remoteDir) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "upload " + localFile + " " + remoteDir));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "upload " + localFile + " " + remoteDir));
         }
 
-        if (localFile == null || !localFile.exists()) {
+        if (!FileUtils.exists(localFile)) {
             return false;
         }
 
@@ -502,70 +495,63 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     /**
-     * Upload a directory or file to the server
+     * 上传文件/目录
      *
-     * @param sftp      channelSftp
-     * @param localfile Upload files or directories
-     * @param filepath  File or directory of remote server
-     * @param monitor   Upload file progress monitor
+     * @param sftp      信道
+     * @param localfile 本地文件/目录
+     * @param filepath  远程服务器上文件路径
+     * @param monitor   监视器
      * @param mode      {@linkplain ChannelSftp#RESUME} Recovery mode, if the file has been partially interrupted, the next time the same file is transferred, it will resume from the place where the last interruption <br>
      *                  {@linkplain ChannelSftp#APPEND} Append mode, if the target file already exists, the transferred file will be appended after the target file <br>
      *                  {@linkplain ChannelSftp#OVERWRITE} Full overwrite mode, if the file already exists, the transfer file will completely overwrite the target file <br>
-     * @throws SftpException
+     * @throws SftpException SFTP错误
      */
     protected boolean uploadfile(ChannelSftp sftp, File localfile, String filepath, SftpProgressMonitor monitor, int mode) throws SftpException {
         if (localfile.isDirectory()) {
             String remotedir = FileUtils.rtrimFolderSeparator(filepath) + "/" + localfile.getName();
             OSFile file = this.toOSFile(sftp, remotedir);
             if (file == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("uploadfile & mkdir " + remotedir);
-                }
                 sftp.mkdir(remotedir);
             } else if (!file.isDirectory()) {
-                if (log.isDebugEnabled()) {
-                    log.debug("uploadfile & rm & mkdir " + remotedir);
-                }
                 sftp.rm(remotedir);
                 sftp.mkdir(remotedir);
             }
 
-            /**
-             * Loop through sub-files in the directory and upload
-             */
-            boolean flag = true;
+            // 上传目录中的文件
+            boolean success = true;
             File[] files = FileUtils.array(localfile.listFiles());
             for (File cfile : files) {
                 if (log.isDebugEnabled()) {
                     log.debug("uploadfile " + cfile + " " + remotedir + " ..");
                 }
+
                 if (!this.uploadfile(sftp, cfile, remotedir, monitor, mode)) {
-                    flag = false;
+                    success = false;
                 }
             }
-            return flag;
+            return success;
         } else {
             sftp.put(localfile.getAbsolutePath(), filepath, monitor, mode);
             return true;
         }
     }
 
-    public boolean rename(String filepath, String newfilepath) {
+    public boolean rename(String filepath, String dest) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "rename " + filepath + " " + newfilepath));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "rename " + filepath + " " + dest));
         }
 
         JschChannel channel = this.getChannelSftp();
         try {
             ChannelSftp sftp = channel.getSftp(this.charsetName);
-            if (this.toOSFile(sftp, filepath) == null || this.toOSFile(sftp, newfilepath) != null) {
+            if (this.toOSFile(sftp, filepath) == null || this.toOSFile(sftp, dest) != null) {
                 return false;
             } else {
-                sftp.rename(filepath, newfilepath);
-                return this.toOSFile(sftp, filepath) == null && this.toOSFile(sftp, newfilepath) != null;
+                sftp.rename(filepath, dest);
+                return this.toOSFile(sftp, filepath) == null && this.toOSFile(sftp, dest) != null;
             }
         } catch (Exception e) {
-            throw new OSFileCommandException("rename " + filepath + " " + newfilepath, e);
+            throw new OSFileCommandException("rename " + filepath + " " + dest, e);
         } finally {
             channel.closeTempChannel();
         }
@@ -573,7 +559,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public File download(String filepath, File localDir) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "download " + filepath + " " + localDir));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "download " + filepath + " " + localDir));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -581,7 +567,7 @@ public class SftpCommand implements OSFtpCommand {
             ChannelSftp sftp = channel.getSftp(this.charsetName);
             return this.downfile(sftp, filepath, localDir);
         } catch (Exception e) {
-            throw new OSFileCommandException("downfile " + filepath + " " + localDir, e);
+            throw new OSFileCommandException("download " + filepath + " " + localDir, e);
         } finally {
             channel.closeTempChannel();
         }
@@ -591,91 +577,82 @@ public class SftpCommand implements OSFtpCommand {
         OSFile file = this.toOSFile(sftp, filepath);
         if (file == null) {
             return null;
-        } else if (!file.isDirectory()) {
-            if (!localDir.exists()) {
-                FileUtils.createDirectory(localDir);
-            }
-            File localfile = localDir.isDirectory() ? new File(localDir, file.getName()) : localDir;
-            return this.writefile(sftp, filepath, localfile);
-        } else {
-            if (!localDir.exists()) {
-                FileUtils.createDirectory(localDir);
-            }
-            if (localDir.isFile()) {
+        }
+
+        if (file.isDirectory()) {
+            if (!FileUtils.createDirectory(localDir)) {
                 return null;
             }
 
-            File localfile = new File(localDir, file.getName());
-            if (!FileUtils.createDirectory(localfile)) {
+            File downfile = new File(localDir, file.getName());
+            if (!FileUtils.createDirectory(downfile)) {
                 return null;
             }
 
-            List<OSFile> list = this.ls(sftp, filepath);
-            for (OSFile cfile : list) {
-                if (cfile.isDirectory()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("downfile " + cfile.getAbsolutePath() + " " + localfile.getAbsolutePath());
-                    }
-
-                    if (this.downfile(sftp, cfile.getAbsolutePath(), localfile) == null) {
-                        return null;
+            boolean success = true;
+            List<OSFile> filelist = this.ls(sftp, filepath);
+            for (OSFile osfile : filelist) {
+                if (osfile.isDirectory()) {
+                    if (this.downfile(sftp, osfile.getAbsolutePath(), downfile) == null) {
+                        success = false;
                     }
                 } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("downfile " + cfile.getAbsolutePath() + " " + localfile.getAbsolutePath());
-                    }
-                    this.writefile(sftp, cfile.getAbsolutePath(), new File(localfile, cfile.getName()));
+                    this.download(sftp, osfile.getAbsolutePath(), new File(downfile, osfile.getName()));
                 }
             }
+            return success ? downfile : null;
+        } else {
+            if (!localDir.exists()) {
+                FileUtils.createDirectory(localDir); // 无需判断目录是否创建成功
+            }
 
+            File localfile = localDir.isDirectory() ? new File(localDir, file.getName()) : localDir;
+            this.download(sftp, filepath, localfile);
             return localfile;
         }
     }
 
     /**
-     * Download a single file from the sftp channel
+     * 从SFTP信道下载一个文件
      *
-     * @param sftp           sftp channel
-     * @param remotefilepath Remote server file path
-     * @param localfile      Local file
-     * @throws SftpException
-     * @throws IOException
+     * @param sftp           sftp信道
+     * @param remotefilepath 远程文件路径
+     * @param localfile      本地文件
+     * @throws SftpException SFTP错误
+     * @throws IOException   访问文件错误
      */
-    protected File writefile(ChannelSftp sftp, String remotefilepath, File localfile) throws SftpException, IOException {
-        byte[] array = new byte[1024];
-        InputStream in = null;
-        FileOutputStream out = new FileOutputStream(localfile, false);
-        try {
-            in = sftp.get(remotefilepath);
-            int len = -1;
-            while ((len = in.read(array)) != -1) {
-                out.write(array, 0, len);
-            }
-            out.flush();
-            return localfile;
-        } finally {
-            IO.close(out, in);
+    protected void download(ChannelSftp sftp, String remotefilepath, File localfile) throws SftpException, IOException {
+        if (log.isDebugEnabled()) {
+            log.debug("downfile " + remotefilepath + " " + localfile.getAbsolutePath());
         }
+
+        InputStream in = sftp.get(remotefilepath);
+        FileOutputStream out = new FileOutputStream(localfile, false);
+        IO.write(in, out);
     }
 
     public String read(String filepath, String charsetName, int lineno) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "read " + filepath + " " + charsetName + " " + lineno));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "read " + filepath + " " + charsetName + " " + lineno));
         }
 
         JschChannel channel = this.getChannelSftp();
         try {
             ChannelSftp sftp = channel.getSftp(this.charsetName);
-            OSFile osFile = this.toOSFile(sftp, filepath);
-            if (osFile == null || osFile.isDirectory()) {
+            OSFile osfile = this.toOSFile(sftp, filepath);
+            if (osfile == null || osfile.isDirectory()) {
                 return null;
             }
 
-            File file = this.downfile(sftp, filepath, FileUtils.getTempDir(SftpCommand.class));
-            if (file == null || !file.exists() || !file.isFile()) {
+            File downfile = this.downfile(sftp, filepath, FileUtils.getTempDir("sftp", "download", Dates.format17()));
+            if (!FileUtils.isFile(downfile)) {
                 return null;
-            } else {
-                return FileUtils.readline(file, charsetName, lineno);
+            }
+
+            try {
+                return FileUtils.readline(downfile, charsetName, lineno);
+            } finally {
+                FileUtils.delete(downfile);
             }
         } catch (Exception e) {
             throw new OSFileCommandException("read " + filepath + " " + charsetName + " " + lineno, e);
@@ -686,26 +663,31 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean write(String filepath, String charsetName, boolean append, CharSequence content) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "write " + filepath + " " + append + " " + content));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "write " + filepath + " " + append + " " + content));
         }
 
         JschChannel channel = this.getChannelSftp();
         try {
             ChannelSftp sftp = channel.getSftp(this.charsetName);
             if (append) {
-                File file = this.downfile(sftp, filepath, FileUtils.getTempDir(SftpCommand.class));
-                if (file == null || !file.exists() || !file.isFile()) {
-                    return false;
-                } else if (FileUtils.write(file, charsetName, append, content)) {
-                    return this.uploadfile(sftp, file, FileUtils.getParent(filepath), null, ChannelSftp.OVERWRITE);
-                } else {
+                File downfile = this.downfile(sftp, filepath, FileUtils.getTempDir("sftp", "download", Dates.format17()));
+                if (!FileUtils.isFile(downfile)) {
                     return false;
                 }
+
+                try {
+                    if (FileUtils.write(downfile, charsetName, append, content)) {
+                        return this.uploadfile(sftp, downfile, FileUtils.getParent(filepath), null, ChannelSftp.OVERWRITE);
+                    }
+                } finally {
+                    FileUtils.delete(downfile);
+                }
+
+                return false;
             } else {
-                File file = new File(FileUtils.getTempDir(SftpCommand.class), FileUtils.getFilename(filepath));
-                return FileUtils.write(file, charsetName, append, content) //
-                        && this.uploadfile(sftp, file, FileUtils.getParent(filepath), null, ChannelSftp.OVERWRITE) //
-                        ;
+                File parent = FileUtils.getTempDir("sftp", "localfile", Dates.format17());
+                File file = FileUtils.createNewFile(parent, FileUtils.getFilename(filepath));
+                return FileUtils.write(file, charsetName, append, content) && this.uploadfile(sftp, file, FileUtils.getParent(filepath), null, ChannelSftp.OVERWRITE);
             }
         } catch (Exception e) {
             throw new OSFileCommandException("write " + filepath + " " + append + " " + content, e);
@@ -716,7 +698,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean copy(String filepath, String directory) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "copy " + filepath + " " + directory));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "copy " + filepath + " " + directory));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -731,11 +713,15 @@ public class SftpCommand implements OSFtpCommand {
                 return false;
             }
 
-            File localfile = this.downfile(sftp, filepath, FileUtils.getTempDir(SftpCommand.class));
+            File downfile = this.downfile(sftp, filepath, FileUtils.getTempDir("sftp", "download", Dates.format17()));
+            if (downfile == null) {
+                return false;
+            }
+
             try {
-                return this.uploadfile(sftp, localfile, directory, null, ChannelSftp.OVERWRITE);
+                return this.uploadfile(sftp, downfile, directory, null, ChannelSftp.OVERWRITE);
             } finally {
-                localfile.delete();
+                FileUtils.delete(downfile);
             }
         } catch (Exception e) {
             throw new OSFileCommandException("copy " + filepath + " " + directory, e);
@@ -746,7 +732,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public List<OSFile> find(String filepath, String name, char type, OSFileFilter filter) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "find " + filepath + " " + name + " " + type + " " + filter));
+            log.debug(ResourcesUtils.getSSH2JschMessage(12, "find " + filepath + " " + name + " " + type + " " + filter));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -810,10 +796,6 @@ public class SftpCommand implements OSFtpCommand {
     }
 
     public void setCharsetName(String charsetName) {
-        if (log.isDebugEnabled()) {
-            log.debug("set " + SftpCommand.class.getSimpleName() + " charset = " + charsetName);
-        }
-
         this.charsetName = charsetName;
     }
 
@@ -830,7 +812,7 @@ public class SftpCommand implements OSFtpCommand {
         try {
             if (this.channel != null) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getSSH2JschMessage(12, this.remoteServerName, "bye"));
+                    log.debug(ResourcesUtils.getSSH2JschMessage(12, "bye"));
                 }
                 this.channel.closeSftp();
             }

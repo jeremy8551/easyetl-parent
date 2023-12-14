@@ -19,7 +19,7 @@ public class SlowTest {
     private final static Log log = LogFactory.getLog(SlowTest.class);
 
     @Test
-    public void test1() {
+    public void test1() throws Exception {
         LogFactory.getContext().updateLevel("*", LogLevel.DEBUG);
         ThreadSourceImpl source = new ThreadSourceImpl();
         EasyJobService service = source.getJobService(2);
@@ -29,7 +29,7 @@ public class SlowTest {
             list.add(new Task(i + 1));
         }
 
-        service.executeForce(new EasyJobReaderImpl(list));
+        service.execute(new EasyJobReaderImpl(list));
         IO.close(source);
 
         Assert.assertEquals(0, service.getAliveJob());
@@ -38,7 +38,7 @@ public class SlowTest {
     }
 
     @Test
-    public void test2() {
+    public void test2() throws Exception {
         LogFactory.getContext().updateLevel("*", LogLevel.DEBUG);
         ThreadSource source = new ThreadSourceImpl();
         EasyJobService service = source.getJobService(2);

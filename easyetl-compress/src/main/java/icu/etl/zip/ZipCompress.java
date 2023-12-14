@@ -2,17 +2,13 @@ package icu.etl.zip;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipException;
 
 import icu.apache.ant.zip.ZipEntry;
 import icu.apache.ant.zip.ZipFile;
@@ -20,6 +16,7 @@ import icu.apache.ant.zip.ZipOutputStream;
 import icu.etl.annotation.EasyBean;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -45,379 +42,296 @@ public class ZipCompress implements Compress {
         this.zipFile = file;
     }
 
-    public void archiveFile(File file, String dir) {
-        addFile(file, dir, null, 0);
+    public void archiveFile(File file, String dir) throws IOException {
+        this.addFile(file, dir, null, 0);
     }
 
-    public void archiveFile(File file, String dir, String charset) {
-        addFile(file, dir, charset, 0);
+    public void archiveFile(File file, String dir, String charsetName) throws IOException {
+        this.addFile(file, dir, charsetName, 0);
     }
 
-    protected void addFile(File file, String dir, String charset, int level) {
-        if (file == null || !file.exists()) {
-            throw new IllegalArgumentException();
+    protected void addFile(File file, String dir, String charsetName, int level) throws IOException {
+        Ensure.notNull(this.zipFile);
+        FileUtils.assertExists(file);
+        charsetName = StringUtils.charset(charsetName);
+
+        if (this.zos == null) {
+            this.zos = new ZipOutputStream(new FileOutputStream(this.zipFile));
         }
 
-        if (this.zipFile == null) {
-            throw new IllegalArgumentException("zipFile is null!");
+        this.zos.setEncoding(charsetName);
+
+        // 处理目录
+        dir = (dir == null) ? "" : dir.trim();
+        if (dir.equals("/")) {
+            dir = "";
         }
 
-        try {
-            if (this.zos == null) {
-                this.zos = new ZipOutputStream(new FileOutputStream(this.zipFile));
-            }
+        int length = dir.length();
 
-            if (this.zos != null) {
-                this.zos.setEncoding(StringUtils.defaultString(charset, StringUtils.CHARSET));
-            }
+        // 去掉最前面的斜线
+        if (length > 1 && dir.charAt(0) == '/') {
+            dir = dir.substring(1);
+        }
 
-            // 处理目录
-            dir = (dir == null) ? "" : dir.trim();
-            if (dir.equals("/")) {
-                dir = "";
-            }
+        // 去掉最后面的斜线
+        if (length > 1 && dir.charAt(length - 1) != '/') {
+            dir = dir + "/";
+        }
 
-            int len = dir.length();
-
-            // 去掉最前面的斜线
-            if (len > 1 && dir.charAt(0) == '/') {
-                dir = dir.substring(1);
-            }
-
-            // 去掉最后面的斜线
-            if (len > 1 && dir.charAt(len - 1) != '/') {
-                dir = dir + "/";
-            }
-
-            if (file.isDirectory()) {
-                String d = "";
-                File root = new File(file.getAbsolutePath());
-                for (int i = 0; i < level; i++) {
-                    if (this.terminate) {
-                        break;
-                    }
-
+        if (file.isDirectory()) {
+            String d = "";
+            File root = new File(file.getAbsolutePath());
+            for (int i = 0; i < level; i++) {
+                if (this.terminate) {
+                    break;
+                } else {
                     root = new File(root.getParent());
                     d = root.getName() + "/" + d;
                 }
-                d = d + file.getName() + "/";
+            }
+            d = d + file.getName() + "/";
 
-                if (log.isDebugEnabled()) {
-                    log.debug("zip file, create dir: " + d + " ..");
-                }
-                ZipEntry entry = new ZipEntry(d);
-                this.zos.putNextEntry(entry);
+            if (log.isDebugEnabled()) {
+                log.debug("zip file, create dir: {} ..", d);
+            }
 
-                // 遍历目录下的所有文件并压入压缩包中的目录下
-                File[] fs = FileUtils.array(file.listFiles());
-                for (int i = 0; i < fs.length; i++) {
-                    if (this.terminate) {
-                        break;
-                    }
+            ZipEntry entry = new ZipEntry(d);
+            this.zos.putNextEntry(entry);
 
-                    this.addFile(fs[i], d, charset, level + 1);
-                }
-            } else {
-                if (dir.length() > 1 && !dir.equals("//")) { // 创建父目录
-                    String d = dir.charAt(0) == '/' ? dir.substring(1) : dir;
-                    if (d.length() > 1) {
-                        ZipEntry entry = new ZipEntry(d);
-                        this.zos.putNextEntry(entry);
-                    }
-                }
-
-                String zipFile = dir + file.getName();
-                InputStream is = new FileInputStream(file);
-                if (log.isDebugEnabled()) {
-                    if (StringUtils.isBlank(dir)) {
-                        log.debug("zip " + file.getAbsolutePath() + " " + this.zipFile.getAbsolutePath() + " ..");
-                    } else {
-                        log.debug("zip " + file.getAbsolutePath() + " " + this.zipFile.getAbsolutePath() + " -> " + dir + " ..");
-                    }
-                }
-
-                try {
-                    ZipEntry entry = new ZipEntry(zipFile);
-                    this.zos.putNextEntry(entry);
-                    byte tmp[] = new byte[1024];
-                    int i = 0;
-                    while ((i = is.read(tmp)) != -1) {
-                        if (this.terminate) {
-                            break;
-                        }
-
-                        this.zos.write(tmp, 0, i);
-                    }
-                } finally {
-                    IO.closeQuietly(is);
+            // 遍历目录下的所有文件并压入压缩包中的目录下
+            File[] files = FileUtils.array(file.listFiles());
+            for (int i = 0; i < files.length; i++) {
+                if (this.terminate) {
+                    break;
+                } else {
+                    this.addFile(files[i], d, charsetName, level + 1);
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("zip " + file.getAbsolutePath() + " fail!", e);
+        } else {
+            if (dir.length() > 1 && !dir.equals("//")) { // 创建父目录
+                String d = dir.charAt(0) == '/' ? dir.substring(1) : dir;
+                if (d.length() > 1) {
+                    ZipEntry entry = new ZipEntry(d);
+                    this.zos.putNextEntry(entry);
+                }
+            }
+
+            String zipfile = dir + file.getName();
+            InputStream in = new FileInputStream(file);
+            try {
+                if (log.isDebugEnabled()) {
+                    if (StringUtils.isBlank(dir)) {
+                        log.debug("zip {} {} ..", file.getAbsolutePath(), this.zipFile.getAbsolutePath());
+                    } else {
+                        log.debug("zip {} {} -> {} ..", file.getAbsolutePath(), this.zipFile.getAbsolutePath(), dir);
+                    }
+                }
+
+                ZipEntry entry = new ZipEntry(zipfile);
+                this.zos.putNextEntry(entry);
+                byte[] buffer = new byte[1024];
+                for (int len; (len = in.read(buffer)) != -1; ) {
+                    if (this.terminate) {
+                        break;
+                    } else {
+                        this.zos.write(buffer, 0, len);
+                    }
+                }
+            } finally {
+                in.close();
+            }
         }
     }
 
-    public void extract(String outputDir, String charsetName) {
-        if (zipFile == null) {
-            throw new IllegalArgumentException("unzip " + zipFile.getPath() + " fail: zipFile is null!");
-        }
-        if (!zipFile.exists() || !zipFile.isFile()) {
-            throw new IllegalArgumentException("unzip " + zipFile.getPath() + " fail: zipfile " + zipFile.getPath() + " invalid!");
-        }
+    public void extract(String outputDir, String charsetName) throws IOException {
+        FileUtils.assertFile(this.zipFile);
+        FileUtils.assertCreateDirectory(outputDir);
+        charsetName = StringUtils.charset(charsetName);
 
-        if (!FileUtils.exists(outputDir)) {
-            FileUtils.createDirectory(new File(outputDir));
-        } else if (!FileUtils.isDirectory(outputDir)) {
-            throw new IllegalArgumentException("unzip " + zipFile.getPath() + " fail: dir " + outputDir + " invalid!");
-        }
-
-        if (StringUtils.isBlank(charsetName)) {
-            charsetName = StringUtils.CHARSET;
-        }
-
-        ZipFile file = null;
+        ZipFile file = new ZipFile(zipFile, charsetName);
         try {
             if (log.isDebugEnabled()) {
                 log.debug("unzip " + zipFile + " " + outputDir + " ..");
             }
 
-            file = new ZipFile(zipFile, charsetName);
-            byte[] buf = new byte[128];
-            Enumeration<ZipEntry> it = file.getEntries();
-            while (it.hasMoreElements()) {
-                ZipEntry entry = it.nextElement();
+            byte[] buffer = new byte[128];
+            for (Enumeration<ZipEntry> it = file.getEntries(); it.hasMoreElements(); ) {
                 if (this.terminate) {
                     break;
                 }
 
-                String filePath = FileUtils.joinFilepath(outputDir, entry.getName());
+                ZipEntry entry = it.nextElement();
+                String filePath = FileUtils.joinPath(outputDir, entry.getName());
+
+                if (log.isDebugEnabled()) {
+                    log.debug("unzip " + entry.getName() + " " + outputDir + " ..");
+                }
+
                 if (entry.isDirectory()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("unzip " + entry.getName() + " " + outputDir + " ..");
-                    }
-                    FileUtils.createDirectory(new File(filePath));
+                    FileUtils.assertCreateDirectory(filePath);
                 } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("unzip " + entry.getName() + " " + outputDir + " ..");
-                    }
-                    zipEntry2File(file, entry, filePath, buf);
+                    this.tofile(file, entry, filePath, buffer);
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("unzip " + zipFile.getPath() + " fail!", e);
         } finally {
-            IO.close(file);
+            file.close();
         }
     }
 
-    public void extract(String outputDir, String charsetName, String entryName) {
-        if (zipFile == null) {
-            throw new IllegalArgumentException("unzip " + zipFile.getPath() + " fail: zipFile is null!");
-        }
-        if (!zipFile.exists() || !zipFile.isFile()) {
-            throw new IllegalArgumentException("unzip " + zipFile.getPath() + " fail: zipfile " + zipFile.getPath() + " invalid!");
-        }
+    public void extract(String outputDir, String charsetName, String entryName) throws IOException {
+        FileUtils.assertFile(this.zipFile);
+        Ensure.notBlank(entryName);
+        FileUtils.assertCreateDirectory(outputDir);
+        charsetName = StringUtils.charset(charsetName);
 
-        if (!FileUtils.exists(outputDir)) {
-            FileUtils.createDirectory(new File(outputDir));
-        } else if (!FileUtils.isDirectory(outputDir)) {
-            throw new IllegalArgumentException("unzip " + zipFile.getPath() + " fail: directory " + outputDir + " invalid!");
-        }
-
-        if (StringUtils.isBlank(entryName)) {
-            throw new IllegalArgumentException("entryName is blank!");
-        }
-
-        if (StringUtils.isBlank(charsetName)) {
-            charsetName = StringUtils.CHARSET;
-        }
-
-        ZipFile file = null;
+        ZipFile file = new ZipFile(this.zipFile, charsetName);
         try {
             if (log.isDebugEnabled()) {
-                log.debug("unzip " + zipFile + " -> " + entryName + " " + outputDir + " ..");
+                log.debug("unzip " + this.zipFile + " -> " + entryName + " " + outputDir + " ..");
             }
 
-            file = new ZipFile(zipFile, charsetName);
-            byte[] buf = new byte[128];
-            Iterable<ZipEntry> entryList = file.getEntries(entryName);
-            Iterator<ZipEntry> it = entryList.iterator();
-            while (it.hasNext()) {
+            byte[] buffer = new byte[128];
+            Iterable<ZipEntry> itr = file.getEntries(entryName);
+            for (Iterator<ZipEntry> it = itr.iterator(); it.hasNext(); ) {
                 if (this.terminate) {
                     break;
                 }
 
                 ZipEntry entry = it.next();
-                String filePath = FileUtils.joinFilepath(outputDir, entry.getName());
+                String filePath = FileUtils.joinPath(outputDir, entry.getName());
                 if (entry.isDirectory()) {
-                    FileUtils.createDirectory(new File(filePath));
+                    FileUtils.assertCreateDirectory(filePath);
                 } else {
-                    zipEntry2File(file, entry, filePath, buf);
+                    this.tofile(file, entry, filePath, buffer);
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("unzip " + zipFile.getPath() + " fail!", e);
         } finally {
-            IO.close(file);
+            file.close();
         }
     }
 
-    public List<ZipEntry> getEntrys(String charsetName, String filename, boolean ignoreCase) {
-        if (zipFile == null) {
-            throw new IllegalArgumentException("unzip " + zipFile.getPath() + " fail: zipFile is null!");
-        }
-        if (!zipFile.exists() || !zipFile.isFile()) {
-            throw new IllegalArgumentException("unzip " + zipFile.getPath() + " fail: zipfile " + zipFile.getPath() + " invalid!");
-        }
+    public List<ZipEntry> getEntrys(String charsetName, String filename, boolean ignoreCase) throws IOException {
+        FileUtils.assertFile(this.zipFile);
+        Ensure.notBlank(filename);
+        charsetName = StringUtils.charset(charsetName);
 
-        if (StringUtils.isBlank(filename)) {
-            throw new IllegalArgumentException("filename is null!");
-        }
-
-        ZipFile file = null;
+        ZipFile file = new ZipFile(this.zipFile, charsetName);
         try {
-            file = new ZipFile(zipFile, charsetName);
-            List<ZipEntry> result = new ArrayList<ZipEntry>();
-            Enumeration<ZipEntry> it = file.getEntries();
-            while (it.hasMoreElements()) {
+            List<ZipEntry> list = new ArrayList<ZipEntry>();
+            for (Enumeration<ZipEntry> it = file.getEntries(); it.hasMoreElements(); ) {
                 if (this.terminate) {
                     break;
                 }
 
                 ZipEntry entry = it.nextElement();
-                String fn = FileUtils.getFilename(entry.getName());
+                String name = FileUtils.getFilename(entry.getName());
                 if (ignoreCase) {
-                    if (fn.equalsIgnoreCase(filename)) {
-                        result.add(entry);
+                    if (name.equalsIgnoreCase(filename)) {
+                        list.add(entry);
                     }
                 } else {
-                    if (fn.equals(filename)) {
-                        result.add(entry);
+                    if (name.equals(filename)) {
+                        list.add(entry);
                     }
                 }
             }
-            return result;
-        } catch (Exception e) {
-            throw new RuntimeException("unzip " + zipFile.getPath() + " fail!", e);
+            return list;
         } finally {
-            IO.close(file);
+            file.close();
         }
     }
 
-    public boolean removeEntry(String charsetName, String... entryName) throws IOException {
-        String dir = FileUtils.joinFilepath(this.zipFile.getParent(), FileUtils.getFilenameRandom("java_zip_del_", "_tmp"));
-        File tmpDir = new File(dir);
-        FileUtils.createDirectory(tmpDir);
+    public boolean removeEntry(String charsetName, String... entryNames) throws IOException {
+        File tmpDir = FileUtils.createTempDirectory(ZipCompress.class.getSimpleName());
         try {
-            HashSet<String> set = new HashSet<String>();
-            Collections.addAll(set, entryName);
-
-            ZipFile file = null;
+            ZipFile file = new ZipFile(this.zipFile, charsetName); // 解压缩文件
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug("delete zipfile " + zipFile + "'s entry: " + StringUtils.join(entryName, ", ") + " ..");
+                    log.debug("delete zipfile " + this.zipFile + "'s entry: " + StringUtils.join(entryNames, ", ") + " ..");
                 }
 
-                /** 解压缩文件 */
-                file = new ZipFile(zipFile, charsetName);
-                byte[] buf = new byte[128];
-                Enumeration<ZipEntry> it = file.getEntries();
-                while (it.hasMoreElements()) {
-                    ZipEntry entry = it.nextElement();
+                byte[] buffer = new byte[128];
+                for (Enumeration<ZipEntry> it = file.getEntries(); it.hasMoreElements(); ) {
                     if (this.terminate) {
                         break;
                     }
 
-                    boolean isFilterData = false;
-                    for (String en : entryName) {
-                        if (this.terminate) {
-                            break;
-                        }
-
-                        if (entry.getName().indexOf(en) == 0) {
-                            isFilterData = true;
-                            break;
-                        }
-                    }
-                    if (isFilterData) {
+                    ZipEntry entry = it.nextElement();
+                    if (this.find(entryNames, entry)) {
                         continue;
                     }
 
-                    String filePath = FileUtils.joinFilepath(dir, entry.getName());
+                    String filepath = FileUtils.joinPath(tmpDir.getAbsolutePath(), entry.getName());
                     if (entry.isDirectory()) {
-                        FileUtils.createDirectory(new File(filePath));
+                        FileUtils.assertCreateDirectory(filepath);
                     } else {
-                        zipEntry2File(file, entry, filePath, buf);
+                        this.tofile(file, entry, filepath, buffer);
                     }
                 }
-            } catch (Exception e) {
-                throw new RuntimeException("unzip " + zipFile.getPath() + " fail!", e);
             } finally {
-                IO.close(file);
+                file.close();
             }
 
-            File[] childs = FileUtils.array(tmpDir.listFiles());
-
-            /** 重新压缩 */
-
-            File copy = new File(dir, this.zipFile.getName());
-            ZipCompress zc = new ZipCompress();
+            // 重新压缩
+            File newzipFile = new File(tmpDir.getAbsolutePath(), this.zipFile.getName());
+            ZipCompress c = new ZipCompress();
             try {
-                zc.setFile(copy);
-                for (File child : childs) {
+                c.setFile(newzipFile);
+                File[] list = FileUtils.array(tmpDir.listFiles());
+                for (File child : list) {
                     if (this.terminate) {
                         break;
+                    } else {
+                        c.addFile(child, null, charsetName, 0);
                     }
-                    zc.addFile(child, null, charsetName, 0);
                 }
             } finally {
-                zc.close();
+                c.close();
             }
 
-            if (!this.zipFile.delete()) {
-                return false;
-            }
-
-            return FileUtils.moveFile(copy, this.zipFile.getParentFile());
+            return this.zipFile.delete() && FileUtils.rename(newzipFile, this.zipFile, null);
         } finally {
-            FileUtils.clearDirectory(tmpDir);
-            tmpDir.delete();
+            FileUtils.delete(tmpDir);
         }
     }
 
+    private boolean find(String[] array, ZipEntry entry) {
+        boolean success = false;
+        for (String name : array) {
+            if (entry.getName().indexOf(name) == 0) {
+                success = true;
+                break;
+            }
+        }
+        return success;
+    }
+
     public void close() {
-        IO.close(zos);
+        IO.close(this.zos);
     }
 
     /**
      * 把压缩包中的 ZipEntry 转换为 File
-     *
-     * @param file
-     * @param entry
-     * @param filepath
-     * @param buffer
-     * @throws IOException
-     * @throws ZipException
-     * @throws FileNotFoundException
      */
-    protected void zipEntry2File(ZipFile file, ZipEntry entry, String filepath, byte[] buffer) throws IOException, ZipException, FileNotFoundException {
-        FileUtils.createFile(new File(filepath));
-
-        InputStream is = null;
-        FileOutputStream fos = null;
+    protected void tofile(ZipFile file, ZipEntry entry, String filepath, byte[] buffer) throws IOException {
+        FileUtils.assertCreateFile(filepath);
+        InputStream in = file.getInputStream(entry);
         try {
-            is = file.getInputStream(entry);
-            fos = new FileOutputStream(filepath);
-            for (int s = is.read(buffer, 0, buffer.length); s != -1; s = is.read(buffer, 0, buffer.length)) {
-                if (this.terminate) {
-                    break;
+            FileOutputStream out = new FileOutputStream(filepath);
+            try {
+                for (int len = in.read(buffer); len != -1; len = in.read(buffer)) {
+                    if (this.terminate) {
+                        break;
+                    } else {
+                        out.write(buffer, 0, len);
+                    }
                 }
-
-                fos.write(buffer, 0, s);
+            } finally {
+                out.close();
             }
         } finally {
-            IO.closeQuietly(is);
-            IO.closeQuietly(fos);
+            in.close();
         }
     }
 

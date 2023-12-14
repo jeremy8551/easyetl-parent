@@ -1,6 +1,5 @@
 package icu.etl.script.internal;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import icu.etl.script.UniversalScriptCommand;
@@ -126,7 +125,7 @@ public class ScriptHandler {
             return false;
         } else {
             String str = this.condition.toLowerCase();
-            return str.indexOf("exception") != -1 || str.indexOf("sqlstate") != -1 || str.indexOf("errorcode") != -1;
+            return str.contains("exception") || str.contains("sqlstate") || str.contains("errorcode");
         }
     }
 
@@ -232,7 +231,7 @@ public class ScriptHandler {
         return false;
     }
 
-    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body, String[] args) throws IOException, SQLException {
+    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body, String[] args) throws Exception {
         try {
             if (session.isTerminate()) {
                 return UniversalScriptCommand.TERMINATE;

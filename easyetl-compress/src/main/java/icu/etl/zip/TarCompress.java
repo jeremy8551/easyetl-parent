@@ -17,6 +17,7 @@ import icu.apache.ant.tar.TarOutputStream;
 import icu.etl.annotation.EasyBean;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Numbers;
@@ -31,14 +32,10 @@ public class TarCompress implements Compress {
     private TarOutputStream outputStream;
     private TarInputStream inputStream;
 
-    /**
-     * 缓冲区
-     */
+    /** 缓冲区 */
     protected byte[] buffer;
 
-    /**
-     * true表示tar文件使用gzip格式压缩
-     */
+    /** true表示tar文件使用gzip格式压缩 */
     protected boolean isGzipCompress = false;
 
     /**
@@ -51,267 +48,214 @@ public class TarCompress implements Compress {
     /**
      * 构造函数
      *
-     * @param file           tar文件
-     * @param bufferSize     缓冲区大小
-     * @param isGzipCompress true表示tar文件使用gzip格式压缩
+     * @param file tar文件
+     * @param size 缓冲区大小
+     * @param b    true表示tar文件使用gzip格式压缩
      */
-    public TarCompress(File file, int bufferSize, boolean isGzipCompress) {
+    public TarCompress(File file, int size, boolean b) {
+        this();
         this.setFile(file);
-        this.buffer = new byte[bufferSize];
-        this.setGzipCompress(isGzipCompress);
+        this.buffer = new byte[size];
+        this.setGzipCompress(b);
     }
 
     /**
-     * tar文件是否使用gzip格式压缩
+     * 是否使用使用gzip格式压缩
      *
-     * @return
+     * @return 返回true表示使用gzip格式压缩
      */
     public boolean isGzipCompress() {
         return isGzipCompress;
     }
 
     /**
-     * true表示tar文件使用gzip格式压缩
+     * 使用使用gzip格式压缩
      *
-     * @param useGzipFormate
+     * @param b true表示使用gzip格式压缩
      */
-    public void setGzipCompress(boolean useGzipFormate) {
-        this.isGzipCompress = useGzipFormate;
+    public void setGzipCompress(boolean b) {
+        this.isGzipCompress = b;
     }
 
-    public void archiveFile(File file, String dir) {
-        addFile(file, dir, null, 0);
+    public void archiveFile(File file, String dir) throws IOException {
+        this.addFile(file, dir, StringUtils.CHARSET, 0);
     }
 
-    public void archiveFile(File file, String dir, String charset) {
-        addFile(file, dir, charset, 0);
+    public void archiveFile(File file, String dir, String charsetName) throws IOException {
+        this.addFile(file, dir, charsetName, 0);
     }
 
-    protected void addFile(File file, String dir, String charset, int level) {
-        if (file == null || !file.exists()) {
-            throw new IllegalArgumentException();
+    protected void addFile(File file, String dir, String charsetName, int level) throws IOException {
+        Ensure.notNull(this.tarFile);
+        FileUtils.assertExists(file);
+        charsetName = StringUtils.charset(charsetName);
+
+        this.initOutputStream(charsetName);
+
+        // 处理目录
+        dir = (dir == null) ? "" : StringUtils.trimBlank(dir);
+        if (dir.equals("/")) {
+            dir = "";
         }
 
-        if (this.tarFile == null) {
-            throw new IllegalArgumentException("tarfile is null!");
+        // 长度
+        int length = dir.length();
+
+        // 去掉最前面的斜线
+        if (length > 1 && dir.charAt(0) == '/') {
+            dir = dir.substring(1);
         }
 
-        if (StringUtils.isBlank(charset)) {
-            charset = StringUtils.CHARSET;
+        // 去掉最后面的斜线
+        if (length > 1 && dir.charAt(length - 1) != '/') {
+            dir = dir + "/";
         }
 
-        try {
-            initTarOutputStream(charset);
+        if (file.isDirectory()) {
+            String d = "";
+            File root = new File(file.getAbsolutePath());
+            for (int i = 0; i < level; i++) {
+                root = new File(root.getParent());
+                d = root.getName() + "/" + d;
+            }
+            d = d + file.getName() + "/";
 
-            // 处理目录
-            dir = (dir == null) ? "" : dir.trim();
-            if (dir.equals("/")) {
-                dir = "";
+            if (log.isDebugEnabled()) {
+                log.debug("tar file, create dir: " + d + " ..");
             }
 
-            int len = dir.length();
+            TarEntry entry = new TarEntry(d);
+            entry.setSize(0);
+            this.outputStream.putNextEntry(entry);
+            this.outputStream.closeEntry();
 
-            // 去掉最前面的斜线
-            if (len > 1 && dir.charAt(0) == '/') {
-                dir = dir.substring(1);
-            }
-
-            // 去掉最后面的斜线
-            if (len > 1 && dir.charAt(len - 1) != '/') {
-                dir = dir + "/";
-            }
-
-            if (file.isDirectory()) {
-                String d = "";
-                File root = new File(file.getAbsolutePath());
-                for (int i = 0; i < level; i++) {
-                    root = new File(root.getParent());
-                    d = root.getName() + "/" + d;
+            // 遍历目录下的所有文件并压入压缩包中的目录下
+            File[] array = FileUtils.array(file.listFiles());
+            for (int i = 0; i < array.length; i++) {
+                if (this.terminate) {
+                    break;
+                } else {
+                    this.addFile(array[i], d, charsetName, level + 1);
                 }
-                d = d + file.getName() + "/";
-
-                if (log.isDebugEnabled()) {
-                    log.debug("tar file, create dir: " + d + " ..");
+            }
+        } else {
+            if (dir.length() > 1 && !dir.equals("//")) { // 创建父目录
+                String d = dir.charAt(0) == '/' ? dir.substring(1) : dir;
+                if (d.length() > 1) {
+                    TarEntry entry = new TarEntry(d);
+                    entry.setSize(0);
+                    this.outputStream.putNextEntry(entry);
+                    this.outputStream.closeEntry();
                 }
+            }
 
-                TarEntry entry = new TarEntry(d);
-                entry.setSize(0);
+            if (log.isDebugEnabled()) {
+                if (StringUtils.isBlank(dir)) {
+                    log.debug("tar " + file.getAbsolutePath() + " " + this.tarFile.getAbsolutePath() + " ..");
+                } else {
+                    log.debug("tar " + file.getAbsolutePath() + " " + this.tarFile.getAbsolutePath() + " -> " + dir + " ..");
+                }
+            }
+
+            String tarFile = dir + file.getName();
+            InputStream in = new FileInputStream(file);
+            try {
+                TarEntry entry = new TarEntry(tarFile);
+                entry.setSize(file.length());
                 this.outputStream.putNextEntry(entry);
-                this.outputStream.closeEntry();
-
-                // 遍历目录下的所有文件并压入压缩包中的目录下
-                File[] fs = FileUtils.array(file.listFiles());
-                for (int i = 0; i < fs.length; i++) {
+                byte[] buffer = new byte[1024];
+                for (int size; (size = in.read(buffer)) != -1; ) {
                     if (this.terminate) {
                         break;
-                    }
-
-                    this.addFile(fs[i], d, charset, level + 1);
-                }
-            } else {
-                if (dir.length() > 1 && !dir.equals("//")) { // 创建父目录
-                    String d = dir.charAt(0) == '/' ? dir.substring(1) : dir;
-                    if (d.length() > 1) {
-                        TarEntry entry = new TarEntry(d);
-                        entry.setSize(0);
-                        this.outputStream.putNextEntry(entry);
-                        this.outputStream.closeEntry();
-                    }
-                }
-
-                String tarFile = dir + file.getName();
-                InputStream is = new FileInputStream(file);
-                if (log.isDebugEnabled()) {
-                    if (StringUtils.isBlank(dir)) {
-                        log.debug("tar " + file.getAbsolutePath() + " " + this.tarFile.getAbsolutePath() + " ..");
                     } else {
-                        log.debug("tar " + file.getAbsolutePath() + " " + this.tarFile.getAbsolutePath() + " -> " + dir + " ..");
+                        this.outputStream.write(buffer, 0, size);
                     }
                 }
-
-                try {
-                    TarEntry entry = new TarEntry(tarFile);
-                    entry.setSize(file.length());
-                    this.outputStream.putNextEntry(entry);
-                    byte tmp[] = new byte[1024];
-                    int i = 0;
-                    while ((i = is.read(tmp)) != -1) {
-                        if (this.terminate) {
-                            break;
-                        }
-                        this.outputStream.write(tmp, 0, i);
-                    }
-                    this.outputStream.closeEntry();
-                } finally {
-                    IO.close(is);
-                }
+                this.outputStream.closeEntry();
+            } finally {
+                in.close();
             }
-        } catch (Exception e) {
-            throw new RuntimeException("tar " + file.getAbsolutePath() + " fail!", e);
         }
     }
 
-    public void extract(String outputDir, String charsetName) {
-        FileUtils.createDirectory(new File(outputDir));
-        boolean hasError = false;
-
+    public void extract(String outputDir, String charsetName) throws IOException {
+        FileUtils.assertCreateDirectory(outputDir);
+        charsetName = StringUtils.charset(charsetName);
+        this.initInputStream(charsetName);
         try {
-            this.initTarInputStream(charsetName);
-            TarEntry entry = null;
-            while ((entry = inputStream.getNextEntry()) != null) {
+            TarEntry entry;
+            while ((entry = this.inputStream.getNextEntry()) != null) {
                 if (this.terminate) {
                     break;
-                }
-
-                if (!this.untar(inputStream, outputDir, entry)) {
-                    hasError = true;
+                } else {
+                    this.untar(this.inputStream, outputDir, entry);
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("untar " + this.tarFile.getAbsolutePath() + " fail!", e);
         } finally {
-            this.closeTarInputStream();
-        }
-
-        if (hasError) {
-            throw new RuntimeException("untar " + this.tarFile.getAbsolutePath() + " fail!");
+            this.closeInputStream();
         }
     }
 
-    public void extract(String outputDir, String charsetName, String... filerEntryNames) {
-        FileUtils.createDirectory(new File(outputDir));
-        boolean hasError = false;
-
+    public void extract(String outputDir, String charsetName, String... excludeNames) throws IOException {
+        FileUtils.assertCreateDirectory(outputDir);
+        charsetName = StringUtils.charset(charsetName);
+        this.initInputStream(charsetName);
         try {
-            this.initTarInputStream(charsetName);
-            TarEntry entry = null;
-            while ((entry = inputStream.getNextEntry()) != null) {
+            TarEntry entry;
+            while ((entry = this.inputStream.getNextEntry()) != null) {
                 if (this.terminate) {
                     break;
-                }
-
-                if (!StringUtils.inArray(entry.getName(), filerEntryNames)) {
-                    if (!this.untar(inputStream, outputDir, entry)) {
-                        hasError = true;
-                    }
+                } else if (!StringUtils.inArray(entry.getName(), excludeNames)) {
+                    this.untar(this.inputStream, outputDir, entry);
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("untar " + this.tarFile.getAbsolutePath() + " fail!", e);
         } finally {
-            this.closeTarInputStream();
-        }
-
-        if (hasError) {
-            throw new RuntimeException("untar " + this.tarFile.getAbsolutePath() + " fail!");
+            this.closeInputStream();
         }
     }
 
-    public void extract(String outputDir, String charsetName, String entryName) {
-        FileUtils.createDirectory(new File(outputDir));
-        boolean hasError = false;
-
+    public void extract(String outputDir, String charsetName, String entryName) throws IOException {
+        FileUtils.assertCreateDirectory(outputDir);
+        charsetName = StringUtils.charset(charsetName);
+        this.initInputStream(charsetName);
         try {
-            this.initTarInputStream(charsetName);
-            TarEntry entry = null;
-            while ((entry = inputStream.getNextEntry()) != null) {
+            TarEntry entry;
+            while ((entry = this.inputStream.getNextEntry()) != null) {
                 if (this.terminate) {
                     break;
-                }
-
-                if (entryName.equals(entry.getName())) {
-                    if (!this.untar(inputStream, outputDir, entry)) {
-                        hasError = true;
-                    }
+                } else if (entry.getName().equals(entryName)) {
+                    this.untar(this.inputStream, outputDir, entry);
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("untar " + this.tarFile.getAbsolutePath() + " fail!", e);
         } finally {
-            this.closeTarInputStream();
-        }
-
-        if (hasError) {
-            throw new RuntimeException("untar " + this.tarFile.getAbsolutePath() + " fail!");
+            this.closeInputStream();
         }
     }
 
     /**
      * 解压 TarEntry 对象
      *
-     * @param inputStream io数据流
-     * @param outputDir   解压后目录
-     * @param entry       TarEntry实例
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param in        输入流
+     * @param outputDir 解压后目录
+     * @param entry     TarEntry实例
+     * @throws IOException 访问文件错误
      */
-    public boolean untar(TarInputStream inputStream, String outputDir, TarEntry entry) throws FileNotFoundException, IOException {
-        if (entry == null) {
-            throw new NullPointerException();
-        }
-
-        boolean success = true;
+    public void untar(TarInputStream in, String outputDir, TarEntry entry) throws IOException {
+        Ensure.notNull(entry);
         if (entry.isDirectory()) { // 如果是目录
             File dir = new File(outputDir, entry.getName());
-            FileUtils.createDirectory(dir);
-            TarEntry[] childEntrys = entry.getDirectoryEntries(); // 遍历目录下的文件
-            for (int i = 0; i < childEntrys.length; i++) {
+            FileUtils.assertCreateDirectory(dir);
+            TarEntry[] entries = entry.getDirectoryEntries(); // 遍历目录下的文件
+            for (int i = 0; i < entries.length; i++) {
                 if (this.terminate) {
                     break;
-                }
-
-                TarEntry childEntry = childEntrys[i];
-                if (!this.untar(inputStream, dir.getAbsolutePath(), childEntry.getName())) {
-                    success = false;
+                } else {
+                    this.untar(in, dir.getAbsolutePath(), entries[i].getName());
                 }
             }
         } else {
-            if (!this.untar(inputStream, outputDir, entry.getName())) {
-                success = false;
-            }
+            this.untar(in, outputDir, entry.getName());
         }
-
-        return success;
     }
 
     /**
@@ -320,134 +264,117 @@ public class TarCompress implements Compress {
      * @param inputStream io数据流
      * @param outputDir   解压后目录
      * @param filename    文件名
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
-    public boolean untar(TarInputStream inputStream, String outputDir, String filename) throws FileNotFoundException, IOException {
+    public void untar(TarInputStream inputStream, String outputDir, String filename) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("untar " + FileUtils.replaceFolderSeparator(FileUtils.joinFilepath(outputDir, filename)) + " ..");
+            log.debug("untar {} ..", FileUtils.replaceFolderSeparator(FileUtils.joinPath(outputDir, filename)));
         }
 
-        FileOutputStream fos = null;
+        FileOutputStream out = new FileOutputStream(new File(outputDir, filename), false);
         try {
-            fos = new FileOutputStream(new File(outputDir, filename), false);
-            for (int s = inputStream.read(buffer, 0, buffer.length); s != -1; s = inputStream.read(buffer, 0, buffer.length)) {
+            for (int len = inputStream.read(this.buffer, 0, this.buffer.length); len != -1; len = inputStream.read(this.buffer, 0, this.buffer.length)) {
                 if (this.terminate) {
                     break;
+                } else {
+                    out.write(this.buffer, 0, len);
                 }
-                fos.write(buffer, 0, s);
             }
-            return true;
-        } catch (Exception e) {
-            log.error(StringUtils.toString(e));
-            return false;
+            out.flush();
         } finally {
-            IO.close(fos);
+            out.close();
         }
     }
 
-    public List<TarEntry> getEntrys(String charsetName, String regex, boolean ignoreCase) {
-        List<TarEntry> list = new ArrayList<TarEntry>();
+    public List<TarEntry> getEntrys(String charsetName, String regex, boolean ignoreCase) throws IOException {
+        charsetName = StringUtils.charset(charsetName);
+        this.initInputStream(charsetName);
         try {
-            this.initTarInputStream(StringUtils.defaultString(charsetName, StringUtils.CHARSET));
-            TarEntry entry = null;
+            List<TarEntry> list = new ArrayList<TarEntry>();
+            TarEntry entry;
             while ((entry = this.inputStream.getNextEntry()) != null) {
                 if (this.terminate) {
                     break;
+                } else {
+                    this.getTarEntrys(entry, regex, ignoreCase, list);
                 }
-
-                getTarEntrys(entry, regex, ignoreCase, list);
             }
             return list;
-        } catch (Exception e) {
-            throw new RuntimeException("loop " + this.tarFile.getAbsolutePath() + " tar file, search " + regex + " error!", e);
         } finally {
-            this.closeTarInputStream();
+            this.closeInputStream();
         }
     }
 
     protected void getTarEntrys(TarEntry entry, String regex, boolean ignoreCase, List<TarEntry> list) {
         if (entry.isDirectory()) {
-            String[] array = StringUtils.split(FileUtils.replaceFolderSeparator(entry.getName()), String.valueOf(File.separatorChar));
+            String[] array = StringUtils.split(FileUtils.replaceFolderSeparator(entry.getName()), File.separatorChar);
             int index = StringUtils.lastIndexOfNotBlank(array);
             String name = index >= 0 ? array[index] : null;
             if (name != null && this.match(name, regex, ignoreCase)) {
                 list.add(entry);
             }
 
-            TarEntry[] childEntrys = entry.getDirectoryEntries();
-            for (TarEntry childEntry : childEntrys) {
+            TarEntry[] entries = entry.getDirectoryEntries();
+            for (TarEntry tarEntry : entries) {
                 if (this.terminate) {
                     break;
+                } else {
+                    this.getTarEntrys(tarEntry, regex, ignoreCase, list);
                 }
-
-                this.getTarEntrys(childEntry, regex, ignoreCase, list);
             }
-        } else {
-            if (this.match(FileUtils.getFilename(entry.getName()), regex, ignoreCase)) {
-                list.add(entry);
-            }
+        } else if (this.match(FileUtils.getFilename(entry.getName()), regex, ignoreCase)) {
+            list.add(entry);
         }
     }
 
     /**
      * 判断 entryName 与 regex 是否匹配
      *
-     * @param entryName
-     * @param regex
-     * @param ignoreCase
-     * @return
+     * @param entryName  压缩实例名
+     * @param regex      正则表达式
+     * @param ignoreCase 忽略大小写
+     * @return 返回true表示压缩包中对象与正则表达式匹配 false表示不匹配
      */
     protected boolean match(String entryName, String regex, boolean ignoreCase) {
         if (ignoreCase) {
-            if (entryName.equalsIgnoreCase(regex)) {
-                return true;
-            }
+            return entryName.equalsIgnoreCase(regex);
         } else {
-            if (entryName.equals(regex) || entryName.matches(regex)) {
-                return true;
-            }
+            return entryName.equals(regex) || entryName.matches(regex);
         }
-        return false;
     }
 
-    public boolean removeEntry(String charsetName, String... entryName) throws IOException {
+    public boolean removeEntry(String charsetName, String... entryNames) throws IOException {
+        charsetName = StringUtils.charset(charsetName);
         String dirName = StringUtils.replaceAll(FileUtils.getFilenameNoExt(this.tarFile.getName()) + Numbers.getRandom() + Numbers.getRandom() + Numbers.getRandom() + Numbers.getRandom() + "tmp", ".", "");
-        String dir = FileUtils.joinFilepath(this.tarFile.getParent(), dirName);
-        File tmpDir = new File(dir);
-        FileUtils.createDirectory(tmpDir);
+        File tmpDir = new File(FileUtils.joinPath(this.tarFile.getParent(), dirName));
+        FileUtils.assertCreateDirectory(tmpDir);
         try {
-            this.extract(tmpDir.getAbsolutePath(), charsetName, entryName);
+            this.extract(tmpDir.getAbsolutePath(), charsetName, entryNames);
             this.close();
 
-            /** 重新压缩 */
-            File copy = new File(dir, this.tarFile.getName());
-            TarCompress c = new TarCompress(copy, this.buffer.length, this.isGzipCompress);
+            // 重新压缩
+            File newTarfile = new File(tmpDir, this.tarFile.getName());
+            TarCompress c = new TarCompress(newTarfile, this.buffer.length, this.isGzipCompress);
             try {
-                File[] childs = FileUtils.array(tmpDir.listFiles());
-                for (File child : childs) {
+                File[] array = FileUtils.array(tmpDir.listFiles());
+                for (File file : array) {
                     if (this.terminate) {
                         break;
+                    } else {
+                        c.archiveFile(file, null, charsetName);
                     }
-
-                    c.archiveFile(child, null, charsetName);
                 }
             } finally {
                 c.close();
             }
 
-            if (!this.tarFile.delete()) {
-                return false;
-            }
-
-            return FileUtils.moveFile(copy, this.tarFile.getParentFile());
+            return FileUtils.delete(this.tarFile) && FileUtils.rename(newTarfile, this.tarFile, null);
         } finally {
-            FileUtils.clearDirectory(tmpDir);
-            tmpDir.delete();
+            FileUtils.delete(tmpDir);
         }
     }
 
-    protected TarOutputStream initTarOutputStream(String charsetName) throws IOException, FileNotFoundException {
+    protected void initOutputStream(String charsetName) throws IOException, FileNotFoundException {
         if (this.outputStream == null) {
             if (this.isGzipCompress()) {
                 this.outputStream = new TarOutputStream(new GZIPOutputStream(new FileOutputStream(this.tarFile, true)), charsetName);
@@ -455,10 +382,9 @@ public class TarCompress implements Compress {
                 this.outputStream = new TarOutputStream(new FileOutputStream(this.tarFile, true), charsetName);
             }
         }
-        return this.outputStream;
     }
 
-    protected TarInputStream initTarInputStream(String charsetName) throws IOException, FileNotFoundException {
+    protected void initInputStream(String charsetName) throws IOException {
         if (this.inputStream == null) {
             if (this.isGzipCompress()) {
                 this.inputStream = new TarInputStream(new GZIPInputStream(new FileInputStream(this.tarFile)), charsetName);
@@ -466,7 +392,6 @@ public class TarCompress implements Compress {
                 this.inputStream = new TarInputStream(new FileInputStream(this.tarFile), charsetName);
             }
         }
-        return this.inputStream;
     }
 
     public void setFile(File file) {
@@ -476,7 +401,7 @@ public class TarCompress implements Compress {
     /**
      * 遍历输入流后需要关闭
      */
-    private void closeTarInputStream() {
+    private void closeInputStream() {
         IO.close(this.inputStream);
         this.inputStream = null;
     }

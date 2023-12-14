@@ -1,7 +1,5 @@
 package icu.etl.script.internal;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +43,9 @@ public class Callback {
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param args        自定义方法的参数, 第一个值是方法名, 从第二个值开始是方法参数
      * @return 0表示执行成功
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    public int executeCallback(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, String[] args) throws IOException, SQLException {
+    public int executeCallback(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, String[] args) throws Exception {
         for (int i = 0; i < this.list.size(); i++) {
             CommandList cmd = this.list.get(i);
             int value = this.execute(session, context, stdout, stderr, forceStdout, cmd, args);
@@ -59,7 +56,7 @@ public class Callback {
         return 0;
     }
 
-    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body, String[] args) throws IOException, SQLException {
+    protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body, String[] args) throws Exception {
         try {
             if (session.isTerminate()) {
                 return UniversalScriptCommand.TERMINATE;

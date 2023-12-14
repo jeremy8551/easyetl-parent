@@ -12,10 +12,6 @@ import icu.etl.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author jeremy8551@qq.com
- * @createtime 2023/10/2
- */
 public class CsvFileTest {
 
     /**
@@ -24,8 +20,7 @@ public class CsvFileTest {
      * @return 返回临时文件
      */
     private File createfile() throws IOException {
-        File dir = FileUtils.getTempDir(CsvFile.class);
-        FileUtils.createDirectory(dir);
+        File dir = FileUtils.getTempDir("test", CsvFileTest.class.getSimpleName());
         File file = new File(dir, "csvTestFile" + StringUtils.toRandomUUID() + ".csv");
         FileUtils.createFile(file);
         System.out.println(CsvFile.class.getSimpleName() + " testfile: " + file.getAbsolutePath());
@@ -171,7 +166,7 @@ public class CsvFileTest {
     }
 
     @Test
-    public void test3() throws IOException {
+    public void test3() throws Exception {
         EasyBeanContext context = new EasyBeanContext();
         String charsetName = "UTF-8";
         File file = this.createfile();

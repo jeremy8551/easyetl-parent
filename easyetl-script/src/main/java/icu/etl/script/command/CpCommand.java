@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.sql.SQLException;
 
@@ -18,6 +17,7 @@ import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.script.io.ScriptFileExpression;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
@@ -51,7 +51,7 @@ public class CpCommand extends AbstractFileCommand implements UniversalScriptInp
             stdout.println("cp " + srcfile.getAbsolutePath() + " " + dstfilepath);
         }
 
-        File file = null;
+        File file;
         File dstfile = new File(dstfilepath);
         if (dstfile.exists()) {
             if (dstfile.isDirectory()) {
@@ -60,18 +60,11 @@ public class CpCommand extends AbstractFileCommand implements UniversalScriptInp
                 file = dstfile;
             }
         } else {
-            FileUtils.createDirectory(dstfile.getParentFile());
-            file = dstfile;
+            file = FileUtils.assertCreateDirectory(dstfile.getParentFile());
         }
 
-        InputStream in = srcfile.getInputStream();
-        FileOutputStream out = new FileOutputStream(file, false);
-        try {
-            IO.write(in, out);
-            return 0;
-        } finally {
-            IO.close(in, out);
-        }
+        IO.write(srcfile.getInputStream(), new FileOutputStream(file, false));
+        return 0;
     }
 
     public void terminate() throws IOException, SQLException {
