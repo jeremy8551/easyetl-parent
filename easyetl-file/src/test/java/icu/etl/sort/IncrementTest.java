@@ -7,7 +7,7 @@ import java.util.Date;
 import icu.etl.concurrent.ThreadSourceImpl;
 import icu.etl.increment.Increment;
 import icu.etl.increment.IncrementContext;
-import icu.etl.increment.IncrementLoggerListener;
+import icu.etl.increment.IncrementListenerImpl;
 import icu.etl.increment.SimpleIncrementPosition;
 import icu.etl.io.BufferedLineWriter;
 import icu.etl.io.TextTableFile;
@@ -200,13 +200,13 @@ public class IncrementTest {
         context.setDelWriter(delout);
         context.setSortNew(true);
         context.setSortOld(true);
-//        context.setSortNewContext(this.newfileExpr.createSortContext());
-//        context.setSortOldContext(this.oldfileExpr.createSortContext());
+        context.setSortNewContext(new TableFileSortContext(ioc, null));
+        context.setSortOldContext(new TableFileSortContext(ioc, null));
         context.setReplaceList(null);
 
         // 输出剥离增量日志
         StandardFilePrinter out = new StandardFilePrinter(logfile, StringUtils.CHARSET, false);
-        context.setLogger(new IncrementLoggerListener(out, position, oldtxtfile, newtxtfile));
+        context.setLogger(new IncrementListenerImpl(out, position, newtxtfile, oldtxtfile));
 
         Increment inc = new Increment(context);
         Assert.assertEquals(0, inc.execute());

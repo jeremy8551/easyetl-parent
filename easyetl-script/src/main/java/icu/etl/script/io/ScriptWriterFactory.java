@@ -8,6 +8,7 @@ import icu.etl.io.NullWriter;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 
@@ -50,12 +51,8 @@ public class ScriptWriterFactory {
      * @throws IOException
      */
     public Writer build(UniversalScriptSession session, UniversalScriptContext context) throws IOException {
-        if (session == null) {
-            throw new NullPointerException();
-        }
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(session);
+        Ensure.notNull(context);
 
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String filepath = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.filepath, true, true, true, false));

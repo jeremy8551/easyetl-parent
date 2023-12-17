@@ -17,14 +17,15 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import icu.etl.ProjectPom;
 import icu.etl.ioc.EasyBeanRegister;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
-import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
 
 /**
@@ -36,7 +37,7 @@ public class ClassScanner {
     private final static Log log = LogFactory.getLog(ClassScanner.class);
 
     /** 扫描的 JAVA 包名与 jar 文件名 */
-    public final static String PROPERTY_SCANNPKG = Settings.getGroupID() + ".scanRule";
+    public final static String PROPERTY_SCANNPKG = ProjectPom.getGroupID() + ".scanRule";
 
     /** 类加载器 */
     private ClassLoader classLoader;
@@ -108,11 +109,7 @@ public class ClassScanner {
      * @return 返回已加载类信息的个数
      */
     public synchronized int load(EasyBeanRegister register) {
-        if (register == null) {
-            throw new NullPointerException();
-        }
-
-        this.register = register;
+        this.register = Ensure.notNull(register);
         int count = 0;
         this.jarfiles.clear();
         try {

@@ -233,9 +233,12 @@ public class CacheLineReader extends Reader implements TextFileReader {
 
     public synchronized void close() throws IOException {
         if (this.open) {
-            this.in.close();
-            this.cacher.close();
-            this.open = false;
+            try {
+                this.in.close();
+            } finally {
+                this.cacher.close();
+                this.open = false;
+            }
         }
     }
 

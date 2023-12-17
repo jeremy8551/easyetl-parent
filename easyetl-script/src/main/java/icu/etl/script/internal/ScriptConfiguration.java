@@ -1,9 +1,7 @@
 package icu.etl.script.internal;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Set;
 import javax.script.ScriptEngine;
 
@@ -11,28 +9,29 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.collection.CaseSensitivSet;
 import icu.etl.script.UniversalScriptConfiguration;
 import icu.etl.util.Ensure;
+import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 
 @EasyBean
 public class ScriptConfiguration implements UniversalScriptConfiguration {
-    public final static Object[] EMPTY = new Object[0];
 
     /**
      * 配置信息
      */
-    private ResourceBundle config;
+    private Properties config;
 
     /**
      * 初始化
      */
-    public ScriptConfiguration() {
-        this.config = ResourceBundle.getBundle("script", Locale.getDefault());
+    public ScriptConfiguration() throws IOException {
+        String name = UniversalScriptConfiguration.class.getPackage().getName().replace('.', '/');
+        this.config = FileUtils.loadProperties("/" + name + "/scriptEngine.properties");
     }
 
     /**
      * 返回脚本引擎默认命令的语句
      *
-     * @return
+     * @return 默认命令
      */
     public String getDefaultCommand() {
         return Ensure.notBlank(this.getProperty("javax.script.command.default"));
@@ -93,18 +92,14 @@ public class ScriptConfiguration implements UniversalScriptConfiguration {
     }
 
     public String getProperty(String name) {
-        // 优先从 JavaUtils 属性中读取参数
+        // 优先从系统属性中读取参数
         String value = System.getProperty(name);
         if (StringUtils.isNotBlank(value)) { // 属性不能是空
             return value;
         }
 
         // 加载配置文件中的属性值
-        try {
-            return MessageFormat.format(this.config.getString(name), EMPTY);
-        } catch (MissingResourceException e) {
-            return null;
-        }
+        return this.config.getProperty(name);
     }
 
 }

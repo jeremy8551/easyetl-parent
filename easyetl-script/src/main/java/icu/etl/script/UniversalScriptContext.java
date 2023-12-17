@@ -17,6 +17,7 @@ import icu.etl.script.io.ScriptStderr;
 import icu.etl.script.io.ScriptStdout;
 import icu.etl.script.io.ScriptSteper;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -98,11 +99,7 @@ public class UniversalScriptContext implements ScriptContext {
      * @param engine 当前脚本引擎上下文信息归属的脚本引擎
      */
     public UniversalScriptContext(UniversalScriptEngine engine) {
-        if (engine == null) {
-            throw new NullPointerException();
-        }
-
-        this.engine = engine;
+        this.engine = Ensure.notNull(engine);
         this.factory = engine.getFactory();
         this.ioc = engine.getFactory().getContext();
         this.format = this.factory.buildFormatter();

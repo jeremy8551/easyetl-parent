@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.concurrent.BlockingQueue;
 
+import icu.etl.ProjectPom;
 import icu.etl.log.apd.Layout;
 import icu.etl.log.apd.LogEvent;
 import icu.etl.util.Ensure;
@@ -53,7 +54,7 @@ public class FileAppenderWriter {
      */
     public FileAppenderWriter(String logfile, String charsetName, BlockingQueue<LogEvent> queue, Layout layout) throws IOException {
         if (StringUtils.isBlank(logfile)) {
-            logfile = FileUtils.joinPath(Settings.getUserHome().getAbsolutePath(), "." + Settings.getApplicationName(), Settings.getUserName() + ".log");
+            logfile = FileUtils.joinPath(Settings.getUserHome().getAbsolutePath(), "." + ProjectPom.getArtifactID(), Settings.getUserName() + ".log");
         }
 
         this.charsetName = ObjectUtils.coalesce(charsetName, StringUtils.CHARSET);

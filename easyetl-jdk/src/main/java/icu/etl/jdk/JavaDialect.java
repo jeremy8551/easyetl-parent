@@ -1,7 +1,6 @@
 package icu.etl.jdk;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -51,21 +50,13 @@ public interface JavaDialect {
     boolean canExecute(File file);
 
     /**
-     * 返回当前可用的线程数
-     *
-     * @return 线程数
-     */
-    int getAvailableThreads();
-
-    /**
      * 将Jdbc参数 object 转为脚本引擎内部类型
      *
      * @param obj 对象
      * @return 脚本引擎内部类型的对象
-     * @throws IOException  IO错误
-     * @throws SQLException 数据库错误
+     * @throws Exception IO错误
      */
-    Object parseJdbcObject(Object obj) throws IOException, SQLException;
+    Object parseJdbcObject(Object obj) throws Exception;
 
     /**
      * 返回 true 表示参数 Statement 对象已关闭

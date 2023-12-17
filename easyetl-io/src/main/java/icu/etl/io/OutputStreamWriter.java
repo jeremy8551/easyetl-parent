@@ -3,6 +3,7 @@ package icu.etl.io;
 import java.io.IOException;
 import java.io.Writer;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 public class OutputStreamWriter extends java.io.OutputStream {
@@ -15,16 +16,8 @@ public class OutputStreamWriter extends java.io.OutputStream {
 
     public OutputStreamWriter(Writer out, String charsetName) {
         super();
-
-        if (out == null) {
-            throw new NullPointerException();
-        }
-        if (StringUtils.isBlank(charsetName)) {
-            charsetName = StringUtils.CHARSET;
-        }
-
-        this.out = out;
-        this.charsetName = charsetName;
+        this.out = Ensure.notNull(out);
+        this.charsetName = StringUtils.charset(charsetName);
     }
 
     public void write(int b) throws IOException {

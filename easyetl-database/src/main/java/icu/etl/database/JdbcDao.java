@@ -23,6 +23,7 @@ import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -63,14 +64,10 @@ public class JdbcDao implements OSConnectCommand {
      * @param context 容器上下文信息
      */
     public JdbcDao(EasyContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
-
-        this.context = context;
+        this.context = Ensure.notNull(context);
+        this.attributes = new Properties();
         this.isRtrim = true;
         this.autoClose = true;
-        this.attributes = new Properties();
     }
 
     /**
@@ -99,7 +96,7 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 设置true表示自动删除查询结果集中字符串右端的空白字符
      *
-     * @param rtrim
+     * @param rtrim true
      */
     public void setRtrimResultSetString(boolean rtrim) {
         this.isRtrim = rtrim;
@@ -112,7 +109,7 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 测试数据库连接是否有效
      *
-     * @return
+     * @return 返回true表示数据库连接有效 false表示数据库连接失效
      */
     public boolean testConnection() {
         return Jdbc.testConnection(this.getConnection(), this.getDialect());
@@ -121,8 +118,8 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 设置是否自动提交数据库事物
      *
-     * @param b
-     * @throws SQLException
+     * @param b true表示自动提交事物
+     * @throws SQLException 数据库错误
      */
     public void setAutoCommit(boolean b) throws SQLException {
         this.getConnection().setAutoCommit(b);
@@ -131,7 +128,7 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 返回 JDBC Statement
      *
-     * @return
+     * @return 处理接口
      */
     public Statement getStatement() {
         return this.statement;
@@ -148,8 +145,8 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 返回 JDBC 处理接口
      *
-     * @return
-     * @throws SQLException
+     * @return 处理接口
+     * @throws SQLException 数据库错误
      */
     protected Statement createStatement() throws SQLException {
         if (Jdbc.isClosed(this.statement)) {
@@ -161,7 +158,7 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 生成当前数据库连接的数据库方言
      *
-     * @return
+     * @return 数据库方言
      */
     public DatabaseDialect getDialect() {
         if (this.dialect == null && this.existsConnection()) {
@@ -174,7 +171,7 @@ public class JdbcDao implements OSConnectCommand {
      * 从数据库连接池中返回一个连接
      *
      * @param pool 数据库连接池
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void connect(DataSource pool) throws SQLException {
         Connection conn = pool.getConnection();
@@ -206,7 +203,7 @@ public class JdbcDao implements OSConnectCommand {
      * 终止数据库连接
      *
      * @return 返回 true 表示已关闭数据库连接，false表示失败
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public boolean terminate() throws SQLException {
         Connection conn = this.getConnection();

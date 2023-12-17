@@ -42,7 +42,7 @@ public class SetCommand extends AbstractGlobalCommand {
         this.type = type;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         switch (this.type) {
             case 0: // 为变量赋值
                 return this.setVariable(session, context, stdout, stderr, this.value);
@@ -113,10 +113,9 @@ public class SetCommand extends AbstractGlobalCommand {
      * @param stderr
      * @param sql
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    protected int querySQL(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, String sql) throws IOException, SQLException {
+    protected int querySQL(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, String sql) throws Exception {
         ScriptDataSource dataSource = ScriptDataSource.get(context);
         JdbcDao dao = dataSource.getDao();
         sql = session.getAnalysis().replaceVariable(session, context, sql, false);

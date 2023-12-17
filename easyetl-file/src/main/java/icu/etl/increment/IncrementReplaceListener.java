@@ -10,13 +10,13 @@ import icu.etl.io.TextTableLine;
  *
  * @author jeremy8551@qq.com
  */
-public class IncrementReplaceList implements IncrementListener {
+public class IncrementReplaceListener implements IncrementListener {
 
     private List<IncrementReplace> creates;
     private List<IncrementReplace> updates;
     private List<IncrementReplace> deletes;
 
-    public IncrementReplaceList() {
+    public IncrementReplaceListener() {
         this.creates = new ArrayList<IncrementReplace>();
         this.updates = new ArrayList<IncrementReplace>();
         this.deletes = new ArrayList<IncrementReplace>();

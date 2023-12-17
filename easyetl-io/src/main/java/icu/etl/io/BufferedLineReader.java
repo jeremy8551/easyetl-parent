@@ -703,9 +703,9 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
             try {
                 if (this.in != null) {
                     this.in.close();
+                    this.in = null;
                 }
             } finally {
-                this.in = null;
                 this.buffer = null;
                 this.skipBuffer = null;
                 this.nextline = null;

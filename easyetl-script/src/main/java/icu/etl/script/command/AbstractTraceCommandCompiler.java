@@ -34,7 +34,7 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
         // command 1>> file 2>file 2>&1
         int index = analysis.indexOf(command, ">", 0, 2, 2);
         if (index != -1) {
-            AbstractTraceCommandConfiguration config = this.parse(analysis, command, index);
+            AbstractTraceCommandConfiguration config = this.parse(session, context, analysis, command, index);
             AbstractTraceCommand cmd = this.compile(session, context, parser, analysis, command, config.getCommand());
             cmd.setPrinter(config.getStdout(), config.getStderr(), config.isSame());
             return cmd;
@@ -61,13 +61,15 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
     /**
      * 解析输出日志语句 xxxx >> file.log
      *
+     * @param session  用户会话信息
+     * @param context  脚本引擎上下文信息
      * @param analysis 语句分析器
      * @param command  脚本命令
      * @param from     符号 ‘>’ 所在位置
      * @return
      * @throws IOException
      */
-    private AbstractTraceCommandConfiguration parse(UniversalScriptAnalysis analysis, String command, int from) throws IOException {
+    private AbstractTraceCommandConfiguration parse(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptAnalysis analysis, String command, int from) throws IOException {
         ScriptWriterFactory stdout = null;
         ScriptWriterFactory stderr = null;
         boolean same = false;
@@ -136,9 +138,8 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
      * @param it
      * @param command
      * @return
-     * @throws IOException
      */
-    private String readLogfile(Iterator<String> it, String command) throws IOException {
+    private String readLogfile(Iterator<String> it, String command) {
         if (it.hasNext()) {
             return it.next();
         } else {

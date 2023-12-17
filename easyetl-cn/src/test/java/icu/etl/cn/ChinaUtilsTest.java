@@ -1,7 +1,6 @@
 package icu.etl.cn;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import icu.etl.util.CharsetName;
@@ -155,8 +154,11 @@ public class ChinaUtilsTest {
     public void testgetPropertys() {
         int count = 0;
         List<Property> list = ChinaUtils.getProperties("5527");
+        assertFalse(list.isEmpty());
         for (Property p : list) {
             System.out.println(p.getKey() + " = " + p.getValue());
+            Ensure.notBlank(p.getKey());
+            Ensure.notBlank(p.getValue());
             if (++count >= 20) {
                 break;
             }

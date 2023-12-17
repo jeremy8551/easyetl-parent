@@ -21,12 +21,6 @@ public class JDK5 implements JavaDialect {
         return new Properties();
     }
 
-    public int getAvailableThreads() {
-        ThreadMXBean mxbean = ManagementFactory.getThreadMXBean();
-        int thread = (mxbean.getThreadCount() * 2) - 2;
-        return thread <= 0 ? 1 : thread;
-    }
-
     public boolean canExecute(File file) {
         return false;
     }

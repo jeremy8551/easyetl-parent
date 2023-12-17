@@ -17,6 +17,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
+import icu.etl.ProjectPom;
 import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.annotation.ScriptFunction;
@@ -93,7 +94,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         String charsetName = context.getCharsetName();
 
         Object[] args = { //
-                Settings.getGroupID() // 0 groupId
+                ProjectPom.getGroupID() // 0 groupId
                 , "easyetl" // 1 artifactId
                 , "2.0.6" // 2 version
                 , "easyetl-spring-boot-starter" // 3 easyetl-spring-boot-starter artifactId
@@ -148,7 +149,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , CollectionUtils.firstElement(context.getFactory().getExtensions()) // 21
                 , "" // 22
                 , "" // 23
-                , Settings.getGroupID() // 24
+                , ProjectPom.getGroupID() // 24
                 , UniversalScriptEngine.class.getName() // 25
                 , ClassUtils.getClasspath(HelpCommand.class) // 26
                 , Settings.getFileEncoding() // 27
@@ -201,7 +202,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         };
 
         // 返回命令的使用说明文件
-        InputStream in = ClassUtils.getResourceAsStream("/script/help/readme.md", HelpCommand.class);
+        String packageUri = UniversalScriptEngine.class.getPackage().getName().replace('.', '/');
+        InputStream in = ClassUtils.getResourceAsStream("/" + packageUri + "/readme.md", HelpCommand.class);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IO.write(in, out);
         String markdown = out.toString(charsetName);

@@ -29,7 +29,7 @@ public class IncrementFileWriter implements IncrementHandler {
     private boolean newfileEqualUpdout;
     private boolean oldfileEqualDelout;
 
-    public IncrementFileWriter(TextTableFile newfile, TextTableFile oldfile, List<IncrementListener> listeners, IncrementLoggerListener logger, IncrementReplaceList replaces, TextTableFileWriter newout, TextTableFileWriter updout, TextTableFileWriter delout) {
+    public IncrementFileWriter(TextTableFile newfile, TextTableFile oldfile, List<IncrementListener> listeners, IncrementListenerImpl logger, IncrementReplaceListener replaces, TextTableFileWriter newout, TextTableFileWriter updout, TextTableFileWriter delout) {
         this.listeners = new ArrayList<IncrementListener>();
         if (logger != null) {
             this.listeners.add(logger);

@@ -1,7 +1,5 @@
 package icu.etl.script;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.text.Format;
 
 /**
@@ -19,9 +17,8 @@ public abstract class UniversalScriptFormatter extends Format {
      * @param context 脚本引擎上下文信息
      * @param object  Jdbc参数对象
      * @return 对象
-     * @throws IOException  IO错误
-     * @throws SQLException 数据库错误
+     * @throws Exception 转换错误
      */
-    public abstract Object formatJdbcParameter(UniversalScriptSession session, UniversalScriptContext context, Object object) throws IOException, SQLException;
+    public abstract Object formatJdbcParameter(UniversalScriptSession session, UniversalScriptContext context, Object object) throws Exception;
 
 }

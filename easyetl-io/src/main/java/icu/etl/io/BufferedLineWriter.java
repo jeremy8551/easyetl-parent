@@ -1,5 +1,6 @@
 package icu.etl.io;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.Flushable;
@@ -16,7 +17,7 @@ import icu.etl.util.FileUtils;
  *
  * @author jeremy8551@qq.com
  */
-public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSeparator, LineNumber {
+public class BufferedLineWriter implements Closeable, Flushable, LineSeparator, LineNumber {
 
     /** 文件字节输出流 */
     protected Writer out;
@@ -168,9 +169,12 @@ public class BufferedLineWriter implements java.io.Closeable, Flushable, LineSep
 
     public void close() throws IOException {
         if (this.out != null) {
-            this.flush();
-            this.out.close();
-            this.out = null;
+            try {
+                this.flush();
+            } finally {
+                this.out.close();
+                this.out = null;
+            }
         }
         this.buffer.restore();
         this.count = 0;

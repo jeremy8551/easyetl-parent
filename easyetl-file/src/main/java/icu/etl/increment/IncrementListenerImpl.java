@@ -11,12 +11,12 @@ import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
 /**
- * 记录剥离增量日志
+ * 剥离增量监听器
  *
  * @author jeremy8551@qq.com
  * @createtime 2021-05-17
  */
-public class IncrementLoggerListener implements IncrementListener {
+public class IncrementListenerImpl implements IncrementListener {
 
     private Printer out;
     private int[] newComparePosition;
@@ -26,15 +26,15 @@ public class IncrementLoggerListener implements IncrementListener {
     private TextTableFile oldfile;
     private TextTableFile newfile;
 
-    public IncrementLoggerListener(Printer out, IncrementPosition position, TextTableFile oldfile, TextTableFile newfile) {
+    public IncrementListenerImpl(Printer out, IncrementPosition position, TextTableFile newfile, TextTableFile oldfile) {
         super();
         this.out = Ensure.notNull(out);
         this.newIndexPosition = position.getNewIndexPosition();
         this.oldIndexPosition = position.getOldIndexPosition();
         this.newComparePosition = ArrayUtils.shift(position.getNewComparePosition());
         this.oldComparePosition = ArrayUtils.shift(position.getOldComparePosition());
-        this.oldfile = oldfile;
         this.newfile = newfile;
+        this.oldfile = oldfile;
     }
 
     public void beforeCreateRecord(TextTableLine line) {

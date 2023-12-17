@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.log.Log;
 import icu.etl.util.CharsetName;
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 /**
@@ -30,15 +31,8 @@ public class OutputStreamLogger extends OutputStream implements CharsetName {
      */
     public OutputStreamLogger(Log log, String charsetName) {
         super();
-        if (log == null) {
-            throw new NullPointerException();
-        }
-        if (StringUtils.isBlank(charsetName)) {
-            charsetName = StringUtils.CHARSET;
-        }
-
-        this.log = log;
-        this.buf = new ByteBuffer(512, 50, charsetName);
+        this.log = Ensure.notNull(log);
+        this.buf = new ByteBuffer(512, 50, StringUtils.charset(charsetName));
     }
 
     public void write(int b) throws IOException {

@@ -10,10 +10,10 @@ import icu.etl.concurrent.EasyJob;
 import icu.etl.concurrent.ThreadSource;
 import icu.etl.increment.Increment;
 import icu.etl.increment.IncrementContext;
-import icu.etl.increment.IncrementLoggerListener;
+import icu.etl.increment.IncrementListenerImpl;
 import icu.etl.increment.IncrementPosition;
 import icu.etl.increment.IncrementReplace;
-import icu.etl.increment.IncrementReplaceList;
+import icu.etl.increment.IncrementReplaceListener;
 import icu.etl.increment.SimpleIncrementPosition;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
@@ -147,7 +147,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
                 throw new IOException(ResourcesUtils.getScriptStderrMessage(137, "index"));
             }
 
-            IncrementReplaceList replaceList = new IncrementReplaceList();
+            IncrementReplaceListener replaceList = new IncrementReplaceListener();
             List<IncrementReplace> newReplace = replaceList.getNewChgs();
             List<IncrementReplace> updReplace = replaceList.getUpdChgs();
             List<IncrementReplace> delReplace = replaceList.getDelChgs();
@@ -222,6 +222,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             inccxt.setSortOldContext(this.oldfileExpr.createSortContext());
             inccxt.setReplaceList(replaceList);
             inccxt.setThreadSource(context.getContainer().getBean(ThreadSource.class));
+            inccxt.setListeners(null);
 
             // 设置新文件的读取进度
             if (this.newfileExpr.contains("progress")) {
@@ -238,13 +239,13 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             // 设置日志输出接口
             if (StringUtils.isNotBlank(logfilepath)) {
                 if ("stdout".equalsIgnoreCase(logfilepath)) {
-                    inccxt.setLogger(new IncrementLoggerListener(stdout, position, oldfile, newfile));
+                    inccxt.setLogger(new IncrementListenerImpl(stdout, position, newfile, oldfile));
                 } else if ("stderr".equalsIgnoreCase(logfilepath)) {
-                    inccxt.setLogger(new IncrementLoggerListener(stderr, position, oldfile, newfile));
+                    inccxt.setLogger(new IncrementListenerImpl(stderr, position, newfile, oldfile));
                 } else {
                     String charsetName = StringUtils.defaultString(newfile.getCharsetName(), context.getCharsetName()); // 新文件的字符集编码
                     StandardFilePrinter out = new StandardFilePrinter(new File(logfilepath), charsetName, false);
-                    inccxt.setLogger(new IncrementLoggerListener(out, position, oldfile, newfile));
+                    inccxt.setLogger(new IncrementListenerImpl(out, position, newfile, oldfile));
                 }
             }
 

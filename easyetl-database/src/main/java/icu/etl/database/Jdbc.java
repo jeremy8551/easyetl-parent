@@ -36,6 +36,7 @@ import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CharTable;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.Property;
 import icu.etl.util.ResourcesUtils;
@@ -299,8 +300,8 @@ public class Jdbc {
     /**
      * 判断数据库处理程序是否已关闭
      *
-     * @param statement
-     * @return
+     * @param statement 处理器
+     * @return 返回true表示已关闭 false表示未关闭
      */
     public static boolean isClosed(Statement statement) {
         if (statement == null) {
@@ -317,7 +318,7 @@ public class Jdbc {
     /**
      * 如果数据库连接可用，则提交事务
      *
-     * @param conn
+     * @param conn 数据库连接
      */
     public static void commit(Connection conn) {
         if (conn != null) {
@@ -332,7 +333,7 @@ public class Jdbc {
     /**
      * 提交事物，如果发生异常会打印错误信息但不会抛出异常信息
      *
-     * @param conn
+     * @param conn 数据库连接
      */
     public static void commitQuiet(Connection conn) {
         if (conn != null) {
@@ -349,7 +350,7 @@ public class Jdbc {
     /**
      * 提交事务，如果发生异常不会打印错误信息也不会抛出异常信息
      *
-     * @param conn
+     * @param conn 数据库连接
      */
     public static void commitQuietly(Connection conn) {
         if (conn != null) {
@@ -366,7 +367,7 @@ public class Jdbc {
     /**
      * 回滚数据库事务
      *
-     * @param conn
+     * @param conn 数据库连接
      */
     public static void rollback(Connection conn) {
         if (conn != null) {
@@ -381,7 +382,7 @@ public class Jdbc {
     /**
      * 回滚数据库事务
      *
-     * @param conn
+     * @param conn 数据库连接
      */
     public static void rollback(Connection conn, Savepoint savepoint) {
         if (conn != null && savepoint != null) {
@@ -396,7 +397,7 @@ public class Jdbc {
     /**
      * 回滚数据库事务，如果发生异常会打印错误信息但不会抛出异常信息
      *
-     * @param conn
+     * @param conn 数据库连接
      */
     public static void rollbackQuiet(Connection conn) {
         if (conn != null) {
@@ -506,14 +507,10 @@ public class Jdbc {
      *
      * @param result 结果集
      * @return 结果集列名
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static String[] getColumnName(ResultSet result) throws SQLException {
-        if (result == null) {
-            throw new NullPointerException();
-        }
-
-        ResultSetMetaData metaData = result.getMetaData();
+        ResultSetMetaData metaData = Ensure.notNull(result).getMetaData();
         int size = metaData.getColumnCount();
         String[] array = new String[size];
         for (int i = 0; i < size; ) {
@@ -529,14 +526,10 @@ public class Jdbc {
      *
      * @param result 结果集
      * @return 结果集类型名
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static String[] getColumnTypeName(ResultSet result) throws SQLException {
-        if (result == null) {
-            throw new NullPointerException();
-        }
-
-        ResultSetMetaData metaData = result.getMetaData();
+        ResultSetMetaData metaData = Ensure.notNull(result).getMetaData();
         int size = metaData.getColumnCount();
         String[] array = new String[size];
         for (int i = 0; i < size; ) {
@@ -551,14 +544,10 @@ public class Jdbc {
      *
      * @param result 结果集
      * @return 结果集列类型
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static int[] getColumnType(ResultSet result) throws SQLException {
-        if (result == null) {
-            throw new NullPointerException();
-        }
-
-        ResultSetMetaData metaData = result.getMetaData();
+        ResultSetMetaData metaData = Ensure.notNull(result).getMetaData();
         int size = metaData.getColumnCount();
         int[] array = new int[size];
         for (int i = 0; i < size; ) {
@@ -576,14 +565,10 @@ public class Jdbc {
      *
      * @param result 结果集
      * @return 结果集列的类型名
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static String[] getColumnClassName(ResultSet result) throws SQLException {
-        if (result == null) {
-            throw new NullPointerException();
-        }
-
-        ResultSetMetaData metaData = result.getMetaData();
+        ResultSetMetaData metaData = Ensure.notNull(result).getMetaData();
         int size = metaData.getColumnCount();
         String[] array = new String[size];
         for (int i = 0; i < size; ) {
@@ -597,14 +582,10 @@ public class Jdbc {
      *
      * @param result 结果集
      * @return 结果集列数
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static int getColumnCount(ResultSet result) throws SQLException {
-        if (result == null) {
-            throw new NullPointerException();
-        } else {
-            return result.getMetaData().getColumnCount();
-        }
+        return Ensure.notNull(result).getMetaData().getColumnCount();
     }
 
     /**
@@ -612,14 +593,10 @@ public class Jdbc {
      *
      * @param result 结果集
      * @return 结果集中所有列显示长度之和
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static int sumColumnDisplaySize(ResultSet result) throws SQLException {
-        if (result == null) {
-            throw new NullPointerException();
-        }
-
-        ResultSetMetaData metaData = result.getMetaData();
+        ResultSetMetaData metaData = Ensure.notNull(result).getMetaData();
         int size = metaData.getColumnCount();
         int value = 0;
         for (int i = 1; i <= size; i++) {
@@ -633,17 +610,13 @@ public class Jdbc {
      * <br>
      * 不适合处理大结果集
      *
-     * @param result
-     * @param rtrim
-     * @return
-     * @throws SQLException
+     * @param result 数据库查询结果集
+     * @param rtrim  true表示删除右侧空白字符
+     * @return 结果集
+     * @throws SQLException 数据库错误
      */
     public static List<Map<String, String>> resultToList(ResultSet result, boolean rtrim) throws SQLException {
-        if (result == null) {
-            return null;
-        }
-
-        ResultSetMetaData metaData = result.getMetaData();
+        ResultSetMetaData metaData = Ensure.notNull(result).getMetaData();
         int column = metaData.getColumnCount();
 
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
@@ -664,9 +637,9 @@ public class Jdbc {
      * <br>
      * 不适合处理大结果集
      *
-     * @param result
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @return 集合
+     * @throws SQLException 数据库错误
      */
     public static List<Map<String, String>> resultToList(ResultSet result) throws SQLException {
         return resultToList(result, true);
@@ -677,7 +650,7 @@ public class Jdbc {
      *
      * @param result 数据库查询结果集
      * @return 字段名与字段值映射的Map
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static Map<String, String> resultToMap(ResultSet result, boolean rtrimBlank) throws SQLException {
         if (result == null) {
@@ -701,8 +674,8 @@ public class Jdbc {
      * @param result        JDBC ResultSet
      * @param keyPosition   从1开始
      * @param valuePosition 从1开始
-     * @return
-     * @throws SQLException
+     * @return 集合
+     * @throws SQLException 数据库错误
      */
     public static Map<String, String> resultToMap(ResultSet result, int keyPosition, int valuePosition) throws SQLException {
         Map<String, String> map = new CaseSensitivMap<String>();
@@ -718,10 +691,10 @@ public class Jdbc {
      * 返回字段值，去掉右空格 <br>
      * 字段值为null时返回null
      *
-     * @param result 结果集
-     * @param index  指定列（从1开始）
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static String getString(ResultSet result, int index) throws SQLException {
         return StringUtils.rtrimBlank(result.getString(index));
@@ -730,23 +703,23 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param resultSet
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
-    public static Integer getInt(ResultSet resultSet, int index) throws SQLException {
-        int value = resultSet.getInt(index);
-        return resultSet.wasNull() ? null : new Integer(value);
+    public static Integer getInt(ResultSet result, int index) throws SQLException {
+        int value = result.getInt(index);
+        return result.wasNull() ? null : value;
     }
 
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Object getObject(ResultSet result, int index) throws SQLException {
         Object value = result.getObject(index);
@@ -756,10 +729,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Double getDouble(ResultSet result, int index) throws SQLException {
         double value = result.getDouble(index); // 一定要先取数再判断
@@ -769,10 +742,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Float getFloat(ResultSet result, int index) throws SQLException {
         float value = result.getFloat(index);
@@ -782,10 +755,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Long getLong(ResultSet result, int index) throws SQLException {
         long value = result.getLong(index);
@@ -795,10 +768,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Short getShort(ResultSet result, int index) throws SQLException {
         short value = result.getShort(index);
@@ -808,10 +781,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Byte getByte(ResultSet result, int index) throws SQLException {
         byte val = result.getByte(index);
@@ -821,10 +794,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param index  列位置（从1开始）
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Boolean getBoolean(ResultSet result, int index) throws SQLException {
         boolean value = result.getBoolean(index);
@@ -837,8 +810,8 @@ public class Jdbc {
      *
      * @param result 结果集
      * @param name   列名
-     * @return
-     * @throws SQLException
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static String getString(ResultSet result, String name) throws SQLException {
         return StringUtils.rtrimBlank(result.getString(name));
@@ -847,10 +820,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param name
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param name   列名
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Integer getInt(ResultSet result, String name) throws SQLException {
         int value = result.getInt(name);
@@ -860,10 +833,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param name
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param name   列名
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Double getDouble(ResultSet result, String name) throws SQLException {
         double value = result.getDouble(name);
@@ -873,10 +846,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param name
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param name   列名
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Float getFloat(ResultSet result, String name) throws SQLException {
         float value = result.getFloat(name);
@@ -886,10 +859,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param name
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param name   列名
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Long getLong(ResultSet result, String name) throws SQLException {
         long value = result.getLong(name);
@@ -899,10 +872,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param name
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param name   列名
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Short getShort(ResultSet result, String name) throws SQLException {
         short value = result.getShort(name);
@@ -912,10 +885,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param name
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param name   列名
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Byte getByte(ResultSet result, String name) throws SQLException {
         byte value = result.getByte(name);
@@ -925,10 +898,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param name
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param name   列名
+     * @return 数据库列的数值
+     * @throws SQLException 数据库错误
      */
     public static Boolean getBoolean(ResultSet result, String name) throws SQLException {
         boolean value = result.getBoolean(name);
@@ -938,10 +911,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param name
-     * @return
-     * @throws SQLException
+     * @param result 数据库结果集
+     * @param name   列名
+     * @return 字符串
+     * @throws SQLException 数据库错误
      */
     public static Object getObject(ResultSet result, String name) throws SQLException {
         Object value = result.getObject(name);
@@ -951,10 +924,10 @@ public class Jdbc {
     /**
      * 从数据库结果集中读取指定列的数值，如果为空则返回null
      *
-     * @param result
-     * @param colname
-     * @return
-     * @throws SQLException
+     * @param result  数据库结果集
+     * @param colname 列名
+     * @return 字符串
+     * @throws SQLException 数据库错误
      */
     public static String getClobAsString(ResultSet result, String colname) throws SQLException {
         Clob value = result.getClob(colname);
@@ -966,8 +939,8 @@ public class Jdbc {
      *
      * @param result 数据库结果集
      * @param column 列号
-     * @return
-     * @throws SQLException
+     * @return 数值
+     * @throws SQLException 数据库错误
      */
     public static String getClobAsString(ResultSet result, int column) throws SQLException {
         Clob value = result.getClob(column);
@@ -978,7 +951,7 @@ public class Jdbc {
      * 把 java对象使用驼峰命名法解析为数据库字段名
      *
      * @param javaFieldName java字段名
-     * @return
+     * @return 字段名
      */
     public static String java2fieldName(String javaFieldName) {
         StringBuilder buf = new StringBuilder();
@@ -1173,14 +1146,14 @@ public class Jdbc {
     /**
      * 检索此数据库用作目录和表名之间的分隔符的字符串
      *
-     * @param conn
-     * @return
+     * @param conn 数据库连接
+     * @return 分隔符
      */
     public static String getCatalogSeparator(Connection conn) {
         try {
             return conn.getMetaData().getCatalogSeparator();
         } catch (SQLException e) {
-            throw new DatabaseException("getCatalogSeparator()", e);
+            throw new DatabaseException(e.getLocalizedMessage(), e);
         }
     }
 
@@ -1203,7 +1176,7 @@ public class Jdbc {
             }
             return list;
         } catch (SQLException e) {
-            throw new DatabaseException("getSchemas()", e);
+            throw new DatabaseException(e.getLocalizedMessage(), e);
         } finally {
             IO.closeQuietly(resultSet);
         }
@@ -1237,13 +1210,13 @@ public class Jdbc {
     /**
      * 返回一个数据库临时表名
      *
-     * @param conn
-     * @param dialect
-     * @param catalog
-     * @param schema
-     * @param tableName
-     * @return
-     * @throws SQLException
+     * @param conn      数据库连接
+     * @param dialect   数据库方言
+     * @param catalog   编目名
+     * @param schema    schema名
+     * @param tableName 表名
+     * @return 数据库表名
+     * @throws SQLException 数据库错误
      */
     public static String getTableNameNoRepeat(Connection conn, DatabaseDialect dialect, String catalog, String schema, String tableName) throws SQLException {
         if (StringUtils.isBlank(schema)) {
@@ -1264,8 +1237,8 @@ public class Jdbc {
     /**
      * 返回数据库中字段类型信息
      *
-     * @param conn
-     * @return
+     * @param conn 数据库连接
+     * @return 字段类型集合
      */
     public static DatabaseTypeSet getTypeInfo(Connection conn) {
         StandardDatabaseTypes map = new StandardDatabaseTypes();
@@ -1280,7 +1253,7 @@ public class Jdbc {
             }
             return map;
         } catch (SQLException e) {
-            throw new DatabaseException("getTypeInfo(" + conn + ")", e);
+            throw new DatabaseException(e.getLocalizedMessage(), e);
         } finally {
             IO.closeQuietly(resultSet);
         }
@@ -1290,7 +1263,7 @@ public class Jdbc {
      * 查询数据库中关键字集合
      *
      * @param conn 数据库连接
-     * @return
+     * @return 关键字集合
      */
     public static CaseSensitivSet getSQLKeywords(Connection conn) {
         try {
@@ -1301,7 +1274,7 @@ public class Jdbc {
             }
             return set;
         } catch (SQLException e) {
-            throw new DatabaseException("getSQLKeywords(" + conn + ")", e);
+            throw new DatabaseException(e.getLocalizedMessage(), e);
         }
     }
 
@@ -1315,8 +1288,8 @@ public class Jdbc {
      * @param catalog          类别名称，因为存储在此数据库中，所以它必须匹配类别名称。该参数为 "" 则检索没有类别的描述，为 null 则表示该类别名称不应用于缩小搜索范围
      * @param schemaPattern    模式名称，因为存储在此数据库中，所以它必须匹配模式名称。该参数为 "" 则检索那些没有模式的描述，为 null 则表示该模式名称不应用于缩小搜索范围
      * @param tableNamePattern 表名匹配（如：ECC_TABLE, ECC%），为null或空字符串表示表名
-     * @return
-     * @throws SQLException
+     * @return 数据库表集合
+     * @throws SQLException 数据库错误
      */
     public static List<String> getTableNames(Connection connection, String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
         List<String> list = new ArrayList<String>();
@@ -1347,9 +1320,7 @@ public class Jdbc {
             List<Integer> idxSorts = index.getDirections();
             boolean alreadyExists = false;
 
-            /**
-             * 遍历主键信息
-             */
+            // 遍历主键信息
             for (DatabaseIndex pk : primaryKeys) {
                 List<String> pkgNames = pk.getColumnNames();
                 List<Integer> pkgSorts = pk.getDirections();

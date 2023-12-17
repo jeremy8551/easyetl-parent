@@ -44,7 +44,7 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
         CommandAttribute attrs = new CommandAttribute( //
                 "charset:", "codepage:", "rowdel:", "coldel:", "escape:", //
                 "chardel:", "column:", "colname:", "readbuf:", "writebuf:", //
-                "thread:", "maxrow:", "maxfile:", "keeptemp", "covsrc" //
+                "thread:", "maxrow:", "maxfile:", "keeptemp", "covsrc", "temp:" //
         );
 
         if (it.isNext("modified")) {

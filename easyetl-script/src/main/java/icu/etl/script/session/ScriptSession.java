@@ -92,7 +92,7 @@ public class ScriptSession implements UniversalScriptSession {
         this.subs = new ScriptSubProcess();
         this.echoEnabled = true;
         this.terminate = false;
-        this.tempDir = FileUtils.getTempDir(UniversalScriptEngine.class.getSimpleName(), "engine", "session", this.id);
+        this.tempDir = FileUtils.getTempDir(UniversalScriptEngine.class.getSimpleName(), "engine");
 
         this.setDirectory(Settings.getUserHome()); // 会话当前目录
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_TEMP, this.tempDir.getAbsolutePath()); // 临时文件目录

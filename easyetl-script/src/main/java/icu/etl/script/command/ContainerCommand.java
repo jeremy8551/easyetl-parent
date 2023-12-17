@@ -43,7 +43,7 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String thread = analysis.replaceShellVariable(session, context, this.attributes.get("thread"), true, true, true, false);
-        int number = StringUtils.parseInt(thread, 3);
+        int number = StringUtils.parseInt(thread, 2);
 
         boolean print = session.isEchoEnable() || forceStdout;
         if (print) {

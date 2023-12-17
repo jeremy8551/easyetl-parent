@@ -74,6 +74,13 @@
                             <goal>sources</goal> <!-- 复制同级别的子模源代码块到当前的模块中 -->
                         </goals>
                     </execution>
+                    <execution>
+                        <id>easyetl-pom</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>pom</goal> <!-- 生成POM类 -->
+                        </goals>
+                    </execution>
                     <!--                    <execution>-->
                     <!--                        <id>easyetl-install</id>-->
                     <!--                        <phase>install</phase>-->

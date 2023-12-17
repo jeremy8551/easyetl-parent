@@ -27,7 +27,7 @@ import org.w3c.dom.NodeList;
 public class ChinaUtils {
 
     /** 资源文件 */
-    public static String CONFIG_XML = "/cn/china.xml";
+    public static String CONFIG_XML = "/" + ChinaUtils.class.getPackage().getName().replace('.', '/') + "/china.xml";
 
     /** 字符集编码器 */
     public final static CharsetEncoder GBK_ENCODER = Charset.forName(CharsetName.GBK).newEncoder();

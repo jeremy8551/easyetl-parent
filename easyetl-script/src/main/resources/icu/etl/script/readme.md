@@ -1428,7 +1428,7 @@ $ container to execute tasks in parallel [ using 参数名=参数值 参数名=�
 
 ### 参数说明
 
-thread    表示同时运行任务的数量，如未设置参数默认同时最多执行3个任务
+thread    表示同时运行任务的数量，如未设置参数默认同时最多执行2个任务
 
 参数会作为并发任务的默认参数值
 

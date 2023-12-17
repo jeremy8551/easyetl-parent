@@ -1,5 +1,6 @@
 package icu.etl.script.command;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,6 +31,7 @@ import icu.etl.script.internal.ScriptDataSource;
 import icu.etl.sort.TableFileSortContext;
 import icu.etl.util.Attribute;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -38,6 +40,7 @@ import icu.etl.util.StringUtils;
  */
 public class IncrementExpression implements Attribute<String> {
 
+    private UniversalScriptSession session;
     private UniversalScriptContext context;
     private UniversalScriptAnalysis analysis;
     private Map<String, String> attributes;
@@ -65,6 +68,7 @@ public class IncrementExpression implements Attribute<String> {
      * @throws SQLException
      */
     public IncrementExpression(UniversalScriptSession session, UniversalScriptContext context, String str) throws IOException, SQLException {
+        this.session = session;
         this.analysis = session.getAnalysis();
         this.context = context;
         this.attributes = new CaseSensitivMap<String>();
@@ -269,31 +273,41 @@ public class IncrementExpression implements Attribute<String> {
     }
 
     /**
-     * 解析排序参数
+     * 生成一个文件排序器的上下文信息
+     *
+     * @return 上下文信息
      */
     public TableFileSortContext createSortContext() {
-        TableFileSortContext cxt = new TableFileSortContext();
+        TableFileSortContext context = new TableFileSortContext();
+        context.setThreadSource(this.context.getContainer().getBean(ThreadSource.class));
+        context.setKeepSource(!this.attributes.containsKey("covsrc"));
+        
         if (this.attributes.containsKey("sortcache")) {
-            cxt.setWriterBuffer(this.getIntAttribute("sortcache"));
+            context.setWriterBuffer(this.getIntAttribute("sortcache"));
         }
         if (this.attributes.containsKey("sortrows")) {
-            cxt.setMaxRows(this.getIntAttribute("sortrows"));
+            context.setMaxRows(this.getIntAttribute("sortrows"));
         }
         if (this.attributes.containsKey("sortThread")) {
-            cxt.setThreadNumber(this.getIntAttribute("sortThread"));
+            context.setThreadNumber(this.getIntAttribute("sortThread"));
         }
         if (this.attributes.containsKey("sortReadBuf")) {
-            cxt.setReaderBuffer(this.getIntAttribute("sortReadBuf"));
+            context.setReaderBuffer(this.getIntAttribute("sortReadBuf"));
         }
         if (this.attributes.containsKey("maxfile")) {
-            cxt.setFileCount(this.getIntAttribute("maxfile"));
+            context.setFileCount(this.getIntAttribute("maxfile"));
         }
         if (this.attributes.containsKey("keeptemp")) {
-            cxt.setDeleteFile(false);
+            context.setDeleteFile(false);
         }
-        cxt.setKeepSource(!this.attributes.containsKey("covsrc"));
-        cxt.setThreadSource(this.context.getContainer().getBean(ThreadSource.class));
-        return cxt;
+
+        // 排序文件使用的临时目录
+        String tempDirPath = this.attributes.get("temp");
+        if (StringUtils.isNotBlank(tempDirPath)) {
+            String filepath = this.session.getAnalysis().replaceShellVariable(this.session, this.context, tempDirPath, true, true, true, false);
+            context.setTempDir(new File(filepath));
+        }
+        return context;
     }
 
     /**
@@ -312,11 +326,8 @@ public class IncrementExpression implements Attribute<String> {
      */
     public TextTableFile createTableFile(String filetype) {
         TextTableFile file = this.context.getContainer().getBean(TextTableFile.class, filetype, this);
-        if (file == null) {
-            throw new UnsupportedOperationException(filetype);
-        } else {
-            file.setAbsolutePath(this.filepath);
-        }
+        Ensure.notNull(file);
+        file.setAbsolutePath(this.filepath);
 
         // 使用数据库中的字段名作为表格的列名
         if (this.table != null) {

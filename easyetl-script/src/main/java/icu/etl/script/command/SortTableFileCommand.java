@@ -14,7 +14,9 @@ import icu.etl.script.UniversalScriptStdout;
 import icu.etl.sort.OrderByExpression;
 import icu.etl.sort.TableFileSortContext;
 import icu.etl.sort.TableFileSorter;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
+import icu.etl.util.StringUtils;
 
 /**
  * 对表格型文件进行排序 <br>
@@ -48,25 +50,37 @@ public class SortTableFileCommand extends AbstractTraceCommand {
         cxt.setThreadSource(context.getContainer().getBean(ThreadSource.class));
         cxt.setDeleteFile(!this.map.contains("keeptemp"));
         cxt.setKeepSource(!this.map.contains("covsrc"));
+
         if (this.map.contains("maxfile")) {
             cxt.setFileCount(this.map.getIntAttribute("maxfile"));
         }
+
         if (this.map.contains("maxrow")) {
             cxt.setMaxRows(this.map.getIntAttribute("maxrow"));
         }
+
         if (this.map.contains("readbuf")) {
             cxt.setReaderBuffer(this.map.getIntAttribute("readbuf"));
         } else {
             cxt.setReaderBuffer(IO.FILE_BYTES_BUFFER_SIZE);
         }
+
         if (this.map.contains("thread")) {
             cxt.setThreadNumber(this.map.getIntAttribute("thread"));
         }
+
         if (this.map.contains("writebuf")) {
             cxt.setWriterBuffer(this.map.getIntAttribute("writebuf"));
         }
 
+        String tempFilepath = this.map.getAttribute("temp");
+        if (StringUtils.isNotBlank(tempFilepath)) {
+            String filepath = session.getAnalysis().replaceShellVariable(session, context, tempFilepath, true, true, true, false);
+            cxt.setTempDir(new File(filepath));
+        }
+
         TextTableFile file = context.getContainer().getBean(TextTableFile.class, this.filetype, this.map);
+        Ensure.notNull(file);
         file.setAbsolutePath(this.filepath);
 
         this.tfs = new TableFileSorter(cxt);

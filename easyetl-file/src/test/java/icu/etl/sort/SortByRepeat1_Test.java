@@ -97,6 +97,7 @@ public class SortByRepeat1_Test {
         context.setMaxRows(1000);
         context.setWriterBuffer(800);
         context.setRemoveLastField(false);
+        context.setTempDir(null);
 
         TableFileDeduplicateSorter sorter = new TableFileDeduplicateSorter(context);
         try {

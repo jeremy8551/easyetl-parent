@@ -1,12 +1,14 @@
 package icu.etl.sort;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
+import icu.etl.util.StringUtils;
 
 /**
  * 临时文件工厂
@@ -16,14 +18,11 @@ import icu.etl.util.ResourcesUtils;
  */
 public class TempFileCreator {
 
-    private Object lock1 = new Object();
+    private final Object lock1 = new Object();
 
-    private Object lock2 = new Object();
+    private final Object lock2 = new Object();
 
-    private Object lock3 = new Object();
-
-    /** 排序文件名 */
-    private String filename;
+    private final Object lock3 = new Object();
 
     /** 排序文件 */
     private File file;
@@ -39,7 +38,6 @@ public class TempFileCreator {
      */
     public TempFileCreator(File dir, File file) throws IOException {
         this.file = Ensure.notNull(file);
-        this.filename = FileUtils.getFilenameNoSuffix(file.getName());
 
         if (dir == null) {
             dir = file.getParentFile(); // 使用文件所在目录
@@ -47,6 +45,13 @@ public class TempFileCreator {
 
         // 使用文件所在目录
         if (this.create(dir)) {
+            return;
+        }
+
+        // 直接在数据文件所在的目录下创建临时文件
+        File newfile = FileUtils.allocate(file.getParentFile(), null);
+        if (FileUtils.createFile(newfile) && FileUtils.delete(newfile)) {
+            this.parent = null;
             return;
         }
 
@@ -65,11 +70,22 @@ public class TempFileCreator {
      * @return 返回true表示操作成功 false表示操作失败
      */
     protected boolean create(File dir) {
-        this.parent = new File(dir, "." + this.filename);
-        if (FileUtils.createDirectory(this.parent)) {
-            FileUtils.assertClearDirectory(this.parent);
-            return true;
+        String dirName = "." + FileUtils.getFilenameNoSuffix(this.file.getName());
+        this.parent = new File(dir, dirName);
+
+        // 创建目录
+        if (!FileUtils.createDirectory(this.parent)) {
+            this.parent = null;
+            return false;
+        }
+        FileUtils.assertClearDirectory(this.parent);
+
+        // 尝试创建文件
+        File newfile = FileUtils.allocate(this.parent, null);
+        if (FileUtils.createFile(newfile)) {
+            return FileUtils.deleteFile(newfile);
         } else {
+            this.parent = null;
             return false;
         }
     }
@@ -97,7 +113,29 @@ public class TempFileCreator {
      * 删除排序文件产生的临时文件
      */
     public void deleteTempfiles() {
-        FileUtils.delete(this.parent, 10, 100);
+        if (this.parent == null) {
+            File parent = this.file.getParentFile();
+            File[] array = FileUtils.array(parent.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    String filename = FileUtils.getFilenameNoExt(name);
+                    String ext = FileUtils.getFilenameExt(name);
+                    String prefix = file.getName();
+                    if (filename.startsWith(prefix) && StringUtils.inArray(ext, "list", "merge", "temp")) {
+                        String part = filename.substring(prefix.length());
+                        if (StringUtils.isNumber(part)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }));
+
+            for (File file : array) {
+                FileUtils.deleteFile(file);
+            }
+        } else {
+            FileUtils.delete(this.parent, 10, 100);
+        }
     }
 
     /**
@@ -107,7 +145,11 @@ public class TempFileCreator {
      */
     public File toListfile() {
         synchronized (this.lock1) {
-            return FileUtils.createNewFile(this.parent, "list" + Dates.format17());
+            if (this.parent == null) {
+                return FileUtils.createNewFile(this.file.getParentFile(), this.file.getName() + ".list");
+            } else {
+                return FileUtils.createNewFile(this.parent, "list" + Dates.format17());
+            }
         }
     }
 
@@ -118,7 +160,11 @@ public class TempFileCreator {
      */
     public File toMergeFile() {
         synchronized (this.lock2) {
-            return FileUtils.createNewFile(this.parent, "merge" + Dates.format17());
+            if (this.parent == null) {
+                return FileUtils.createNewFile(this.file.getParentFile(), this.file.getName() + ".merge");
+            } else {
+                return FileUtils.createNewFile(this.parent, "merge" + Dates.format17());
+            }
         }
     }
 
@@ -129,7 +175,11 @@ public class TempFileCreator {
      */
     public File toTempFile() {
         synchronized (this.lock3) {
-            return FileUtils.createNewFile(this.parent, "temp" + Dates.format17());
+            if (this.parent == null) {
+                return FileUtils.createNewFile(this.file.getParentFile(), this.file.getName() + ".temp");
+            } else {
+                return FileUtils.createNewFile(this.parent, "temp" + Dates.format17());
+            }
         }
     }
 

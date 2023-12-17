@@ -32,7 +32,7 @@ public class ScriptFile extends File {
      * @param session  用户会话信息
      * @param context  脚本引擎上下文信息
      * @param pathname 路径信息（如果是文件名，则默认使用当前目录作为父目录）
-     * @return
+     * @return 文件路径
      */
     private static String replaceFilepath(UniversalScriptSession session, UniversalScriptContext context, String pathname) {
         UniversalScriptAnalysis analysis = session.getAnalysis();

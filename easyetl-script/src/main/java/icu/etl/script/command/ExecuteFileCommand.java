@@ -59,8 +59,8 @@ public class ExecuteFileCommand extends AbstractTraceCommand implements NohupCom
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param file        脚本文件表达式
      * @param charsetName 脚本文件字符集
-     * @return
-     * @throws Exception
+     * @return 0表示命令执行成功 非0表示命令错误
+     * @throws Exception 脚本命令错误
      */
     public int execute(UniversalScriptSession session, UniversalScriptEngine engine, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, ScriptFileExpression file, String charsetName) throws Exception {
         this.session = session.subsession();

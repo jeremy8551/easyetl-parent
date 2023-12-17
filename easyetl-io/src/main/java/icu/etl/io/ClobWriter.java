@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.sql.Clob;
 import java.sql.SQLException;
 
-import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
@@ -119,12 +118,12 @@ public class ClobWriter {
     public void toWriter(Clob clob, Writer out, int size) throws IOException, SQLException {
         if (clob != null) {
             Reader in = clob.getCharacterStream();
-            try {
-                if (in != null) {
+            if (in != null) {
+                try {
                     this.write(in, out, size);
+                } finally {
+                    in.close();
                 }
-            } finally {
-                IO.close(in);
             }
         }
     }

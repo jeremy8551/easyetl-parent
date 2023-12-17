@@ -51,23 +51,14 @@ public class TextTableFileCounter {
      * @param file        文件
      * @param charsetName 文件字符集, 为空时取操作系统默认值
      * @return 文件中的行数
-     * @throws IOException 访问文件错误
+     * @throws Exception 错误
      */
     public long execute(File file, String charsetName) throws Exception {
-        if (file == null) {
-            throw new NullPointerException();
-        }
-        if (!file.exists() || !file.isFile()) {
-            throw new IllegalArgumentException(file.getAbsolutePath());
-        }
-        if (StringUtils.isBlank(charsetName)) {
-            charsetName = StringUtils.CHARSET;
-        }
-
+        FileUtils.assertFile(file);
         if (file.length() < TextTableFileCounter.UNIT) { // 小于 1G 使用单线程
-            return this.executeSerial(file, charsetName);
+            return this.executeSerial(file, StringUtils.charset(charsetName));
         } else {
-            return this.executeParallel(file, TextTableFileCounter.UNIT, IO.FILE_BYTES_BUFFER_SIZE);
+            return this.executeParallel(file, IO.FILE_BYTES_BUFFER_SIZE);
         }
     }
 
@@ -87,16 +78,12 @@ public class TextTableFileCounter {
      * 多线程并行计算文本行数
      *
      * @param file       文件信息
-     * @param unit       临时文件大小的最大值
      * @param readBuffer 输入流缓冲区长度，单位字符
      * @return 文件行数
      */
-    protected long executeParallel(File file, long unit, int readBuffer) throws Exception {
+    protected long executeParallel(File file, int readBuffer) throws Exception {
         Long divide = Numbers.divide(file.length(), (long) 12);
         long partSize = Math.max(divide, 92160);
-        if (partSize > unit) {
-            partSize = unit;
-        }
 
         if (readBuffer <= 0) {
             readBuffer = IO.FILE_BYTES_BUFFER_SIZE;
@@ -107,7 +94,7 @@ public class TextTableFileCounter {
 
         // 创建分段任务
         long filePointer = 0;
-        List<ReadLineExecutor> list = new ArrayList<ReadLineExecutor>();
+        List<ReadLineJob> list = new ArrayList<ReadLineJob>();
         while (true) {
             long fileLength = file.length();
             long length = filePointer + partSize + 1;
@@ -116,7 +103,7 @@ public class TextTableFileCounter {
                 pieceSize = fileLength - filePointer;
             }
 
-            list.add(new ReadLineExecutor(file, readBuffer, filePointer, pieceSize)); // 添加分段任务
+            list.add(new ReadLineJob(file, readBuffer, filePointer, pieceSize)); // 添加分段任务
             filePointer += partSize + 1; // 下一个位置指针
             if (filePointer >= fileLength) {
                 break;
@@ -132,8 +119,8 @@ public class TextTableFileCounter {
 
         // 统计行数
         long total = 0;
-        ReadLineExecutor last = null;
-        for (ReadLineExecutor obj : list) {
+        ReadLineJob last = null;
+        for (ReadLineJob obj : list) {
             if (last != null) { // 如果上一个片段的最后一个字符是 \r 下一个片段的第一个字符是 \n 需要减掉一个换行符
                 if (last.getEndPointer() == '\r' && obj.getStartPointer() == '\n') {
                     total--;
@@ -150,7 +137,7 @@ public class TextTableFileCounter {
         return total;
     }
 
-    static class ReadLineExecutor extends AbstractJob {
+    static class ReadLineJob extends AbstractJob {
 
         /** 文件内的位置指针 */
         private final long filePointer;
@@ -177,31 +164,18 @@ public class TextTableFileCounter {
          * 初始化
          *
          * @param file        文件
-         * @param bufferSize  缓冲区长度（读取文件时的缓冲区）
+         * @param bufferSize  读取文件的缓冲区长度
          * @param filePointer 文件内的位置指针
          * @param maxByteSize 读取文件的最大字节数
          */
-        public ReadLineExecutor(File file, int bufferSize, long filePointer, long maxByteSize) {
-            if (file == null) {
-                throw new NullPointerException();
-            }
-            if (bufferSize <= 0) {
-                throw new IllegalArgumentException(String.valueOf(bufferSize));
-            }
-            if (filePointer < 0) {
-                throw new IllegalArgumentException(String.valueOf(filePointer));
-            }
-            if (maxByteSize < 0) {
-                throw new IllegalArgumentException(String.valueOf(maxByteSize));
-            }
-
+        public ReadLineJob(File file, int bufferSize, long filePointer, long maxByteSize) {
+            this.file = Ensure.notNull(file);
+            this.bufferSize = Ensure.isFromOne(bufferSize);
+            this.filePointer = Ensure.isFromZero(filePointer);
+            this.maxBytes = Ensure.isFromZero(maxByteSize);
+            this.setName(ResourcesUtils.getMessage("io.standard.output.msg063", file.getAbsolutePath(), filePointer, maxByteSize));
             this.firstChar = ' ';
             this.lastChar = ' ';
-            this.setName(this.getClass().getSimpleName() + " " + (++TextTableFileCounter.threadNoTemplate));
-            this.file = file;
-            this.bufferSize = bufferSize;
-            this.filePointer = filePointer;
-            this.maxBytes = maxByteSize;
 
             if (log.isTraceEnabled()) {
                 log.trace(ResourcesUtils.getIoxMessage(41, this.getName(), filePointer, (filePointer + maxByteSize)));
@@ -349,11 +323,11 @@ public class TextTableFileCounter {
 
     static class ReadLineExecutorReader implements EasyJobReader {
 
-        private final Iterator<ReadLineExecutor> it;
+        private final Iterator<ReadLineJob> it;
 
         private volatile boolean terminate;
 
-        public ReadLineExecutorReader(List<ReadLineExecutor> list) {
+        public ReadLineExecutorReader(List<ReadLineJob> list) {
             this.it = list.iterator();
         }
 

@@ -17,20 +17,24 @@ public class EasyJobReaderImpl implements EasyJobReader {
     /** 终止状态 */
     private volatile boolean noTerminate;
 
-    public EasyJobReaderImpl(EasyJobReader in) throws Exception {
+    public EasyJobReaderImpl(List<EasyJob> list) {
         this.noTerminate = true;
+        this.it = list.iterator();
+    }
+
+    public EasyJobReaderImpl(EasyJobReader in) throws Exception {
+        this(toList(in));
+    }
+
+    private static List<EasyJob> toList(EasyJobReader in) throws Exception {
         List<EasyJob> list = new ArrayList<EasyJob>();
-        while (in.hasNext() && this.noTerminate) {
+        while (in.hasNext()) {
             EasyJob next = in.next();
             if (next != null) {
                 list.add(next);
             }
         }
-        this.it = list.iterator();
-    }
-
-    public EasyJobReaderImpl(List<EasyJob> list) {
-        this.it = list.iterator();
+        return list;
     }
 
     public boolean hasNext() {

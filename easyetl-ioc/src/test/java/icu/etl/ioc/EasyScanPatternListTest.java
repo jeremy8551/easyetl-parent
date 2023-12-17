@@ -2,6 +2,7 @@ package icu.etl.ioc;
 
 import java.util.Arrays;
 
+import icu.etl.ProjectPom;
 import icu.etl.ioc.scan.ClassScanner;
 import icu.etl.ioc.scan.EasyScanPatternList;
 import icu.etl.util.Settings;
@@ -44,7 +45,7 @@ public class EasyScanPatternListTest {
 
         list.addGroupID();
         Assert.assertEquals(old + 1, list.size());
-        Assert.assertEquals(Settings.getGroupID(), list.get(0).getPrefix());
+        Assert.assertEquals(ProjectPom.getGroupID(), list.get(0).getPrefix());
 
         Assert.assertEquals("icu.etl,org.apache,!com.spring,a.b,!d.c,g.h.c,!a.c.d", list.toArgumentString());
         Assert.assertEquals("[icu.etl, org.apache, !com.spring, a.b, !d.c, g.h.c, !a.c.d]", Arrays.toString(list.toArray()));

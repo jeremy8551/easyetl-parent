@@ -15,6 +15,7 @@ import icu.etl.printer.Progress;
 import icu.etl.sort.OrderByExpression;
 import icu.etl.sort.TableFileDeduplicateSorter;
 import icu.etl.sort.TableFileSortContext;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.TimeWatch;
@@ -38,8 +39,8 @@ public class Increment extends AbstractJob {
      */
     public Increment(IncrementContext context) {
         super();
+        this.context = Ensure.notNull(context);
         new IncrementContextValidator(context);
-        this.context = context;
         this.setName(context.getName());
     }
 
@@ -55,8 +56,8 @@ public class Increment extends AbstractJob {
         boolean sortOldFile = this.context.sortOldFile();
         IncrementPosition position = this.context.getPosition();
         List<IncrementListener> listeners = this.context.getListeners();
-        IncrementReplaceList replaceList = this.context.getReplaceList();
-        IncrementLoggerListener logger = this.context.getLogger();
+        IncrementReplaceListener replaceList = this.context.getReplaceList();
+        IncrementListenerImpl logger = this.context.getLogger();
         Progress newfileProgress = this.context.getNewfileProgress();
         Progress oldfileProgress = this.context.getOldfileProgress();
         TableFileSortContext newfileCxt = this.context.getNewfileSortContext();

@@ -4,10 +4,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import icu.etl.concurrent.ThreadSource;
+import icu.etl.io.TableColumnComparator;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
 import icu.etl.printer.Progress;
 import icu.etl.sort.TableFileSortContext;
+import icu.etl.util.Ensure;
 
 /**
  * 剥离增量配置信息
@@ -29,8 +31,8 @@ public class IncrementContext {
     private TextTableFileWriter delOuter;
     private IncrementPosition position;
     private Comparator<String> comparator;
-    private IncrementLoggerListener logger;
-    private IncrementReplaceList replaceList;
+    private IncrementListenerImpl logger;
+    private IncrementReplaceListener replaceList;
     private Progress newfileProgress;
     private Progress oldfileProgress;
     private TableFileSortContext oldfileSortContext;
@@ -43,6 +45,8 @@ public class IncrementContext {
     public IncrementContext() {
         this.sortNewFile = true;
         this.sortOldFile = true;
+        this.arith = new IncrementTableArith();
+        this.comparator = new TableColumnComparator();
     }
 
     /**
@@ -132,7 +136,7 @@ public class IncrementContext {
      * @param arith
      */
     public void setArith(IncrementArith arith) {
-        this.arith = arith;
+        this.arith = Ensure.notNull(arith);
     }
 
     /**
@@ -210,7 +214,7 @@ public class IncrementContext {
     /**
      * 返回排序规则
      *
-     * @return
+     * @return 排序规则
      */
     public Comparator<String> getComparator() {
         return comparator;
@@ -219,10 +223,10 @@ public class IncrementContext {
     /**
      * 设置排序规则
      *
-     * @param comparator
+     * @param comparator 排序规则
      */
     public void setComparator(Comparator<String> comparator) {
-        this.comparator = comparator;
+        this.comparator = Ensure.notNull(comparator);
     }
 
     /**
@@ -230,7 +234,7 @@ public class IncrementContext {
      *
      * @return
      */
-    public IncrementLoggerListener getLogger() {
+    public IncrementListenerImpl getLogger() {
         return logger;
     }
 
@@ -239,7 +243,7 @@ public class IncrementContext {
      *
      * @param logger
      */
-    public void setLogger(IncrementLoggerListener logger) {
+    public void setLogger(IncrementListenerImpl logger) {
         this.logger = logger;
     }
 
@@ -248,7 +252,7 @@ public class IncrementContext {
      *
      * @return
      */
-    public IncrementReplaceList getReplaceList() {
+    public IncrementReplaceListener getReplaceList() {
         return replaceList;
     }
 
@@ -257,7 +261,7 @@ public class IncrementContext {
      *
      * @param replaceList
      */
-    public void setReplaceList(IncrementReplaceList replaceList) {
+    public void setReplaceList(IncrementReplaceListener replaceList) {
         this.replaceList = replaceList;
     }
 

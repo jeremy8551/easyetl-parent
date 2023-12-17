@@ -1,16 +1,12 @@
 package icu.etl.increment;
 
 import java.io.File;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import icu.etl.io.TableColumnComparator;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
-import icu.etl.sort.TableFileSortContext;
-import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -26,57 +22,19 @@ public class IncrementContextValidator {
      * @param context 上下文信息
      */
     public IncrementContextValidator(IncrementContext context) {
-        Ensure.notNull(context);
-
-        IncrementArith arith = context.getArith();
-        if (arith == null) {
-            context.setArith(new IncrementTableArith());
-        }
-
-        Comparator<String> comparator = context.getComparator();
-        if (comparator == null) {
-            context.setComparator(new TableColumnComparator());
-        }
-
         this.checkReaderAndWriter(context);
         this.checkPosition(context);
-        this.checkSort(context);
         this.checkListeners(context);
-    }
-
-    /**
-     * 校验排序相关的参数
-     *
-     * @param context
-     */
-    protected void checkSort(IncrementContext context) {
-        // 校验新数据排序配置
-        boolean sortNewFile = context.sortNewFile();
-        TableFileSortContext newfileCxt = context.getNewfileSortContext();
-        if (sortNewFile && newfileCxt == null) {
-            TableFileSortContext newCxt = new TableFileSortContext();
-            newCxt.setThreadSource(context.getThreadSource());
-            context.setSortNewContext(newCxt);
-        }
-
-        // 校验旧数据排序配置
-        boolean sortOldFile = context.sortOldFile();
-        TableFileSortContext oldfileCxt = context.getOldfileSortContext();
-        if (sortOldFile && oldfileCxt == null) {
-            TableFileSortContext oldCxt = new TableFileSortContext();
-            oldCxt.setThreadSource(context.getThreadSource());
-            context.setSortOldContext(oldCxt);
-        }
     }
 
     /**
      * 校验监听器
      *
-     * @param context
+     * @param context 上下文信息
      */
     protected void checkListeners(IncrementContext context) {
-        IncrementLoggerListener logger = context.getLogger();
-        IncrementReplaceList replaces = context.getReplaceList();
+        IncrementListenerImpl logger = context.getLogger();
+        IncrementReplaceListener replaces = context.getReplaceList();
         List<IncrementListener> listeners = context.getListeners();
         if (listeners != null) {
             for (IncrementListener obj : listeners) {
@@ -92,7 +50,7 @@ public class IncrementContextValidator {
     /**
      * 校验输入输出流
      *
-     * @param context
+     * @param context 上下文信息
      */
     protected void checkReaderAndWriter(IncrementContext context) {
         TextTableFile oldtabfile = context.getOldFile();
@@ -142,7 +100,7 @@ public class IncrementContextValidator {
     /**
      * 校验位置信息
      *
-     * @param context
+     * @param context 上下文信息
      */
     protected void checkPosition(IncrementContext context) {
         IncrementPosition position = context.getPosition();

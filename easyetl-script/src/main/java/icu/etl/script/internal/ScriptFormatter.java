@@ -39,7 +39,7 @@ public class ScriptFormatter extends UniversalScriptFormatter {
 
     private final static long serialVersionUID = 1L;
 
-    public Object formatJdbcParameter(UniversalScriptSession session, UniversalScriptContext context, Object object) throws IOException, SQLException {
+    public Object formatJdbcParameter(UniversalScriptSession session, UniversalScriptContext context, Object object) throws Exception {
         if (object == null) {
             return null;
         }

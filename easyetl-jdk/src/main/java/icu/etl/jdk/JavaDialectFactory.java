@@ -8,7 +8,7 @@ package icu.etl.jdk;
 public class JavaDialectFactory {
 
     /** JDK方言 */
-    private static JavaDialect dialect;
+    private volatile static JavaDialect dialect;
 
     /**
      * 返回 JDK 方言对象

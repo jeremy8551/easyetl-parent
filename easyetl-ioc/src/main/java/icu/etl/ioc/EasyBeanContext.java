@@ -3,6 +3,7 @@ package icu.etl.ioc;
 import java.util.ArrayList;
 import java.util.List;
 
+import icu.etl.ProjectPom;
 import icu.etl.ioc.impl.EasyBeanFactoryImpl;
 import icu.etl.ioc.impl.EasyBeanInfoImpl;
 import icu.etl.ioc.scan.BeanClassScanner;
@@ -10,7 +11,6 @@ import icu.etl.ioc.scan.BeanSpiScanner;
 import icu.etl.ioc.scan.EasyScanPatternList;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Ensure;
-import icu.etl.util.Settings;
 
 /**
  * 容器上下文信息
@@ -230,6 +230,6 @@ public class EasyBeanContext implements EasyContext {
     }
 
     public String getName() {
-        return Settings.getApplicationName();
+        return ProjectPom.getArtifactID();
     }
 }

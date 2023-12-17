@@ -5,11 +5,12 @@ import java.io.File;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.concurrent.ThreadSource;
 import icu.etl.io.TextTableFile;
+import icu.etl.ioc.EasyContext;
 import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 
 /**
- * 表格文件排序的配置信息
+ * 排序器的上下文信息
  *
  * @author jeremy8551@qq.com
  */
@@ -61,21 +62,33 @@ public class TableFileSortContext {
     private boolean removeRightField;
 
     /**
-     * 创建一个表格文件排序配置信息
+     * 排序器的上下文信息
      */
     public TableFileSortContext() {
+        this.values = new CaseSensitivMap<Object>();
         this.duplicate = true;
         this.deleteFile = true;
         this.maxRows = 10000;
         this.cacheRows = 100;
-        this.threadNumber = 3;
+        this.threadNumber = 2;
         this.fileCount = 4;
         this.mergeLineNumber = 0;
         this.readLineNumber = 0;
         this.keepSource = false;
         this.readerBuffer = IO.FILE_BYTES_BUFFER_SIZE;
-        this.values = new CaseSensitivMap<Object>();
         this.removeRightField = false;
+    }
+
+    /**
+     * 排序器的上下文信息
+     *
+     * @param context 容器
+     * @param tempDir 排序存储临时文件的目录, 可以为null
+     */
+    public TableFileSortContext(EasyContext context, File tempDir) {
+        this();
+        this.threadSource = Ensure.notNull(context.getBean(ThreadSource.class));
+        this.tempDir = tempDir;
     }
 
     /**
@@ -99,7 +112,7 @@ public class TableFileSortContext {
     /**
      * 返回文件输入流的缓冲区长度，单位：字符
      *
-     * @return
+     * @return 缓冲区长度
      */
     public int getReaderBuffer() {
         return readerBuffer;
@@ -108,7 +121,7 @@ public class TableFileSortContext {
     /**
      * 设置文件输入流的缓冲区长度，单位：字符
      *
-     * @param n
+     * @param n 缓冲区长度
      */
     public void setReaderBuffer(int n) {
         this.readerBuffer = Ensure.isFromOne(n);
@@ -117,7 +130,7 @@ public class TableFileSortContext {
     /**
      * 设置临时文件最大记录数
      *
-     * @param n
+     * @param n 最大记录数
      */
     public void setMaxRows(int n) {
         this.maxRows = Ensure.isFromOne(n);
@@ -126,7 +139,7 @@ public class TableFileSortContext {
     /**
      * 返回临时文件最大记录数
      *
-     * @return
+     * @return 最大记录数
      */
     public int getMaxRows() {
         return this.maxRows;
@@ -135,7 +148,7 @@ public class TableFileSortContext {
     /**
      * 返回 true 表示删除临时文件
      *
-     * @return
+     * @return 返回true表示删除临时文件 false表示删除临时文件
      */
     public boolean isDeleteFile() {
         return this.deleteFile;
@@ -144,7 +157,7 @@ public class TableFileSortContext {
     /**
      * 设置 true 表示删除临时文件
      *
-     * @param deleteFile
+     * @param deleteFile 返回true表示删除临时文件 false表示删除临时文件
      */
     public void setDeleteFile(boolean deleteFile) {
         this.deleteFile = deleteFile;
@@ -153,7 +166,7 @@ public class TableFileSortContext {
     /**
      * 设置线程合并文件过程中最大文件个数
      *
-     * @param n
+     * @param n 文件个数
      */
     public void setFileCount(int n) {
         if (n <= 1) {
@@ -165,7 +178,7 @@ public class TableFileSortContext {
     /**
      * 返回线程合并文件过程中最大文件个数
      *
-     * @return
+     * @return 文件个数
      */
     public int getFileCount() {
         return fileCount;
@@ -210,7 +223,7 @@ public class TableFileSortContext {
     /**
      * 返回临时文件存储目录
      *
-     * @return
+     * @return 临时目录
      */
     public File getTempDir() {
         return tempDir;
@@ -219,7 +232,7 @@ public class TableFileSortContext {
     /**
      * 设置临时文件存储的目录
      *
-     * @param tempDir
+     * @param tempDir 临时目录
      */
     public void setTempDir(File tempDir) {
         this.tempDir = tempDir;
@@ -228,7 +241,7 @@ public class TableFileSortContext {
     /**
      * 返回排序过程中已读文件行数
      *
-     * @return
+     * @return 文件行数
      */
     public long getReadLineNumber() {
         return this.readLineNumber;
@@ -237,7 +250,7 @@ public class TableFileSortContext {
     /**
      * 设置排序过程中已读文件行数
      *
-     * @param beforeLineNumber
+     * @param beforeLineNumber 文件行数
      */
     protected void setReadLineNumber(long beforeLineNumber) {
         this.readLineNumber = beforeLineNumber;
@@ -246,7 +259,7 @@ public class TableFileSortContext {
     /**
      * 返回排序过程中合并文件行数
      *
-     * @return
+     * @return 文件行数
      */
     public long getMergeLineNumber() {
         return this.mergeLineNumber;
@@ -255,27 +268,27 @@ public class TableFileSortContext {
     /**
      * 设置排序过程中合并文件行数
      *
-     * @param afterLineNumber
+     * @param afterLineNumber 文件行数
      */
     protected void setMergeLineNumber(long afterLineNumber) {
         this.mergeLineNumber = afterLineNumber;
     }
 
     /**
-     * 返回 true 表示排序操作不影响源文件，排序返回的文件与源文件不同 <br>
-     * 返回 false 表示排序操作会覆盖源文件，排序返回的文件与源文件相同
+     * 是否要保留源文件
      *
-     * @return
+     * @return 返回 true 表示排序操作不影响源文件，排序返回的文件与源文件不同 <br>
+     * 返回 false 表示排序操作会覆盖源文件，排序返回的文件与源文件相同
      */
     public boolean keepSource() {
         return keepSource;
     }
 
     /**
-     * 设置 true 表示排序操作不影响源文件，排序返回的文件与源文件不同 <br>
-     * 设置 false 表示排序操作会覆盖源文件，排序返回的文件与源文件相同
+     * 是否要保留源文件
      *
-     * @param b
+     * @param b 设置 true 表示排序操作不影响源文件，排序返回的文件与源文件不同 <br>
+     *          设置 false 表示排序操作会覆盖源文件，排序返回的文件与源文件相同
      */
     public void setKeepSource(boolean b) {
         this.keepSource = b;
@@ -285,7 +298,7 @@ public class TableFileSortContext {
      * 判断缓存中是否存在属性
      *
      * @param key 属性名
-     * @return
+     * @return 返回true表示存在属性 false表示不存在属性
      */
     protected boolean contains(String key) {
         return this.values.containsKey(key);
@@ -295,7 +308,7 @@ public class TableFileSortContext {
      * 返回属性值
      *
      * @param key 属性名
-     * @param <E>
+     * @param <E> 属性值类型
      * @return 属性值
      */
     @SuppressWarnings("unchecked")
