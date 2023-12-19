@@ -8,13 +8,13 @@ import java.util.Set;
 
 import icu.etl.concurrent.EasyJob;
 import icu.etl.concurrent.ThreadSource;
-import icu.etl.increment.Increment;
+import icu.etl.increment.IncrementJob;
 import icu.etl.increment.IncrementContext;
 import icu.etl.increment.IncrementListenerImpl;
 import icu.etl.increment.IncrementPosition;
 import icu.etl.increment.IncrementReplace;
 import icu.etl.increment.IncrementReplaceListener;
-import icu.etl.increment.SimpleIncrementPosition;
+import icu.etl.increment.IncrementPositionImpl;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
 import icu.etl.printer.StandardFilePrinter;
@@ -76,7 +76,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
     private IncrementExpression[] writeExpr;
 
     /** 任务信息 */
-    private Increment executor;
+    private IncrementJob job;
 
     public IncrementCommand(UniversalCommandCompiler compiler, String command, IncrementExpression newfileExpr, IncrementExpression oldfileExpr, IncrementExpression[] writeExpr) {
         super(compiler, command);
@@ -95,18 +95,18 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, false, true, false));
         }
 
-        int value = this.executor.execute();
-        return this.executor.isTerminate() ? UniversalScriptCommand.TERMINATE : (value == 0 ? 0 : UniversalScriptCommand.COMMAND_ERROR);
+        int value = this.job.execute();
+        return this.job.isTerminate() ? UniversalScriptCommand.TERMINATE : (value == 0 ? 0 : UniversalScriptCommand.COMMAND_ERROR);
     }
 
-    public void terminate() throws IOException, SQLException {
-        if (this.executor != null) {
-            this.executor.terminate();
+    public void terminate() throws Exception {
+        if (this.job != null) {
+            this.job.terminate();
         }
     }
 
-    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
-        if (this.executor == null) {
+    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws Exception {
+        if (this.job == null) {
             TextTableFile newfile = this.newfileExpr.createTableFile();
             TextTableFile oldfile = this.oldfileExpr.createTableFile();
 
@@ -142,7 +142,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
                 oldCompars = oldCompare;
             }
 
-            IncrementPosition position = new SimpleIncrementPosition(this.newfileExpr.getIndexPosition(), this.oldfileExpr.getIndexPosition(), newCompars, oldCompars);
+            IncrementPosition position = new IncrementPositionImpl(this.newfileExpr.getIndexPosition(), this.oldfileExpr.getIndexPosition(), newCompars, oldCompars);
             if (ArrayUtils.isEmpty(this.newfileExpr.getIndexPosition()) || ArrayUtils.isEmpty(this.oldfileExpr.getIndexPosition())) {
                 throw new IOException(ResourcesUtils.getScriptStderrMessage(137, "index"));
             }
@@ -164,7 +164,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
                     }
                 } else {
                     String filetype = expr.getFiletype();
-                    TextTableFile table = expr.createTableFile(StringUtils.defaultString(filetype, newfileExpr.getFiletype()));
+                    TextTableFile table = expr.createTableFile(StringUtils.defaultString(filetype, this.newfileExpr.getFiletype()));
                     TextTableFileWriter out = table.getWriter(expr.contains("append"), expr.contains("outbuf") ? expr.getIntAttribute("outbuf") : 100);
                     Set<String> kinds = expr.getKinds(); // new upd del
                     if (kinds.size() == 0) { // write into 语句
@@ -249,17 +249,17 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
                 }
             }
 
-            this.executor = new Increment(inccxt);
+            this.job = new IncrementJob(inccxt);
         }
 
-        IncrementContext cxt = this.executor.getContext();
+        IncrementContext cxt = this.job.getContext();
         return FileUtils.isFile(cxt.getNewFile().getFile()) && FileUtils.isFile(cxt.getOldFile().getFile());
     }
 
     public EasyJob getJob() {
-        Increment instance = this.executor;
-        this.executor = null;
-        return instance;
+        IncrementJob job = this.job;
+        this.job = null;
+        return job;
     }
 
     public boolean enableNohup() {

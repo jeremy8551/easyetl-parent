@@ -81,7 +81,7 @@ public class TerminateCommand extends AbstractTraceCommand {
         return session.isTerminate() ? UniversalScriptCommand.TERMINATE : 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

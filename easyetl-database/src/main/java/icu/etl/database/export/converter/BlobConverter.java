@@ -9,10 +9,10 @@ import icu.etl.collection.ByteBuffer;
 
 public class BlobConverter extends AbstractConverter {
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         Blob value = this.resultSet.getBlob(this.column);
         if (value == null) {
             this.array[this.column] = "";

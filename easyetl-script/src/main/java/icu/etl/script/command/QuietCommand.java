@@ -1,9 +1,7 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.log.Log;
@@ -41,7 +39,7 @@ public class QuietCommand extends AbstractTraceCommand implements UniversalScrip
         this.subcommand = subcommand;
     }
 
-    public void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws IOException, SQLException {
+    public void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws Exception {
         if (this.subcommand != null) {
             throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "quiet", this.subcommand.getScript()));
         }
@@ -56,18 +54,23 @@ public class QuietCommand extends AbstractTraceCommand implements UniversalScrip
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(session.getAnalysis().replaceVariable(session, context, this.command, false));
         }
 
+        int value = 0;
         try {
-            this.subcommand.execute(session, context, new ScriptNullStdout(stdout), new ScriptNullStderr(stderr), forceStdout);
+            value = this.subcommand.execute(session, context, new ScriptNullStdout(stdout), new ScriptNullStderr(stderr), forceStdout);
         } catch (Throwable e) {
+            value = UniversalScriptCommand.COMMAND_ERROR;
             if (log.isDebugEnabled() && this.subcommand != null) {
                 log.debug(this.subcommand.getScript(), e);
             }
         }
+
+        session.removeValue();
+        session.putValue("exitcode", value);
         return 0;
     }
 

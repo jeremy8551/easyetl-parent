@@ -1,7 +1,7 @@
 package icu.etl.increment;
 
 /**
- * 新旧数据的位置信息
+ * 文件的位置信息
  *
  * @author jeremy8551@qq.com
  * @createtime 2021-05-14

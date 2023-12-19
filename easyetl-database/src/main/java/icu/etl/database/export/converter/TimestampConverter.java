@@ -9,12 +9,12 @@ import icu.etl.util.StringUtils;
 
 public class TimestampConverter extends DateConverter {
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         String pattern = StringUtils.defaultString((String) this.getAttribute(PARAM_TIMESTAMPFORMAT), "yyyy-MM-dd hh:mm:ss.SSSSSS");
         this.format = new SimpleDateFormat(pattern);
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         Timestamp value = this.resultSet.getTimestamp(this.column);
         if (value == null) {
             this.array[this.column] = "";

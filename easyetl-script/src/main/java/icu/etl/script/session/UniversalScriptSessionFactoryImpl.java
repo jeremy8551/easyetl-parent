@@ -4,15 +4,16 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 import icu.etl.annotation.EasyBean;
+import icu.etl.script.UniversalScriptEngine;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptSessionFactory;
 import icu.etl.util.IO;
 
 /**
- * 脚本引擎用户会话信息集合
+ * 接口实现类
  */
 @EasyBean(name = "default", description = "脚本引擎用户会话信息集合")
-public class ScriptSessionFactory implements UniversalScriptSessionFactory {
+public class UniversalScriptSessionFactoryImpl implements UniversalScriptSessionFactory {
 
     /** 用户会话编号与用户会话信息的映射关系 */
     private LinkedHashMap<String, UniversalScriptSession> map;
@@ -20,12 +21,12 @@ public class ScriptSessionFactory implements UniversalScriptSessionFactory {
     /**
      * 初始化
      */
-    public ScriptSessionFactory() {
+    public UniversalScriptSessionFactoryImpl() {
         this.map = new LinkedHashMap<String, UniversalScriptSession>();
     }
 
-    public UniversalScriptSession build() {
-        ScriptSession session = new ScriptSession(this);
+    public UniversalScriptSession build(UniversalScriptEngine engine) {
+        UniversalScriptSessionImpl session = new UniversalScriptSessionImpl(engine.getId(), this);
         this.map.put(session.getId(), session);
         return session;
     }

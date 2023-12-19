@@ -8,11 +8,11 @@ public class StringConverter extends AbstractConverter {
     /** true表示保留字符串右端的空白字符 */
     protected boolean keepblanks;
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         this.keepblanks = this.contains("keepblanks");
     }
 
-    public void execute(String value) throws IOException, SQLException {
+    public void execute(String value) throws Exception {
         if (this.notNull && value.length() == 0) {
             this.statement.setString(this.position, "");
         } else {

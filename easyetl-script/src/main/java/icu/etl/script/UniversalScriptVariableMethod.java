@@ -1,8 +1,5 @@
 package icu.etl.script;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 /**
  * 脚本引擎变量方法
  *
@@ -21,15 +18,14 @@ public interface UniversalScriptVariableMethod {
      * @param name     变量名
      * @param method   方法名, 如: .trim()
      * @return 返回0表示成功，返回非0表示错误
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 发生错误
      */
-    int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String name, String method) throws IOException, SQLException;
+    int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String name, String method) throws Exception;
 
     /**
      * 返回 {@linkplain #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, UniversalScriptAnalysis, String, String)} 方法的计算结果
      *
-     * @return
+     * @return 返回值
      */
     Object value();
 

@@ -40,7 +40,7 @@ public class PipeCommandCompiler extends AbstractCommandCompiler implements Univ
         return in.readSinglelineScript();
     }
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         List<UniversalScriptCommand> commands = new ArrayList<UniversalScriptCommand>();
         List<String> list = this.splitPipe(command);
         Iterator<String> it = list.iterator();

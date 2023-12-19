@@ -40,7 +40,7 @@ public class PutCommand extends AbstractFileCommand implements JumpCommandSuppor
         this.remotefile = remotefile;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String localfilepath = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.localfile, true, true, true, false), true);
         String remotedir = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.remotefile, true, true, true, false), false);
@@ -77,7 +77,7 @@ public class PutCommand extends AbstractFileCommand implements JumpCommandSuppor
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.ftp != null) {
             this.ftp.terminate();
         }

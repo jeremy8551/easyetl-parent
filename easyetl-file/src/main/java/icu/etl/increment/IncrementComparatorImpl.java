@@ -9,12 +9,12 @@ import icu.etl.util.ArrayUtils;
 import icu.etl.util.StringUtils;
 
 /**
- * 增量剥离规则
+ * 接口实现类
  *
  * @author jeremy8551@qq.com
  * @createtime 2010-01-16 06:54:58
  */
-public class IncrementTableRuler implements IncrementRuler {
+public class IncrementComparatorImpl implements IncrementComparator {
 
     /** 字符串比较器（用于比较字符串大小，在对数据按主键信息比较的时候用到） */
     private Comparator<String> comp;
@@ -37,7 +37,7 @@ public class IncrementTableRuler implements IncrementRuler {
      * @param comparator 字符串比较规则
      * @param position   位置信息
      */
-    public IncrementTableRuler(Comparator<String> comparator, IncrementPosition position) {
+    public IncrementComparatorImpl(Comparator<String> comparator, IncrementPosition position) {
         this.comp = (comparator == null) ? new TableColumnComparator() : comparator;
         this.newIndexPosition = position.getNewIndexPosition();
         this.oldIndexPosition = position.getOldIndexPosition();

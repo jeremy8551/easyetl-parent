@@ -32,7 +32,7 @@ public class UndeclareHandlerCommand extends AbstractGlobalCommand implements Lo
         this.setGlobal(global);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         boolean print = session.isEchoEnable() || forceStdout;
         if (print) {
             stdout.println(StringUtils.escapeLineSeparator(this.command));
@@ -50,7 +50,7 @@ public class UndeclareHandlerCommand extends AbstractGlobalCommand implements Lo
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableLoop() {

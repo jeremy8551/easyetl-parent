@@ -24,7 +24,7 @@ public class UndeclareCatalogCommand extends AbstractGlobalCommand {
         this.setGlobal(global);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         if (this.isGlobal()) {
             context.removeGlobalCatalog(this.name);
         }
@@ -32,7 +32,7 @@ public class UndeclareCatalogCommand extends AbstractGlobalCommand {
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

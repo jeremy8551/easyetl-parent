@@ -25,7 +25,7 @@ public class RollbackCommand extends AbstractTraceCommand implements JumpCommand
         super(compiler, command);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         ScriptDataSource dataSource = ScriptDataSource.get(context);
         JdbcDao dao = dataSource.getDao();
         if (dao.isConnected()) {
@@ -41,7 +41,7 @@ public class RollbackCommand extends AbstractTraceCommand implements JumpCommand
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

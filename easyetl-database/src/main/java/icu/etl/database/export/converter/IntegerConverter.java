@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 public class IntegerConverter extends AbstractConverter {
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         Integer value = this.resultSet.getInt(this.column);
         if (this.resultSet.wasNull()) {
             this.array[this.column] = "";

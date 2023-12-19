@@ -41,7 +41,7 @@ public class SSH2Command extends AbstractTraceCommand implements JumpCommandSupp
         this.oscommand = oscommand;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String host = analysis.replaceShellVariable(session, context, this.host, false, true, true, false);
         String port = analysis.replaceShellVariable(session, context, this.port, false, true, true, false);
@@ -90,7 +90,7 @@ public class SSH2Command extends AbstractTraceCommand implements JumpCommandSupp
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.client != null) {
             this.client.terminate();
         }

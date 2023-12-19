@@ -68,7 +68,7 @@ public class ClobWriter {
      * @throws IOException  输入输出流错误
      * @throws SQLException 数据库错误
      */
-    public void toFile(File file, String charsetName, boolean append, int buffer, String endStr) throws IOException, SQLException {
+    public void toFile(File file, String charsetName, boolean append, int buffer, String endStr) throws Exception {
         FileUtils.assertCreateFile(file);
         OutputStreamWriter out = IO.getFileWriter(file, charsetName, append);
         try {
@@ -115,7 +115,7 @@ public class ClobWriter {
      * @throws IOException  输入输出流错误
      * @throws SQLException 数据库错误
      */
-    public void toWriter(Clob clob, Writer out, int size) throws IOException, SQLException {
+    public void toWriter(Clob clob, Writer out, int size) throws Exception {
         if (clob != null) {
             Reader in = clob.getCharacterStream();
             if (in != null) {

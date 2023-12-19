@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.script.UniversalCommandCompiler;
@@ -51,7 +50,7 @@ public class JavaCommand extends AbstractTraceCommand implements UniversalScript
         this.args = analysis.split(StringUtils.trimBlank(IO.read(in, new StringBuilder())));
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         StringBuilder buf = new StringBuilder(this.command.length() + 30);
         buf.append("java ");
         buf.append(this.className);
@@ -74,22 +73,20 @@ public class JavaCommand extends AbstractTraceCommand implements UniversalScript
         }
 
         // 初始化
-        Class<? extends AbstractJavaCommand> cls = ClassUtils.forName(this.className, true, context.getFactory().getContext().getClassLoader());
+        Class<? extends AbstractJavaCommand> cls = ClassUtils.forName(this.className, true, context.getContainer().getClassLoader());
         if (cls == null) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(94, this.command, className, AbstractJavaCommand.class.getName()));
-        } else {
-            this.obj = context.getFactory().getContext().createBean(cls);
+            throw new Exception(ResourcesUtils.getScriptStderrMessage(94, this.command, className, AbstractJavaCommand.class.getName()));
         }
+        this.obj = context.getFactory().getContext().createBean(cls);
+
+        session.removeValue();
+        session.putValue("obj", this.obj);
 
         // 执行命令
-        try {
-            return this.obj.execute(session, context, stdout, stderr, array);
-        } catch (Throwable e) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(64, buf), e); // 因为 declare 语句可能需要捕捉异常处理错误，此处只能抛出异常信息
-        }
+        return this.obj.execute(session, context, stdout, stderr, array);
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.obj != null) {
             try {
                 this.obj.terminate();

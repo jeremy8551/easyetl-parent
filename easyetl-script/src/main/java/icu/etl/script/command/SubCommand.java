@@ -25,7 +25,7 @@ public class SubCommand extends AbstractCommand implements NohupCommandSupported
         this.script = script;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(this.command);
         }
@@ -33,7 +33,7 @@ public class SubCommand extends AbstractCommand implements NohupCommandSupported
         return context.getEngine().eval(session, context, stdout, stderr, this.script);
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

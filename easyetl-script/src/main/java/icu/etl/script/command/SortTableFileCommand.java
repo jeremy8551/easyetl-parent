@@ -88,7 +88,7 @@ public class SortTableFileCommand extends AbstractTraceCommand {
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.tfs != null) {
             this.tfs.terminate();
         }

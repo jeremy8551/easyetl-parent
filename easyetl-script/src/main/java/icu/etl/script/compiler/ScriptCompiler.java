@@ -81,7 +81,7 @@ public class ScriptCompiler implements UniversalScriptCompiler {
         return obj;
     }
 
-    public void compile(UniversalScriptSession session, UniversalScriptContext context, Reader in) throws IOException, SQLException {
+    public void compile(UniversalScriptSession session, UniversalScriptContext context, Reader in) throws Exception {
         this.commandRepository.clear();
         this.commandRepository.load(context);
         if (this.commandRepository.getDefault() == null) { // 设置脚本引擎默认命令
@@ -100,7 +100,7 @@ public class ScriptCompiler implements UniversalScriptCompiler {
         this.terminate = true;
     }
 
-    public boolean hasNext() throws IOException, SQLException {
+    public boolean hasNext() throws Exception {
         this.readMillis = System.currentTimeMillis();
         if (this.terminate) {
             this.cache.clear();

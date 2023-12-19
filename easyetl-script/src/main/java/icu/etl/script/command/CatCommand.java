@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -41,17 +40,20 @@ public class CatCommand extends AbstractFileCommand implements UniversalScriptIn
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         ScriptFile file = new ScriptFile(session, context, this.filepath);
         String content = FileUtils.readline(file, StringUtils.defaultString(this.charsetName, context.getCharsetName()), 0);
 
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(content);
         }
+
+        session.removeValue();
+        session.putValue("cat", content);
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

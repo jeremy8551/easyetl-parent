@@ -60,31 +60,29 @@ public class DatabaseReader implements ExtractReader {
     private String[] values;
 
     /** 容器上下文信息 */
-    protected EasyContext context;
+    protected EasyContext ioc;
 
     /**
      * 初始化
      *
-     * @param ioccxt  容器上下文信息
+     * @param ioc     容器上下文信息
      * @param context 卸载程序上下文信息
-     * @throws SQLException 数据库错误
-     * @throws IOException  文件错访问误
+     * @throws Exception 打开任务输入流错误
      */
-    public DatabaseReader(EasyContext ioccxt, ExtracterContext context) throws SQLException, IOException {
-        this.open(ioccxt, context);
+    public DatabaseReader(EasyContext ioc, ExtracterContext context) throws Exception {
+        this.open(ioc, context);
     }
 
     /**
      * 打开输入流
      *
-     * @param ioccxt  容器上下文信息
+     * @param ioc     容器上下文信息
      * @param context 卸载程序上下文信息
-     * @throws SQLException 数据库错误
-     * @throws IOException  文件错访问误
+     * @throws Exception 打开任务输入流错误
      */
-    private void open(EasyContext ioccxt, ExtracterContext context) throws SQLException, IOException {
-        this.context = ioccxt;
-        this.dao = new JdbcDao(this.context);
+    private void open(EasyContext ioc, ExtracterContext context) throws Exception {
+        this.ioc = ioc;
+        this.dao = new JdbcDao(this.ioc);
         this.close();
         this.hasNext = true;
         this.index = 0;
@@ -140,7 +138,7 @@ public class DatabaseReader implements ExtractReader {
 
             // 设置属性
             JdbcObjectConverter converter = this.columns[i];
-            converter.setAttribute(AbstractConverter.PARAM_COLUMN, new Integer(i + 1));
+            converter.setAttribute(AbstractConverter.PARAM_COLUMN, (i + 1));
             converter.setAttribute(AbstractConverter.PARAM_BUFFER, this.values);
             converter.setAttribute(AbstractConverter.PARAM_RESULT, this.resultSet);
             converter.setAttribute(AbstractConverter.PARAM_JDBCDAO, this.dao);
@@ -176,7 +174,7 @@ public class DatabaseReader implements ExtractReader {
         }
     }
 
-    public boolean hasLine() throws IOException, SQLException {
+    public boolean hasLine() throws Exception {
         if (this.hasNext && this.resultSet.next()) {
             for (this.index = 0; this.index < this.column; this.index++) {
                 this.columns[this.index].execute();

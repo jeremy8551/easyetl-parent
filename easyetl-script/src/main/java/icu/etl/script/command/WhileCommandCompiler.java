@@ -33,7 +33,7 @@ public class WhileCommandCompiler extends AbstractCommandCompiler {
         return in.readPieceofScript("loop", "end loop");
     }
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         WordIterator it = analysis.parse(command);
         it.assertNext("while");
         String condition = it.readUntil("loop");
@@ -55,7 +55,7 @@ public class WhileCommandCompiler extends AbstractCommandCompiler {
         return new WhileCommand(this, command, cmdlist);
     }
 
-//	public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+//	public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
 //		WordReader in = analysis.parse(command);
 //		in.assertNextWord("while");
 //		

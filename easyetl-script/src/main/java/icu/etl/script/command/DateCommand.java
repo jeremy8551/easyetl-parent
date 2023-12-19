@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.Date;
 
 import icu.etl.script.UniversalCommandCompiler;
@@ -55,7 +54,7 @@ public class DateCommand extends AbstractTraceCommand implements UniversalScript
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         Date date = this.dateStr != null ? Dates.parse(analysis.replaceShellVariable(session, context, this.dateStr, true, true, true, false)) : new Date();
         String formula = analysis.replaceShellVariable(session, context, this.formula, true, true, true, false);
@@ -74,10 +73,13 @@ public class DateCommand extends AbstractTraceCommand implements UniversalScript
                 stdout.println(Dates.format19(date));
             }
         }
+
+        session.removeValue();
+        session.putValue("date", date);
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

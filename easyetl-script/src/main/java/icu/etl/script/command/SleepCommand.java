@@ -3,9 +3,10 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.expression.MillisExpression;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
@@ -25,6 +26,7 @@ import icu.etl.util.StringUtils;
  * 休眠
  */
 public class SleepCommand extends AbstractTraceCommand implements UniversalScriptInputStream, NohupCommandSupported {
+    private final static Log log = LogFactory.getLog(SleepCommand.class);
 
     /** 休眠时间，格式: 10min */
     private String time;
@@ -42,7 +44,7 @@ public class SleepCommand extends AbstractTraceCommand implements UniversalScrip
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         long compileMillis = session.getCompiler().getCompileMillis();
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String time = analysis.replaceShellVariable(session, context, this.time, true, true, true, false);
@@ -72,11 +74,13 @@ public class SleepCommand extends AbstractTraceCommand implements UniversalScrip
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         try {
             Thread.interrupted();
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (log.isWarnEnabled()) {
+                log.error(e.getLocalizedMessage(), e);
+            }
         }
     }
 

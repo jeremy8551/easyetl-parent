@@ -66,7 +66,7 @@ public class FtpCommand extends AbstractFileCommand implements UniversalScriptIn
         this.password = expr.getLoginPassword();
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (session.isEchoEnable() || forceStdout) {
             stdout.println("ftp " + this.username + "@" + this.host + ":" + this.port + "?password=" + this.password);
         }
@@ -81,7 +81,7 @@ public class FtpCommand extends AbstractFileCommand implements UniversalScriptIn
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

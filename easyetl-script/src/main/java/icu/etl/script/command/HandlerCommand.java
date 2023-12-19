@@ -26,7 +26,7 @@ public class HandlerCommand extends AbstractTraceCommand implements NohupCommand
         super(compiler, command);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         boolean print = session.isEchoEnable() || forceStdout;
         if (print) {
             ErrorHandlerMap gehm = ErrorHandlerMap.get(context, true);
@@ -92,7 +92,7 @@ public class HandlerCommand extends AbstractTraceCommand implements NohupCommand
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

@@ -20,6 +20,30 @@ import icu.etl.script.session.ScriptSubProcess;
 public interface UniversalScriptSession {
 
     /**
+     * 设置会话的返回值（即 {@linkplain ScriptEngine#eval(String)} 方法的返回值）
+     *
+     * @param key   键
+     * @param value 值
+     * @return 返回null表示没有替换 非null表示被替换的值
+     */
+    Object putValue(String key, Object value);
+
+    /**
+     * 会话的返回值（即 {@linkplain ScriptEngine#eval(String)} 方法的返回值） <br>
+     * 如果命令没有返回值，则返回null <br>
+     * 如果命令返回了一个值，则直接返回这个值 <br>
+     * 如果命令返回了多个值，则将多个值封装到一个 Map 中, 并返回这个 Map 对象（key属性是忽略大小写的）
+     *
+     * @return 返回值
+     */
+    Object getValue();
+
+    /**
+     * 删除上一个命令的返回值
+     */
+    void removeValue();
+
+    /**
      * 返回用户会话编号
      *
      * @return
@@ -44,7 +68,7 @@ public interface UniversalScriptSession {
      * 设置脚本文件
      *
      * @param file 脚本文件表达式
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     void setScriptFile(ScriptFileExpression file) throws IOException;
 

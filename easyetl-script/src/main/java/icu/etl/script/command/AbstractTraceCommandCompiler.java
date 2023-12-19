@@ -30,7 +30,7 @@ import icu.etl.util.StringUtils;
  */
 public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompiler {
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         // command 1>> file 2>file 2>&1
         int index = analysis.indexOf(command, ">", 0, 2, 2);
         if (index != -1) {
@@ -53,10 +53,9 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
      * @param orginalScript 原始脚本语句（带日志输出语句, 如: {@literal echo "" > ~/log.txt）}
      * @param command       脚本语句（不带日志输出语句，如: echo ""）
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    public abstract AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException, SQLException;
+    public abstract AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws Exception;
 
     /**
      * 解析输出日志语句 xxxx >> file.log
@@ -67,9 +66,9 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
      * @param command  脚本命令
      * @param from     符号 ‘>’ 所在位置
      * @return
-     * @throws IOException
+     * @throws Exception
      */
-    private AbstractTraceCommandConfiguration parse(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptAnalysis analysis, String command, int from) throws IOException {
+    private AbstractTraceCommandConfiguration parse(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptAnalysis analysis, String command, int from) throws Exception {
         ScriptWriterFactory stdout = null;
         ScriptWriterFactory stderr = null;
         boolean same = false;

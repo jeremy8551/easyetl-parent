@@ -1,8 +1,6 @@
 package icu.etl.script;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 /**
  * 脚本引擎命令的输入流 <br>
@@ -21,9 +19,8 @@ public interface UniversalScriptInputStream {
      * @param parser   语法分析器
      * @param analysis 语句分析器
      * @param in       管道输入流
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 读取数据发生错误
      */
-    void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws IOException, SQLException;
+    void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws Exception;
 
 }

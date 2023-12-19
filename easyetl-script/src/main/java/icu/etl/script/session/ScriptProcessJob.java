@@ -1,9 +1,7 @@
 package icu.etl.script.session;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Writer;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandResultSet;
 import icu.etl.script.UniversalScriptCommand;
@@ -61,7 +59,7 @@ public class ScriptProcessJob implements Runnable {
     /**
      * 设置子线程
      *
-     * @param process
+     * @param process 子线程
      */
     public void setObserver(ScriptProcess process) {
         this.processInfo = Ensure.notNull(process);
@@ -140,13 +138,11 @@ public class ScriptProcessJob implements Runnable {
     }
 
     /**
-     * true 表示终止后台命令
+     * 终止任务
      *
-     * @return 返回 true 表示终止操作执行成功
-     * @throws IOException
-     * @throws SQLException
+     * @return 返回true表示任务终止操作执行成功
      */
-    public boolean terminate() throws IOException, SQLException {
+    public boolean terminate() {
         this.terminate = true;
         if (this.environment.getCommand() != null && this.running) {
             try {
@@ -160,27 +156,27 @@ public class ScriptProcessJob implements Runnable {
     }
 
     /**
-     * 返回true表示线程正在运行
+     * 判断任务已运行过
      *
-     * @return
+     * @return 返回true表示任务已运行 false表示任务还未执行
      */
     public boolean alreadyRun() {
         return this.alreadyRun;
     }
 
     /**
-     * 返回 true 表示正在执行 {@linkplain ScriptProcessJob#run()} 方法
+     * 判断任务是否正在运行
      *
-     * @return
+     * @return 返回true表示正在运行任务
      */
     public boolean isRunning() {
         return this.running;
     }
 
     /**
-     * 返回 true 表示进程已被终止
+     * 判断任务是否已被终止
      *
-     * @return
+     * @return 返回true表示任务已被终止 false表示任务未终止
      */
     public boolean isTerminate() {
         return this.terminate;

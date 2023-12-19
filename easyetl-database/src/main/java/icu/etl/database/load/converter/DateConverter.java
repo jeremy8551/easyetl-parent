@@ -20,12 +20,12 @@ public class DateConverter extends AbstractConverter {
     /** 日期时间转换器 */
     protected SimpleDateFormat format;
 
-    public void init() throws IOException, SQLException, ParseException {
+    public void init() throws Exception {
         this.format = new SimpleDateFormat();
         this.format.applyPattern(StringUtils.defaultString((String) this.getAttribute(PARAM_DATEFORMAT), "yyyy-MM-dd"));
     }
 
-    public void execute(String value) throws IOException, SQLException, ParseException {
+    public void execute(String value) throws Exception {
         if (this.isBlank(value)) {
             this.statement.setNull(this.position, Types.DATE);
         } else {

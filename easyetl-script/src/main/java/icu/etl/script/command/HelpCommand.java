@@ -85,7 +85,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         this.format = parameter;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String type = analysis.replaceVariable(session, context, this.format, false); // md html cmd
 
@@ -212,7 +212,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     /**

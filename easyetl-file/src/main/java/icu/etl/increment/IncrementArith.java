@@ -45,6 +45,6 @@ public interface IncrementArith extends Terminate {
      * @param out   输出流
      * @throws IOException
      */
-    void execute(IncrementRuler ic, TextTableFileReader newIn, TextTableFileReader oldIn, IncrementHandler out) throws IOException;
+    void execute(IncrementComparator ic, TextTableFileReader newIn, TextTableFileReader oldIn, IncrementHandler out) throws IOException;
 
 }

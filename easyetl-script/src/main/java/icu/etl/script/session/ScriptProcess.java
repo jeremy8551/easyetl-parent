@@ -1,7 +1,5 @@
 package icu.etl.script.session;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
 
 import icu.etl.concurrent.ThreadSource;
@@ -86,10 +84,9 @@ public class ScriptProcess {
      * 终止进程
      *
      * @return 返回 true 表示终止操作执行成功
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 发生错误
      */
-    public boolean terminate() throws IOException, SQLException {
+    public boolean terminate() throws Exception {
         return this.scriptJob.terminate();
     }
 

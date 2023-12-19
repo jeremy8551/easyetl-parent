@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -44,7 +43,7 @@ public class GunzipCommand extends AbstractFileCommand implements UniversalScrip
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         ScriptFile file = new ScriptFile(session, context, this.filepath);
         if (session.isEchoEnable() || forceStdout) {
             stdout.println("gunzip " + file.getAbsolutePath());
@@ -54,13 +53,16 @@ public class GunzipCommand extends AbstractFileCommand implements UniversalScrip
         try {
             this.c.setFile(file);
             this.c.extract(file.getParent(), Settings.getFileEncoding());
+
+            session.removeValue();
+            session.putValue("file", file);
             return this.c.isTerminate() ? UniversalScriptCommand.TERMINATE : 0;
         } finally {
             this.c.close();
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.c != null) {
             this.c.terminate();
         }

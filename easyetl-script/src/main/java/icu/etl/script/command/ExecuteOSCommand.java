@@ -49,7 +49,7 @@ public class ExecuteOSCommand extends AbstractTraceCommand implements UniversalS
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         this.terminal = SSHClientMap.get(context).last(); // 优先使用 declare ssh2 client 语句定义的客户端
         if (this.terminal == null) {
             OS os = context.getContainer().getBean(OS.class);
@@ -62,7 +62,7 @@ public class ExecuteOSCommand extends AbstractTraceCommand implements UniversalS
         return this.terminal.execute(command, 0, new OutputStreamPrinter(stdout, charsetName), new OutputStreamPrinter(stderr, charsetName));
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.terminal != null) {
             this.terminal.terminate();
         }

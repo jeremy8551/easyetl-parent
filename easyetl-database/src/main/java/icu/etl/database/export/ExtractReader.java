@@ -1,8 +1,5 @@
 package icu.etl.database.export;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.io.TableLine;
 
 public interface ExtractReader extends TableLine {
@@ -11,10 +8,9 @@ public interface ExtractReader extends TableLine {
      * 将数据保存到缓冲区
      *
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    boolean hasLine() throws IOException, SQLException;
+    boolean hasLine() throws Exception;
 
     /**
      * 关闭输入流

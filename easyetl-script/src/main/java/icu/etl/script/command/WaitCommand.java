@@ -40,7 +40,7 @@ public class WaitCommand extends AbstractTraceCommand {
         this.timeout = timeout;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         long compileMillis = session.getCompiler().getCompileMillis();
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String pid = analysis.replaceVariable(session, context, this.id, false);
@@ -111,7 +111,7 @@ public class WaitCommand extends AbstractTraceCommand {
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         this.terminate = true;
         if (this.process != null) {
             this.process.terminate();

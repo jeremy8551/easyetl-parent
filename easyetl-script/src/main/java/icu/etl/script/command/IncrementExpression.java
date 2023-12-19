@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,10 +63,9 @@ public class IncrementExpression implements Attribute<String> {
      * @param session 用户会话信息
      * @param context 脚本引擎上下文信息
      * @param str     表达式
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 发生错误
      */
-    public IncrementExpression(UniversalScriptSession session, UniversalScriptContext context, String str) throws IOException, SQLException {
+    public IncrementExpression(UniversalScriptSession session, UniversalScriptContext context, String str) throws Exception {
         this.session = session;
         this.analysis = session.getAnalysis();
         this.context = context;
@@ -138,10 +136,9 @@ public class IncrementExpression implements Attribute<String> {
      *
      * @param session 用户会话信息
      * @param context 脚本引擎上下文信息
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 发生错误
      */
-    private void parseAttribute(UniversalScriptSession session, UniversalScriptContext context) throws IOException, SQLException {
+    private void parseAttribute(UniversalScriptSession session, UniversalScriptContext context) throws Exception {
         if (this.kinds.contains("log") && (this.attributes.containsKey("newchg") || this.attributes.containsKey("updchg") || this.attributes.containsKey("delchg"))) {
             throw new IOException(ResourcesUtils.getIncrementMessage(66));
         }
@@ -281,7 +278,7 @@ public class IncrementExpression implements Attribute<String> {
         TableFileSortContext context = new TableFileSortContext();
         context.setThreadSource(this.context.getContainer().getBean(ThreadSource.class));
         context.setKeepSource(!this.attributes.containsKey("covsrc"));
-        
+
         if (this.attributes.containsKey("sortcache")) {
             context.setWriterBuffer(this.getIntAttribute("sortcache"));
         }

@@ -26,7 +26,7 @@ public class StacktraceCommand extends AbstractTraceCommand implements NohupComm
         this.printLineNumber = printLineNumber;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (session.isEchoEnable() || forceStdout) {
             UniversalScriptException exp = session.getVariable(UniversalScriptVariable.SESSION_VARNAME_LASTEXCEPTION);
             if (exp != null) {
@@ -52,7 +52,7 @@ public class StacktraceCommand extends AbstractTraceCommand implements NohupComm
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

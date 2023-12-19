@@ -21,7 +21,7 @@ import icu.etl.util.StringUtils;
 @ScriptFunction(name = "[")
 public class ElementMethod extends AbstractMethod {
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws Exception {
         int end = analysis.indexOf(methodHandle, "]", 1, 2, 2);
         if (end == -1) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(115, methodHandle));

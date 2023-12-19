@@ -1,6 +1,5 @@
 package icu.etl.script;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 public interface UniversalScriptSessionFactory {
@@ -8,9 +7,10 @@ public interface UniversalScriptSessionFactory {
     /**
      * 创建一个用户会话信息实例
      *
+     * @param engine 脚本引擎
      * @return 用户会话信息
      */
-    UniversalScriptSession build();
+    UniversalScriptSession build(UniversalScriptEngine engine);
 
     /**
      * 返回所有用户会话编号

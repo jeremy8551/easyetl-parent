@@ -41,7 +41,7 @@ public class CallProcudureCommand extends AbstractTraceCommand implements JumpCo
         this.sql = sql;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         ScriptDataSource dataSource = ScriptDataSource.get(context);
         this.dao = dataSource.getDao();
         try {
@@ -79,7 +79,7 @@ public class CallProcudureCommand extends AbstractTraceCommand implements JumpCo
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.dao != null) {
             Ensure.isTrue(this.dao.terminate());
         }

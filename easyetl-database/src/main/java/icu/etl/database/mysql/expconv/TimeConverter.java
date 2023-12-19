@@ -12,7 +12,7 @@ import java.sql.Time;
  */
 public class TimeConverter extends icu.etl.database.export.converter.TimeConverter {
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         Time value = this.resultSet.getTime(this.column);
         if (value == null) {
             this.array[this.column] = "";

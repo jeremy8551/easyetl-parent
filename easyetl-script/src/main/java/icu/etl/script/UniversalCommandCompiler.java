@@ -1,8 +1,5 @@
 package icu.etl.script;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 /**
  * 脚本命令编译器
  *
@@ -36,9 +33,9 @@ public interface UniversalCommandCompiler {
      * @param in       脚本语句输入流
      * @param analysis 脚本语句分析器
      * @return 命令的完整语句
-     * @throws IOException
+     * @throws Exception 读取发生错误
      */
-    String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException;
+    String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws Exception;
 
     /**
      * 将脚本语句编译成 {@linkplain UniversalScriptCommand} 对象 <br>
@@ -51,10 +48,9 @@ public interface UniversalCommandCompiler {
      * @param analysis 语句分析器
      * @param command  脚本语句
      * @return 返回编译之后的脚本实例
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 编译发生错误
      */
-    UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException;
+    UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception;
 
     /**
      * 通过输出流接口 out 输出命令的使用说明

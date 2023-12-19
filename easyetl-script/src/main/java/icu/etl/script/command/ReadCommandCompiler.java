@@ -41,7 +41,7 @@ public class ReadCommandCompiler extends AbstractCommandCompiler {
         }
     }
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         WordIterator it = analysis.parse(command);
         it.assertNext("while");
         it.assertNext("read");

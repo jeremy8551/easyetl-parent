@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -44,23 +43,27 @@ public class UnrarCommand extends AbstractFileCommand implements UniversalScript
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
-        File file = new ScriptFile(session, context, this.filepath);
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
+        File rarfile = new ScriptFile(session, context, this.filepath);
         if (session.isEchoEnable() || forceStdout) {
-            stdout.println("unrar " + file.getAbsolutePath());
+            stdout.println("unrar " + rarfile.getAbsolutePath());
         }
 
         this.c = context.getContainer().getBean(Compress.class, "rar");
         try {
-            this.c.setFile(file);
-            this.c.extract(file.getParent(), Settings.getFileEncoding());
+            this.c.setFile(rarfile);
+            this.c.extract(rarfile.getParent(), Settings.getFileEncoding());
+
+            session.removeValue();
+            session.putValue("file", rarfile);
+
             return this.c.isTerminate() ? UniversalScriptCommand.TERMINATE : 0;
         } finally {
             this.c.close();
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.c != null) {
             this.c.terminate();
         }

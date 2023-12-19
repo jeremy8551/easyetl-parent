@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  */
 public class TimestampConverter extends icu.etl.database.export.converter.TimestampConverter {
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         Timestamp value = this.resultSet.getTimestamp(this.column);
         if (value == null) {
             this.array[this.column] = "";

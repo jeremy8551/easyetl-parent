@@ -19,7 +19,7 @@ public class BigDecimalConverter extends AbstractConverter {
     /** 格式化工具 */
     private DB2DecimalFormat format;
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         ResultSetMetaData rsmd = this.resultSet.getMetaData();
         this.scale = rsmd.getScale(this.column);
         this.precision = rsmd.getPrecision(this.column);
@@ -27,7 +27,7 @@ public class BigDecimalConverter extends AbstractConverter {
         this.format.applyPattern(this.precision, this.scale);
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         BigDecimal value = this.resultSet.getBigDecimal(this.column);
         if (value == null) {
             this.array[this.column] = "";

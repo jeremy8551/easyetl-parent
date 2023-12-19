@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -43,7 +42,7 @@ public class ExitCommand extends AbstractTraceCommand implements UniversalScript
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         session.getCompiler().terminate();
 
         if (this.exitcode.length() == 0) {
@@ -63,14 +62,17 @@ public class ExitCommand extends AbstractTraceCommand implements UniversalScript
                 }
             }
 
-            return Integer.parseInt(this.exitcode);
+            int value = Integer.parseInt(this.exitcode);
+            session.removeValue();
+            session.putValue("exit", value);
+            return value;
         } else {
             stderr.println(ResourcesUtils.getScriptStderrMessage(12));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public int kind() {

@@ -38,7 +38,7 @@ public class ScriptStatement {
      * @param batch  批量提交的记录数
      * @param name   批处理器名
      * @param sql    SQL语句
-     * @throws Exception
+     * @throws Exception 发生错误
      */
     public ScriptStatement(JdbcDao dao, Format format, int batch, String name, String sql) throws Exception {
         this.batch = dao.update(sql, batch);
@@ -70,7 +70,7 @@ public class ScriptStatement {
     /**
      * 返回参数个数
      *
-     * @return
+     * @return 参数个数
      */
     public int getParameterCount() {
         return this.array.length;
@@ -81,7 +81,7 @@ public class ScriptStatement {
      *
      * @param index 参数位置，从 0 开始
      * @param value 参数值
-     * @throws Exception
+     * @throws Exception 发生错误
      */
     public void setParameter(int index, Object value) throws Exception {
         this.array[index].execute(this.format.format(value));
@@ -90,7 +90,7 @@ public class ScriptStatement {
     /**
      * 提交缓存
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void executeBatch() throws SQLException {
         this.batch.addBatch();
@@ -100,7 +100,7 @@ public class ScriptStatement {
     /**
      * 关闭批处理程序
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void close() throws SQLException {
         this.name = null;

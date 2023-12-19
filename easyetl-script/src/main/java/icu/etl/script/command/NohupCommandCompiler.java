@@ -23,7 +23,7 @@ public class NohupCommandCompiler extends AbstractCommandCompiler {
         return in.readSinglelineScript();
     }
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         String str = analysis.trim(command.substring("nohup".length()), 0, 1);
         String script = command;
         if (str.endsWith("&")) {

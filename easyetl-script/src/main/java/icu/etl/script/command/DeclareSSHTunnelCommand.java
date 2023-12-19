@@ -42,7 +42,7 @@ public class DeclareSSHTunnelCommand extends AbstractCommand {
         this.remote = remote;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
 
         // 解析代理服务器配置
@@ -94,7 +94,7 @@ public class DeclareSSHTunnelCommand extends AbstractCommand {
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

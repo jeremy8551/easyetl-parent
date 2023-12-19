@@ -55,7 +55,7 @@ public class DeclareHandlerCommand extends AbstractGlobalCommand implements Loop
         this.setGlobal(global);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(StringUtils.escapeLineSeparator(this.command));
         }
@@ -83,14 +83,14 @@ public class DeclareHandlerCommand extends AbstractGlobalCommand implements Loop
         public HandlerListener() {
         }
 
-        public void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws IOException, SQLException {
+        public void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws Exception {
         }
 
-        public boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws IOException, SQLException {
+        public boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws Exception {
             return true;
         }
 
-        public void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws IOException, SQLException {
+        public void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception {
             int exitcode = result.getExitcode();
             if (!ClassUtils.inArray(command.getClass(), ReturnCommand.class, ExitCommand.class) && exitcode != 0) {
                 boolean gv = ExitHandlerMap.get(context, true).execute(session, context, stdout, stderr, forceStdout, exitcode);
@@ -103,7 +103,7 @@ public class DeclareHandlerCommand extends AbstractGlobalCommand implements Loop
             }
         }
 
-        public boolean catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws IOException, SQLException {
+        public boolean catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws Exception {
             result.setExitcode(UniversalScriptCommand.ERROR);
 
             // 保存最后一个异常错误信息
@@ -130,7 +130,7 @@ public class DeclareHandlerCommand extends AbstractGlobalCommand implements Loop
             return true;
         }
 
-        public boolean catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws IOException, SQLException {
+        public boolean catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws Exception {
             UniversalScriptCompiler compiler = session.getCompiler();
             String message = ResourcesUtils.getScriptStderrMessage(56, session.getScriptName(), compiler.getLineNumber());
             ErrorHandlerMap gl = ErrorHandlerMap.get(context, true);
@@ -155,7 +155,7 @@ public class DeclareHandlerCommand extends AbstractGlobalCommand implements Loop
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableLoop() {

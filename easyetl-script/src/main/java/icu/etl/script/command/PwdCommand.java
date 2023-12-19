@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.os.OSFtpCommand;
 import icu.etl.script.UniversalCommandCompiler;
@@ -27,23 +25,29 @@ public class PwdCommand extends AbstractFileCommand implements NohupCommandSuppo
         this.localhost = localhost;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         boolean print = session.isEchoEnable() || forceStdout;
         OSFtpCommand ftp = FtpList.get(context).getFTPClient();
         if (this.localhost || ftp == null) {
             if (print) {
-                stdout.println(session.getDirectory());
+                String pwd = session.getDirectory();
+                stdout.println(pwd);
+                session.removeValue();
+                session.putValue("pwd", pwd);
             }
             return 0;
         } else {
             if (print) {
-                stdout.println(ftp.pwd());
+                String pwd = ftp.pwd();
+                stdout.println(pwd);
+                session.removeValue();
+                session.putValue("pwd", pwd);
             }
             return 0;
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

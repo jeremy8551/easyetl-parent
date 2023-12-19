@@ -1,8 +1,5 @@
 package icu.etl.script.method;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.annotation.ScriptFunction;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -26,7 +23,7 @@ public abstract class AbstractMethod implements UniversalScriptVariableMethod {
     /** 变量方法的返回值 */
     protected Object value;
 
-    public abstract int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String name, String method) throws IOException, SQLException;
+    public abstract int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String name, String method) throws Exception;
 
     /**
      * 执行下一个变量方法
@@ -41,10 +38,9 @@ public abstract class AbstractMethod implements UniversalScriptVariableMethod {
      * @param value    上一个变量方法的返回值
      * @param next     下一个变量方法的起始位置
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    protected int executeNextMethod(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String name, String method, Object value, int next) throws IOException, SQLException {
+    protected int executeNextMethod(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String name, String method, Object value, int next) throws Exception {
         if (next < method.length() && !analysis.isBlankline(method.substring(next))) {
             String variableName = name + "$" + StringUtils.toRandomUUID();
             try {

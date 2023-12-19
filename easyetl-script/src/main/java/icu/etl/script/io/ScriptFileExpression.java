@@ -35,19 +35,22 @@ public class ScriptFileExpression {
     /** 换行符 */
     private String lineSeparator;
 
+    /** true表示是资源路径 false表示是文件路径 */
+    private boolean isUri;
+
     /**
      * 替换文件路径中的变量
      *
      * @param session  用户会话信息
      * @param context  脚本引擎上下文信息
      * @param pathname 路径信息（如果是文件名，则默认使用当前目录作为父目录）
-     * @throws IOException 读取脚本文件发生错误
      */
-    public ScriptFileExpression(UniversalScriptSession session, UniversalScriptContext context, String pathname) throws IOException {
+    public ScriptFileExpression(UniversalScriptSession session, UniversalScriptContext context, String pathname) {
         super();
         this.expression = this.parse(session, context, pathname);
+        this.isUri = StringUtils.startsWith(this.expression, PREFIX_CLASSPATH, 0, true, false);
         this.charsetName = context.getCharsetName();
-        this.lineSeparator = this.readLineSeparator();
+        this.lineSeparator = null;
     }
 
     /**
@@ -87,7 +90,7 @@ public class ScriptFileExpression {
      * 返回脚本文件的字符输入流
      *
      * @return 字符输入流
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     public Reader getReader() throws IOException {
         if (StringUtils.startsWith(this.expression, PREFIX_CLASSPATH, 0, true, false)) { // 如果文件路径以 classpath: 开头表示资源定位符
@@ -108,7 +111,7 @@ public class ScriptFileExpression {
      * 返回脚本文件的字节输入流
      *
      * @return 字节输入流
-     * @throws IOException 文件错误
+     * @throws IOException 访问文件错误
      */
     public InputStream getInputStream() throws IOException {
         if (StringUtils.startsWith(this.expression, PREFIX_CLASSPATH, 0, true, false)) { // 如果文件路径以 classpath: 开头表示资源定位符
@@ -120,7 +123,7 @@ public class ScriptFileExpression {
                 return in;
             }
         } else {
-            return new FileInputStream(new File(this.expression));
+            return new FileInputStream(this.expression);
         }
     }
 
@@ -147,7 +150,14 @@ public class ScriptFileExpression {
      *
      * @return 行分隔符
      */
-    public String getLineSeparator() {
+    public String getLineSeparator() throws IOException {
+        if (this.lineSeparator == null) {
+            synchronized (this) {
+                if (this.lineSeparator == null) {
+                    this.lineSeparator = this.readLineSeparator();
+                }
+            }
+        }
         return this.lineSeparator;
     }
 
@@ -160,4 +170,12 @@ public class ScriptFileExpression {
         return charsetName;
     }
 
+    /**
+     * 判断路径是资源路径还是文件路径
+     *
+     * @return 返回true表示是资源路径 false表示是文件路径
+     */
+    public boolean isUri() {
+        return isUri;
+    }
 }

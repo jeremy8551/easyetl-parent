@@ -27,7 +27,7 @@ public class UndeclareCallbackCommand extends AbstractGlobalCommand implements L
         this.setGlobal(global);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         boolean print = session.isEchoEnable() || forceStdout;
         if (print) {
             stdout.println(StringUtils.escapeLineSeparator(this.command));
@@ -37,7 +37,7 @@ public class UndeclareCallbackCommand extends AbstractGlobalCommand implements L
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableLoop() {

@@ -1,7 +1,5 @@
 package icu.etl.script.internal;
 
-import java.io.IOException;
-
 import icu.etl.os.OSFtpCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptProgram;
@@ -56,7 +54,7 @@ public class FtpList implements UniversalScriptProgram {
         return new ScriptProgramClone(key, obj);
     }
 
-    public void close() throws IOException {
+    public void close() {
         if (this.ftp != null) {
             this.ftp.close();
             this.ftp = null;

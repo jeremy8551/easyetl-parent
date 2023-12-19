@@ -13,12 +13,12 @@ public class ClobConverter extends AbstractConverter {
 
     protected char[] buffer;
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         this.cache = new StringBuilder(this.contains("cacheSize") ? Integer.parseInt((String) this.getAttribute("cacheSize")) : 2048);
         this.buffer = new char[IO.READER_BUFFER_SIZE];
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         Clob value = this.resultSet.getClob(this.column);
         if (value == null) {
             this.array[this.column] = "";

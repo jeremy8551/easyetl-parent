@@ -34,7 +34,7 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
         return in.readSinglelineScript();
     }
 
-    public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException, SQLException {
+    public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws Exception {
         WordIterator it = analysis.parse(analysis.replaceShellVariable(session, context, command, true, true, true, false));
         it.assertNext("sort");
         it.assertNext("table");

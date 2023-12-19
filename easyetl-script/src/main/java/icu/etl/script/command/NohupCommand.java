@@ -35,7 +35,7 @@ public class NohupCommand extends AbstractCommand {
         this.subcommand = subcommand;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         File logfile = new File(session.getDirectory(), "nohup.out");
         if (!logfile.canWrite()) {
             logfile = new File(Settings.getUserHome(), logfile.getName());
@@ -83,7 +83,7 @@ public class NohupCommand extends AbstractCommand {
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         this.terminate = true;
         if (this.environment != null) {
             this.environment.getWaitRun().wakeup();

@@ -77,7 +77,7 @@ public class FindCommand extends AbstractTraceCommand {
         this.position = position;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String name = analysis.replaceVariable(session, context, this.name, false);
         String filepath = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.filepath, true, true, true, false));
@@ -99,7 +99,7 @@ public class FindCommand extends AbstractTraceCommand {
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     protected void search(UniversalScriptSession session, File fileOrDir, String name) throws IOException {

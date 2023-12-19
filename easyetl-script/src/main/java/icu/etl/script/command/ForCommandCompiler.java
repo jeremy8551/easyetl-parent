@@ -30,7 +30,7 @@ public class ForCommandCompiler extends AbstractCommandCompiler {
         return in.readPieceofScript("loop", "end loop");
     }
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         WordIterator it = analysis.parse(command);
         it.assertNext("for");
         String name = analysis.trim(it.next(), 0, 0);

@@ -23,7 +23,7 @@ public class Dos2UnixCommand extends AbstractTraceCommand implements JumpCommand
         this.value = value;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, true, true, false));
@@ -40,7 +40,7 @@ public class Dos2UnixCommand extends AbstractTraceCommand implements JumpCommand
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
 
     }
 

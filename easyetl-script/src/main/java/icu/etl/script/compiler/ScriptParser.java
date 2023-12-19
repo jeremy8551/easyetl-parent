@@ -1,8 +1,6 @@
 package icu.etl.script.compiler;
 
 import java.io.CharArrayReader;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +44,7 @@ public class ScriptParser implements UniversalScriptParser {
         this.reader = in;
     }
 
-    public UniversalScriptCommand read() throws IOException, SQLException {
+    public UniversalScriptCommand read() throws Exception {
         return this.read(this.reader);
     }
 
@@ -54,11 +52,10 @@ public class ScriptParser implements UniversalScriptParser {
      * 从输入流中读取一个脚本语句，并编译成脚本命令
      *
      * @param in 输入流
-     * @return
-     * @throws IOException
-     * @throws SQLException
+     * @return 脚本命令
+     * @throws Exception 读取命令发生错误
      */
-    private UniversalScriptCommand read(ScriptReader in) throws IOException, SQLException {
+    private UniversalScriptCommand read(ScriptReader in) throws Exception {
         String line = in.previewline(); // 读一行字符串
         if (line == null) {
             return null;
@@ -69,7 +66,7 @@ public class ScriptParser implements UniversalScriptParser {
         }
     }
 
-    public List<UniversalScriptCommand> read(String script) throws IOException, SQLException {
+    public List<UniversalScriptCommand> read(String script) throws Exception {
         ArrayList<UniversalScriptCommand> list = new ArrayList<UniversalScriptCommand>();
         ScriptReader in = new ScriptReader(new CharArrayReader(script.toCharArray()));
         try {

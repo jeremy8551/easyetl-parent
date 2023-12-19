@@ -25,7 +25,7 @@ public class IfCommandCompiler extends AbstractCommandCompiler {
         return in.readPieceofScript("if", "fi");
     }
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         IfCommand ifcommand = new IfCommand(this, command);
         QueryTail rule = new QueryTail();
         WordIterator it = analysis.parse(command);

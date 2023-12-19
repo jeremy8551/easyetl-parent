@@ -46,7 +46,7 @@ public class EchoCommand extends AbstractTraceCommand implements CallbackCommand
         this.turnOff = on ? false : true;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.turnOn) {
             session.setEchoEnabled(true);
             stdout.println(ResourcesUtils.getScriptStdoutMessage(22));
@@ -69,7 +69,7 @@ public class EchoCommand extends AbstractTraceCommand implements CallbackCommand
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

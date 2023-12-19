@@ -1,8 +1,5 @@
 package icu.etl.script;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.concurrent.EasyJob;
 import icu.etl.script.command.ContainerCommand;
 
@@ -22,10 +19,9 @@ public interface UniversalScriptJob {
      * @param stderr    错误信息输出接口
      * @param container 线程池
      * @return 返回 true 表示可以执行 {@linkplain #getJob()} 方法，返回 false 表示不能执行 {@linkplain #getJob()} 方法，会优先运行其他任务
-     * @throws IOException  IO错误
-     * @throws SQLException 数据库错误
+     * @throws Exception 读取并发任务错误
      */
-    boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException;
+    boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws Exception;
 
     /**
      * 返回并发任务，并发任务会添加到线程池中等待调度执行

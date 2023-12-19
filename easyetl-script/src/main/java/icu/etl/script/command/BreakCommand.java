@@ -21,7 +21,7 @@ public class BreakCommand extends AbstractSlaveCommand implements LoopCommandKin
         super(compiler, command);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.existsOwner()) {
 //			if (session.isEchoEnable() || forceStdout) {
 //				stdout.println("break");
@@ -33,7 +33,7 @@ public class BreakCommand extends AbstractSlaveCommand implements LoopCommandKin
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public int kind() {

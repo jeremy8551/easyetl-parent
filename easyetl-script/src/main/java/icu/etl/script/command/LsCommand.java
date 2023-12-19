@@ -58,14 +58,14 @@ public class LsCommand extends AbstractFileCommand implements UniversalScriptInp
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         List<String> filepaths = new ArrayList<String>(this.filepathList.size());
         for (String filepath : this.filepathList) {
             filepaths.add(analysis.replaceShellVariable(session, context, filepath, true, true, true, false));
         }
 
-        StringBuilder cb = new StringBuilder("ls " + StringUtils.join(filepaths, " ")).append(FileUtils.lineSeparator);
+        StringBuilder buf = new StringBuilder("ls " + StringUtils.join(filepaths, " ")).append(FileUtils.lineSeparator);
 
         CharTable table = new CharTable();
         table.addTitle("filename");
@@ -108,15 +108,15 @@ public class LsCommand extends AbstractFileCommand implements UniversalScriptInp
             }
         }
 
-        cb.append(table.toString(CharTable.Style.simple));
+        buf.append(table.toString(CharTable.Style.simple));
 
         if (session.isEchoEnable() || forceStdout) {
-            stdout.println(cb);
+            stdout.println(buf);
         }
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

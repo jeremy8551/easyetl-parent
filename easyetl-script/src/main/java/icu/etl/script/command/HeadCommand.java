@@ -59,7 +59,7 @@ public class HeadCommand extends AbstractFileCommand implements UniversalScriptI
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         int count = 0;
         boolean print = session.isEchoEnable() || forceStdout;
         if (session.getAnalysis().isBlankline(this.filepath)) {
@@ -89,7 +89,7 @@ public class HeadCommand extends AbstractFileCommand implements UniversalScriptI
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

@@ -75,7 +75,7 @@ public class ExportCommand extends AbstractCommand {
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

@@ -25,16 +25,20 @@ public class IncrementListenerImpl implements IncrementListener {
     private int[] oldIndexPosition;
     private TextTableFile oldfile;
     private TextTableFile newfile;
+    private String oldFilepath;
+    private String newFilepath;
 
     public IncrementListenerImpl(Printer out, IncrementPosition position, TextTableFile newfile, TextTableFile oldfile) {
         super();
         this.out = Ensure.notNull(out);
+        this.newfile = Ensure.notNull(newfile);
+        this.oldfile = Ensure.notNull(oldfile);
         this.newIndexPosition = position.getNewIndexPosition();
         this.oldIndexPosition = position.getOldIndexPosition();
         this.newComparePosition = ArrayUtils.shift(position.getNewComparePosition());
         this.oldComparePosition = ArrayUtils.shift(position.getOldComparePosition());
-        this.newfile = newfile;
-        this.oldfile = oldfile;
+        this.newFilepath = newfile.getAbsolutePath();
+        this.oldFilepath = oldfile.getAbsolutePath();
     }
 
     public void beforeCreateRecord(TextTableLine line) {
@@ -42,7 +46,7 @@ public class IncrementListenerImpl implements IncrementListener {
 
     public void afterCreateRecord(TextTableLine line) {
         LogStr str = new LogStr();
-        str.append(ResourcesUtils.getIncrementMessage(48, this.newfile.getAbsolutePath(), line.getLineNumber()));
+        str.append(ResourcesUtils.getIncrementMessage(48, this.newFilepath, line.getLineNumber()));
         str.appendIndex(this.newfile, line, this.newIndexPosition);
         this.out.println(str);
     }
@@ -52,7 +56,7 @@ public class IncrementListenerImpl implements IncrementListener {
 
     public void afterUpdateRecord(TextTableLine newLine, TextTableLine oldLine, int position) {
         LogStr str = new LogStr();
-        str.append(ResourcesUtils.getIncrementMessage(49, this.newfile.getAbsolutePath(), newLine.getLineNumber()));
+        str.append(ResourcesUtils.getIncrementMessage(49, this.newFilepath, newLine.getLineNumber()));
         str.appendIndex(this.newfile, newLine, this.newIndexPosition);
         str.append(", ");
 
@@ -75,7 +79,7 @@ public class IncrementListenerImpl implements IncrementListener {
 
     public void afterDeleteRecord(TextTableLine line) {
         LogStr str = new LogStr();
-        str.append(ResourcesUtils.getIncrementMessage(50, this.oldfile.getAbsolutePath(), line.getLineNumber()));
+        str.append(ResourcesUtils.getIncrementMessage(50, this.oldFilepath, line.getLineNumber()));
         str.appendIndex(this.oldfile, line, this.oldIndexPosition);
         this.out.println(str);
     }

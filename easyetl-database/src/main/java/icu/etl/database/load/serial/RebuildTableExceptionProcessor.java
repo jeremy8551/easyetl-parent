@@ -19,7 +19,7 @@ public class RebuildTableExceptionProcessor {
      * @throws IOException
      * @throws SQLException
      */
-    public void execute(JdbcDao dao, TextTableFile file, LoadTable target) throws IOException, SQLException {
+    public void execute(JdbcDao dao, TextTableFile file, LoadTable target) throws Exception {
         DatabaseTableDDL tableDDL = target.getTableDDL();
         dao.dropTable(target.getTable());
         dao.createTable(tableDDL);

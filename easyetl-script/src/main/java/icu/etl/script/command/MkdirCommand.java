@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.os.OSFtpCommand;
 import icu.etl.script.UniversalCommandCompiler;
@@ -56,7 +55,7 @@ public class MkdirCommand extends AbstractFileCommand implements UniversalScript
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         OSFtpCommand ftp = FtpList.get(context).getFTPClient();
         boolean print = session.isEchoEnable() || forceStdout;
         if (this.localhost || ftp == null) {
@@ -64,6 +63,9 @@ public class MkdirCommand extends AbstractFileCommand implements UniversalScript
             if (print) {
                 stdout.println("mkdir " + file.getAbsolutePath());
             }
+
+            session.removeValue();
+            session.putValue("file", file);
 
             if (this.reverse) {
                 return FileUtils.createDirectory(file) ? UniversalScriptCommand.COMMAND_ERROR : 0;
@@ -77,6 +79,9 @@ public class MkdirCommand extends AbstractFileCommand implements UniversalScript
                 stdout.println("mkdir " + filepath);
             }
 
+            session.removeValue();
+            session.putValue("file", new File(filepath));
+
             if (this.reverse) {
                 return ftp.exists(filepath) ? 0 : (ftp.mkdir(filepath) ? UniversalScriptCommand.COMMAND_ERROR : 0);
             } else {
@@ -85,7 +90,7 @@ public class MkdirCommand extends AbstractFileCommand implements UniversalScript
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

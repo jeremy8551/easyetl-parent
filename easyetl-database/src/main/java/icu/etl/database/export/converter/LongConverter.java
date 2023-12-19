@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 public class LongConverter extends AbstractConverter {
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         Long value = this.resultSet.getLong(this.column);
         if (this.resultSet.wasNull()) {
             this.array[this.column] = "";

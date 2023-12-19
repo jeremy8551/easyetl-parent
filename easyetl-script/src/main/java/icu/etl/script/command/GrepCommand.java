@@ -55,7 +55,7 @@ public class GrepCommand extends AbstractTraceCommand implements UniversalScript
         this.inputString = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         StringBuilder buf = new StringBuilder(this.inputString.length());
         BufferedLineReader in = new BufferedLineReader(this.inputString);
         try {
@@ -88,7 +88,7 @@ public class GrepCommand extends AbstractTraceCommand implements UniversalScript
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

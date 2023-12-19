@@ -28,7 +28,7 @@ public class ProgressCommand extends AbstractTraceCommand {
         this.taskId = taskId;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         ScriptProgress progress = null;
         if (this.taskId.length() == 0) { // 使用默认的进度输出组件
             progress = ProgressMap.getProgress(context);
@@ -47,7 +47,7 @@ public class ProgressCommand extends AbstractTraceCommand {
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

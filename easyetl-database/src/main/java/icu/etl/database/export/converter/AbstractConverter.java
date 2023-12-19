@@ -110,8 +110,8 @@ public abstract class AbstractConverter implements JdbcObjectConverter {
         return this.attributes.containsKey(key);
     }
 
-    public abstract void init() throws IOException, SQLException;
+    public abstract void init() throws Exception;
 
-    public abstract void execute() throws IOException, SQLException;
+    public abstract void execute() throws Exception;
 
 }

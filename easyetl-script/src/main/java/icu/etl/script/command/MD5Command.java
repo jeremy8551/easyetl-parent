@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.concurrent.Terminate;
 import icu.etl.crypto.MD5Encrypt;
@@ -44,18 +43,24 @@ public class MD5Command extends AbstractFileCommand implements UniversalScriptIn
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String str = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.filepath, true, true, true, false));
         ScriptFile file = new ScriptFile(session, context, str);
         boolean print = session.isEchoEnable() || forceStdout;
         if (file.exists() && file.isFile()) {
             if (print) {
-                stdout.println(MD5Encrypt.encrypt(file, this));
+                String md5 = MD5Encrypt.encrypt(file, this);
+                stdout.println(md5);
+                session.removeValue();
+                session.putValue("md5", md5);
             }
         } else {
             if (print) {
-                stdout.println(MD5Encrypt.encrypt(str, this));
+                String md5 = MD5Encrypt.encrypt(str, this);
+                stdout.println(md5);
+                session.removeValue();
+                session.putValue("md5", md5);
             }
         }
         return 0;

@@ -61,7 +61,7 @@ public class LengthCommand extends AbstractTraceCommand implements UniversalScri
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         boolean print = session.isEchoEnable() || forceStdout;
         UniversalScriptAnalysis analysis = session.getAnalysis();
         if (this.type == 'r') { // remote file path
@@ -130,7 +130,7 @@ public class LengthCommand extends AbstractTraceCommand implements UniversalScri
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

@@ -9,17 +9,17 @@ import icu.etl.log.LogFactory;
 import icu.etl.util.ResourcesUtils;
 
 /**
- * 表格型数据增量剥离算法
+ * 接口实现类
  *
  * @author jeremy8551@qq.com
  */
-public class IncrementTableArith implements IncrementArith {
-    private final static Log log = LogFactory.getLog(IncrementTableArith.class);
+public class IncrementArithImpl implements IncrementArith {
+    private final static Log log = LogFactory.getLog(IncrementArithImpl.class);
 
     /** true 表示以终止任务 */
     private volatile boolean terminate;
 
-    public void execute(IncrementRuler rule, TextTableFileReader newIn, TextTableFileReader oldIn, IncrementHandler out) throws IOException {
+    public void execute(IncrementComparator rule, TextTableFileReader newIn, TextTableFileReader oldIn, IncrementHandler out) throws IOException {
         try {
             // 读取第一行数据
             TextTableLine nl = newIn.readLine();

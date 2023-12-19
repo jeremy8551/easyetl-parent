@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.os.OSFtpCommand;
 import icu.etl.script.UniversalCommandCompiler;
@@ -44,7 +43,7 @@ public class CdCommand extends AbstractFileCommand implements UniversalScriptInp
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         boolean print = session.isEchoEnable() || forceStdout;
         OSFtpCommand ftp = FtpList.get(context).getFTPClient();
         if (this.localhost || ftp == null) {
@@ -53,6 +52,8 @@ public class CdCommand extends AbstractFileCommand implements UniversalScriptInp
                 stdout.println("cd " + file.getAbsolutePath());
             }
             session.setDirectory(file);
+            session.removeValue();
+            session.putValue("cd", file);
             return 0;
         } else {
             UniversalScriptAnalysis analysis = session.getAnalysis();
@@ -64,7 +65,7 @@ public class CdCommand extends AbstractFileCommand implements UniversalScriptInp
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {
