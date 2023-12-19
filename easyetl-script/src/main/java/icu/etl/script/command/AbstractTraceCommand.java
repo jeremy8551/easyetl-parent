@@ -99,8 +99,7 @@ public abstract class AbstractTraceCommand extends AbstractCommand {
      * @param outfile     标准信息的日志文件（如未设置标准信息日志，此时为null）
      * @param errfile     错误信息的日志文件（如未设置错误信息日志，此时为null）
      * @return 返回0表示正确, 返回非0表示不正确
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
     public abstract int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception;
 

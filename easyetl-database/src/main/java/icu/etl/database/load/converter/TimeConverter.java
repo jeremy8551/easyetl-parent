@@ -16,12 +16,12 @@ import icu.etl.util.StringUtils;
  */
 public class TimeConverter extends DateConverter {
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         this.format = new SimpleDateFormat();
         this.format.applyPattern(StringUtils.defaultString((String) this.getAttribute(AbstractConverter.PARAM_TIMEFORMAT), "HH:mm:ss"));
     }
 
-    public void execute(String value) throws IOException, SQLException, ParseException {
+    public void execute(String value) throws Exception {
         if (this.isBlank(value)) {
             this.statement.setNull(this.position, Types.TIME);
         } else {

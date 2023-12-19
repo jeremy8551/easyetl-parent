@@ -24,7 +24,7 @@ public class DfCommand extends AbstractTraceCommand implements NohupCommandSuppo
         super(compiler, command);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         OS os = context.getContainer().getBean(OS.class);
         try {
             CharTable table = new CharTable();
@@ -55,7 +55,7 @@ public class DfCommand extends AbstractTraceCommand implements NohupCommandSuppo
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

@@ -41,7 +41,7 @@ public class DeclareCursorCommand extends AbstractCommand implements WithBodyCom
         this.sql = sql;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         ScriptDataSource dataSource = ScriptDataSource.get(context);
         this.dao = dataSource.getDao();
         try {
@@ -72,7 +72,7 @@ public class DeclareCursorCommand extends AbstractCommand implements WithBodyCom
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.dao != null) {
             Ensure.isTrue(this.dao.terminate());
         }

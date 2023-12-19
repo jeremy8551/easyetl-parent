@@ -2,7 +2,10 @@ package icu.etl.increment;
 
 import icu.etl.util.ArrayUtils;
 
-public class SimpleIncrementPosition implements IncrementPosition {
+/**
+ * 接口实现类
+ */
+public class IncrementPositionImpl implements IncrementPosition {
 
     /** 新数据的索引字段的位置 */
     private int[] newIndexPosition;
@@ -24,7 +27,7 @@ public class SimpleIncrementPosition implements IncrementPosition {
      * @param newComparePosition 比较字段位置信息
      * @param oldComparePosition 比较字段位置信息
      */
-    public SimpleIncrementPosition(int[] newIndexPosition, int[] oldIndexPosition, int[] newComparePosition, int[] oldComparePosition) {
+    public IncrementPositionImpl(int[] newIndexPosition, int[] oldIndexPosition, int[] newComparePosition, int[] oldComparePosition) {
         this.newIndexPosition = ArrayUtils.copyOf(newIndexPosition, newIndexPosition.length);
         this.oldIndexPosition = ArrayUtils.copyOf(oldIndexPosition, oldIndexPosition.length);
         this.newComparePosition = ArrayUtils.copyOf(newComparePosition, newComparePosition.length);

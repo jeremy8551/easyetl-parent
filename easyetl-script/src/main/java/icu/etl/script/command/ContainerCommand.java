@@ -15,7 +15,7 @@ import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.command.feature.WithBodyCommandSupported;
-import icu.etl.script.internal.ScriptContainerReader;
+import icu.etl.script.internal.EasyJobReaderImpl;
 import icu.etl.util.StringUtils;
 
 /**
@@ -50,7 +50,7 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, false, true, true));
         }
 
-        ScriptContainerReader in = new ScriptContainerReader(session, context, stdout, stderr, this);
+        EasyJobReaderImpl in = new EasyJobReaderImpl(session, context, stdout, stderr, this);
         try {
             this.container = context.getContainer().getBean(ThreadSource.class).getJobService(number);
             this.container.execute(in);
@@ -60,7 +60,7 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.container != null) {
             this.container.terminate();
         }

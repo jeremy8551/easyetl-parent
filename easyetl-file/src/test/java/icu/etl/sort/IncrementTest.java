@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.util.Date;
 
 import icu.etl.concurrent.ThreadSourceImpl;
-import icu.etl.increment.Increment;
+import icu.etl.increment.IncrementJob;
 import icu.etl.increment.IncrementContext;
 import icu.etl.increment.IncrementListenerImpl;
-import icu.etl.increment.SimpleIncrementPosition;
+import icu.etl.increment.IncrementPositionImpl;
 import icu.etl.io.BufferedLineWriter;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
@@ -187,7 +187,7 @@ public class IncrementTest {
         int[] oldIndexPosition = new int[]{1, column};
         int[] newComparePosition = this.toComparePositions(column, newIndexPosition);
         int[] oldComparePosition = this.toComparePositions(column, oldIndexPosition);
-        SimpleIncrementPosition position = new SimpleIncrementPosition(newIndexPosition, oldIndexPosition, newComparePosition, oldComparePosition);
+        IncrementPositionImpl position = new IncrementPositionImpl(newIndexPosition, oldIndexPosition, newComparePosition, oldComparePosition);
 
         IncrementContext context = new IncrementContext();
         context.setThreadSource(new ThreadSourceImpl());
@@ -208,7 +208,7 @@ public class IncrementTest {
         StandardFilePrinter out = new StandardFilePrinter(logfile, StringUtils.CHARSET, false);
         context.setLogger(new IncrementListenerImpl(out, position, newtxtfile, oldtxtfile));
 
-        Increment inc = new Increment(context);
+        IncrementJob inc = new IncrementJob(context);
         Assert.assertEquals(0, inc.execute());
 
         // 判断剥离增量结果文件与正确文件是否相等

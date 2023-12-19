@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -32,7 +30,7 @@ public class StepCommand extends AbstractTraceCommand implements CallbackCommand
         this.message = message;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String message = analysis.replaceVariable(session, context, this.message, true);
         boolean print = session.isEchoEnable() || forceStdout;
@@ -87,7 +85,7 @@ public class StepCommand extends AbstractTraceCommand implements CallbackCommand
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     /**
@@ -100,10 +98,9 @@ public class StepCommand extends AbstractTraceCommand implements CallbackCommand
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param steper      步骤信息输出接口
      * @param message     步骤信息
-     * @throws SQLException
-     * @throws IOException
+     * @throws Exception 发生错误
      */
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptSteper steper, String message) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptSteper steper, String message) throws Exception {
         if (steper.getWriter() == null) {
             if (session.isEchoEnable() || forceStdout) {
                 stdout.println(message);

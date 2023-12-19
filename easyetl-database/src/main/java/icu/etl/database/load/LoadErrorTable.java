@@ -20,6 +20,7 @@ import icu.etl.database.JdbcStringConverter;
 import icu.etl.database.load.converter.AbstractConverter;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -62,18 +63,10 @@ public class LoadErrorTable {
      *
      * @param dao   数据库操作接口
      * @param table 数据库表信息
-     * @throws SQLException
-     * @throws IOException
      */
-    public LoadErrorTable(JdbcDao dao, DatabaseTable table) throws SQLException, IOException {
-        if (dao == null) {
-            throw new NullPointerException();
-        }
-        if (table == null) {
-            throw new NullPointerException();
-        }
-        this.dao = dao;
-        this.table = table;
+    public LoadErrorTable(JdbcDao dao, DatabaseTable table) {
+        this.dao = Ensure.notNull(dao);
+        this.table = Ensure.notNull(table);
     }
 
     /**

@@ -1,7 +1,5 @@
 package icu.etl.script.session;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -82,10 +80,9 @@ public class ScriptSubProcess {
     /**
      * 终止所有后台进程
      *
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 发生错误
      */
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         Throwable exception = null;
         for (Iterator<ScriptProcess> it = this.map.values().iterator(); it.hasNext(); ) {
             ScriptProcess process = it.next();

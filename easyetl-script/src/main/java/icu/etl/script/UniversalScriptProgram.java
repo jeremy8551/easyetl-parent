@@ -21,8 +21,8 @@ public interface UniversalScriptProgram {
     /**
      * 释放数据库连接，SSH连接等资源（可根据需要实现）
      *
-     * @throws IOException
+     * @throws Exception
      */
-    void close() throws IOException;
+    void close() throws Exception;
 
 }

@@ -7,10 +7,10 @@ import java.text.ParseException;
 
 public class ByteConverter extends AbstractConverter {
 
-    public void init() throws IOException, SQLException, ParseException {
+    public void init() throws Exception {
     }
 
-    public void execute(String value) throws IOException, SQLException {
+    public void execute(String value) throws Exception {
         if (this.isBlank(value)) {
             this.statement.setNull(this.position, Types.BIT);
         } else {

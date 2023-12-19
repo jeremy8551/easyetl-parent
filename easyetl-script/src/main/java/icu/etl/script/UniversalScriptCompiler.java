@@ -1,8 +1,6 @@
 package icu.etl.script;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 /**
  * 编译器
@@ -24,27 +22,24 @@ public interface UniversalScriptCompiler {
      * @param session 用户会话信息
      * @param context 脚本引擎上下文信息
      * @param in      脚本语句输入流
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 编译发生错误
      */
-    void compile(UniversalScriptSession session, UniversalScriptContext context, Reader in) throws IOException, SQLException;
+    void compile(UniversalScriptSession session, UniversalScriptContext context, Reader in) throws Exception;
 
     /**
      * 终止编译操作 {@link #compile(UniversalScriptSession, UniversalScriptContext, Reader)} 方法
      *
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception 终止编译发生错误
      */
-    void terminate() throws IOException, SQLException;
+    void terminate() throws Exception;
 
     /**
-     * 返回 true 表示已成功编译一个命令
+     * 编译命令
      *
-     * @return
-     * @throws IOException
-     * @throws SQLException
+     * @return 返回 true 表示已成功编译一个命令
+     * @throws Exception 编译命令发生错误
      */
-    boolean hasNext() throws IOException, SQLException;
+    boolean hasNext() throws Exception;
 
     /**
      * 返回编译成功的命令

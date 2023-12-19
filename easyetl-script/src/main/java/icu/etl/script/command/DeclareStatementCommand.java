@@ -45,7 +45,7 @@ public class DeclareStatementCommand extends AbstractCommand {
         this.batchRecords = batchRecords;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String sql = analysis.replaceVariable(session, context, this.sql, true);
         ScriptDataSource dataSource = ScriptDataSource.get(context);
@@ -79,7 +79,7 @@ public class DeclareStatementCommand extends AbstractCommand {
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.dao != null) {
             Ensure.isTrue(this.dao.terminate());
         }

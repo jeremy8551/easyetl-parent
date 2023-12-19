@@ -23,7 +23,7 @@ import icu.etl.util.Dates;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-20
  */
-public class ScriptContainerReader implements EasyJobReader {
+public class EasyJobReaderImpl implements EasyJobReader {
 
     private UniversalScriptContext context;
     private UniversalScriptSession session;
@@ -44,7 +44,7 @@ public class ScriptContainerReader implements EasyJobReader {
      * @param stderr
      * @param container
      */
-    public ScriptContainerReader(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) {
+    public EasyJobReaderImpl(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) {
         this.terminate = false;
         this.context = context;
         this.session = session;
@@ -54,7 +54,7 @@ public class ScriptContainerReader implements EasyJobReader {
         this.list = new ArrayList<UniversalScriptCommand>(container.getList());
     }
 
-    public synchronized boolean hasNext() throws IOException, SQLException {
+    public synchronized boolean hasNext() throws Exception {
         if (this.job != null) {
             return true;
         }
@@ -85,7 +85,7 @@ public class ScriptContainerReader implements EasyJobReader {
         }
     }
 
-    public synchronized EasyJob next() throws IOException, SQLException {
+    public synchronized EasyJob next() throws Exception {
         EasyJob value = this.job;
         if (value == null) {
             if (this.hasNext()) {

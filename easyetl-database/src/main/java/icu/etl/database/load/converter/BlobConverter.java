@@ -17,10 +17,10 @@ import icu.etl.util.StringUtils;
 
 public class BlobConverter extends AbstractConverter {
 
-    public void init() throws IOException, SQLException, ParseException {
+    public void init() throws Exception {
     }
 
-    public void execute(String value) throws IOException, SQLException {
+    public void execute(String value) throws Exception {
         if (this.notNull && this.isBlank(value)) {
             this.statement.setString(this.position, "");
         } else if (value.length() == 0) { // 空字符串表示空指针

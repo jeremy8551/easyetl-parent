@@ -43,7 +43,7 @@ public class ReturnCommand extends AbstractSlaveCommand implements UniversalScri
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.existsOwner()) {
             UniversalScriptAnalysis analysis = session.getAnalysis();
             String value = analysis.trim(analysis.replaceVariable(session, context, this.returnCode, false), 0, 1);
@@ -65,7 +65,7 @@ public class ReturnCommand extends AbstractSlaveCommand implements UniversalScri
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public int kind() {

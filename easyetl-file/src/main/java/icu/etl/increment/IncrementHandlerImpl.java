@@ -9,11 +9,11 @@ import icu.etl.io.TextTableFileWriter;
 import icu.etl.io.TextTableLine;
 
 /**
- * 将增量数据保存到文件
+ * 接口实现类
  *
  * @author jeremy8551@qq.com
  */
-public class IncrementFileWriter implements IncrementHandler {
+public class IncrementHandlerImpl implements IncrementHandler {
 
     private ArrayList<IncrementListener> listeners;
     private TextTableFileWriter newout;
@@ -29,7 +29,7 @@ public class IncrementFileWriter implements IncrementHandler {
     private boolean newfileEqualUpdout;
     private boolean oldfileEqualDelout;
 
-    public IncrementFileWriter(TextTableFile newfile, TextTableFile oldfile, List<IncrementListener> listeners, IncrementListenerImpl logger, IncrementReplaceListener replaces, TextTableFileWriter newout, TextTableFileWriter updout, TextTableFileWriter delout) {
+    public IncrementHandlerImpl(TextTableFile newfile, TextTableFile oldfile, List<IncrementListener> listeners, IncrementListenerImpl logger, IncrementReplaceListener replaces, TextTableFileWriter newout, TextTableFileWriter updout, TextTableFileWriter delout) {
         this.listeners = new ArrayList<IncrementListener>();
         if (logger != null) {
             this.listeners.add(logger);
@@ -56,7 +56,7 @@ public class IncrementFileWriter implements IncrementHandler {
 
     public void handleCreateRecord(TextTableLine line) throws IOException {
         if (this.outNewRecords) {
-            IncrementTextTableLine record = new IncrementTextTableLine(this.newfile, line);
+            TextTableLineImpl record = new TextTableLineImpl(this.newfile, line);
             for (IncrementListener l : this.listeners) {
                 l.beforeCreateRecord(record);
             }
@@ -75,8 +75,8 @@ public class IncrementFileWriter implements IncrementHandler {
 
     public void handleUpdateRecord(TextTableLine newLine, TextTableLine oldLine, int position) throws IOException {
         if (this.outUpdRecords) {
-            IncrementTextTableLine newRecord = new IncrementTextTableLine(this.newfile, newLine);
-            IncrementTextTableLine oldRecord = new IncrementTextTableLine(this.oldfile, oldLine);
+            TextTableLineImpl newRecord = new TextTableLineImpl(this.newfile, newLine);
+            TextTableLineImpl oldRecord = new TextTableLineImpl(this.oldfile, oldLine);
             for (IncrementListener l : this.listeners) {
                 l.beforeUpdateRecord(newRecord, oldRecord, position);
             }
@@ -95,7 +95,7 @@ public class IncrementFileWriter implements IncrementHandler {
 
     public void handleDeleteRecord(TextTableLine line) throws IOException {
         if (this.outDelRecords) {
-            IncrementTextTableLine record = new IncrementTextTableLine(this.oldfile, line);
+            TextTableLineImpl record = new TextTableLineImpl(this.oldfile, line);
             for (IncrementListener l : this.listeners) {
                 l.beforeDeleteRecord(record);
             }

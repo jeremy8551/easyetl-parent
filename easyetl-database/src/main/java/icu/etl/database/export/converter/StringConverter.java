@@ -10,12 +10,12 @@ public class StringConverter extends AbstractConverter {
 
     protected Process process;
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         String charsetName = (String) this.getAttribute(PARAM_CHARSET);
         this.process = StringUtils.isNotBlank(charsetName) && this.contains(PARAM_MESSY) ? new Messy(charsetName) : new None();
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         String value = this.resultSet.getString(this.column);
         this.array[this.column] = this.process.execute(value);
     }
@@ -32,7 +32,7 @@ public class StringConverter extends AbstractConverter {
      *
      * @author jeremy8551@qq.com
      */
-    protected class Messy implements Process {
+    protected static class Messy implements Process {
 
         private MessySequence ms;
 
@@ -45,7 +45,7 @@ public class StringConverter extends AbstractConverter {
         }
     }
 
-    protected class None implements Process {
+    protected static class None implements Process {
 
         public None() {
         }

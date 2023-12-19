@@ -24,7 +24,7 @@ import icu.etl.util.StringUtils;
 @EasyBean
 public class ExtractWriterBuilder implements EasyBeanBuilder<ExtractWriter> {
 
-    public ExtractWriter getBean(EasyContext context, Object... args) throws IOException, SQLException {
+    public ExtractWriter getBean(EasyContext context, Object... args) throws Exception {
         ExtracterContext cxt = ArrayUtils.indexOf(args, ExtracterContext.class, 0);
         ExtractMessage message = ArrayUtils.indexOf(args, ExtractMessage.class, 0);
         String target = StringUtils.trimBlank(cxt.getTarget());

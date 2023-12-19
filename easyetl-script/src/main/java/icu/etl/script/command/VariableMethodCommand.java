@@ -54,7 +54,7 @@ public class VariableMethodCommand extends AbstractTraceCommand implements Nohup
         this.reverse = reverse;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         this.value = null;
 
         UniversalScriptAnalysis analysis = session.getAnalysis();
@@ -99,7 +99,7 @@ public class VariableMethodCommand extends AbstractTraceCommand implements Nohup
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

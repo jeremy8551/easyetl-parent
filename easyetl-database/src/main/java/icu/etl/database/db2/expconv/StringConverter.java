@@ -17,13 +17,13 @@ import icu.etl.util.StringUtils;
  */
 public class StringConverter extends icu.etl.database.export.converter.StringConverter {
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         super.init();
         String charsetName = (String) this.getAttribute(PARAM_CHARSET);
         this.process = StringUtils.isNotBlank(charsetName) && this.contains(PARAM_MESSY) ? new Messy(charsetName) : new Nomal();
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         String str = this.resultSet.getString(this.column);
         if (str == null) {
             this.array[this.column] = "";

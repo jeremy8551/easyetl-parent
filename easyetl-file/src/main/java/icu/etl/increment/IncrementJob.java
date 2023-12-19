@@ -26,8 +26,8 @@ import icu.etl.util.TimeWatch;
  * @author jeremy8551@qq.com
  * @createtime 2010-01-19 02:45:22
  */
-public class Increment extends AbstractJob {
-    private final static Log log = LogFactory.getLog(Increment.class);
+public class IncrementJob extends AbstractJob {
+    private final static Log log = LogFactory.getLog(IncrementJob.class);
 
     /** 任务的配置信息 */
     private IncrementContext context;
@@ -37,7 +37,7 @@ public class Increment extends AbstractJob {
      *
      * @param context 上下文信息
      */
-    public Increment(IncrementContext context) {
+    public IncrementJob(IncrementContext context) {
         super();
         this.context = Ensure.notNull(context);
         new IncrementContextValidator(context);
@@ -65,7 +65,7 @@ public class Increment extends AbstractJob {
         Comparator<String> comparator = this.context.getComparator();
 
         // 设置字符串排序的规则
-        IncrementRuler ruler = new IncrementTableRuler(comparator, position);
+        IncrementComparator ruler = new IncrementComparatorImpl(comparator, position);
 
         // 保留排序前的文件路径
         File beforeSortNewfile = newfile.getFile();
@@ -117,7 +117,7 @@ public class Increment extends AbstractJob {
             TextTableFileReader newIn = newfile.getReader(newfileCxt.getReaderBuffer());
             newIn.setListener(new CommonTextTableFileReaderListener(newfileProgress));
 
-            IncrementHandler out = new IncrementFileWriter(newfile, oldfile, listeners, logger, replaceList, newOuter, updOuter, delOuter);
+            IncrementHandler out = new IncrementHandlerImpl(newfile, oldfile, listeners, logger, replaceList, newOuter, updOuter, delOuter);
             arith.execute(ruler, newIn, oldIn, out);
 
             if (log.isDebugEnabled()) {

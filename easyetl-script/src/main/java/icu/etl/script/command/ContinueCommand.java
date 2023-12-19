@@ -24,7 +24,7 @@ public class ContinueCommand extends AbstractSlaveCommand implements LoopCommand
         super(compiler, command);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.existsOwner()) {
 //			if (session.isEchoEnable() || forceStdout) {
 //				stdout.println(this.command);
@@ -36,7 +36,7 @@ public class ContinueCommand extends AbstractSlaveCommand implements LoopCommand
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public int kind() {

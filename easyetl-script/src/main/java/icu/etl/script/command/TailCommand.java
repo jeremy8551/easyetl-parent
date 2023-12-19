@@ -60,7 +60,7 @@ public class TailCommand extends AbstractFileCommand implements UniversalScriptI
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         ArrayDeque<String> queue = new ArrayDeque<String>(this.line);
 
         if (session.getAnalysis().isBlankline(this.filepath)) {
@@ -100,7 +100,7 @@ public class TailCommand extends AbstractFileCommand implements UniversalScriptI
         return this.terminate ? UniversalScriptCommand.TERMINATE : 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         this.terminate = true;
     }
 

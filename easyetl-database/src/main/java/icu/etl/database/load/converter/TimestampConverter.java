@@ -17,12 +17,12 @@ import icu.etl.util.StringUtils;
  */
 public class TimestampConverter extends DateConverter {
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         this.format = new SimpleDateFormat();
         this.format.applyPattern(StringUtils.defaultString((String) this.getAttribute(PARAM_TIMESTAMPFORMAT), "yyyy-MM-dd HH:mm:ss"));
     }
 
-    public void execute(String value) throws IOException, SQLException, ParseException {
+    public void execute(String value) throws Exception {
         value = StringUtils.unquotes(value);
         if (this.isBlank(value)) {
             this.statement.setNull(this.position, Types.TIME);

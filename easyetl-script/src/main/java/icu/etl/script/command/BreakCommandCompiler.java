@@ -18,7 +18,7 @@ public class BreakCommandCompiler extends AbstractSlaveCommandCompiler {
         return in.readSinglelineScript();
     }
 
-    public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException {
+    public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws Exception {
         if ("break".equalsIgnoreCase(command)) {
             return new BreakCommand(this, orginalScript);
         } else {

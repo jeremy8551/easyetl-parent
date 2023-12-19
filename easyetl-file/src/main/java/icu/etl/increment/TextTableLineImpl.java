@@ -13,7 +13,7 @@ import icu.etl.util.Ensure;
  * @author jeremy8551@qq.com
  * @createtime 2023/12/4
  */
-public class IncrementTextTableLine implements TextTableLine {
+public class TextTableLineImpl implements TextTableLine {
 
     private TextTableFile file;
 
@@ -25,7 +25,7 @@ public class IncrementTextTableLine implements TextTableLine {
 
     private int column;
 
-    public IncrementTextTableLine(TextTableFile file, TextTableLine line) {
+    public TextTableLineImpl(TextTableFile file, TextTableLine line) {
         this.file = file;
         this.line = line;
         String content = this.line.getContent();

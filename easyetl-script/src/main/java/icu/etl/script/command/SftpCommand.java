@@ -57,7 +57,7 @@ public class SftpCommand extends FtpCommand implements UniversalScriptInputStrea
         this.password = expr.getLoginPassword();
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (session.isEchoEnable() || forceStdout) {
             stdout.println("sftp " + this.username + "@" + this.host + ":" + this.port + "?password=" + this.password);
         }
@@ -72,7 +72,7 @@ public class SftpCommand extends FtpCommand implements UniversalScriptInputStrea
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

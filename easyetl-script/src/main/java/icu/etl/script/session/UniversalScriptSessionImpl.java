@@ -1,6 +1,7 @@
 package icu.etl.script.session;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -20,20 +21,23 @@ import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
 
 /**
- * 脚本引擎用户会话信息接口的实现类
+ * 接口实现类
  *
  * @author jeremy8551@qq.com
  */
-public class ScriptSession implements UniversalScriptSession {
+public class UniversalScriptSessionImpl implements UniversalScriptSession {
 
     /** 会话编号 */
-    private String id;
+    private String sessionId;
 
-    /** 父会话编号 */
-    private String pid;
+    /** 上级会话编号 */
+    private String parentSessionId;
+
+    /** 用户会话所属的脚本引擎编号 */
+    private String scriptEngineId;
 
     /** 表示用户会话归属的集合 */
-    private ScriptSessionFactory factory;
+    private UniversalScriptSessionFactoryImpl factory;
 
     /** 会话创建时间 */
     private Date startTime;
@@ -77,12 +81,19 @@ public class ScriptSession implements UniversalScriptSession {
     /** 临时文件存储目录 */
     private File tempDir;
 
+    /** 会话的返回值 */
+    private SessionResult sessionResult;
+
     /**
      * 初始化
+     *
+     * @param scriptEngineId 脚本引擎编号
      */
-    private ScriptSession() {
-        this.id = "M" + StringUtils.toRandomUUID();
+    private UniversalScriptSessionImpl(String scriptEngineId) {
+        this.scriptEngineId = Ensure.notBlank(scriptEngineId);
+        this.sessionId = "M" + StringUtils.toRandomUUID();
         this.name = ResourcesUtils.getScriptStdoutMessage(14); // 脚本引擎
+        this.sessionResult = new SessionResult();
         this.isAlive = true;
         this.startTime = new Date();
         this.endTime = null;
@@ -92,7 +103,7 @@ public class ScriptSession implements UniversalScriptSession {
         this.subs = new ScriptSubProcess();
         this.echoEnabled = true;
         this.terminate = false;
-        this.tempDir = FileUtils.getTempDir(UniversalScriptEngine.class.getSimpleName(), "engine");
+        this.tempDir = FileUtils.getTempDir(UniversalScriptEngine.class.getSimpleName(), this.scriptEngineId);
 
         this.setDirectory(Settings.getUserHome()); // 会话当前目录
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_TEMP, this.tempDir.getAbsolutePath()); // 临时文件目录
@@ -103,11 +114,12 @@ public class ScriptSession implements UniversalScriptSession {
     /**
      * 初始化
      *
-     * @param factory 脚本引擎会话工厂
+     * @param scriptEngineId 脚本引擎编号
+     * @param factory        脚本引擎会话工厂
      */
-    public ScriptSession(ScriptSessionFactory factory) {
-        this();
-        this.factory = factory;
+    public UniversalScriptSessionImpl(String scriptEngineId, UniversalScriptSessionFactoryImpl factory) {
+        this(scriptEngineId);
+        this.factory = Ensure.notNull(factory);
     }
 
     /**
@@ -115,13 +127,13 @@ public class ScriptSession implements UniversalScriptSession {
      *
      * @param file 脚本文件表达式
      */
-    public void setScriptFile(ScriptFileExpression file) {
+    public void setScriptFile(ScriptFileExpression file) throws IOException {
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_SCRIPTNAME, file.getName());
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_SCRIPTFILE, file.getAbsolutePath());
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_LINESEPARATOR, file.getLineSeparator());
 
         StringBuilder buf = new StringBuilder();
-        if (StringUtils.isNotBlank(this.pid) && this.factory.get(this.pid).isScriptFile()) {
+        if (StringUtils.isNotBlank(this.parentSessionId) && this.factory.get(this.parentSessionId).isScriptFile()) {
             buf.append(ResourcesUtils.getScriptStdoutMessage(16)); // 子脚本文件
         } else {
             buf.append(ResourcesUtils.getScriptStdoutMessage(17)); // 脚本文件
@@ -179,11 +191,11 @@ public class ScriptSession implements UniversalScriptSession {
     }
 
     public String getId() {
-        return this.id;
+        return this.sessionId;
     }
 
     public String getParentID() {
-        return this.pid;
+        return this.parentSessionId;
     }
 
     public void setEchoEnabled(boolean enable) {
@@ -268,11 +280,23 @@ public class ScriptSession implements UniversalScriptSession {
         return this.endTime;
     }
 
+    public Object getValue() {
+        return this.sessionResult.value();
+    }
+
+    public Object putValue(String key, Object value) {
+        return this.sessionResult.put(key, value);
+    }
+
+    public void removeValue() {
+        this.sessionResult.clear();
+    }
+
     public UniversalScriptSession subsession() {
-        ScriptSession session = new ScriptSession();
+        UniversalScriptSessionImpl session = new UniversalScriptSessionImpl(this.scriptEngineId);
         session.factory = this.factory;
-        session.pid = this.id;
-        session.id = "S" + StringUtils.toRandomUUID();
+        session.parentSessionId = this.sessionId;
+        session.sessionId = "S" + StringUtils.toRandomUUID();
         session.echoEnabled = this.echoEnabled;
         session.anlaysis = this.anlaysis;
         session.compiler = null;
@@ -287,7 +311,7 @@ public class ScriptSession implements UniversalScriptSession {
             return true;
         } else if (obj instanceof UniversalScriptSession) {
             UniversalScriptSession session = (UniversalScriptSession) obj;
-            return session.getId().equals(this.id);
+            return session.getId().equals(this.sessionId);
         } else {
             return false;
         }
@@ -295,7 +319,7 @@ public class ScriptSession implements UniversalScriptSession {
 
     public void close() {
         this.isAlive = false;
-        this.factory.remove(this.id);
+        this.factory.remove(this.sessionId);
         this.endTime = new Date();
     }
 

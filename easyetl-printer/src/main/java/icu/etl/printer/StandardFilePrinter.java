@@ -29,7 +29,7 @@ public class StandardFilePrinter extends StandardPrinter implements Printer {
      * @param file        文件
      * @param charsetName 文件字符集
      * @param append      true表示将数据写入到文件末尾位置 false表示将数据写入文件起始位置（会覆盖原文件内容）
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     public StandardFilePrinter(File file, String charsetName, boolean append) throws IOException {
         this(file, charsetName, append, null);
@@ -42,7 +42,7 @@ public class StandardFilePrinter extends StandardPrinter implements Printer {
      * @param charsetName 文件字符集
      * @param append      true表示将数据写入到文件末尾位置 false表示将数据写入文件起始位置（会覆盖原文件内容）
      * @param converter   类型转换器(用于将 Object 对象转为字符串, 为 null 时默认使用 {@linkplain Object#toString()})
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     public StandardFilePrinter(File file, String charsetName, boolean append, Format converter) throws IOException {
         super();
@@ -56,7 +56,7 @@ public class StandardFilePrinter extends StandardPrinter implements Printer {
     /**
      * 打开文件输出流
      *
-     * @throws IOException
+     * @throws IOException 访问文件错误
      */
     protected void open() throws IOException {
         this.setWriter(IO.getFileWriter(this.file, this.charsetName, this.append));

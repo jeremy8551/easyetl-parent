@@ -24,6 +24,7 @@ import icu.etl.database.JdbcStringConverter;
 import icu.etl.database.load.converter.AbstractConverter;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -75,31 +76,19 @@ public class LoadTable {
      *
      * @param dao   数据库操作接口
      * @param table 数据库表信息
-     * @throws SQLException
-     * @throws IOException
      */
-    public LoadTable(JdbcDao dao, DatabaseTable table) throws SQLException, IOException {
-        if (dao == null) {
-            throw new NullPointerException();
-        } else {
-            this.dao = dao;
-        }
-
-        if (table == null) {
-            throw new NullPointerException();
-        } else {
-            this.table = table;
-        }
+    public LoadTable(JdbcDao dao, DatabaseTable table) {
+        this.dao = Ensure.notNull(dao);
+        this.table = Ensure.notNull(table);
     }
 
     /**
      * 打开数据库连接
      *
      * @param context
-     * @throws IOException
      * @throws SQLException
      */
-    public void open(LoadEngineContext context) throws IOException, SQLException {
+    public void open(LoadEngineContext context) throws SQLException {
         LoadMode loadMode = context.getLoadMode();
         List<String> fileColumn = context.getFileColumn();
         List<String> tableColumn = context.getTableColumn(); // 查询字段名集合
@@ -123,9 +112,9 @@ public class LoadTable {
      * 如果未设置索引字段，则使用数据库表的主键或唯一索引作为索引字段
      *
      * @param indexColumn 索引字段名集合
-     * @throws IOException
+     * @throws SQLException
      */
-    private List<String> toIndexColumns(List<String> indexColumn) throws IOException {
+    private List<String> toIndexColumns(List<String> indexColumn) throws SQLException {
         if (indexColumn == null || indexColumn.isEmpty()) { // 如果未设置索引字段，则使用
             DatabaseIndexList list = this.table.getPrimaryIndexs();
             if (list.size() > 0) {
@@ -144,7 +133,7 @@ public class LoadTable {
 
         // 只有 merge 模式才需要索引字段
         if (indexColumn == null || indexColumn.isEmpty()) {
-            throw new IOException(ResourcesUtils.getLoadMessage(4));
+            throw new SQLException(ResourcesUtils.getLoadMessage(4));
         } else {
             return indexColumn;
         }

@@ -1,16 +1,17 @@
 package icu.etl.script;
 
+import javax.script.ScriptEngineFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.script.ScriptEngineFactory;
 
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CharTable;
+import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -29,9 +30,11 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /** 容器的上下文信息 */
     protected EasyContext context;
 
+    private static volatile int serialNumber = 0;
+
     /**
-     * 初始化
-     * 因为涉及到 {@linkplain javax.script.ScriptEngineManager} 使用 SPI 机制读取并创建脚本引擎工厂实例，所以本方法中只做简单操作。
+     * 初始化 <br>
+     * 因为脚本引擎使用 SPI 机制读取并创建脚本引擎工厂实例，所以本方法中只做简单操作。
      */
     public UniversalScriptEngineFactory() {
     }
@@ -44,6 +47,15 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     public UniversalScriptEngineFactory(EasyContext context) {
         this();
         this.setContext(context);
+    }
+
+    /**
+     * 生成一个唯一的序列号
+     *
+     * @return 序列号
+     */
+    public synchronized String createSerialNumber() {
+        return "engine" + Dates.format17() + StringUtils.right(++serialNumber, 3, '0');
     }
 
     /**
@@ -267,7 +279,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
         table.addCell(titles[9]);
         table.addCell(this.getProgram("help", "help script", "help set"));
         table.addCell(titles[10]);
-        table.addCell(this.getMethodCallSyntax("obj", "split", new String[]{"':'", "'\\\\'"}));
+        table.addCell(this.getMethodCallSyntax("obj", "split", "':'", "'\\\\'"));
         table.addCell(titles[11]);
         table.addCell("cat `pwd`/text | tail -n 1 ");
         table.addCell(titles[12]);

@@ -25,7 +25,7 @@ public class JDK5 implements JavaDialect {
         return false;
     }
 
-    public Object parseJdbcObject(Object obj) throws IOException, SQLException {
+    public Object parseJdbcObject(Object obj) throws Exception {
         return null;
     }
 

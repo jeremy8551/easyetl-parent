@@ -9,7 +9,7 @@ import icu.etl.database.export.converter.BlobConverter;
 
 public class ByteArrayConverter extends BlobConverter {
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         InputStream in = this.resultSet.getBinaryStream(this.column);
         if (in == null) {
             this.array[this.column] = "";

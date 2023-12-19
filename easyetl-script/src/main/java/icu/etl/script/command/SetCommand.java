@@ -62,7 +62,7 @@ public class SetCommand extends AbstractGlobalCommand {
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     /**

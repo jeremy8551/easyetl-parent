@@ -5,8 +5,8 @@ import java.util.Map;
 
 import icu.etl.script.compiler.ScriptAnalysis;
 import icu.etl.script.session.ScriptMainProcess;
-import icu.etl.script.session.ScriptSession;
-import icu.etl.script.session.ScriptSessionFactory;
+import icu.etl.script.session.UniversalScriptSessionImpl;
+import icu.etl.script.session.UniversalScriptSessionFactoryImpl;
 import icu.etl.util.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,7 +105,7 @@ public class ScriptAnalysisTest {
     public void testReplaceShellFunctionVariable() {
         ScriptAnalysis obj = new ScriptAnalysis();
 
-        UniversalScriptSession session = new ScriptSession(new ScriptSessionFactory()) {
+        UniversalScriptSession session = new UniversalScriptSessionImpl("engine001", new UniversalScriptSessionFactoryImpl()) {
 
             @Override
             public String getId() {
@@ -132,7 +132,7 @@ public class ScriptAnalysisTest {
         String str = "$1 is equals $2 [$3$ $4 $d";
         assertEquals("1 is equals 2 [3$ $4 $d", obj.replaceShellSpecialVariable(session, str, true));
 
-        session = new ScriptSession(new ScriptSessionFactory()) {
+        session = new UniversalScriptSessionImpl("engine001", new UniversalScriptSessionFactoryImpl()) {
             @Override
             public String getId() {
                 return "sessionid";
@@ -158,7 +158,7 @@ public class ScriptAnalysisTest {
         };
         assertEquals("call TESTADM.PROC_QYZX_SBC_BAOHANS('2017-07-31', ?); 1 funcs", obj.replaceShellSpecialVariable(session, "call TESTADM.$1('2017-07-31', ?); $# $0", false));
 
-        session = new ScriptSession(new ScriptSessionFactory()) {
+        session = new UniversalScriptSessionImpl("engine001", new UniversalScriptSessionFactoryImpl()) {
 
             @Override
             public String getId() {
@@ -184,7 +184,7 @@ public class ScriptAnalysisTest {
         };
         assertEquals("call TESTADM.PROC_QYZX_SBC_BAOHANS('2017-07-31', ?); 1 funcs -1", obj.replaceShellSpecialVariable(session, "call TESTADM.$1('2017-07-31', ?); $# $0 $?", true));
 
-        session = new ScriptSession(new ScriptSessionFactory()) {
+        session = new UniversalScriptSessionImpl("engine001", new UniversalScriptSessionFactoryImpl()) {
 
             @Override
             public String getId() {
@@ -210,7 +210,7 @@ public class ScriptAnalysisTest {
         };
         assertEquals("call 'TESTADM.$1(2017-07-31, ?)'; 1 funcs -1", obj.replaceShellSpecialVariable(session, "call 'TESTADM.$1(2017-07-31, ?)'; $# $0 $?", true));
 
-        session = new ScriptSession(new ScriptSessionFactory()) {
+        session = new UniversalScriptSessionImpl("engine001", new UniversalScriptSessionFactoryImpl()) {
 
             @Override
             public String getId() {

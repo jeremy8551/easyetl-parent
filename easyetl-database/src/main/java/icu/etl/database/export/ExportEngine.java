@@ -90,10 +90,9 @@ public class ExportEngine extends AbstractJob {
      * 执行数据卸载
      *
      * @param context 卸数引擎上下文
-     * @throws SQLException 数据库错误
-     * @throws IOException  文件访问错误
+     * @throws Exception 数据卸载发生错误
      */
-    protected void execute(ExtracterContext context) throws SQLException, IOException {
+    protected void execute(ExtracterContext context) throws Exception {
         this.message.setEncoding(context.getFormat().getCharsetName());
         this.message.setLineSeparator(context.getFormat().getLineSeparator());
         this.message.setDelimiter(context.getFormat().getDelimiter());

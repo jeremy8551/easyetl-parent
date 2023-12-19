@@ -21,7 +21,7 @@ public abstract class AbstractCommandCompiler implements UniversalCommandCompile
 
     public abstract String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException;
 
-    public abstract UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String script) throws IOException, SQLException;
+    public abstract UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String script) throws Exception;
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
         out.println(new ScriptUsage(this.getClass()).toString());

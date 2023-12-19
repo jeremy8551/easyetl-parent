@@ -45,7 +45,7 @@ public class IncrementContext {
     public IncrementContext() {
         this.sortNewFile = true;
         this.sortOldFile = true;
-        this.arith = new IncrementTableArith();
+        this.arith = new IncrementArithImpl();
         this.comparator = new TableColumnComparator();
     }
 

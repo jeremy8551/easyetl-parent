@@ -2,8 +2,6 @@ package icu.etl.database.export;
 
 import java.io.Closeable;
 import java.io.Flushable;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.io.TableLine;
 
@@ -19,17 +17,16 @@ public interface ExtractWriter extends Flushable, Closeable {
      * 返回 true 表示可以写入新数据
      *
      * @return
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    boolean rewrite() throws IOException, SQLException;
+    boolean rewrite() throws Exception;
 
     /**
      * 将缓冲区中数据写入到输出流中
      *
      * @param line
-     * @throws IOException
+     * @throws Exception
      */
-    void write(TableLine line) throws IOException, SQLException;
+    void write(TableLine line) throws Exception;
 
 }

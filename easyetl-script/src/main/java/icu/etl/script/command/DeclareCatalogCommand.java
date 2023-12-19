@@ -38,7 +38,7 @@ public class DeclareCatalogCommand extends AbstractGlobalCommand {
         this.setGlobal(global);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String name = analysis.trim(analysis.replaceShellVariable(session, context, this.name, true, true, false, false), 0, 0);
 
@@ -84,7 +84,7 @@ public class DeclareCatalogCommand extends AbstractGlobalCommand {
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

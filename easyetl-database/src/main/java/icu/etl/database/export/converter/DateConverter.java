@@ -12,12 +12,12 @@ public class DateConverter extends AbstractConverter {
     /** 日期格式化 */
     protected SimpleDateFormat format;
 
-    public void init() throws IOException, SQLException {
+    public void init() throws Exception {
         String pattern = StringUtils.defaultString((String) this.getAttribute(PARAM_DATEFORMAT), "yyyy-MM-dd");
         this.format = new SimpleDateFormat(pattern);
     }
 
-    public void execute() throws IOException, SQLException {
+    public void execute() throws Exception {
         Date value = this.resultSet.getDate(this.column);
         if (value == null) {
             this.array[this.column] = "";

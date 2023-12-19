@@ -30,7 +30,7 @@ public class DDLCommand extends AbstractTraceCommand implements NohupCommandSupp
         this.schema = schema;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptAnalysis analysis = session.getAnalysis();
         if (session.isEchoEnable() || forceStdout) {
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, true, true, false));
@@ -54,7 +54,7 @@ public class DDLCommand extends AbstractTraceCommand implements NohupCommandSupp
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.dao != null) {
             this.dao.terminate();
         }

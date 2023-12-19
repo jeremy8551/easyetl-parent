@@ -29,7 +29,7 @@ public class FunctionCommand extends AbstractCommand implements LoopCommandSuppo
         this.body.setOwner(this);
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         FunctionSet set = FunctionSet.get(context);
         String functionName = this.body.getName();
         if (this.body.size() == 0 && set.contains(functionName)) { // 删除方法-当方法体为空时
@@ -44,7 +44,7 @@ public class FunctionCommand extends AbstractCommand implements LoopCommandSuppo
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableLoop() {

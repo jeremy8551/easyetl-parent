@@ -97,7 +97,7 @@ public class ScriptMainProcess {
     /**
      * 终止所有命令
      *
-     * @throws Exception
+     * @throws Exception 终止命令发生错误
      */
     public void terminate() throws Exception {
         Set<String> keys = this.cache.keySet();
@@ -137,7 +137,7 @@ public class ScriptMainProcess {
     }
 
     /**
-     * 返回最后执行的语句
+     * 返回最后一次执行失败的语句
      *
      * @return 脚本语句
      */

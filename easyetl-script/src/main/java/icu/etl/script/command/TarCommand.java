@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -49,7 +48,7 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.compress) {
             return this.compressFile(session, context, stdout, stderr, forceStdout);
         } else {
@@ -57,7 +56,7 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.c != null) {
             this.c.terminate();
         }
@@ -86,6 +85,10 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
         try {
             this.c.setFile(tarfile);
             this.c.archiveFile(file, null);
+
+            session.removeValue();
+            session.putValue("file", tarfile);
+
             return this.c.isTerminate() ? UniversalScriptCommand.TERMINATE : 0;
         } finally {
             this.c.close();
@@ -104,16 +107,20 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
      * @throws IOException
      */
     public int decompressFile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException {
-        File file = new ScriptFile(session, context, this.filepath);
+        File tarfile = new ScriptFile(session, context, this.filepath);
 
         if (session.isEchoEnable() || forceStdout) {
-            stdout.println("tar -xvf " + file.getAbsolutePath());
+            stdout.println("tar -xvf " + tarfile.getAbsolutePath());
         }
 
         this.c = context.getContainer().getBean(Compress.class, "tar");
         try {
-            this.c.setFile(file);
-            this.c.extract(file.getParent(), Settings.getFileEncoding());
+            this.c.setFile(tarfile);
+            this.c.extract(tarfile.getParent(), Settings.getFileEncoding());
+
+            session.removeValue();
+            session.putValue("file", tarfile);
+
             return 0;
         } finally {
             this.c.close();

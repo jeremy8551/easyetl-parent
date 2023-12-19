@@ -18,7 +18,7 @@ import icu.etl.util.ResourcesUtils;
  *
  * @author jeremy8551@qq.com
  */
-public class StandardLoadEngineContext implements LoadEngineContext {
+public class LoadEngineContextImpl implements LoadEngineContext {
 
     private static int number = 0;
     private String id;
@@ -46,7 +46,7 @@ public class StandardLoadEngineContext implements LoadEngineContext {
     /**
      * 初始化上下文信息
      */
-    public StandardLoadEngineContext() {
+    public LoadEngineContextImpl() {
         this.id = ResourcesUtils.getLoadMessage(1) + String.valueOf(++number);
         this.files = new ArrayList<String>();
         this.dataColumn = new ArrayList<String>();

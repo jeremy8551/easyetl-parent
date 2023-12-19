@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import icu.etl.database.JdbcDao;
@@ -49,7 +48,7 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.name.length() == 0) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(4, this.command));
             return UniversalScriptCommand.COMMAND_ERROR;
@@ -60,7 +59,6 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
         boolean print = session.isEchoEnable() || forceStdout;
         if ("reset".equalsIgnoreCase(this.name)) { // 关闭当前数据库连接
             if (print) {
-//                stdout.println(ResourcesUtils.getScriptStdoutMessage(7, session.getScriptName(), dataSource.getCatalog()));
                 stdout.println(ResourcesUtils.getScriptStdoutMessage(7, "", dataSource.getCatalog()));
             }
 
@@ -81,7 +79,6 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
 
         if (dao.isConnected()) {
             if (print) {
-//                stdout.println(ResourcesUtils.getScriptStdoutMessage(6, session.getScriptName(), this.name));
                 stdout.println(ResourcesUtils.getScriptStdoutMessage(6, "", this.name));
             }
 
@@ -95,7 +92,7 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
     public boolean enableNohup() {

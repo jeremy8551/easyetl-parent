@@ -36,7 +36,7 @@ public class IncrementCommandCompiler extends AbstractTraceCommandCompiler {
         return in.readMultilineScript();
     }
 
-    public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException, SQLException {
+    public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws Exception {
         WordIterator it = analysis.parse(analysis.replaceShellVariable(session, context, command, false, true, true, false));
         it.assertNext("extract");
         it.assertNext("increment");

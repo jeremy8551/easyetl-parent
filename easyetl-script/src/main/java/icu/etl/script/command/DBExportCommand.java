@@ -112,13 +112,13 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.engine != null) {
             this.engine.terminate();
         }
     }
 
-    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
+    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws Exception {
         if (this.engine == null) {
             this.engine = new ExportEngine(context.getFactory().getContext());
 

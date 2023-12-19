@@ -1,12 +1,12 @@
 package icu.etl.script;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
 import java.io.CharArrayReader;
 import java.io.Closeable;
 import java.io.Reader;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
 
 import icu.etl.script.internal.ScriptVariable;
 import icu.etl.script.session.ScriptMainProcess;
@@ -29,8 +29,11 @@ import icu.etl.util.StringUtils;
  */
 public class UniversalScriptEngine implements ScriptEngine, Closeable {
 
+    /** 唯一编号 */
+    private String id;
+
     /** {@linkplain #toString()} 方法的返回值 */
-    private String memo;
+    private String toString;
 
     /** true表示脚本引擎已关闭 */
     private AtomicBoolean close;
@@ -51,7 +54,8 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
      */
     public UniversalScriptEngine(UniversalScriptEngineFactory factory) {
         this.factory = Ensure.notNull(factory);
-        this.memo = UniversalScriptEngine.class.getSimpleName() + "@" + StringUtils.toRandomUUID();
+        this.id = factory.createSerialNumber();
+        this.toString = UniversalScriptEngine.class.getSimpleName() + "@" + StringUtils.toRandomUUID();
         this.close = new AtomicBoolean(false);
         this.context = new UniversalScriptContext(this);
         this.sessionFactory = factory.buildSessionFactory();
@@ -60,7 +64,7 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
     /**
      * 初始化
      *
-     * @param parent 父脚本引擎
+     * @param parent 上级脚本引擎
      */
     public UniversalScriptEngine(UniversalScriptEngine parent) {
         this(parent.getFactory());
@@ -68,36 +72,45 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
     }
 
     /**
+     * 返回脚本引擎编号
+     *
+     * @return 脚本引擎编号
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
      * 返回脚本中的变量或数据库编目信息
      *
-     * @return
+     * @return 变量值或数据库编目信息
      */
     public Object get(String key) {
         return this.context.getAttribute(key);
     }
 
     /**
-     * 返回脚本引擎中指定域的信息
+     * 返回脚本引擎中指定的域信息
      *
-     * @return
+     * @return 域信息
      */
     public Bindings getBindings(int scope) {
         return this.context.getBindings(scope);
     }
 
     /**
-     * 返回脚本引擎的上下文信息
+     * 返回脚本引擎上下文信息
      *
-     * @return
+     * @return 脚本引擎上下文信息
      */
     public UniversalScriptContext getContext() {
         return this.context;
     }
 
     /**
-     * 返回脚本引擎的工厂
+     * 返回脚本引擎工厂
      *
-     * @return
+     * @return 脚本引擎工厂
      */
     public UniversalScriptEngineFactory getFactory() {
         return factory;
@@ -153,37 +166,37 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
         }
     }
 
-    public Integer eval(String script) {
+    public Object eval(String script) {
         CharArrayReader in = new CharArrayReader(script.toCharArray());
         return this.eval(in, this.context);
     }
 
-    public Integer eval(String script, ScriptContext scriptContext) {
+    public Object eval(String script, ScriptContext scriptContext) {
         CharArrayReader in = new CharArrayReader(script.toCharArray());
         return this.eval(in, this.castScriptContext(scriptContext));
     }
 
-    public Integer eval(String script, Bindings bindings) {
+    public Object eval(String script, Bindings bindings) {
         this.setBindings(bindings, UniversalScriptContext.ENGINE_SCOPE);
         CharArrayReader in = new CharArrayReader(script.toCharArray());
         return this.eval(in, this.context);
     }
 
-    public Integer eval(Reader in, Bindings bindings) {
+    public Object eval(Reader in, Bindings bindings) {
         this.setBindings(bindings, UniversalScriptContext.ENGINE_SCOPE);
         return this.eval(in, this.context);
     }
 
-    public Integer eval(Reader in) {
+    public Object eval(Reader in) {
         return this.eval(in, this.context);
     }
 
-    public Integer eval(Reader in, ScriptContext scriptContext) {
+    public Object eval(Reader in, ScriptContext scriptContext) {
         UniversalScriptContext context = this.castScriptContext(scriptContext);
         context.setReader(in);
 
         int value = -1;
-        UniversalScriptSession session = this.sessionFactory.build();
+        UniversalScriptSession session = this.sessionFactory.build(this);
         try {
             value = this.eval(session, context, context.getStdout(), context.getStderr(), false, in);
         } catch (Throwable e) {
@@ -193,7 +206,7 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
         }
 
         if (value == 0) {
-            return value;
+            return session.getValue();
         } else {
             throw new UniversalScriptException(String.valueOf(value));
         }
@@ -252,7 +265,7 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
      * @param stdout  标准信息输出接口
      * @param stderr  错误信息输出接口
      * @param str     字符串
-     * @return
+     * @return 脚本命令的返回值
      */
     public int eval(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, String str) {
         UniversalScriptCompiler oldCompiler = session.getCompiler(); // 保存当前使用的编译器
@@ -294,9 +307,9 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
     }
 
     /**
-     * 返回 true 表示脚本引擎已关闭
+     * 判断脚本引擎是否已关闭
      *
-     * @return
+     * @return 返回true表示脚本引擎已关闭 false表示未关闭
      */
     public boolean isClose() {
         return this.close.get();
@@ -322,7 +335,7 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
     }
 
     public String toString() {
-        return this.memo;
+        return this.toString;
     }
 
 }

@@ -28,7 +28,7 @@ public class QuietCommandCompiler extends AbstractTraceCommandCompiler implement
         }
     }
 
-    public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException, SQLException {
+    public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws Exception {
         UniversalScriptCommand subcommand = parser.read();
         String script = command + " " + subcommand.getScript();
         return new QuietCommand(this, script, subcommand);

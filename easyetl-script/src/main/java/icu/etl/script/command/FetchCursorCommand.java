@@ -35,7 +35,7 @@ public class FetchCursorCommand extends AbstractCommand {
         this.variableNames = variableNames;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         if (!context.getChecker().isVariableName(this.name)) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(88, this.command, this.name));
             return UniversalScriptCommand.COMMAND_ERROR;
@@ -63,7 +63,7 @@ public class FetchCursorCommand extends AbstractCommand {
         return 0;
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }

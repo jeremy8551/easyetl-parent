@@ -124,11 +124,7 @@ public class UniversalScriptContext implements ScriptContext {
      * @param context 父脚本引擎上下文信息
      */
     public void setParent(UniversalScriptContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        } else {
-            this.parent = context;
-        }
+        this.parent = Ensure.notNull(context);
 
         // 复制监听器
         if (context.listeners != null) {
@@ -159,16 +155,16 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回当前脚本引擎对象的父脚本引擎对象
      *
-     * @return
+     * @return 脚本引擎上下文信息
      */
     public UniversalScriptContext getParent() {
         return this.parent;
     }
 
     /**
-     * 返回脚本引擎的工厂
+     * 返回脚本引擎工厂
      *
-     * @return
+     * @return 脚本引擎工厂
      */
     public UniversalScriptEngineFactory getFactory() {
         return factory;
@@ -195,7 +191,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回脚本引擎内部对象转换器
      *
-     * @return
+     * @return 对象转换器
      */
     public UniversalScriptFormatter getFormatter() {
         return this.format;
@@ -204,7 +200,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回校验规则
      *
-     * @return
+     * @return 校验规则
      */
     public UniversalScriptChecker getChecker() {
         return this.checker;
@@ -213,7 +209,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回用户设置的全局和局部变量中的字符集名
      *
-     * @return
+     * @return 字符集名
      */
     public String getCharsetName() {
         Object value = this.getAttribute(UniversalScriptVariable.VARNAME_CHARSET);
@@ -227,7 +223,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回执行命令的监听器
      *
-     * @return
+     * @return 监听器
      */
     public UniversalScriptListener getCommandListeners() {
         return listeners;
@@ -236,7 +232,9 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 添加一个程序
      *
-     * @param value
+     * @param name   关键字
+     * @param value  值
+     * @param global 是否是全局变量
      */
     public void addProgram(String name, Object value, boolean global) {
         if (global) {
@@ -266,7 +264,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回局部程序集合
      *
-     * @return
+     * @return 局部程序集合
      */
     protected ScriptProgram getLocalPrograms() {
         return this.localPrograms;
@@ -275,7 +273,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回全局程序集合
      *
-     * @return
+     * @return 全局程序集合
      */
     protected ScriptProgram getGlobalPrograms() {
         return this.globalPrograms;
@@ -285,7 +283,7 @@ public class UniversalScriptContext implements ScriptContext {
      * 判断是否已配置局部数据库编目信息
      *
      * @param name 数据库编目名
-     * @return
+     * @return 返回true表示存在局部变量 false表示不存在局部变量
      */
     public boolean containsLocalCatalog(String name) {
         return this.localCatalog.containsKey(name.toUpperCase());
@@ -296,7 +294,7 @@ public class UniversalScriptContext implements ScriptContext {
      *
      * @param name  数据库编目名
      * @param value 数据库编目所在文件或数据库编目所在 Properties 对象
-     * @throws IOException
+     * @throws IOException 加载资源文件错误
      */
     public Properties addLocalCatalog(String name, Object value) throws IOException {
         if (StringUtils.isBlank(name) || value == null) {
@@ -324,7 +322,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回局部数据库编目集合
      *
-     * @return
+     * @return 局部数据库编目
      */
     protected ScriptCatalog getLocalCatalog() {
         return this.localCatalog;
@@ -334,14 +332,10 @@ public class UniversalScriptContext implements ScriptContext {
      * 删除局部数据库编目信息
      *
      * @param name 数据库编目名
-     * @return
      */
     public Properties removeLocalCatalog(String name) {
-        if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(name);
-        } else {
-            return this.localCatalog.remove(name.toUpperCase());
-        }
+        Ensure.notBlank(name);
+        return this.localCatalog.remove(name.toUpperCase());
     }
 
     /**
@@ -365,7 +359,7 @@ public class UniversalScriptContext implements ScriptContext {
      *
      * @param name  数据库编目名
      * @param value 数据库编目信息，可以是 Properties 或 filepath
-     * @throws IOException
+     * @throws IOException 加载资源文件错误
      */
     public Properties addGlobalCatalog(String name, Object value) throws IOException {
         if (StringUtils.isBlank(name) || value == null) {
@@ -393,7 +387,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回全局数据库编目集合
      *
-     * @return
+     * @return 数据库编目集合
      */
     protected ScriptCatalog getGlobalCatalog() {
         return this.globalCatalog;
@@ -403,7 +397,6 @@ public class UniversalScriptContext implements ScriptContext {
      * 删除指定数据库编目信息
      *
      * @param name 数据库编目名
-     * @return
      */
     public Properties removeGlobalCatalog(String name) {
         return this.globalCatalog.remove(name.toUpperCase());
@@ -412,7 +405,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回局部变量集合
      *
-     * @return
+     * @return 局部变量
      */
     public UniversalScriptVariable getLocalVariable() {
         return this.localVariable;

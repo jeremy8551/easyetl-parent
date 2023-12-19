@@ -91,18 +91,18 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, true, true, false));
         }
 
-        this.engine.setContext(context.getFactory().getContext());
+        this.engine.setContext(context.getContainer());
         int value = this.engine.execute();
         return this.engine.isTerminate() ? UniversalScriptCommand.TERMINATE : (value == 0 ? 0 : UniversalScriptCommand.COMMAND_ERROR);
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.engine != null) {
             this.engine.terminate();
         }
     }
 
-    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws IOException, SQLException {
+    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws Exception {
         if (this.launch != null) {
             return this.launch.ready(this.engine.getContext());
         } else if (StringUtils.isNotBlank(this.script)) {

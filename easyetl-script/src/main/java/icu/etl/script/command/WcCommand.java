@@ -77,7 +77,7 @@ public class WcCommand extends AbstractFileCommand implements UniversalScriptInp
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         long rows = 0, words = 0, bytes = 0;
-        String last = "";
+        String filepath = "";
         String charsetName = StringUtils.defaultString(this.charsetName, context.getCharsetName());
 
         if (this.pipe) {
@@ -129,26 +129,33 @@ public class WcCommand extends AbstractFileCommand implements UniversalScriptInp
                 }
             }
 
-            last = " " + file.getAbsolutePath();
+            filepath = file.getAbsolutePath();
         }
 
+        session.removeValue();
         StringBuilder buf = new StringBuilder(50);
         if (this.lines) {
             buf.append(StringUtils.right(rows, 10, ' '));
+            session.putValue("line", rows);
         }
 
         if (this.words) {
             buf.append(StringUtils.right(words, 10, ' '));
+            session.putValue("word", words);
         }
 
         if (this.bytes) {
             buf.append(StringUtils.right(bytes, 10, ' '));
+            session.putValue("byte", bytes);
         }
 
-        buf.append(last);
+        if (filepath.length() > 0) {
+            buf.append(' ').append(filepath);
+//            session.setValue("file", filepath); 不需要返回文件路径
+        }
 
         if (session.isEchoEnable() || forceStdout) {
-            stdout.println(StringUtils.rtrimBlank(buf));
+            stdout.println(buf);
         }
         return this.terminate ? UniversalScriptCommand.TERMINATE : 0;
     }

@@ -1,7 +1,7 @@
 package icu.etl.database.load;
 
 import icu.etl.concurrent.AbstractJob;
-import icu.etl.database.load.inernal.StandardLoadEngineContext;
+import icu.etl.database.load.inernal.LoadEngineContextImpl;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
 
@@ -20,23 +20,23 @@ public class LoadEngine extends AbstractJob implements EasyContextAware {
     protected Loader loader;
 
     /** 容器上下文信息 */
-    protected EasyContext ioccxt;
+    protected EasyContext ioc;
 
     /**
      * 初始化
      */
     public LoadEngine() {
         super();
-        this.context = new StandardLoadEngineContext();
+        this.context = new LoadEngineContextImpl();
     }
 
-    public void setContext(EasyContext context) {
-        this.ioccxt = context;
+    public void setContext(EasyContext ioc) {
+        this.ioc = ioc;
     }
 
     public int execute() throws Exception {
         // 经测试发现：使用并发分段读取文件的方式，再批量插入的方式速度并不快，反而低，所以默认使用单线程读取数据文件
-        this.loader = this.ioccxt.getBean(Loader.class, "serial");
+        this.loader = this.ioc.getBean(Loader.class, "serial");
         this.loader.execute(this.context);
         return 0;
     }

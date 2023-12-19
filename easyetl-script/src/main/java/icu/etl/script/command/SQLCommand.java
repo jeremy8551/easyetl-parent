@@ -1,8 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.database.JdbcDao;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -34,7 +31,7 @@ public class SQLCommand extends AbstractCommand implements JumpCommandSupported,
         this.sql = sql;
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         ScriptDataSource dataSource = ScriptDataSource.get(context);
         this.dao = dataSource.getDao();
         try {
@@ -51,13 +48,15 @@ public class SQLCommand extends AbstractCommand implements JumpCommandSupported,
 
             int rows = this.dao.execute(sql, null);
             session.addVariable(UniversalScriptVariable.VARNAME_UPDATEROWS, rows);
+            session.removeValue();
+            session.putValue("rows", rows);
             return 0;
         } finally {
             this.dao = null;
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
         if (this.dao != null) {
             Ensure.isTrue(this.dao.terminate());
         }

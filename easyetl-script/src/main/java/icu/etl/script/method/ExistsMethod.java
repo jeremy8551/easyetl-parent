@@ -17,7 +17,7 @@ import icu.etl.util.StringUtils;
 //@ScriptVariableFunction(name = "exists", enable = false)
 public class ExistsMethod extends AbstractMethod {
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws Exception {
         if (methodHandle.charAt("exists".length()) != '(') {
             stderr.println(ResourcesUtils.getScriptStderrMessage(111, methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;

@@ -36,7 +36,7 @@ public class UndeclareCallbackCommandCompiler extends AbstractGlobalCommandCompi
         return in.readSinglelineScript();
     }
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException, SQLException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         WordIterator it = analysis.parse(session.getAnalysis().replaceShellVariable(session, context, command, false, true, true, false));
         it.assertNext("undeclare");
         boolean global = it.isNext("global");

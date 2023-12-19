@@ -64,10 +64,9 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
      *
      * @param context
      * @param message
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    public ExtractFileWriter(ExtracterContext context, ExtractMessage message) throws IOException, SQLException {
+    public ExtractFileWriter(ExtracterContext context, ExtractMessage message) throws Exception {
         if (context == null) {
             throw new NullPointerException();
         }
@@ -89,10 +88,9 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
     /**
      * 打开文件输出流
      *
-     * @throws IOException
-     * @throws SQLException
+     * @throws Exception
      */
-    protected void open() throws IOException, SQLException {
+    protected void open() throws Exception {
         this.closeWriter();
         File file = this.createNewfile();
 
@@ -145,13 +143,13 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
         }
     }
 
-    public void write(TableLine line) throws IOException {
+    public void write(TableLine line) throws Exception {
         this.count++;
         this.lineNumber++;
         this.writer.addLine(line);
     }
 
-    public boolean rewrite() throws IOException, SQLException {
+    public boolean rewrite() throws Exception {
         if (this.rewrite && this.count >= this.maximum) { // 已达最大记录
             this.count = 0;
             this.open();

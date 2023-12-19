@@ -24,8 +24,8 @@ public class UniversalScriptException extends RuntimeException {
     /**
      * 创建一个脚本异常信息
      *
-     * @param message
-     * @param cause
+     * @param message 错误提示
+     * @param cause   异常
      */
     public UniversalScriptException(String message, Throwable cause) {
         super(message, cause);
@@ -34,7 +34,7 @@ public class UniversalScriptException extends RuntimeException {
     /**
      * 创建一个脚本异常信息
      *
-     * @param message
+     * @param message 错误提示
      */
     public UniversalScriptException(String message) {
         super(message);
@@ -43,7 +43,7 @@ public class UniversalScriptException extends RuntimeException {
     /**
      * 创建一个脚本异常信息
      *
-     * @param cause
+     * @param cause 异常
      */
     public UniversalScriptException(Throwable cause) {
         super(cause);
@@ -63,9 +63,9 @@ public class UniversalScriptException extends RuntimeException {
     }
 
     /**
-     * 返回脚本命令发生异常时，脚本语句所在行号（从 1 开始）
+     * 返回脚本命令发生异常时，脚本语句所在行号
      *
-     * @return
+     * @return 行号，从1开始
      */
     public long getLineNumber() {
         return this.lineNumber;
@@ -74,7 +74,7 @@ public class UniversalScriptException extends RuntimeException {
     /**
      * 返回发生异常的脚本语句
      *
-     * @return
+     * @return 脚本语句
      */
     public String getScript() {
         return this.scrip;

@@ -43,7 +43,7 @@ public class DefaultCommand extends AbstractTraceCommand implements UniversalScr
         }
     }
 
-    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws IOException, SQLException {
+    public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         UniversalScriptCompiler compiler = session.getCompiler();
         UniversalCommandRepository repository = compiler.getRepository();
 
@@ -70,7 +70,7 @@ public class DefaultCommand extends AbstractTraceCommand implements UniversalScr
         }
     }
 
-    public void terminate() throws IOException, SQLException {
+    public void terminate() throws Exception {
     }
 
 }
