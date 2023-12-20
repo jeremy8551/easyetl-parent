@@ -88,6 +88,7 @@ public class ScriptProcessJob implements Runnable {
      * 运行线程
      */
     public void run() {
+        this.alreadyRun = true;
         this.environment.getWaitRun().wakeup(); // 唤醒等待启动的线程
 
         ScriptStdout cmdout = null;
@@ -101,7 +102,6 @@ public class ScriptProcessJob implements Runnable {
         boolean forceStdout = this.environment.forceStdout();
         File logfile = this.environment.getLogfile();
         try {
-            this.alreadyRun = true;
             this.running = true;
 
             int exitcode = UniversalScriptCommand.COMMAND_ERROR;

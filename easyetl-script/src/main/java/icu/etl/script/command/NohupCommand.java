@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptCommand;
@@ -49,7 +47,7 @@ public class NohupCommand extends AbstractCommand {
         boolean print = session.isEchoEnable() || forceStdout;
 
         // 等待后台线程启动，防止启动超时
-        int timeout = 20 * 60 * 1000; // 超时时间：20分钟
+        int timeout = 2 * 60 * 1000; // 超时时间：2分钟
         TimeWatch watch = new TimeWatch();
         boolean hasPrint = false;
         while (!this.terminate && process.waitFor()) { // 等待线程启动运行后退出
@@ -79,6 +77,8 @@ public class NohupCommand extends AbstractCommand {
             if (print) {
                 stdout.println("appending output to " + logfile.getAbsolutePath() + FileUtils.lineSeparator + process.getPid());
             }
+            session.removeValue();
+            session.putValue("pid", process.getPid());
             return 0;
         }
     }

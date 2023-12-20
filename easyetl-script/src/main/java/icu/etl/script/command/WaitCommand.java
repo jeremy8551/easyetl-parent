@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 import icu.etl.expression.MillisExpression;
@@ -16,7 +14,6 @@ import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.session.ScriptProcess;
 import icu.etl.util.Dates;
 import icu.etl.util.ResourcesUtils;
-import icu.etl.util.TimeWatch;
 
 /**
  * 等待脚本命令执行完毕 <br>
@@ -51,9 +48,8 @@ public class WaitCommand extends AbstractTraceCommand {
         if (process == null) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(44, pid));
             return UniversalScriptCommand.COMMAND_ERROR;
-        } else {
-            this.process = process;
         }
+        this.process = process;
 
         // 计算等待命令的超时时间，单位秒
         UniversalScriptCommand command = process.getCommand();
@@ -62,7 +58,6 @@ public class WaitCommand extends AbstractTraceCommand {
         }
 
         String script = command.getScript();
-        TimeWatch watch = new TimeWatch();
         long timeout = new MillisExpression(timeoutExpression).value();
         boolean usetimeout = timeout > 0;
         if (usetimeout && print) {

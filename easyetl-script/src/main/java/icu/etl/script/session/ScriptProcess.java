@@ -114,7 +114,7 @@ public class ScriptProcess {
      * @return
      */
     public boolean waitFor() {
-        return this.scriptJob.isAlive() && !this.scriptJob.alreadyRun();
+        return !this.scriptJob.alreadyRun();
     }
 
     /**
