@@ -19,6 +19,6 @@ public interface WordQuery {
      * @param last  搜索结束位置
      * @return 返回 -1 表示未搜索到并抛出异常
      */
-    int indexOf(CharSequence src, List<WordIterator.Word> list, int index, int last);
+    int indexOf(CharSequence src, List<Word> list, int index, int last);
 
 }

@@ -1,12 +1,11 @@
 package icu.etl.script.command;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.annotation.ScriptCommand;
+import icu.etl.expression.Word;
 import icu.etl.expression.WordIterator;
-import icu.etl.expression.WordIterator.Word;
 import icu.etl.expression.WordQuery;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -63,7 +62,7 @@ public class IfCommandCompiler extends AbstractCommandCompiler {
     /**
      * 搜索 if 语句中代码逻辑块的结束位置
      */
-    class QueryTail implements WordQuery {
+    static class QueryTail implements WordQuery {
 
         public int indexOf(CharSequence src, List<Word> list, int index, int last) {
             int i = index;

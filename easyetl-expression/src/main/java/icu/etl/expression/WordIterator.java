@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -40,17 +41,10 @@ public class WordIterator implements Iterator<String> {
      * @param str      字符串
      */
     public WordIterator(Analysis analysis, CharSequence str) {
-        if (analysis == null) {
-            throw new NullPointerException();
-        }
-        if (str == null) {
-            throw new NullPointerException();
-        }
-
+        this.analysis = Ensure.notNull(analysis);
+        this.src = Ensure.notNull(str);
         this.index = 0;
         this.mark = 0;
-        this.analysis = analysis;
-        this.src = str;
         this.list = this.parse(str);
         this.last = this.list.isEmpty() ? 0 : this.list.size() - 1;
     }
@@ -58,9 +52,9 @@ public class WordIterator implements Iterator<String> {
     /**
      * 解析字符串中的单词
      *
-     * @param str
+     * @param str 字符串
      */
-    private List<Word> parse(CharSequence str) {
+    protected List<Word> parse(CharSequence str) {
         ArrayList<Word> list = new ArrayList<Word>();
         for (int i = 0, start = 0; i < str.length(); i++) {
             char c = str.charAt(i);
@@ -81,9 +75,9 @@ public class WordIterator implements Iterator<String> {
     }
 
     /**
-     * 返回 true 表示可以读取下一个单词，false 表示无单词可以返回
+     * 判断是否可以通过 {@linkplain #next()} 方法读取一下单词
      *
-     * @return
+     * @return 返回 true 表示可以读取下一个单词，false 表示无单词可以返回
      */
     public boolean hasNext() {
         return this.index >= 0 && this.index <= this.last && this.index < this.list.size();
@@ -92,7 +86,7 @@ public class WordIterator implements Iterator<String> {
     /**
      * 读取下一个单词
      *
-     * @return 返回 null 表示已读取到最后一个单词
+     * @return 返回空字符串表示已读取到最后一个单词
      */
     public String next() {
         if (this.hasNext()) {
@@ -105,7 +99,7 @@ public class WordIterator implements Iterator<String> {
     /**
      * 读取最右侧的单词
      *
-     * @return
+     * @return 单词
      */
     public String last() {
         if (this.last >= 0 && this.last >= this.index && this.last < this.list.size()) {
@@ -145,7 +139,7 @@ public class WordIterator implements Iterator<String> {
      * 判断下一个单词是否等于单词参数 word
      *
      * @param word 单词
-     * @return
+     * @return 返回true表示参数与下一个单词相等 false表示参数与下一个单词不等
      */
     public boolean isNext(String word) {
         if (this.hasNext()) {
@@ -160,7 +154,7 @@ public class WordIterator implements Iterator<String> {
      * 判断下一个单词是否等于单词参数 word
      *
      * @param words 单词
-     * @return
+     * @return 返回true表示参数与下一个单词相等 false表示参数与下一个单词不等
      */
     public boolean isNext(String[] words) {
         if (words == null) {
@@ -179,9 +173,9 @@ public class WordIterator implements Iterator<String> {
     }
 
     /**
-     * 预览下一个单词
+     * 预览（不会读取）下一个单词
      *
-     * @return
+     * @return 单词
      */
     public String previewNext() {
         if (this.hasNext()) {
@@ -225,7 +219,7 @@ public class WordIterator implements Iterator<String> {
      * 读取到指定位置
      *
      * @param rule 查询规则
-     * @return
+     * @return 读取到的字符串
      */
     public String read(WordQuery rule) {
         int begin = this.list.get(this.index).getBegin();
@@ -290,8 +284,8 @@ public class WordIterator implements Iterator<String> {
     public void assertNext(String word) {
         String next = this.next();
         if (word == null) {
-            if (next != null) {
-                throw new IllegalArgumentException(word);
+            if (next != null && next.length() != 0) {
+                throw new IllegalArgumentException();
             }
         } else {
             if (!this.analysis.equals(word, next)) {
@@ -322,15 +316,15 @@ public class WordIterator implements Iterator<String> {
     }
 
     /**
-     * 读取最后一个单词，并判断与输入字符串参数 str 是否相等，如果不想等则抛出异常
+     * 读取最后一个单词，并判断与输入字符串参数 str 是否相等，如果不等则抛出异常
      *
      * @param word 单词
      */
     public void assertLast(String word) {
         String last = this.last();
         if (word == null) {
-            if (last != null) {
-                throw new IllegalArgumentException(word);
+            if (last != null && last.length() != 0) {
+                throw new IllegalArgumentException();
             }
         } else {
             if (!this.analysis.equals(word, last)) {
@@ -351,7 +345,7 @@ public class WordIterator implements Iterator<String> {
     /**
      * 将剩余全部单词转为集合
      *
-     * @return
+     * @return 单词集合
      */
     public List<String> asList() {
         List<String> list = new ArrayList<String>(this.list.size());
@@ -386,61 +380,6 @@ public class WordIterator implements Iterator<String> {
 
     public String toString() {
         return this.src.toString();
-    }
-
-    /**
-     * 单词类
-     */
-    public class Word {
-
-        /** 单词内容 */
-        private String content;
-
-        /** 起始位置 */
-        private int start;
-
-        /** 结束位置 */
-        private int end;
-
-        /**
-         * 单词
-         *
-         * @param start   起始位置
-         * @param end     结束位置
-         * @param content 单词内容
-         */
-        public Word(int start, int end, CharSequence content) {
-            this.start = start;
-            this.end = end;
-            this.content = StringUtils.trimBlank(content);
-        }
-
-        /**
-         * 单词内容
-         *
-         * @return
-         */
-        public String getContent() {
-            return content;
-        }
-
-        /**
-         * 单词在原字符串中的起始位置
-         *
-         * @return
-         */
-        public int getBegin() {
-            return start;
-        }
-
-        /**
-         * 返回单词结束位置
-         *
-         * @return
-         */
-        public int getEnd() {
-            return this.end;
-        }
     }
 
 }

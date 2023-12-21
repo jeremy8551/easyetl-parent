@@ -7,6 +7,7 @@ import icu.etl.expression.command.CommandName;
 import icu.etl.expression.command.CommandOptionList;
 import icu.etl.expression.command.CommandOptionValue;
 import icu.etl.expression.command.CommandParameter;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -61,14 +62,10 @@ public class CommandExpression {
     /**
      * 初始化
      *
-     * @param analysis
+     * @param analysis 分析器
      */
     protected void prepared(Analysis analysis) {
-        if (analysis == null) {
-            throw new NullPointerException();
-        }
-
-        this.analysis = analysis;
+        this.analysis = Ensure.notNull(analysis);
         this.name = new CommandName(this);
         this.option = new CommandOptionList(this);
         this.parameter = new CommandParameter(this);
@@ -140,95 +137,141 @@ public class CommandExpression {
      * @param command 命令表达式
      */
     protected void setValue(String command) {
-        if (command == null) {
-            throw new NullPointerException();
-        }
-
-        this.command = command;
-        List<String> list = this.analysis.split(StringUtils.trimBlank(command));
-
-        // 位置信息
-        int index = 0;
-
-        // 解析命令名字
-        if (list.size() > 0 && this.name.match(list.get(index))) {
-            String name = list.get(0);
-            this.name.setValue(name);
-            this.name.check();
-            index++;
-        }
-
-        // 解析选项与参数
-        while (index < list.size()) {
-            String str = list.get(index);
-            int next = index + 1; // 下一个字符串
-
-            if (this.option.isOption(str)) { // 命令的选项
-                char nc = str.charAt(1);
-                if (nc == '-') { // 长选项 --prefix
-                    String tmp = str.substring(2); // 长选项名
-                    int b = tmp.indexOf('=');
-                    String name = (b == -1) ? tmp : tmp.substring(0, b);
-                    String value = (b == -1) ? null : tmp.substring(b + 1); // 长选项的值
-
-                    if (!this.option.supportName(name)) {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, name));
-                    }
-
-                    if (value == null && next < list.size()) {
-                        String nextStr = list.get(next);
-                        if (this.option.match(nextStr) || !this.option.supportValue(name)) {
-                            this.option.addOption(new CommandOptionValue(name, null, true));
-                        } else {
-                            this.option.addOption(new CommandOptionValue(name, nextStr, true));
-                            index = next;
-                        }
-                    } else {
-                        this.option.addOption(new CommandOptionValue(name, value, true));
-                    }
-                } else { // 解析短选项
-                    if (str.length() > 2) { // 解析复合选项: -xvf 复合选项不能有选项值
-                        for (int i = 1; i < str.length(); i++) {
-                            String name = String.valueOf(str.charAt(i));
-                            if (!this.option.supportName(name)) {
-                                throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, "-" + name));
-                            }
-                            this.option.addOption(new CommandOptionValue(name, null, false));
-                        }
-                    } else { // 解析单选项
-                        String name = str.substring(1);
-                        if (!this.option.supportName(name)) {
-                            throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, str));
-                        }
-
-                        if (next < list.size()) {
-                            String nextStr = list.get(next);
-                            if (this.option.match(nextStr) || !this.option.supportValue(name)) {
-                                this.option.addOption(new CommandOptionValue(name, null, false));
-                            } else {
-                                this.option.addOption(new CommandOptionValue(name, nextStr, false));
-                                index = next;
-                            }
-                        } else {
-                            this.option.addOption(new CommandOptionValue(name, null, false));
-                        }
-                    }
+        this.command = Ensure.notNull(command);
+        for (int i = 0, count = 0; i < command.length(); i++) {
+            char c = command.charAt(i);
+            if (!Character.isWhitespace(c)) { // 查找单词起始位置
+                int j = this.analysis.indexOfWhitespace(command, i + 1); // 搜索单词结束位置
+                if (j == -1) {
+                    j = command.length();
                 }
-            } else { // 解析命令的参数
-                this.parameter.add(str);
-            }
 
-            index++;
+                // 如果是第一个单词，则先作为命令名
+                if (++count == 1) {
+                    String word = command.substring(i, j);
+                    System.out.println("name: " + word);
+                    this.name.setValue(word);
+                    this.name.check();
+                    i = j - 1;
+                    continue;
+                }
+
+                i = this.parseWord(command, i, j);
+            }
         }
 
         this.option.check(); // 校验选项是否复合规则
         this.parameter.check(); // 校验参数是否复合规则
     }
 
+    protected int parseWord(String str, int begin, int end) {
+        String word = str.substring(begin, end);
+
+        // 命令的选项
+        if (this.option.isOption(word)) {
+            char nc = word.charAt(1);
+
+            // 长选项 --prefix
+            if (nc == '-') {
+                String tmp = word.substring(2); // 长选项名
+                int b = tmp.indexOf('=');
+                String optionName = (b == -1) ? tmp : tmp.substring(0, b);
+                String optionValue = (b == -1) ? null : tmp.substring(b + 1); // 长选项的值
+                System.out.println(optionName + "=" + optionValue);
+
+                if (!this.option.supportName(optionName)) {
+                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, optionName));
+                }
+
+                // 如果可以有选项值
+                if (this.option.supportValue(optionName)) {
+                    if (optionValue == null) {
+                        Word next = this.readNextWord(str, end);
+                        if (next != null) {
+                            if (!this.option.match(next.getContent())) {
+                                this.option.addOption(new CommandOptionValue(optionName, next.getContent(), true));
+                                return next.getEnd() - 1;
+                            } else {
+                                this.option.addOption(new CommandOptionValue(optionName, null, true));
+                                return end - 1;
+                            }
+                        }
+                    } else {
+                        this.option.addOption(new CommandOptionValue(optionName, optionValue, true));
+                    }
+                } else {
+                    if (StringUtils.isNotBlank(optionValue)) {
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg079", this.command, "-" + optionName));
+                    }
+                }
+            } else { // 解析短选项
+                if (word.length() > 2) { // 解析复合选项: -xvf 复合选项不能有选项值
+                    for (int i = 1; i < word.length(); i++) {
+                        String optionName = String.valueOf(word.charAt(i));
+                        System.out.println(optionName);
+                        if (this.option.supportName(optionName)) {
+                            this.option.addOption(new CommandOptionValue(optionName, null, false));
+                        } else {
+                            throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, "-" + optionName));
+                        }
+                    }
+                } else { // 解析单选项-
+                    String optionName = word.substring(1);
+                    System.out.println(optionName);
+                    if (!this.option.supportName(optionName)) {
+                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, word));
+                    }
+
+                    // 如果选项可以有值
+                    if (this.option.supportValue(optionName)) {
+                        Word next = this.readNextWord(str, end);
+                        if (next != null && !this.option.match(next.getContent())) {
+                            this.option.addOption(new CommandOptionValue(optionName, next.getContent(), false));
+                            return next.getEnd() - 1;
+                        }
+                    }
+
+                    this.option.addOption(new CommandOptionValue(optionName, null, false));
+                    return end - 1;
+                }
+            }
+        }
+
+        // 如果是参数
+        if (this.parameter.onlyOne()) { // 如果只能有一个参数
+            String parameter = StringUtils.rtrimBlank(str.substring(begin));
+            this.parameter.add(parameter);
+            return str.length() - 1;
+        } else {
+            this.parameter.add(word);
+            return end - 1;
+        }
+    }
+
+    /**
+     * 读取一下单词
+     *
+     * @param str   字符串
+     * @param begin 空白字符的起始位置
+     * @return 单词
+     */
+    protected Word readNextWord(String str, int begin) {
+        int start = StringUtils.indexOfNotBlank(str, begin, -1);
+        if (start == -1) {
+            return null;
+        }
+
+        int end = this.analysis.indexOfWhitespace(str, start + 1);
+        if (end == -1) {
+            end = str.length();
+        }
+        return new Word(start, end, str.substring(start, end));
+    }
+
     /**
      * 返回true表示命令前存在 ! 符号
      *
-     * @return
+     * @return 返回true表示命令前存在 ! 符号 false表示没有取反符号
      */
     public boolean isReverse() {
         return this.name.isReverse();
@@ -237,7 +280,7 @@ public class CommandExpression {
     /**
      * 命令名, 如: echo
      *
-     * @return
+     * @return 命令名
      */
     public String getName() {
         return this.name.getValue();
@@ -247,7 +290,7 @@ public class CommandExpression {
      * 判断是否包含指定选项
      *
      * @param array 选项名数组, 如: -d
-     * @return
+     * @return 返回true表示包含选项 false表示不包含选项
      */
     public boolean containsOption(String... array) {
         for (String name : array) {
@@ -271,7 +314,7 @@ public class CommandExpression {
     /**
      * 返回所有选项名
      *
-     * @return
+     * @return 选项名
      */
     public String[] getOptionNames() {
         return this.option.getOptionNames();
@@ -280,17 +323,26 @@ public class CommandExpression {
     /**
      * 返回命令的所有参数集合
      *
-     * @return
+     * @return 参数集合
      */
     public List<String> getParameters() {
         return Collections.unmodifiableList(this.parameter.getValues());
     }
 
     /**
+     * 返回命令参数个数
+     *
+     * @return 参数个数
+     */
+    public int getParameterSize() {
+        return this.parameter.size();
+    }
+
+    /**
      * 返回第 n 个参数值
      *
      * @param n 从 1 开始
-     * @return
+     * @return 参数值
      */
     public String getParameter(int n) {
         if (n <= 0) {
@@ -305,7 +357,7 @@ public class CommandExpression {
     /**
      * 返回第一个参数值
      *
-     * @return
+     * @return 参数值
      */
     public String getParameter() {
         return this.getParameter(1);
@@ -320,7 +372,7 @@ public class CommandExpression {
     /**
      * 返回语句分析器
      *
-     * @return
+     * @return 语句分析器
      */
     public Analysis getAnalysis() {
         return analysis;
@@ -329,7 +381,7 @@ public class CommandExpression {
     /**
      * 返回命令语句
      *
-     * @return
+     * @return 语句
      */
     public String getCommand() {
         return command;
@@ -338,7 +390,7 @@ public class CommandExpression {
     /**
      * 返回命令规则
      *
-     * @return
+     * @return 命令规则
      */
     public String getPattern() {
         return pattern;

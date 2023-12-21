@@ -1,8 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -19,7 +16,7 @@ public abstract class AbstractCommandCompiler implements UniversalCommandCompile
         return 0;
     }
 
-    public abstract String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException;
+    public abstract String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws Exception;
 
     public abstract UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String script) throws Exception;
 

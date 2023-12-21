@@ -120,6 +120,24 @@ public class CommandParameter {
     }
 
     /**
+     * 判断是否只能有一个参数
+     *
+     * @return 返回true表示最多只能有一个参数 false表示可以有多个参数
+     */
+    public boolean onlyOne() {
+        if (this.ranges.isEmpty()) {
+            return false;
+        }
+        
+        for (Integer value : this.ranges) {
+            if (value > 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * 检查参数值是否复合定义
      */
     public void check() {
@@ -129,12 +147,12 @@ public class CommandParameter {
 
         int size = this.values.size();
         for (int i = 0; i < this.ranges.size(); i++) {
-            if (this.ranges.get(i).intValue() == size) {
+            if (this.ranges.get(i) == size) {
                 return;
             }
         }
 
-        throw new ExpressionException(ResourcesUtils.getExpressionMessage(77, this.expr.getCommand(), StringUtils.join(this.values, " "), StringUtils.join(this.ranges, ", ")));
+        throw new ExpressionException(ResourcesUtils.getExpressionMessage(78, this.expr.getCommand(), size, StringUtils.join(this.ranges, ", "), StringUtils.join(this.values, "\n")));
     }
 
     public String toString() {
