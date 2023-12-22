@@ -70,20 +70,6 @@ public class CommandExpressionTest {
     }
 
     @Test
-    public void test11() {
-        ScriptReader analysis = new ScriptReader();
-        LoginExpression p = new LoginExpression(analysis, "ssh us@er@127.0.0.1:22?password=pass@wd&alive=true@&d=&c=@");
-        assertEquals("ssh", p.getName());
-        assertEquals("us@er", p.getLoginUsername());
-        assertEquals("pass@wd", p.getLoginPassword());
-        assertEquals("127.0.0.1", p.getLoginHost());
-        assertEquals("22", p.getLoginPort());
-        assertEquals("true@", p.getAttribute("alive"));
-        assertEquals("", p.getAttribute("d"));
-        assertEquals("@", p.getAttribute("c"));
-    }
-
-    @Test
     public void test2() {
         ScriptReader analysis = new ScriptReader();
         CommandExpression p = new CommandExpression(analysis, "!isfile -i: -e -b -c {4}", "!isfile -i a -e b c -b d -c e");
@@ -206,23 +192,62 @@ public class CommandExpressionTest {
     @Test
     public void test8() {
         ScriptReader analysis = new ScriptReader();
+        CommandExpression p = new CommandExpression(analysis, "!isfile --prefix: -if ", "isfile --prefix");
+        assertEquals("isfile", p.getName());
+        assertFalse(p.isReverse());
+        assertFalse(p.containsOption("-i"));
+        assertNull(p.getOptionValue("-prefix"));
+        assertEquals(0, p.getParameters().size()); // 参数个数只能是1
+    }
+
+    // 测试参数中包含选项
+    @Test
+    public void test9() {
+        ScriptReader analysis = new ScriptReader();
         try {
             new CommandExpression(analysis, "!isfile --prefix: -if {0-1} ", "isfile --prefix=test -i this is a -f test world!  ");
             Assert.fail();
         } catch (ExpressionException e) {
             Assert.assertTrue(e.getLocalizedMessage().contains("-f"));
+            e.printStackTrace();
         }
     }
 
+    // 测试参数中包含选项
     @Test
-    public void test9() {
+    public void test10() {
         ScriptReader analysis = new ScriptReader();
-        CommandExpression p = new CommandExpression(analysis, "!isfile --prefix: -if ", "isfile --prefix");
-        assertEquals("isfile", p.getName());
+        CommandExpression p = new CommandExpression(analysis, "set [-E|-e] {0-1} ", "set name=`wc -l xxx | grep test`");
+        assertEquals("set", p.getName());
         assertFalse(p.isReverse());
-        assertFalse(p.containsOption("-i"));
-        assertEquals(null, p.getOptionValue("-prefix"));
-        assertEquals(0, p.getParameters().size()); // 参数个数只能是1
+        assertFalse(p.containsOption("-e"));
+        assertEquals(1, p.getParameters().size()); // 参数个数只能是1
+    }
+
+    @Test
+    public void test11() {
+        ScriptReader analysis = new ScriptReader();
+        CommandExpression p = new CommandExpression(analysis, "date -d:", "date -d '2020-12-13 03:14:56' 'H'");
+        assertEquals("date", p.getName());
+        assertFalse(p.isReverse());
+        Assert.assertTrue(p.containsOption("-d"));
+        Assert.assertEquals("'2020-12-13 03:14:56'", p.getOptionValue("-d"));
+        assertEquals(1, p.getParameters().size()); // 参数个数只能是1
+        Assert.assertEquals("'H'", p.getParameter());
+    }
+
+    @Test
+    public void test12() {
+        ScriptReader analysis = new ScriptReader();
+        LoginExpression p = new LoginExpression(analysis, "ssh us@er@127.0.0.1:22?password=pass@wd&alive=true@&d=&c=@");
+        assertEquals("ssh", p.getName());
+        assertEquals("us@er", p.getLoginUsername());
+        assertEquals("pass@wd", p.getLoginPassword());
+        assertEquals("127.0.0.1", p.getLoginHost());
+        assertEquals("22", p.getLoginPort());
+        assertEquals("true@", p.getAttribute("alive"));
+        assertEquals("", p.getAttribute("d"));
+        assertEquals("@", p.getAttribute("c"));
     }
 
 }

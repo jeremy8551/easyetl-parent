@@ -130,13 +130,13 @@ public class Linuxs {
     }
 
     /**
-     * 移除文件中的注释，注释以 # 符号开头
+     * 移除字符串中的注释，注释以 # 符号开头
      *
-     * @param str
-     * @param annos
-     * @return
+     * @param str  字符串
+     * @param list 用于存储字符串中的注释
+     * @return 移除注释后的字符串
      */
-    public static String removeLinuxAnnotation(CharSequence str, List<String> annos) {
+    public static String removeShellNote(String str, List<String> list) {
         if (str == null) {
             return null;
         }
@@ -144,13 +144,13 @@ public class Linuxs {
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
             if (c == '#') {
-                if (annos != null) {
-                    annos.add(str.subSequence(i, str.length()).toString());
+                if (list != null) {
+                    list.add(str.subSequence(i, str.length()).toString());
                 }
-                return str.subSequence(0, i).toString();
+                return str.substring(0, i);
             }
         }
-        return str.toString();
+        return str;
     }
 
     /**
@@ -165,7 +165,7 @@ public class Linuxs {
         try {
             while (in.hasNext()) {
                 String line = in.next();
-                String[] array = StringUtils.trimBlank(StringUtils.splitProperty(Linuxs.removeLinuxAnnotation(line, null)));
+                String[] array = StringUtils.trimBlank(StringUtils.splitProperty(Linuxs.removeShellNote(line, null)));
                 if (array != null && array.length == 2) {
                     map.put(StringUtils.trimBlank(array[0]), array[1]);
                 }
@@ -350,7 +350,7 @@ public class Linuxs {
     public static String[] parseEtcResolv(List<String> stdouts) {
         String dns1 = "", dns2 = "";
         for (String line : stdouts) {
-            String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(Linuxs.removeLinuxAnnotation(line, null)));
+            String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(Linuxs.removeShellNote(line, null)));
             if (array != null && array.length == 2) {
                 if (StringUtils.isBlank(dns1)) {
                     dns1 = array[1];

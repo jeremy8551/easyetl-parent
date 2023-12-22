@@ -799,7 +799,7 @@ public class ScriptAnalysis {
             // [ .. ]
             else if (c == '[') {
                 int j = this.indexOfBracket(str, i);
-                if (i != -1) {
+                if (j != -1) {
                     i = j;
                 }
                 continue;
@@ -808,7 +808,7 @@ public class ScriptAnalysis {
             // 忽略字符常量中的空白
             else if (c == '\'') {
                 int j = this.indexOfQuotation(str, i);
-                if (i != -1) {
+                if (j != -1) {
                     i = j;
                 }
                 continue;

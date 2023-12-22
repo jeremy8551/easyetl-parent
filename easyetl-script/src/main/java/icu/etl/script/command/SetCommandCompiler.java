@@ -3,8 +3,9 @@ package icu.etl.script.command;
 import java.io.IOException;
 
 import icu.etl.annotation.ScriptCommand;
+import icu.etl.expression.CommandExpression;
+import icu.etl.os.linux.Linuxs;
 import icu.etl.script.UniversalScriptAnalysis;
-import icu.etl.script.UniversalScriptChecker;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptException;
 import icu.etl.script.UniversalScriptParser;
@@ -13,7 +14,6 @@ import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.UniversalScriptVariable;
 import icu.etl.script.internal.ScriptUsage;
-import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -33,32 +33,48 @@ public class SetCommandCompiler extends AbstractGlobalCommandCompiler {
         }
     }
 
-    public SetCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException {
-        String expression = command.substring("set".length()); // name=value or name=SQL
-        if (analysis.isBlankline(expression)) {
+    public SetCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
+        CommandExpression expr = new CommandExpression(session.getAnalysis(), "set|var [-E|-e] {0|1}", command);
+        int optionSize = expr.getOptionSize();
+        int parameterSize = expr.getParameterSize();
+
+        // 打印所有变量
+        if (optionSize == 0 && parameterSize == 0) {
             return new SetCommand(this, command, null, null, 2);
         }
 
-        int index = expression.indexOf('=');
-        Ensure.isFromZero(index);
+        // 只有 -e 或 -E 选项: 检查命令返回值或不检查命令返回值
+        if (parameterSize == 0) {
+            return new SetCommand(this, command, null, null, expr.containsOption("-e") ? 4 : 5);
+        }
 
-        UniversalScriptChecker checker = context.getChecker();
-        String name = analysis.trim(expression.substring(0, index), 0, 0);
-        if (!checker.isVariableName(name) || name.startsWith("$")) {
+        String str = expr.getParameter(); // name=value or name=SQL
+        int index = str.indexOf('=');
+        if (index == -1) {
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr147", command));
+        }
+
+        // 变量名
+        String name = StringUtils.trimBlank(str.substring(0, index));
+        if (!context.getChecker().isVariableName(name) || name.startsWith("$")) {
             throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(88, command, name));
         }
 
-        String value = analysis.trim(expression.substring(index + 1), 0, 0);
-        int start = analysis.indexOf(value, "#", 0, 2, 2); // 删除注释信息
-        value = (start == -1) ? value : value.substring(0, start);
+        // 变量值
+        String value = StringUtils.trimBlank(Linuxs.removeShellNote(str.substring(index + 1), null));
 
+        // 查询SQL语句
         if (analysis.indexOf(value, "select", 0, 1, 0) != -1) {
             return new SetCommand(this, command, name, value, 1);
-        } else if (value.length() == 0) {
-            return new SetCommand(this, command, name, value, 3);
-        } else {
-            return new SetCommand(this, command, name, value, 0);
         }
+
+        // 删除变量
+        if (value.length() == 0) {
+            return new SetCommand(this, command, name, value, 3);
+        }
+
+        // 变量赋值
+        return new SetCommand(this, command, name, value, 0);
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {

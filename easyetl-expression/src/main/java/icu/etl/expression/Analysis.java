@@ -72,8 +72,8 @@ public interface Analysis {
      * @param str   脚本语句
      * @param dest  搜索字符串
      * @param from  搜索起始位置, 从0开始
-     * @param left  0-表示左侧字符必须是空白字符（含-1和最右侧） 1-表示左侧字符必须是空白字符与控制字符 2-表示任意字符
-     * @param right 0-表示右侧字符必须是空白字符（含-1和最右侧） 1-表示右侧字符必须是空白字符与控制字符 2-表示任意字符
+     * @param left  0-表示左侧字符必须是空白字符或字符串的起始位置 1-表示左侧字符必须是空白字符与控制字符 2-表示任意字符
+     * @param right 0-表示右侧字符必须是空白字符或字符串的结束位置 1-表示右侧字符必须是空白字符与控制字符 2-表示任意字符
      * @return
      */
     int indexOf(CharSequence str, String dest, int from, int left, int right);

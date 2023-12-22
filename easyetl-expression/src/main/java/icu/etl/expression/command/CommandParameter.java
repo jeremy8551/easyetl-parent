@@ -111,6 +111,15 @@ public class CommandParameter {
     }
 
     /**
+     * 判断是否没有参数
+     *
+     * @return 返回true表示没有任何参数 false表示存在参数
+     */
+    public boolean isEmpty() {
+        return this.values.isEmpty();
+    }
+
+    /**
      * 返回参数集合
      *
      * @return

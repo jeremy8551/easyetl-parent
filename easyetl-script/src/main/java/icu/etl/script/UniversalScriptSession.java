@@ -3,6 +3,7 @@ package icu.etl.script;
 import javax.script.ScriptEngine;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Date;
 import java.util.Map;
 
@@ -243,6 +244,20 @@ public interface UniversalScriptSession {
      * @return
      */
     String getDirectory();
+
+    /**
+     * 是否检查 {@linkplain UniversalScriptEngine#eval(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, Reader)} 方法的返回值
+     *
+     * @return 返回true表示校验返回值是否为0 false表示不校验返回值
+     */
+    boolean isVerifyExitcode();
+
+    /**
+     * 设置是否检查 {@linkplain UniversalScriptEngine#eval(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, Reader)} 方法的返回值
+     *
+     * @param checkExitcode true表示校验返回值是否为0 false表示不校验返回值
+     */
+    void setVerifyExitcode(boolean checkExitcode);
 
     /**
      * 创建一个子会话

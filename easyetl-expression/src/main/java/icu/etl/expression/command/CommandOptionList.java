@@ -194,6 +194,24 @@ public class CommandOptionList {
     }
 
     /**
+     * 判断是否没有任何选项
+     *
+     * @return 返回true表示没有任何选项 false表示存在选项
+     */
+    public boolean isEmpty() {
+        return this.values.isEmpty();
+    }
+
+    /**
+     * 返回选项个数
+     *
+     * @return 选项个数
+     */
+    public int size() {
+        return this.values.size();
+    }
+
+    /**
      * 校验命令的选项是否复合命令选项定义
      */
     public void check() {

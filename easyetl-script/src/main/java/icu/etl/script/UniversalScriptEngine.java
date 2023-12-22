@@ -205,11 +205,13 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
             session.close();
         }
 
-        if (value == 0) {
-            return session.getValue();
-        } else {
+        // 校验返回值是否正确
+        if (session.isVerifyExitcode() && value != 0) {
             throw new UniversalScriptException(String.valueOf(value));
         }
+
+        // 会话的返回值
+        return session.getValue();
     }
 
     /**

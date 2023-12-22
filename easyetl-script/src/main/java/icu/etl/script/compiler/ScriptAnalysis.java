@@ -1,10 +1,10 @@
 package icu.etl.script.compiler;
 
+import javax.script.Bindings;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.script.Bindings;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.expression.ExpressionException;
@@ -500,7 +500,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
 
     public int indexOfBracket(CharSequence script, int from) {
         if (script == null || from < 0 || from >= script.length()) {
-            throw new IllegalArgumentException("indexOfBracket(" + script + ", " + from + ")");
+            throw new IllegalArgumentException(script + ", " + from);
         }
 
         for (int i = from + 1, count = 1; i < script.length(); i++) {
@@ -543,7 +543,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
             return -1;
         }
         if (from < 0) {
-            throw new IllegalArgumentException("indexOfBrace(" + script + ", " + from + ")");
+            throw new IllegalArgumentException(script + ", " + from);
         }
 
         for (int i = from + 1, count = 1; i < script.length(); i++) {
@@ -815,7 +815,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
             // [ .. ]
             else if (c == '[') {
                 int j = this.indexOfBracket(str, i);
-                if (i != -1) {
+                if (j != -1) {
                     i = j;
                 }
                 continue;
@@ -824,7 +824,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
             // 忽略字符常量中的空白
             else if (c == '\'') {
                 int j = this.indexOfQuotation(str, i);
-                if (i != -1) {
+                if (j != -1) {
                     i = j;
                 }
                 continue;
@@ -873,7 +873,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
             while (sp < len && Character.isWhitespace(str.charAt(sp))) {
                 sp++;
             }
-            while (sp <= ep && ep >= 0 && Character.isWhitespace(str.charAt(ep))) {
+            while (sp <= ep && Character.isWhitespace(str.charAt(ep))) {
                 ep--;
             }
             return str.subSequence(sp + 1, ep).toString();
@@ -900,7 +900,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
             return false;
         }
 
-        while (left <= right && right >= 0 && (Character.isWhitespace((last = str.charAt(right))))) {
+        while (left <= right && Character.isWhitespace(last = str.charAt(right))) {
             right--;
         }
 
@@ -925,7 +925,7 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
             while (sp < len && Character.isWhitespace(str.charAt(sp))) {
                 sp++;
             }
-            while (sp <= ep && ep >= 0 && Character.isWhitespace(str.charAt(ep))) {
+            while (sp <= ep && Character.isWhitespace(str.charAt(ep))) {
                 ep--;
             }
             return str.subSequence(sp + 1, ep).toString();
@@ -949,19 +949,25 @@ public class ScriptAnalysis implements UniversalScriptAnalysis {
             return false;
         }
 
-        while (left <= right && right >= 0 && (Character.isWhitespace((last = str.charAt(right))))) {
+        while (left <= right && Character.isWhitespace(last = str.charAt(right))) {
             right--;
         }
 
-        if (last != '\'' && last != '"') { // 最后一个字符不是双引号
-            return false;
-        } else if (first == '\'') {
-            return this.indexOfQuotation(str, left) == right;
-        } else if (first == '"') {
-            return this.indexOfDoubleQuotation(str, left) == right;
-        } else {
+        if (last != '\'' && last != '"') { // 最后一个字符不是引号
             return false;
         }
+
+        // 校验单引号的结束位置是否正确
+        if (first == '\'') {
+            return this.indexOfQuotation(str, left) == right;
+        }
+
+        // 校验双引号的结束位置是否正确
+        if (first == '"') {
+            return this.indexOfDoubleQuotation(str, left) == right;
+        }
+
+        return false;
     }
 
     public boolean startsWith(CharSequence str, CharSequence prefix, int from, boolean ignoreBlank) {

@@ -19,7 +19,7 @@ public class ExportCommandCompiler extends AbstractCommandCompiler {
         return in.readSinglelineScript();
     }
 
-    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws IOException {
+    public UniversalScriptCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String command) throws Exception {
         WordIterator it = analysis.parse(command);
         it.assertNext("export");
         if (it.isNext("set")) { // 执行变量赋值表达式

@@ -2,6 +2,7 @@ package icu.etl.script.session;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -9,9 +10,12 @@ import java.util.Map;
 
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCompiler;
+import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptEngine;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptSessionFactory;
+import icu.etl.script.UniversalScriptStderr;
+import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.UniversalScriptVariable;
 import icu.etl.script.io.ScriptFileExpression;
 import icu.etl.util.Ensure;
@@ -84,6 +88,9 @@ public class UniversalScriptSessionImpl implements UniversalScriptSession {
     /** 会话的返回值 */
     private SessionResult sessionResult;
 
+    /** 是否检查 {@linkplain UniversalScriptEngine#eval(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, Reader)} 方法的返回值 */
+    private volatile boolean checkExitcode;
+
     /**
      * 初始化
      *
@@ -104,6 +111,7 @@ public class UniversalScriptSessionImpl implements UniversalScriptSession {
         this.echoEnabled = true;
         this.terminate = false;
         this.tempDir = FileUtils.getTempDir(UniversalScriptEngine.class.getSimpleName(), this.scriptEngineId);
+        this.checkExitcode = true;
 
         this.setDirectory(Settings.getUserHome()); // 会话当前目录
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_TEMP, this.tempDir.getAbsolutePath()); // 临时文件目录
@@ -290,6 +298,14 @@ public class UniversalScriptSessionImpl implements UniversalScriptSession {
 
     public void removeValue() {
         this.sessionResult.clear();
+    }
+
+    public boolean isVerifyExitcode() {
+        return checkExitcode;
+    }
+
+    public void setVerifyExitcode(boolean checkExitcode) {
+        this.checkExitcode = checkExitcode;
     }
 
     public UniversalScriptSession subsession() {

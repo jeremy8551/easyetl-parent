@@ -536,7 +536,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
     public synchronized String readSymmetryScript(String str) throws IOException {
         try {
             String line = this.previewline();
-            return line == null ? null : this.readSymmetryScript(this.in, line, str).toString();
+            return line == null ? null : this.readSymmetryScript(this.in, line, str);
         } finally {
             this.cacheline = null;
         }

@@ -435,7 +435,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
         try {
             while (in.hasNext()) {
                 String line = in.next();
-                String[] p = StringUtils.splitByBlank(StringUtils.trimBlank(Linuxs.removeLinuxAnnotation(line, null)));
+                String[] p = StringUtils.splitByBlank(StringUtils.trimBlank(Linuxs.removeShellNote(line, null)));
                 if (p != null && p.length == 2) {
                     if (StringUtils.isBlank(dns1)) {
                         dns1 = p[1];
@@ -454,7 +454,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
             try {
                 while (cin.hasNext()) {
                     String line = cin.next();
-                    String[] p = StringUtils.trimBlank(StringUtils.splitProperty(Linuxs.removeLinuxAnnotation(line, null)));
+                    String[] p = StringUtils.trimBlank(StringUtils.splitProperty(Linuxs.removeShellNote(line, null)));
                     if (p != null && p.length == 2) {
                         map.put(StringUtils.trimBlank(p[0]), p[1]);
                     }

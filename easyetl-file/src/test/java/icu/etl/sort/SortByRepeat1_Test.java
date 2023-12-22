@@ -36,6 +36,10 @@ public class SortByRepeat1_Test {
 
         Random random = new Random();
         int line = random.nextInt(500);
+        if (line == 0) {
+            line = 1;
+        }
+        
         int next = line + random.nextInt(100);
         String copy = null;
 

@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import javax.script.Bindings;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,17 +44,29 @@ public class SetCommand extends AbstractGlobalCommand {
         switch (this.type) {
             case 0: // 为变量赋值
                 return this.setVariable(session, context, stdout, stderr, this.value);
+
             case 1: // 使用SQL查询结果为变量赋值
                 return this.querySQL(session, context, stdout, stderr, this.value);
+
             case 2: // 打印所有变量
                 if (session.isEchoEnable() || forceStdout) {
                     return this.printVariable(session, context, stdout, stderr);
                 } else {
                     return 0;
                 }
+
             case 3: // 删除变量
                 return this.removeVariable(session, context, stdout, stderr);
-            default: // 错误
+
+            case 4: // 命令执行完毕后，检查返回值
+                session.setVerifyExitcode(true);
+                return 0;
+
+            case 5: // 命令执行完毕后，不检查返回值
+                session.setVerifyExitcode(false);
+                return 0;
+
+            default: // 未知操作
                 stderr.println(ResourcesUtils.getScriptStderrMessage(131, this.command, this.type, "0, 1, 2, 3"));
                 return UniversalScriptCommand.COMMAND_ERROR;
         }

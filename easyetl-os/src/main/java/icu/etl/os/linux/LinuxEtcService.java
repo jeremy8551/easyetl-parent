@@ -22,7 +22,7 @@ public class LinuxEtcService implements OSService {
     }
 
     public static LinuxEtcService newInstance(String line) {
-        line = StringUtils.trimBlank(Linuxs.removeLinuxAnnotation(line, null));
+        line = StringUtils.trimBlank(Linuxs.removeShellNote(line, null));
         if (line.length() == 0) {
             return null;
         }

@@ -141,7 +141,7 @@ public class CommandExpression {
         for (int i = 0, count = 0; i < command.length(); i++) {
             char c = command.charAt(i);
             if (!Character.isWhitespace(c)) { // 查找单词起始位置
-                int j = this.analysis.indexOfWhitespace(command, i + 1); // 搜索单词结束位置
+                int j = this.analysis.indexOfWhitespace(command, i); // 搜索单词结束位置
                 if (j == -1) {
                     j = command.length();
                 }
@@ -155,6 +155,10 @@ public class CommandExpression {
                     continue;
                 }
 
+                if (i > j) {
+                    throw new UnsupportedOperationException("[" + command + "] " + i + " > " + j);
+                }
+
                 i = this.parseWord(command, i, j);
             }
         }
@@ -163,6 +167,14 @@ public class CommandExpression {
         this.parameter.check(); // 校验参数是否复合规则
     }
 
+    /**
+     * 解析单词
+     *
+     * @param str   字符串
+     * @param begin 单词的起始位置
+     * @param end   单词的终止位置（不包含）
+     * @return 读取下一个字符的位置
+     */
     protected int parseWord(String str, int begin, int end) {
         String word = str.substring(begin, end);
 
@@ -244,7 +256,7 @@ public class CommandExpression {
         // 如果是参数
         if (this.parameter.onlyOne()) { // 如果只能有一个参数
             String parameter = StringUtils.rtrimBlank(str.substring(begin));
-            String option = this.parseOption(parameter);
+            String option = this.findOption(parameter, 0);
             if (option != null) {
                 throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg080", this.command, parameter, option));
             }
@@ -257,25 +269,43 @@ public class CommandExpression {
     }
 
     /**
-     * 解析字符串中是否包含的选项
+     * 在字符串中搜索选项
      *
-     * @param str 字符串
+     * @param str  字符串
+     * @param from 搜索起始位置
      * @return 返回选项信息
      */
-    public String parseOption(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c == '-') {
-                int p = i - 1;
-                if (p < 0 || Character.isWhitespace(str.charAt(p))) {
-                    int next = i + 1;
-                    if (next >= str.length() || StringUtils.isLetter(str.charAt(next)) || StringUtils.isNumber(str.charAt(next))) {
-                        return str.substring(i, next + 1);
-                    }
-                }
+    protected String findOption(String str, int from) {
+        int start = this.analysis.indexOf(str, "-", from, 0, 2);
+        if (start == -1) {
+            return null;
+        }
+
+        int next = start + 1;
+        if (next >= str.length()) {
+            return null;
+        }
+
+        char nc = str.charAt(next);
+        if (nc == '-') {
+            int nnext = next + 1;
+            if (nnext >= str.length()) {
+                return null;
+            }
+
+            char nnc = str.charAt(nnext);
+            if (StringUtils.isLetter(nnc) || StringUtils.isNumber(nnc)) {
+                return str.substring(start, nnext + 1);
+            } else {
+                return this.findOption(str, nnext);
+            }
+        } else {
+            if (StringUtils.isLetter(nc) || StringUtils.isNumber(nc)) {
+                return str.substring(start, next + 1);
+            } else {
+                return this.findOption(str, next);
             }
         }
-        return null;
     }
 
     /**
@@ -286,12 +316,16 @@ public class CommandExpression {
      * @return 单词
      */
     protected Word readNextWord(String str, int begin) {
-        int start = StringUtils.indexOfNotBlank(str, begin, -1);
+        if (begin >= str.length()) {
+            return null;
+        }
+
+        int start = StringUtils.indexOfNotBlank(str, begin, str.length() - 1);
         if (start == -1) {
             return null;
         }
 
-        int end = this.analysis.indexOfWhitespace(str, start + 1);
+        int end = this.analysis.indexOfWhitespace(str, start);
         if (end == -1) {
             end = str.length();
         }
@@ -299,7 +333,7 @@ public class CommandExpression {
     }
 
     /**
-     * 返回true表示命令前存在 ! 符号
+     * 判断是否对命令取反操作
      *
      * @return 返回true表示命令前存在 ! 符号 false表示没有取反符号
      */
@@ -329,6 +363,15 @@ public class CommandExpression {
             }
         }
         return true;
+    }
+
+    /**
+     * 返回选项个数
+     *
+     * @return 选项个数
+     */
+    public int getOptionSize() {
+        return this.option.size();
     }
 
     /**
@@ -385,6 +428,15 @@ public class CommandExpression {
      */
     public String getParameter() {
         return this.getParameter(1);
+    }
+
+    /**
+     * 判断命令是否为空（没有选项和参数，只有一个命令名）
+     *
+     * @return 返回true表示命令为空 false表示命令不为空
+     */
+    public boolean isEmpty() {
+        return this.option.isEmpty() && this.parameter.isEmpty();
     }
 
     /**
