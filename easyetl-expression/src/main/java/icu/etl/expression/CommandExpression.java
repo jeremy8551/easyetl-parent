@@ -149,7 +149,6 @@ public class CommandExpression {
                 // 如果是第一个单词，则先作为命令名
                 if (++count == 1) {
                     String word = command.substring(i, j);
-                    System.out.println("name: " + word);
                     this.name.setValue(word);
                     this.name.check();
                     i = j - 1;
@@ -176,8 +175,7 @@ public class CommandExpression {
                 String tmp = word.substring(2); // 长选项名
                 int b = tmp.indexOf('=');
                 String optionName = (b == -1) ? tmp : tmp.substring(0, b);
-                String optionValue = (b == -1) ? null : tmp.substring(b + 1); // 长选项的值
-                System.out.println(optionName + "=" + optionValue);
+                String optionValue = (b == -1 || b == tmp.length() - 1) ? null : tmp.substring(b + 1); // 长选项的值
 
                 if (!this.option.supportName(optionName)) {
                     throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, optionName));
@@ -195,29 +193,35 @@ public class CommandExpression {
                                 this.option.addOption(new CommandOptionValue(optionName, null, true));
                                 return end - 1;
                             }
+                        } else {
+                            this.option.addOption(new CommandOptionValue(optionName, null, true));
+                            return end - 1;
                         }
                     } else {
                         this.option.addOption(new CommandOptionValue(optionName, optionValue, true));
+                        return end - 1;
                     }
                 } else {
                     if (StringUtils.isNotBlank(optionValue)) {
                         throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg079", this.command, "-" + optionName));
+                    } else {
+                        this.option.addOption(new CommandOptionValue(optionName, null, true));
+                        return end - 1;
                     }
                 }
             } else { // 解析短选项
                 if (word.length() > 2) { // 解析复合选项: -xvf 复合选项不能有选项值
                     for (int i = 1; i < word.length(); i++) {
                         String optionName = String.valueOf(word.charAt(i));
-                        System.out.println(optionName);
                         if (this.option.supportName(optionName)) {
                             this.option.addOption(new CommandOptionValue(optionName, null, false));
                         } else {
                             throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, "-" + optionName));
                         }
                     }
+                    return end - 1;
                 } else { // 解析单选项-
                     String optionName = word.substring(1);
-                    System.out.println(optionName);
                     if (!this.option.supportName(optionName)) {
                         throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, word));
                     }
@@ -240,12 +244,38 @@ public class CommandExpression {
         // 如果是参数
         if (this.parameter.onlyOne()) { // 如果只能有一个参数
             String parameter = StringUtils.rtrimBlank(str.substring(begin));
+            String option = this.parseOption(parameter);
+            if (option != null) {
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg080", this.command, parameter, option));
+            }
             this.parameter.add(parameter);
             return str.length() - 1;
         } else {
             this.parameter.add(word);
             return end - 1;
         }
+    }
+
+    /**
+     * 解析字符串中是否包含的选项
+     *
+     * @param str 字符串
+     * @return 返回选项信息
+     */
+    public String parseOption(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == '-') {
+                int p = i - 1;
+                if (p < 0 || Character.isWhitespace(str.charAt(p))) {
+                    int next = i + 1;
+                    if (next >= str.length() || StringUtils.isLetter(str.charAt(next)) || StringUtils.isNumber(str.charAt(next))) {
+                        return str.substring(i, next + 1);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -304,7 +334,7 @@ public class CommandExpression {
     /**
      * 返回选项值
      *
-     * @param name 选项名, 如: -d
+     * @param name 选项名, 如: -l 或 --lang
      * @return 选项值
      */
     public String getOptionValue(String name) {
@@ -345,13 +375,7 @@ public class CommandExpression {
      * @return 参数值
      */
     public String getParameter(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException(String.valueOf(n));
-        } else if (n <= this.parameter.getValues().size()) {
-            return this.parameter.get(n - 1);
-        } else {
-            return null;
-        }
+        return this.parameter.get(Ensure.isFromOne(n) - 1);
     }
 
     /**

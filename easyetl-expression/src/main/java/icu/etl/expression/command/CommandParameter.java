@@ -95,10 +95,10 @@ public class CommandParameter {
      * 返回参数值
      *
      * @param index 从0开始
-     * @return
+     * @return 参数值
      */
     public String get(int index) {
-        return this.values.get(index);
+        return index < this.values.size() ? this.values.get(index) : null;
     }
 
     /**
@@ -128,7 +128,7 @@ public class CommandParameter {
         if (this.ranges.isEmpty()) {
             return false;
         }
-        
+
         for (Integer value : this.ranges) {
             if (value > 1) {
                 return false;

@@ -2,6 +2,7 @@ package icu.etl.expression;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -170,6 +171,58 @@ public class CommandExpressionTest {
         assertEquals("test", p.getOptionValue("-prefix"));
         assertEquals(1, p.getParameters().size()); // 参数个数只能是1
         assertEquals("value", p.getParameter());
+    }
+
+    @Test
+    public void test6() {
+        ScriptReader analysis = new ScriptReader();
+        String pattern = "!isfile --prefix: -if ";
+        String command = "isfile --prefix=  -i";
+        CommandExpression p = new CommandExpression(analysis, pattern, command);
+        assertEquals("isfile", p.getName());
+        assertFalse(p.isReverse());
+        assertTrue(p.containsOption("-i"));
+        assertNull(p.getOptionValue("-prefix"));
+        assertEquals(0, p.getParameters().size()); // 参数个数只能是1
+        Assert.assertEquals(2, p.getOptionNames().length);
+        Assert.assertEquals(0, p.getParameterSize());
+        Assert.assertEquals(pattern, p.getPattern());
+        Assert.assertEquals(command, p.toString());
+    }
+
+    @Test
+    public void test7() {
+        ScriptReader analysis = new ScriptReader();
+        CommandExpression p = new CommandExpression(analysis, "!isfile --prefix: -if {0-1} ", "isfile --prefix=test -i   this is a test world!  ");
+        assertEquals("isfile", p.getName());
+        assertFalse(p.isReverse());
+        assertTrue(p.containsOption("-i"));
+        assertFalse(p.containsOption("-d"));
+        assertEquals("test", p.getOptionValue("-prefix"));
+        assertEquals(1, p.getParameters().size()); // 参数个数只能是1
+        assertEquals("this is a test world!", p.getParameter());
+    }
+
+    @Test
+    public void test8() {
+        ScriptReader analysis = new ScriptReader();
+        try {
+            new CommandExpression(analysis, "!isfile --prefix: -if {0-1} ", "isfile --prefix=test -i this is a -f test world!  ");
+            Assert.fail();
+        } catch (ExpressionException e) {
+            Assert.assertTrue(e.getLocalizedMessage().contains("-f"));
+        }
+    }
+
+    @Test
+    public void test9() {
+        ScriptReader analysis = new ScriptReader();
+        CommandExpression p = new CommandExpression(analysis, "!isfile --prefix: -if ", "isfile --prefix");
+        assertEquals("isfile", p.getName());
+        assertFalse(p.isReverse());
+        assertFalse(p.containsOption("-i"));
+        assertEquals(null, p.getOptionValue("-prefix"));
+        assertEquals(0, p.getParameters().size()); // 参数个数只能是1
     }
 
 }

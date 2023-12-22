@@ -24,7 +24,7 @@ import icu.etl.script.internal.ScriptUsage;
 public class StacktraceCommandCompiler extends AbstractTraceCommandCompiler {
 
     public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException {
-        CommandExpression expr = new CommandExpression("stacktrace -s -l", command);
+        CommandExpression expr = new CommandExpression(analysis, "stacktrace -s -l", command);
         return new StacktraceCommand(this, orginalScript, expr.containsOption("-s"), expr.containsOption("-l"));
     }
 
