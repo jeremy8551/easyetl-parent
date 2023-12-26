@@ -11,7 +11,7 @@ public class WordIteratorTest {
 
     @Test
     public void test() throws IOException {
-        WordIterator in = new WordIterator(new StandardAnalysis(), "this string conent is 'test is good' ");
+        WordIterator in = new WordIterator(new BaseAnalysis(), "this string conent is 'test is good' ");
         if (in.isNext("this")) {
             in.assertNext("this");
         }
@@ -43,7 +43,7 @@ public class WordIteratorTest {
 
     @Test
     public void test2() throws IOException {
-        WordIterator in = new WordIterator(new StandardAnalysis(), "this string conent is 'test is good' ");
+        WordIterator in = new WordIterator(new BaseAnalysis(), "this string conent is 'test is good' ");
         if (in.isNext("this")) {
             in.assertNext("this");
         }
@@ -59,7 +59,7 @@ public class WordIteratorTest {
 
     @Test
     public void test1() throws IOException {
-        WordIterator in = new WordIterator(new StandardAnalysis(), "this string conent is 'test is good' ");
+        WordIterator in = new WordIterator(new BaseAnalysis(), "this string conent is 'test is good' ");
 
         assertTrue(in.hasNext());
         assertEquals(in.next(), "this");

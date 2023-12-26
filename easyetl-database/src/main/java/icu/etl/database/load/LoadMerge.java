@@ -15,7 +15,7 @@ import icu.etl.database.Jdbc;
 import icu.etl.database.JdbcDao;
 import icu.etl.database.internal.StandardDatabaseIndex;
 import icu.etl.database.internal.StandardDatabaseTable;
-import icu.etl.expression.ScriptAnalysis;
+import icu.etl.expression.AnalysisImpl;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
@@ -132,7 +132,7 @@ public class LoadMerge {
         newtable.setName(newTableName);
 
         String tableDDL = this.target.getTableDDL().getTable();
-        ScriptAnalysis analysis = new ScriptAnalysis();
+        AnalysisImpl analysis = new AnalysisImpl();
         int[] indexs = analysis.indexOf(tableDDL, new String[]{"create", "table"}, 0);
         if (indexs == null) {
             throw new SQLException(tableDDL);

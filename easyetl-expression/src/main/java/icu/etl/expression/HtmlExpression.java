@@ -78,7 +78,7 @@ public class HtmlExpression implements Attribute<String> {
                 this.attributes.put(p.getKey(), p.getString());
             }
         } else { // <xxx > </xxx>
-            ScriptAnalysis analysis = new ScriptAnalysis();
+            AnalysisImpl analysis = new AnalysisImpl();
             int m = analysis.indexOf(str, ">", 1, 2, 2);
             if (m == -1) {
                 throw new IllegalArgumentException(str);

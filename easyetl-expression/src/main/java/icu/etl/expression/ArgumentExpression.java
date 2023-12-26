@@ -59,7 +59,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * 初始化
      */
     public ArgumentExpression() {
-        this(new StandardAnalysis());
+        this(new BaseAnalysis());
     }
 
     /**
@@ -68,7 +68,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * @param args 参数数组
      */
     public ArgumentExpression(String[] args) {
-        this(new StandardAnalysis());
+        this(new BaseAnalysis());
         this.addOption(args);
     }
 
@@ -78,7 +78,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * @param str 参数
      */
     public ArgumentExpression(String str) {
-        this(new StandardAnalysis());
+        this(new BaseAnalysis());
         this.addOption(str);
     }
 

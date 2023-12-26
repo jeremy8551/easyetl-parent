@@ -20,22 +20,13 @@ import icu.etl.util.StringUtils;
 public class ScriptReader extends ScriptAnalysis implements UniversalScriptReader {
 
     /** 缓存行 */
-    private String cacheline;
+    protected String cacheline;
 
     /** 语句输入流 */
     protected CacheLineReader in;
 
     /** 语句分析器 */
-    private UniversalScriptAnalysis analysis;
-
-    /** 语句分隔符 */
-    private char token;
-
-    /** 注释起始标志 */
-    private char comment;
-
-    /** 转义字符 */
-    private char escape;
+    protected UniversalScriptAnalysis analysis;
 
     /**
      * 初始化
@@ -44,9 +35,6 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
      */
     public ScriptReader(Reader in) {
         this.analysis = this;
-        this.token = this.getToken();
-        this.comment = this.getComment();
-        this.escape = this.getEscape();
         this.in = new CacheLineReader(in);
     }
 
@@ -57,11 +45,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
      * @param n  起始行数
      */
     public ScriptReader(Reader in, long n) {
-        this.analysis = this;
-        this.token = this.getToken();
-        this.comment = this.getComment();
-        this.escape = this.getEscape();
-        this.in = new CacheLineReader(in);
+        this(in);
         this.in.setLineNumber(n);
     }
 
@@ -207,7 +191,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
      */
     private StringBuilder mergeNextLine(CacheLineReader in, String currentLine) throws IOException {
         StringBuilder buf = new StringBuilder(currentLine);
-        while (buf.length() > 0 && buf.charAt(buf.length() - 1) == this.escape) { // 字符串最后一个字符是转义字符，需要合并下一行
+        while (buf.length() > 0 && buf.charAt(buf.length() - 1) == this.escapeChar) { // 字符串最后一个字符是转义字符，需要合并下一行
             buf.deleteCharAt(buf.length() - 1); // 删除最后一个转义字符
 
             String line = in.readLine();

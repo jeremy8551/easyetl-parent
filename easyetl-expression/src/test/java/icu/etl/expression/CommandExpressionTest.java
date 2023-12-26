@@ -18,7 +18,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
 
         CommandExpression expression = new CommandExpression(analysis, "echo -i: -e -b -c {0-1|4}", "echo -i a -e b c -b d -c e");
         assertEquals("echo", expression.getName());
@@ -57,7 +57,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test1() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         LoginExpression p = new LoginExpression(analysis, "ssh user@127.0.0.1:22?password=passwd&alive=true&d=");
         assertEquals("ssh", p.getName());
         assertEquals("user", p.getLoginUsername());
@@ -71,7 +71,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test2() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         CommandExpression p = new CommandExpression(analysis, "!isfile -i: -e -b -c {4}", "!isfile -i a -e b c -b d -c e");
         assertEquals("isfile", p.getName());
         assertTrue(p.isReverse());
@@ -85,7 +85,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test3() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         CommandExpression p = new CommandExpression(analysis, "!isfile -i: -e -b -c {4}", "isfile -i a -e b c -b d -c e");
         assertEquals("isfile", p.getName());
         assertFalse(p.isReverse());
@@ -99,7 +99,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test4() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         CommandExpression p = new CommandExpression(analysis, "!test [-t:|-s|-d:date] {0}", "test -t tp");
         assertEquals("test", p.getName());
         assertFalse(p.isReverse());
@@ -149,7 +149,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test5() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         CommandExpression p = new CommandExpression(analysis, "!isfile --prefix: -if ", "isfile --prefix=test value -i");
         assertEquals("isfile", p.getName());
         assertFalse(p.isReverse());
@@ -161,7 +161,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test6() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         String pattern = "!isfile --prefix: -if ";
         String command = "isfile --prefix=  -i";
         CommandExpression p = new CommandExpression(analysis, pattern, command);
@@ -178,7 +178,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test7() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         CommandExpression p = new CommandExpression(analysis, "!isfile --prefix: -if {0-1} ", "isfile --prefix=test -i   this is a test world!  ");
         assertEquals("isfile", p.getName());
         assertFalse(p.isReverse());
@@ -191,7 +191,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test8() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         CommandExpression p = new CommandExpression(analysis, "!isfile --prefix: -if ", "isfile --prefix");
         assertEquals("isfile", p.getName());
         assertFalse(p.isReverse());
@@ -203,7 +203,7 @@ public class CommandExpressionTest {
     // 测试参数中包含选项
     @Test
     public void test9() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         try {
             new CommandExpression(analysis, "!isfile --prefix: -if {0-1} ", "isfile --prefix=test -i this is a -f test world!  ");
             Assert.fail();
@@ -216,7 +216,7 @@ public class CommandExpressionTest {
     // 测试参数中包含选项
     @Test
     public void test10() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         CommandExpression p = new CommandExpression(analysis, "set [-E|-e] {0-1} ", "set name=`wc -l xxx | grep test`");
         assertEquals("set", p.getName());
         assertFalse(p.isReverse());
@@ -226,7 +226,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test11() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         CommandExpression p = new CommandExpression(analysis, "date -d:", "date -d '2020-12-13 03:14:56' 'H'");
         assertEquals("date", p.getName());
         assertFalse(p.isReverse());
@@ -238,7 +238,7 @@ public class CommandExpressionTest {
 
     @Test
     public void test12() {
-        ScriptReader analysis = new ScriptReader();
+        TestAnalysisImpl analysis = new TestAnalysisImpl();
         LoginExpression p = new LoginExpression(analysis, "ssh us@er@127.0.0.1:22?password=pass@wd&alive=true@&d=&c=@");
         assertEquals("ssh", p.getName());
         assertEquals("us@er", p.getLoginUsername());

@@ -56,7 +56,7 @@ public class CommandExpression {
      * @param command 命令语句
      */
     public CommandExpression(String pattern, String command) {
-        this(new StandardAnalysis(), pattern, command);
+        this(new BaseAnalysis(), pattern, command);
     }
 
     /**

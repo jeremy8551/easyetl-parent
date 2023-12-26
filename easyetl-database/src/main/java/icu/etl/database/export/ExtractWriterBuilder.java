@@ -1,15 +1,12 @@
 package icu.etl.database.export;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.inernal.ExtractFileWriter;
 import icu.etl.database.export.inernal.FtpFileWriter;
 import icu.etl.database.export.inernal.HttpRequestWriter;
 import icu.etl.database.export.inernal.SftpFileWriter;
 import icu.etl.expression.LoginExpression;
-import icu.etl.expression.StandardAnalysis;
+import icu.etl.expression.BaseAnalysis;
 import icu.etl.ioc.EasyBeanBuilder;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
@@ -45,7 +42,7 @@ public class ExtractWriterBuilder implements EasyBeanBuilder<ExtractWriter> {
         // sftp://name@host:port?password=/filepath
         if (StringUtils.startsWith(target, "sftp://", 0, true, true)) {
             String[] list = StringUtils.split(target.substring("sftp://".length()), '/');
-            LoginExpression login = new LoginExpression(new StandardAnalysis(), "sftp " + list[0]);
+            LoginExpression login = new LoginExpression(new BaseAnalysis(), "sftp " + list[0]);
             String host = login.getLoginHost();
             String port = login.getLoginPort();
             String username = login.getLoginUsername();
@@ -56,7 +53,7 @@ public class ExtractWriterBuilder implements EasyBeanBuilder<ExtractWriter> {
         // ftp://name@host:port?password=/filepath
         if (StringUtils.startsWith(target, "ftp://", 0, true, true)) {
             String[] list = StringUtils.split(target.substring("ftp://".length()), '/');
-            LoginExpression cmd = new LoginExpression(new StandardAnalysis(), "ftp " + list[0]);
+            LoginExpression cmd = new LoginExpression(new BaseAnalysis(), "ftp " + list[0]);
             String host = cmd.getLoginHost();
             String port = cmd.getLoginPort();
             String username = cmd.getLoginUsername();

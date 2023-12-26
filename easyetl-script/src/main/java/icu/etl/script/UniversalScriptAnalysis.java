@@ -12,6 +12,13 @@ import icu.etl.io.Escape;
 public interface UniversalScriptAnalysis extends Analysis, Escape {
 
     /**
+     * 返回语句分隔符，默认是半角分号
+     *
+     * @return 字符
+     */
+    char getToken();
+
+    /**
      * 对字符串参数 str 执行命令替换和变量替换 <br>
      * 命令替换: 替换 `` 中的命令 <br>
      * 变量替换: 替换（会替换单引号中的变量占位符） $name ${name} $? $# $0 $1 格式的变量占位符 <br>
@@ -41,25 +48,6 @@ public interface UniversalScriptAnalysis extends Analysis, Escape {
     String replaceShellVariable(UniversalScriptSession session, UniversalScriptContext context, String str, boolean removeQuote, boolean keepVariable, boolean evalInnerCmd, boolean escape);
 
     /**
-     * 返回语句分隔符，默认是半角分号
-     *
-     * @return 字符
-     */
-    char getToken();
-
-    /**
-     * 从字符串参数 str 中指定位置 from 开始到 end 位置为止开始搜索字符串参数 dest，返回字符串参数 dest 在字符串参数 str 中最后一次出现所在的位置
-     *
-     * @param str   字符串
-     * @param dest  搜索字符串
-     * @param from  搜索起始位置(包含该点)
-     * @param left  0-表示左侧字符必须是空白字符（含-1和最右侧） 1-表示左侧字符必须是空白字符与控制字符 2-表示任意字符
-     * @param right 0-表示右侧字符必须是空白字符（含-1和最右侧） 1-表示右侧字符必须是空白字符与控制字符 2-表示任意字符
-     * @return -1表示字符串 dest 没有出现
-     */
-    int lastIndexOf(String str, String dest, int from, int left, int right);
-
-    /**
      * 在脚本语句参数 script 中搜索字符数组 array 中元素第一次出现的位置
      *
      * @param script 脚本语句
@@ -68,18 +56,6 @@ public interface UniversalScriptAnalysis extends Analysis, Escape {
      * @return 返回 -1 表示不存在
      */
     int indexOf(CharSequence script, char[] array, int from);
-
-    /**
-     * 搜索单词序列 <br>
-     * 第一个单词的左侧只能是空白或控制字符，右侧只能是空白字符 <br>
-     * 最后一个单词的左侧只能是空白字符，右侧只能是空白或控制字符
-     *
-     * @param script 脚本语句
-     * @param array  单词数组
-     * @param from   搜索起始位置, 从0开始
-     * @return 数组的第一个位置表示第一个单词的起始位置，第二个位置表示最后一个单词的起始位置, 返回null表示未找到字符词词组
-     */
-    int[] indexOf(CharSequence script, String[] array, int from);
 
     /**
      * 搜索整数结束的位置
@@ -107,15 +83,6 @@ public interface UniversalScriptAnalysis extends Analysis, Escape {
      * @return 位置信息
      */
     int indexOfVariableMethod(String script, int from);
-
-    /**
-     * 在字符串参数 str 中搜索命令替换符 ` 的结束位置（忽略转义字符右侧的字符）
-     *
-     * @param script 字符串
-     * @param from   命令替换符的起始位置
-     * @return -1表示命令替换符没有出现
-     */
-    int indexOfAccent(CharSequence script, int from);
 
     /**
      * 读取脚本语句的前缀 <br>

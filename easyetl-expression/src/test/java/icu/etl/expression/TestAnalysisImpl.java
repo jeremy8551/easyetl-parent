@@ -5,12 +5,12 @@ package icu.etl.expression;
  *
  * @author jeremy8551@qq.com
  */
-public class ScriptReader extends ScriptAnalysis implements Analysis {
+public class TestAnalysisImpl extends AnalysisImpl implements Analysis {
 
     /**
      * 初始化
      */
-    public ScriptReader() {
+    public TestAnalysisImpl() {
     }
 
 }

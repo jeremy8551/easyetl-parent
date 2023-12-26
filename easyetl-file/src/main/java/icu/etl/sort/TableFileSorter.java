@@ -18,7 +18,7 @@ import icu.etl.concurrent.Terminate;
 import icu.etl.concurrent.Terminates;
 import icu.etl.concurrent.ThreadSource;
 import icu.etl.expression.Analysis;
-import icu.etl.expression.StandardAnalysis;
+import icu.etl.expression.BaseAnalysis;
 import icu.etl.io.BufferedLineWriter;
 import icu.etl.io.TableLine;
 import icu.etl.io.TextTableFile;
@@ -98,7 +98,7 @@ public class TableFileSorter implements Terminate {
      * @throws Exception 发生错误
      */
     public synchronized File sort(EasyContext context, TextTableFile file, String... orders) throws Exception {
-        Analysis analysis = new StandardAnalysis();
+        Analysis analysis = new BaseAnalysis();
         OrderByExpression[] array = new OrderByExpression[orders.length];
         for (int i = 0; i < orders.length; i++) {
             array[i] = new OrderByExpression(context, analysis, orders[i]);

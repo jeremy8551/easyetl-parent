@@ -50,7 +50,7 @@ public abstract class Parser {
      */
     public static Parser getFormat() {
         if (defaultFormat == null) {
-            defaultFormat = new Parser(new StandardAnalysis()) {
+            defaultFormat = new Parser(new BaseAnalysis()) {
 
                 public int parse(String array, int start, boolean isData, List<Parameter> datas, List<Operator> operation) throws ExpressionException {
                     throw new ExpressionException(ResourcesUtils.getExpressionMessage(26, String.valueOf(array), start + 1), start + 1);

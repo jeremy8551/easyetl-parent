@@ -51,7 +51,7 @@ public class GPatternExpression {
      *                {a,b,c{1,2},d{g..i}} 表示匹配 a 或 b 或 c1 或 c2 或 dg 或 gh 或 gi <br>
      */
     public GPatternExpression(String pattern) {
-        this(new StandardAnalysis(), pattern);
+        this(new BaseAnalysis(), pattern);
     }
 
     /**

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import icu.etl.expression.ScriptAnalysis;
+import icu.etl.expression.AnalysisImpl;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CollectionUtils;
@@ -664,7 +664,7 @@ public class SQL {
      * @return
      */
     public static String toCountSQL(String sql) {
-        ScriptAnalysis analysis = new ScriptAnalysis();
+        AnalysisImpl analysis = new AnalysisImpl();
         List<String> list = analysis.split(sql);
         if (list.size() > 3 //
                 && "select".equalsIgnoreCase(list.get(0)) //
@@ -688,7 +688,7 @@ public class SQL {
      * @param sql
      * @return
      */
-    private static int getOrderbyPosition(ScriptAnalysis analysis, String sql) {
+    private static int getOrderbyPosition(AnalysisImpl analysis, String sql) {
         if (sql != null && sql.matches("^.*((?i)order)\\s+((?i)by)\\s+.+")) {
             sql = sql.trim().toLowerCase();
             int index = sql.lastIndexOf("order");

@@ -7,22 +7,22 @@ public class FunctionExpressionTest {
 
     @Test
     public void test1() {
-        FunctionExpression expr = new FunctionExpression(new ScriptReader(), "int");
+        FunctionExpression expr = new FunctionExpression(new TestAnalysisImpl(), "int");
         Assert.assertEquals("int", expr.getName());
         Assert.assertTrue(!expr.containParameter());
 
-        expr = new FunctionExpression(new ScriptReader(), "int()");
+        expr = new FunctionExpression(new TestAnalysisImpl(), "int()");
         Assert.assertEquals("int", expr.getName());
         Assert.assertTrue(expr.containParameter());
         Assert.assertEquals("", expr.getParameter());
 
-        expr = new FunctionExpression(new ScriptReader(), "int(1)");
+        expr = new FunctionExpression(new TestAnalysisImpl(), "int(1)");
         Assert.assertEquals("int", expr.getName());
         Assert.assertTrue(expr.containParameter());
         Assert.assertEquals("1", expr.getParameter());
         Assert.assertEquals("1", expr.getParameter(1));
 
-        expr = new FunctionExpression(new ScriptReader(), "decimal(12,2)");
+        expr = new FunctionExpression(new TestAnalysisImpl(), "decimal(12,2)");
         Assert.assertEquals("decimal", expr.getName());
         Assert.assertTrue(expr.containParameter());
         Assert.assertEquals("12,2", expr.getParameter());
