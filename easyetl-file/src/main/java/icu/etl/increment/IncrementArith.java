@@ -43,7 +43,7 @@ public interface IncrementArith extends Terminate {
      * @param newIn 被比较文本
      * @param oldIn 比较文本
      * @param out   输出流
-     * @throws IOException
+     * @throws IOException 剥离增量发生错误
      */
     void execute(IncrementComparator ic, TextTableFileReader newIn, TextTableFileReader oldIn, IncrementHandler out) throws IOException;
 

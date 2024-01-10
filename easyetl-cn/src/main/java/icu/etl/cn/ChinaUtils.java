@@ -1,6 +1,7 @@
 package icu.etl.cn;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * 中国相关帮助信息
+ * 中国/中文的帮助类
  *
  * @author jeremy8551@qq.com
  */
@@ -252,7 +253,7 @@ public class ChinaUtils {
      * 中文字符范围包括： 零壹贰叁肆伍陆柒捌玖 零一二三四五六七八九 <Br>
      *
      * @param c 字符
-     * @return
+     * @return 替换后的字符串
      */
     public static char replaceChineseNumber(char c) {
         for (int i = 0; i <= 9; i++) {
@@ -305,10 +306,10 @@ public class ChinaUtils {
         }
 
         // 这里会进行金额的四舍五入
-        long number = value.movePointRight(2).setScale(0, 4).abs().longValue();
+        long number = value.movePointRight(2).setScale(0, RoundingMode.HALF_UP).abs().longValue();
         // 得到小数点后两位值
         long scale = number % 100;
-        int numUnit = 0;
+        int numUnit;
         int numIndex = 0;
         boolean getZero = false;
         // 判断最后两位数，一共有四中情况：00 = 0, 01 = 1, 10, 11
