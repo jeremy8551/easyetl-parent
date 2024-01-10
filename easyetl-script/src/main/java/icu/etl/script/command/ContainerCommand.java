@@ -1,7 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -15,11 +13,11 @@ import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.command.feature.WithBodyCommandSupported;
-import icu.etl.script.internal.EasyJobReaderImpl;
+import icu.etl.script.internal.ContainerCommandReader;
 import icu.etl.util.StringUtils;
 
 /**
- * container to execute tasks in parallel using thread=3 dropIndex buildIndex freq=day batch=10000 rollback begin ... end
+ * container to execute tasks in parallel using thread=2 dropIndex buildIndex freq=day batch=10000 rollback begin ... end
  *
  * @author jeremy8551@qq.com
  */
@@ -32,7 +30,7 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
     private List<UniversalScriptCommand> cmdlist;
 
     /** 运行容器 */
-    private EasyJobService container;
+    private EasyJobService service;
 
     public ContainerCommand(UniversalCommandCompiler compiler, String command, Map<String, String> attributes, List<UniversalScriptCommand> cmdlist) {
         super(compiler, command);
@@ -50,10 +48,10 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
             stdout.println(analysis.replaceShellVariable(session, context, this.command, true, false, true, true));
         }
 
-        EasyJobReaderImpl in = new EasyJobReaderImpl(session, context, stdout, stderr, this);
+        ContainerCommandReader in = new ContainerCommandReader(session, context, stdout, stderr, this.cmdlist);
         try {
-            this.container = context.getContainer().getBean(ThreadSource.class).getJobService(number);
-            this.container.execute(in);
+            this.service = context.getContainer().getBean(ThreadSource.class).getJobService(number);
+            this.service.execute(in);
             return 0;
         } finally {
             in.close();
@@ -61,18 +59,9 @@ public class ContainerCommand extends AbstractCommand implements WithBodyCommand
     }
 
     public void terminate() throws Exception {
-        if (this.container != null) {
-            this.container.terminate();
+        if (this.service != null) {
+            this.service.terminate();
         }
-    }
-
-    /**
-     * 返回容器运行的代码块
-     *
-     * @return
-     */
-    public List<UniversalScriptCommand> getList() {
-        return this.cmdlist;
     }
 
 }

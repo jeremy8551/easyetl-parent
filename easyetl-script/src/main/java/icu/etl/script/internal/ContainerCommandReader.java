@@ -1,7 +1,5 @@
 package icu.etl.script.internal;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,6 @@ import icu.etl.script.UniversalScriptJob;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
-import icu.etl.script.command.ContainerCommand;
 import icu.etl.util.Dates;
 
 /**
@@ -23,7 +20,7 @@ import icu.etl.util.Dates;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-20
  */
-public class EasyJobReaderImpl implements EasyJobReader {
+public class ContainerCommandReader implements EasyJobReader {
 
     private UniversalScriptContext context;
     private UniversalScriptSession session;
@@ -31,27 +28,25 @@ public class EasyJobReaderImpl implements EasyJobReader {
     private UniversalScriptStderr stderr;
 
     private EasyJob job;
-    private ContainerCommand container;
     private List<UniversalScriptCommand> list;
     private volatile boolean terminate;
 
     /**
      * 初始化
      *
-     * @param session
-     * @param context
-     * @param stdout
-     * @param stderr
-     * @param container
+     * @param session  用户会话信息
+     * @param context  脚本引擎上下文信息
+     * @param stdout   标准输出流
+     * @param stderr   错误输出流
+     * @param commands 容器中的命令集合
      */
-    public EasyJobReaderImpl(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) {
+    public ContainerCommandReader(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, List<UniversalScriptCommand> commands) {
         this.terminate = false;
         this.context = context;
         this.session = session;
         this.stdout = stdout;
         this.stderr = stderr;
-        this.container = container;
-        this.list = new ArrayList<UniversalScriptCommand>(container.getList());
+        this.list = new ArrayList<UniversalScriptCommand>(commands);
     }
 
     public synchronized boolean hasNext() throws Exception {
@@ -70,7 +65,7 @@ public class EasyJobReaderImpl implements EasyJobReader {
                 UniversalScriptJob job = (UniversalScriptJob) command;
 
                 // 判断命令是否已准备好执行
-                if (job.hasJob(this.session, this.context, this.stdout, this.stderr, this.container)) {
+                if (job.isPrepared(this.session, this.context, this.stdout, this.stderr)) {
                     this.job = job.getJob();
                     this.stdout.println(analysis.replaceShellVariable(this.session, this.context, command.getScript(), true, false, true, false));
                     return true;

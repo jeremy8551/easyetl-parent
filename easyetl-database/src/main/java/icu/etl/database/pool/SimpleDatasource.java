@@ -1,11 +1,11 @@
 package icu.etl.database.pool;
 
+import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Logger;
-import javax.sql.DataSource;
 
 import icu.etl.database.logger.DataSourceLogger;
 import icu.etl.database.logger.DataSourceLoggerProxy;
@@ -51,9 +51,7 @@ public class SimpleDatasource implements DataSource, java.io.Closeable {
      */
     public SimpleDatasource(EasyContext context, Properties p) {
         super();
-        this.pool = new Pool(context);
-        this.pool.setConfiguration(p);
-        this.pool.open();
+        this.pool = new Pool(context, p);
     }
 
     public EasyContext getContext() {
@@ -64,19 +62,19 @@ public class SimpleDatasource implements DataSource, java.io.Closeable {
         IO.close(this.pool);
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
         return this.pool.getConnection(null, null);
     }
 
-    public Connection getConnection(String username, String password) {
+    public Connection getConnection(String username, String password) throws SQLException {
         return this.pool.getConnection(username, password);
     }
 
-    public PrintWriter getLogWriter() {
+    public PrintWriter getLogWriter() throws SQLException {
         return this.pool.getLogWriter();
     }
 
-    public void setLogWriter(PrintWriter out) {
+    public void setLogWriter(PrintWriter out) throws SQLException {
         this.pool.setLogWriter(out);
     }
 

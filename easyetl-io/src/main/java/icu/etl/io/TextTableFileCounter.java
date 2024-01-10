@@ -7,12 +7,10 @@ import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import icu.etl.concurrent.AbstractJob;
-import icu.etl.concurrent.EasyJob;
-import icu.etl.concurrent.EasyJobReader;
+import icu.etl.concurrent.EasyJobReaderImpl;
 import icu.etl.concurrent.ThreadSource;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
@@ -29,9 +27,6 @@ public class TextTableFileCounter {
 
     /** 单线程和多线程统计文本行数的阀值，小于阀值使用单线程统计，大于等于阀值使用多线程统计文本行数（阀值同时也作为每个临时文件的大小） */
     public static long UNIT = 1024 * 1024 * 1024; // 1GB
-
-    /** 文件序号模版 */
-    private static volatile int threadNoTemplate = 0;
 
     /** 线程池 */
     private ThreadSource threadSource;
@@ -58,7 +53,7 @@ public class TextTableFileCounter {
         if (file.length() < TextTableFileCounter.UNIT) { // 小于 1G 使用单线程
             return this.executeSerial(file, StringUtils.charset(charsetName));
         } else {
-            return this.executeParallel(file, IO.FILE_BYTES_BUFFER_SIZE);
+            return this.executeParallel(file);
         }
     }
 
@@ -77,57 +72,56 @@ public class TextTableFileCounter {
     /**
      * 多线程并行计算文本行数
      *
-     * @param file       文件信息
-     * @param readBuffer 输入流缓冲区长度，单位字符
+     * @param file 文件信息
      * @return 文件行数
+     * @throws Exception 并发任务发生错误
      */
-    protected long executeParallel(File file, int readBuffer) throws Exception {
+    protected long executeParallel(File file) throws Exception {
         Long divide = Numbers.divide(file.length(), (long) 12);
         long partSize = Math.max(divide, 92160);
 
-        if (readBuffer <= 0) {
-            readBuffer = IO.FILE_BYTES_BUFFER_SIZE;
-        }
+        int readBuffer = IO.FILE_BYTES_BUFFER_SIZE;
         if (readBuffer > partSize) {
             readBuffer = (int) partSize;
         }
 
         // 创建分段任务
-        long filePointer = 0;
+        long partStartPointer = 0; // 分段任务起始位置
+        long fileSize = file.length();
         List<ReadLineJob> list = new ArrayList<ReadLineJob>();
-        while (true) {
-            long fileLength = file.length();
-            long length = filePointer + partSize + 1;
-            long pieceSize = partSize;
-            if (length > fileLength) {
-                pieceSize = fileLength - filePointer;
+        do {
+            long partEndPointer = partStartPointer + partSize + 1; // 文件读取的结束位置（包含）
+            if (partEndPointer > fileSize) {
+                partEndPointer = fileSize;
             }
 
-            list.add(new ReadLineJob(file, readBuffer, filePointer, pieceSize)); // 添加分段任务
-            filePointer += partSize + 1; // 下一个位置指针
-            if (filePointer >= fileLength) {
-                break;
-            }
-        }
+            long pieceSize = partEndPointer - partStartPointer + 1; // 读取长度
+            list.add(new ReadLineJob(file, readBuffer, partStartPointer, partEndPointer, pieceSize)); // 添加分段任务
+            partStartPointer = partEndPointer + 1; // 下一个位置指针
+        } while (partStartPointer <= fileSize);
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getIoxMessage(40, this.concurrernt, list.size(), new BigDecimal(partSize), new BigDecimal(readBuffer)));
+            log.debug(ResourcesUtils.getMessage("io.standard.output.msg040", this.concurrernt, list.size(), new BigDecimal(partSize), new BigDecimal(readBuffer), fileSize));
+
+            for (ReadLineJob job : list) {
+                log.debug(job.getName());
+            }
         }
 
         // 并发统计行数
-        this.threadSource.getJobService(this.concurrernt).execute(new ReadLineExecutorReader(list));
+        this.threadSource.getJobService(this.concurrernt).execute(new EasyJobReaderImpl(list));
 
         // 统计行数
         long total = 0;
         ReadLineJob last = null;
-        for (ReadLineJob obj : list) {
+        for (ReadLineJob job : list) {
             if (last != null) { // 如果上一个片段的最后一个字符是 \r 下一个片段的第一个字符是 \n 需要减掉一个换行符
-                if (last.getEndPointer() == '\r' && obj.getStartPointer() == '\n') {
+                if (last.getEndPointer() == '\r' && job.getStartPointer() == '\n') {
                     total--;
                 }
             }
-            last = obj;
-            total += obj.getLineNumber();
+            last = job;
+            total += job.getLineNumber();
         }
 
         // 最后一个字符不是换行符，需要自增一行
@@ -137,7 +131,7 @@ public class TextTableFileCounter {
         return total;
     }
 
-    static class ReadLineJob extends AbstractJob {
+    private static class ReadLineJob extends AbstractJob {
 
         /** 文件内的位置指针 */
         private final long filePointer;
@@ -163,31 +157,24 @@ public class TextTableFileCounter {
         /**
          * 初始化
          *
-         * @param file        文件
-         * @param bufferSize  读取文件的缓冲区长度
-         * @param filePointer 文件内的位置指针
-         * @param maxByteSize 读取文件的最大字节数
+         * @param file             文件
+         * @param bufferSize       读取文件的缓冲区长度
+         * @param partStartPointer 读取文件的起始位置
+         * @param partEndPointer   读取文件的结束位置（包含）
+         * @param maxByteSize      读取文件的最大字节数
          */
-        public ReadLineJob(File file, int bufferSize, long filePointer, long maxByteSize) {
+        public ReadLineJob(File file, int bufferSize, long partStartPointer, long partEndPointer, long maxByteSize) {
             this.file = Ensure.notNull(file);
             this.bufferSize = Ensure.isFromOne(bufferSize);
-            this.filePointer = Ensure.isFromZero(filePointer);
+            this.filePointer = Ensure.isFromZero(partStartPointer);
             this.maxBytes = Ensure.isFromZero(maxByteSize);
-            this.setName(ResourcesUtils.getMessage("io.standard.output.msg063", file.getAbsolutePath(), filePointer, maxByteSize));
             this.firstChar = ' ';
             this.lastChar = ' ';
-
-            if (log.isTraceEnabled()) {
-                log.trace(ResourcesUtils.getIoxMessage(41, this.getName(), filePointer, (filePointer + maxByteSize)));
-            }
+            this.setName(ResourcesUtils.getMessage("io.standard.output.msg063", file.getAbsolutePath(), partStartPointer, partEndPointer));
         }
 
         public int execute() throws IOException {
-            if (log.isTraceEnabled()) {
-                log.trace(ResourcesUtils.getIoxMessage(42, this.getName()));
-            }
-
-            TimeWatch tk = new TimeWatch();
+            TimeWatch watch = new TimeWatch();
             RandomAccessFile in = new RandomAccessFile(this.file, "r");
             try {
                 if (this.filePointer > 0) {
@@ -258,30 +245,12 @@ public class TextTableFileCounter {
                 }
 
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getIoxMessage(44, this.getName(), this.readLines, tk.useTime()));
+                    log.debug(ResourcesUtils.getMessage("io.standard.output.msg044", this.getName(), this.readLines));
                 }
                 return 0;
             } finally {
                 in.close();
             }
-        }
-
-        /**
-         * 返回文件内部位置的指针
-         *
-         * @return 指针
-         */
-        public long getFilePointer() {
-            return filePointer;
-        }
-
-        /**
-         * 返回已读取的最大字节数
-         *
-         * @return 最大字节数
-         */
-        public long getMaxBytes() {
-            return maxBytes;
         }
 
         /**
@@ -318,37 +287,6 @@ public class TextTableFileCounter {
          */
         public byte getEndPointer() {
             return this.lastChar;
-        }
-    }
-
-    static class ReadLineExecutorReader implements EasyJobReader {
-
-        private final Iterator<ReadLineJob> it;
-
-        private volatile boolean terminate;
-
-        public ReadLineExecutorReader(List<ReadLineJob> list) {
-            this.it = list.iterator();
-        }
-
-        public void terminate() {
-            this.terminate = true;
-        }
-
-        public boolean isTerminate() {
-            return terminate;
-        }
-
-        public EasyJob next() {
-            return this.it.next();
-        }
-
-        public boolean hasNext() {
-            return this.it.hasNext();
-        }
-
-        public void close() {
-            this.terminate = false;
         }
     }
 

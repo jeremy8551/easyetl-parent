@@ -106,8 +106,8 @@ public class TextTableFileCounterTest {
     }
 
     @Test
-    public void test110() throws Exception {
-        EasyBeanContext context = new EasyBeanContext();
+    public void test() throws Exception {
+        EasyBeanContext context = new EasyBeanContext("debug:sout+");
         ThreadSource threadSource = context.getBean(ThreadSource.class);
         File file = new File(Settings.getUserHome(), "TEST_FILE_BIG.txt");
         String charsetName = StringUtils.CHARSET;

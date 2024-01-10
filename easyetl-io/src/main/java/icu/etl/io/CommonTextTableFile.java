@@ -9,6 +9,7 @@ import java.util.List;
 import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
+import icu.etl.util.ClassUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -190,38 +191,38 @@ public class CommonTextTableFile implements TextTableFile, EasyContextAware {
         return this.getColumn();
     }
 
-    public CommonTextTableFile clone() {
-        CommonTextTableFile obj = new CommonTextTableFile();
-        this.clone(obj);
-        return obj;
+    public TextTableFile clone() {
+        TextTableFile file = ClassUtils.newInstance(this.getClass());
+        this.clone(file);
+        return file;
     }
 
     /**
-     * 复制所有属性到参数 obj 中
+     * 复制当前对象中的所有属性到参数 {@code file} 中
      *
-     * @param obj 实例对象
+     * @param file 表格文件
      */
-    public void clone(TextTableFile obj) {
-        if (obj instanceof EasyContextAware) {
-            ((EasyContextAware) obj).setContext(this.context);
+    public void clone(TextTableFile file) {
+        if (file instanceof EasyContextAware) {
+            ((EasyContextAware) file).setContext(this.context);
         }
 
-        obj.setAbsolutePath(this.getAbsolutePath());
-        obj.setCharsetName(this.getCharsetName());
-        obj.setColumn(this.getColumn());
-        obj.setDelimiter(this.getDelimiter());
-        obj.setLineSeparator(this.getLineSeparator());
-        obj.setCharDelimiter(this.getCharDelimiter());
+        file.setAbsolutePath(this.getAbsolutePath());
+        file.setCharsetName(this.getCharsetName());
+        file.setColumn(this.getColumn());
+        file.setDelimiter(this.getDelimiter());
+        file.setLineSeparator(this.getLineSeparator());
+        file.setCharDelimiter(this.getCharDelimiter());
 
         if (this.existsEscape()) {
-            obj.setEscape(this.getEscape());
+            file.setEscape(this.getEscape());
         } else {
-            obj.removeEscape();
+            file.removeEscape();
         }
 
         // 复制列名
         for (int i = 0; i < this.columnNames.size(); i++) {
-            obj.setColumnName(i + 1, this.columnNames.get(i));
+            file.setColumnName(i + 1, this.columnNames.get(i));
         }
     }
 

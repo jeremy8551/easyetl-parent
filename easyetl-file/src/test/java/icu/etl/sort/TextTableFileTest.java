@@ -211,7 +211,7 @@ public class TextTableFileTest {
             cxt.setThreadNumber(1);
             cxt.setFileCount(2);
             File rs = sorter.sort(context, file, "1");
-            CommonTextTableFile cf = file.clone();
+            TextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
         } catch (Exception e) {
@@ -224,7 +224,7 @@ public class TextTableFileTest {
             cxt.setThreadNumber(2);
             cxt.setFileCount(2);
             File rs = sorter.sort(context, file, "1");
-            CommonTextTableFile cf = file.clone();
+            TextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
         } catch (Exception e) {
@@ -237,7 +237,7 @@ public class TextTableFileTest {
             cxt.setThreadNumber(5);
             cxt.setFileCount(2);
             File rs = sorter.sort(context, file, "1");
-            CommonTextTableFile cf = file.clone();
+            TextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
         } catch (Exception e) {
@@ -251,7 +251,7 @@ public class TextTableFileTest {
             cxt.setFileCount(3);
             File rs = sorter.sort(context, file, "1");
 
-            CommonTextTableFile cf = file.clone();
+            TextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
         } catch (Exception e) {
@@ -262,7 +262,7 @@ public class TextTableFileTest {
         try {
             this.getTestFile(file);
             File rs = sorter.sort(context, file, "1");
-            CommonTextTableFile cf = file.clone();
+            TextTableFile cf = file.clone();
             cf.setAbsolutePath(rs.getAbsolutePath());
             this.checkFile(cf);
         } catch (Exception e) {
@@ -403,7 +403,7 @@ public class TextTableFileTest {
         }
     }
 
-    protected void checkFile(CommonTextTableFile file) throws NumberFormatException, IOException {
+    protected void checkFile(TextTableFile file) throws NumberFormatException, IOException {
         int i = 0;
         TextTableFileReader in = file.getReader(IO.FILE_BYTES_BUFFER_SIZE);
         TextTableLine line = null;

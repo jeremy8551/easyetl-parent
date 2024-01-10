@@ -12,12 +12,12 @@ import java.util.List;
  */
 public class EasyJobReaderImpl implements EasyJobReader {
 
-    private Iterator<EasyJob> it;
+    private Iterator<? extends EasyJob> it;
 
     /** 终止状态 */
     private volatile boolean noTerminate;
 
-    public EasyJobReaderImpl(List<EasyJob> list) {
+    public EasyJobReaderImpl(List<? extends EasyJob> list) {
         this.noTerminate = true;
         this.it = list.iterator();
     }
@@ -26,7 +26,7 @@ public class EasyJobReaderImpl implements EasyJobReader {
         this(toList(in));
     }
 
-    private static List<EasyJob> toList(EasyJobReader in) throws Exception {
+    private static List<? extends EasyJob> toList(EasyJobReader in) throws Exception {
         List<EasyJob> list = new ArrayList<EasyJob>();
         while (in.hasNext()) {
             EasyJob next = in.next();

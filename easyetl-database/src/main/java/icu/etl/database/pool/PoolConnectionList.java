@@ -35,9 +35,9 @@ public class PoolConnectionList extends Stack<PoolConnection> {
                     try {
                         Jdbc.commit(conn);
                     } catch (Throwable e) {
-                        Jdbc.rollbackQuietly(conn);
+                        Jdbc.rollbackQuiet(conn);
                     } finally {
-                        IO.closeQuietly(conn, conn);
+                        IO.closeQuiet(conn, conn);
                     }
                 }
             }

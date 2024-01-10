@@ -116,7 +116,7 @@ public class CsvFileTest {
         FileUtils.write(file, charsetName, false, c);
         System.out.println(FileUtils.readline(file, charsetName, 0));
 
-        CsvFile csvfile = new CsvFile(file);
+        TextTableFile csvfile = new CsvFile(file);
         csvfile.setCharsetName(charsetName);
 
         csvfile = csvfile.clone();

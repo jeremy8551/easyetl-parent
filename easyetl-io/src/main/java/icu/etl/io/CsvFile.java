@@ -48,12 +48,6 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
         this(file.getAbsolutePath());
     }
 
-    public CsvFile clone() {
-        CsvFile obj = new CsvFile();
-        this.clone(obj);
-        return obj;
-    }
-
     public TableLineRuler getRuler() {
         return new TableLineRuler() {
             public void split(String str, List<String> list) {
@@ -102,7 +96,8 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
     public static String[] splitCsvFileLine(String str) {
         List<String> list = new ArrayList<String>(10);
         CsvFile.splitCsvFileLine(str, list);
-        return list.toArray(new String[list.size()]);
+        String[] array = new String[list.size()];
+        return list.toArray(array);
     }
 
     /**
@@ -215,7 +210,7 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
     }
 
     /**
-     * 使用字符串参数newStr替换DB2 del文件格式(逗号分隔)字符串str中第column个字段值
+     * 替换 CSV 字符串 {@code str} 中第 {@code column} 个字段值为 {@code newStr}
      *
      * @param str    字符串
      * @param column 列数,从1开始
@@ -287,12 +282,12 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
     }
 
     /**
-     * 返回DB2 字符串的结尾位置
+     * 返回 CSV 字符串的结尾位置
      *
      * @param str    字符串
      * @param begin  字符串起始位置
      * @param length 最大搜索长度（不包括）
-     * @return
+     * @return 返回字符串结束位置
      */
     protected static int indexOfStrEndPosition(CharSequence str, int begin, int length) {
         for (int j = begin, next = 0; j < length; j++) {

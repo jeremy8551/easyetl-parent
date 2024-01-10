@@ -3,7 +3,6 @@ package icu.etl.script.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.sql.Clob;
@@ -17,7 +16,6 @@ import java.util.Map;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
-import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.script.UniversalScriptContext;
@@ -56,7 +54,9 @@ public class ScriptFormatter extends UniversalScriptFormatter {
 
         if (object instanceof Date || object instanceof Clob) {
             return StringUtils.toString(object);
-        } else if (object.getClass().isArray()) {
+        }
+
+        if (object.getClass().isArray()) {
             Class<?> clazz = object.getClass().getComponentType();
             if ("byte".equals(clazz.getName())) {
                 byte[] array = (byte[]) object;
@@ -64,31 +64,36 @@ public class ScriptFormatter extends UniversalScriptFormatter {
             } else {
                 return object;
             }
-        } else if (object instanceof java.io.InputStream) {
+        }
+
+        if (object instanceof java.io.InputStream) {
             java.io.InputStream in = (java.io.InputStream) object;
             return new ByteBuffer().append(in).toString(context.getCharsetName());
-        } else if (object instanceof java.io.Reader) {
+        }
+
+        if (object instanceof java.io.Reader) {
             java.io.Reader in = (java.io.Reader) object;
             return IO.read(in, new StringBuilder()).toString();
-        } else if (object instanceof java.sql.Blob) {
+        }
+
+        if (object instanceof java.sql.Blob) {
             java.sql.Blob blob = (java.sql.Blob) object;
             File tempDir = session.getTempDir();
             File parent = FileUtils.createDirectory(tempDir, ScriptFormatter.class.getSimpleName(), Dates.format17());
             File file = FileUtils.createNewFile(parent, "ScriptConvert.blob");
             IO.write(blob.getBinaryStream(), new FileOutputStream(file));
             return file.getAbsolutePath();
-        } else if (object instanceof java.net.URL) {
+        }
+
+        if (object instanceof java.net.URL) {
             return ((java.net.URL) object).getPath();
-        } else if (object instanceof java.sql.Ref) {
+        }
+
+        if (object instanceof java.sql.Ref) {
             return ((java.sql.Ref) object).getObject();
         }
 
-        Object val = JavaDialectFactory.getDialect().parseJdbcObject(object);
-        if (val == null) {
-            return object;
-        } else {
-            return val;
-        }
+        return object;
     }
 
     public String toString(Object obj) {

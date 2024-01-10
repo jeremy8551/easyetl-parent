@@ -3,6 +3,7 @@ package icu.etl.database.pool;
 import java.io.Closeable;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -18,8 +19,10 @@ import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.os.OSAccount;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
+import icu.etl.util.StringComparator;
 import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
 
@@ -42,7 +45,7 @@ public class Pool implements Closeable {
     protected DatabaseConfiguration jdbc;
 
     /** true-已关闭 */
-    protected boolean isClose;
+    protected volatile boolean close;
 
     /** 打印日志输出流 */
     protected PrintWriter out;
@@ -63,20 +66,25 @@ public class Pool implements Closeable {
      * 初始化
      *
      * @param context 容器上下文信息
+     * @param config  JDBC配置
      */
-    public Pool(EasyContext context) {
+    public Pool(EasyContext context, Properties config) {
         super();
-        if (context == null) {
-            throw new NullPointerException();
-        }
 
-        this.context = context;
+        Ensure.notNull(context);
+        Ensure.notNull(config);
+        String url = Ensure.notBlank(config.getProperty(Jdbc.url));
+
+        this.close = true;
         this.watch = new TimeWatch();
+        this.context = context;
         this.out = new PrintWriter(new OutputStreamLogger(log, StringUtils.CHARSET));
         this.actives = new PoolConnectionList();
         this.idles = new PoolConnectionList();
-        this.isClose = true;
         this.timeout = 0;
+        this.dialect = this.context.getBean(DatabaseDialect.class, url);
+        this.jdbc = this.context.getBean(DatabaseConfigurationContainer.class).add(config).clone();
+        this.close = false;
     }
 
     public EasyContext getContext() {
@@ -84,21 +92,10 @@ public class Pool implements Closeable {
     }
 
     /**
-     * 启动数据库连接池
-     */
-    public synchronized void open() {
-        if (this.isClose) {
-            this.isClose = false;
-        } else {
-            this.out.println(ResourcesUtils.getDataSourceMessage(1));
-        }
-    }
-
-    /**
      * 关闭数据库连接池
      */
     public synchronized void close() {
-        if (this.isClose) {
+        if (this.close) {
             return;
         }
 
@@ -106,7 +103,7 @@ public class Pool implements Closeable {
         this.idles.close();
         this.actives.close();
         this.dialect = null;
-        this.isClose = true;
+        this.close = true;
     }
 
     /**
@@ -114,68 +111,82 @@ public class Pool implements Closeable {
      *
      * @param username 用户名
      * @param password 密码
-     * @return
+     * @return 数据库连接代理
+     * @throws SQLException 数据库连接已关闭
      */
-    public synchronized ConnectionProxy getConnection(String username, String password) {
-        if (this.isClose) {
-            throw new DatabaseException(ResourcesUtils.getDataSourceMessage(3));
+    public synchronized ConnectionProxy getConnection(String username, String password) throws SQLException {
+        if (this.close) {
+            throw new SQLException(ResourcesUtils.getDataSourceMessage(3));
         }
 
-        if (this.idles.empty()) {
+        if (username == null) {
+            OSAccount account = this.jdbc.getAccount();
+            if (account != null) {
+                username = account.getUsername();
+                password = account.getPassword();
+            }
+        }
+
+        PoolConnection poolConn = this.findPoolConnection(username);
+        if (poolConn == null) {
             String driver = this.jdbc.getDriverClass();
             String url = this.jdbc.getUrl();
 
-            if (username == null) {
-                OSAccount account = this.jdbc.getAccount();
-                if (account != null) {
-                    username = account.getUsername();
-                    password = account.getPassword();
+            Connection conn = this.create(driver, url, username, password);
+            poolConn = new PoolConnection(this, conn, username, password);
+            this.actives.push(poolConn);
+            this.out.println(ResourcesUtils.getDataSourceMessage(4, poolConn.toString()));
+            return poolConn.getProxy();
+        } else {
+            Connection conn = poolConn.getConnection();
+            try {
+                if (Jdbc.canUse(conn)) {
+                    this.actives.push(poolConn);
+                    this.out.println(ResourcesUtils.getDataSourceMessage(5, poolConn.toString()));
+                    return poolConn.getProxy();
+                } else {
+                    Jdbc.commitQuiet(conn);
+                    IO.closeQuiet(conn);
+                    poolConn.close();
+                }
+            } catch (Throwable e) {
+                if (Jdbc.testConnection(conn, this.dialect)) {
+                    this.actives.push(poolConn);
+                    this.out.println(ResourcesUtils.getDataSourceMessage(5, poolConn.toString()));
+                    return poolConn.getProxy();
+                } else {
+                    Jdbc.commitQuiet(conn);
+                    IO.closeQuiet(conn);
+                    poolConn.close();
                 }
             }
 
-            Connection conn = this.create(driver, url, username, password);
-            PoolConnection pc = new PoolConnection(conn, this);
-            this.actives.push(pc);
-            this.out.println(ResourcesUtils.getDataSourceMessage(4, pc.toString()));
-            return pc.getProxy();
-        } else {
-            PoolConnection pc = this.idles.pop(); // 从空闲池中获取一个数据库连接
-            if (pc == null || pc.getConnection() == null) {
-                return this.getConnection(username, password);
-            } else {
-                Connection conn = pc.getConnection();
-                try {
-                    if (Jdbc.canUse(conn)) {
-                        this.actives.push(pc);
-                        this.out.println(ResourcesUtils.getDataSourceMessage(5, pc.toString()));
-                        return pc.getProxy();
-                    } else {
-                        Jdbc.commitQuiet(conn);
-                        IO.closeQuiet(conn);
-                        pc.close();
-                    }
-                } catch (Throwable e) {
-                    if (Jdbc.testConnection(conn, this.dialect)) {
-                        this.actives.push(pc);
-                        this.out.println(ResourcesUtils.getDataSourceMessage(5, pc.toString()));
-                        return pc.getProxy();
-                    } else {
-                        Jdbc.commitQuiet(conn);
-                        IO.closeQuiet(conn);
-                        pc.close();
-                    }
-                }
+            return this.getConnection(username, password);
+        }
+    }
 
-                return this.getConnection(username, password);
+    /**
+     * 查找闲置的数据库连接
+     *
+     * @param username 用户名
+     * @return 数据库连接
+     */
+    protected PoolConnection findPoolConnection(String username) {
+        for (int i = 0; i < this.idles.size(); i++) {
+            PoolConnection poolConn = this.idles.get(i);
+            if (poolConn != null && StringComparator.compareTo(poolConn.getUsername(), username) == 0 && poolConn.getConnection() != null) {
+                this.idles.remove(i);
+                return poolConn;
             }
         }
+        return null;
     }
 
     /**
      * 建立数据库连接
      *
-     * @param driver   JDBC驱动类名
-     * @param url      JDBC数据库URL
+     * @param driver   驱动类名
+     * @param url      数据库URL
      * @param username 用户名
      * @param password 密码
      * @return 数据库连接
@@ -201,7 +212,9 @@ public class Pool implements Closeable {
                     container.add(new StandardDatabaseConfiguration(this.context, null, driver, url, username, password, null, null, null, null, null));
                     return conn;
                 } catch (Throwable e) {
-                    continue;
+                    if (log.isDebugEnabled()) {
+                        log.debug(e.getLocalizedMessage(), e);
+                    }
                 }
             }
             throw new DatabaseException(ResourcesUtils.getDataSourceMessage(6));
@@ -211,11 +224,12 @@ public class Pool implements Closeable {
     /**
      * 把数据库连接返回给连接池
      *
-     * @param conn
+     * @param conn 数据库连接
+     * @throws SQLException 数据库连接已关闭
      */
-    public synchronized void returnPool(PoolConnection conn) {
-        if (this.isClose) {
-            throw new DatabaseException(ResourcesUtils.getDataSourceMessage(3));
+    public synchronized void returnPool(PoolConnection conn) throws SQLException {
+        if (this.close) {
+            throw new SQLException(ResourcesUtils.getDataSourceMessage(3));
         }
 
         // 遍历空闲的数据库连接，并关闭
@@ -237,11 +251,12 @@ public class Pool implements Closeable {
     /**
      * 从连接池中删除数据库连接
      *
-     * @param conn
+     * @param conn 数据库连接
+     * @throws SQLException 数据库连接已关闭
      */
-    public synchronized void remove(PoolConnection conn) {
-        if (this.isClose) {
-            throw new DatabaseException(ResourcesUtils.getDataSourceMessage(3));
+    public synchronized void remove(PoolConnection conn) throws SQLException {
+        if (this.close) {
+            throw new SQLException(ResourcesUtils.getDataSourceMessage(3));
         }
 
         // 遍历空闲的数据库连接，并关闭
@@ -270,20 +285,16 @@ public class Pool implements Closeable {
     /**
      * 设置日志输出流
      *
-     * @param out
+     * @param out 日志输出流
      */
     public void setLogWriter(PrintWriter out) {
-        if (out == null) {
-            throw new NullPointerException();
-        } else {
-            this.out = out;
-        }
+        this.out = Ensure.notNull(out);
     }
 
     /**
      * 返回日志输出流
      *
-     * @return
+     * @return 日志输出流
      */
     public PrintWriter getLogWriter() {
         return this.out;
@@ -295,13 +306,13 @@ public class Pool implements Closeable {
      * @return true关闭
      */
     public boolean isClose() {
-        return this.isClose;
+        return this.close;
     }
 
     /**
      * 建立数据库连接的超时时间, 单位: 秒
      *
-     * @return
+     * @return 超时时间
      */
     public int getTimeout() {
         return timeout;
@@ -310,29 +321,10 @@ public class Pool implements Closeable {
     /**
      * 建立数据库连接的超时时间, 单位: 秒
      *
-     * @param timeout
+     * @param timeout 超时时间
      */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
-    }
-
-    /**
-     * 添加 jdbc 配置
-     *
-     * @param config 配置信息
-     */
-    public void setConfiguration(Properties config) {
-        if (config == null) {
-            throw new NullPointerException();
-        }
-
-        String url = config.getProperty(Jdbc.url);
-        if (StringUtils.isBlank(url)) {
-            throw new IllegalArgumentException(url);
-        }
-
-        this.dialect = this.context.getBean(DatabaseDialect.class, url);
-        this.jdbc = this.context.getBean(DatabaseConfigurationContainer.class).add(config).clone();
     }
 
 }

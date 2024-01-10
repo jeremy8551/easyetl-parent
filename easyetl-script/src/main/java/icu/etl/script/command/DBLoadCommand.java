@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.concurrent.EasyJob;
 import icu.etl.database.load.LoadEngine;
@@ -102,7 +100,7 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
         }
     }
 
-    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws Exception {
+    public boolean isPrepared(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr) throws Exception {
         if (this.launch != null) {
             return this.launch.ready(this.engine.getContext());
         } else if (StringUtils.isNotBlank(this.script)) {

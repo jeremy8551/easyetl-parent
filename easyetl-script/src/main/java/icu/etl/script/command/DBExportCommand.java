@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import icu.etl.concurrent.EasyJob;
@@ -97,7 +95,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
-        if (this.hasJob(session, context, stdout, stderr, null)) {
+        if (this.isPrepared(session, context, stdout, stderr)) {
             if (session.isEchoEnable() || forceStdout) {
                 String newTarget = FileUtils.replaceFolderSeparator(this.dataTarget);
                 String newCommand = StringUtils.replace(this.command, this.dataTarget, newTarget);
@@ -118,7 +116,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
         }
     }
 
-    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws Exception {
+    public boolean isPrepared(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr) throws Exception {
         if (this.engine == null) {
             this.engine = new ExportEngine(context.getFactory().getContext());
 

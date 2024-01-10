@@ -50,15 +50,6 @@ public interface JavaDialect {
     boolean canExecute(File file);
 
     /**
-     * 将Jdbc参数 object 转为脚本引擎内部类型
-     *
-     * @param obj 对象
-     * @return 脚本引擎内部类型的对象
-     * @throws Exception IO错误
-     */
-    Object parseJdbcObject(Object obj) throws Exception;
-
-    /**
      * 返回 true 表示参数 Statement 对象已关闭
      *
      * @param statement Statement对象
@@ -95,7 +86,7 @@ public interface JavaDialect {
     /**
      * 生成类似于 unix 中组用户和其他用的读写执行权限
      *
-     * @param file
+     * @param file 文件
      * @return 6位的字符，前三位是组用户的读写执行权限，后三位是其他用户的读写执行权限
      */
     String toLongname(File file);

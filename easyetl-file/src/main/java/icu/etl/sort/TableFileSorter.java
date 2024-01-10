@@ -401,7 +401,7 @@ public class TableFileSorter implements Terminate {
     /**
      * 合并文件任务信息输入类
      */
-    protected class MergeExecutorReader implements EasyJobReader {
+    protected static class MergeExecutorReader implements EasyJobReader {
 
         /** 排序组件 */
         private TableFileSortContext context;
@@ -625,7 +625,7 @@ public class TableFileSorter implements Terminate {
     /**
      * 合并数据文件
      */
-    protected class MergeExecutor extends AbstractJob {
+    protected static class MergeExecutor extends AbstractJob {
 
         /** 待合并数据文件 */
         private ArrayList<TextTableFile> files = new ArrayList<TextTableFile>();
@@ -815,7 +815,7 @@ public class TableFileSorter implements Terminate {
     /**
      * 清单文件的输出流（必须支持多线程同步）
      */
-    class ListfileWriter extends BufferedLineWriter {
+    static class ListfileWriter extends BufferedLineWriter {
 
         public ListfileWriter(File file, String charsetName, int cache) throws IOException {
             super(file, charsetName, cache);
@@ -837,7 +837,7 @@ public class TableFileSorter implements Terminate {
     /**
      * 文件记录类
      */
-    protected class FileRecord implements TextTableLine {
+    protected static class FileRecord implements TextTableLine {
         private String line;
         private String lineSeparator;
         private String[] fields;

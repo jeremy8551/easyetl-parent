@@ -2,7 +2,6 @@ package icu.etl.script.command;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -86,7 +85,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
-        if (!this.hasJob(session, context, stdout, stderr, null)) {
+        if (!this.isPrepared(session, context, stdout, stderr)) {
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -105,7 +104,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
         }
     }
 
-    public boolean hasJob(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, ContainerCommand container) throws Exception {
+    public boolean isPrepared(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr) throws Exception {
         if (this.job == null) {
             TextTableFile newfile = this.newfileExpr.createTableFile();
             TextTableFile oldfile = this.oldfileExpr.createTableFile();

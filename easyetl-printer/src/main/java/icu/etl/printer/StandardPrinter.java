@@ -225,7 +225,7 @@ public class StandardPrinter implements Printer, java.io.Closeable {
             }
             this.buffer.setLength(0);
         }
-        IO.flushQuietly(this.writer);
+        IO.flushQuiet(this.writer);
     }
 
     public void close() {

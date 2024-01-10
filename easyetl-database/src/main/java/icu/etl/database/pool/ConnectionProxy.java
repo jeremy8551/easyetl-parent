@@ -12,7 +12,7 @@ public interface ConnectionProxy extends Connection {
     /**
      * 返回被代理的数据库连接对象
      *
-     * @return
+     * @return 数据库连接
      */
     Connection getOrignalConnection();
 

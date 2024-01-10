@@ -78,7 +78,7 @@ public class OverLengthExceptionProcessor {
     /**
      * 文件分段识别输入流
      */
-    static class ExpandLengthJobReader implements EasyJobReader {
+    private static class ExpandLengthJobReader implements EasyJobReader {
 
         /** 数据文件 */
         private TextTableFile file;
@@ -138,13 +138,13 @@ public class OverLengthExceptionProcessor {
                 end = this.length;
             }
 
-            LoadFileExecutorContext contex = new LoadFileExecutorContext();
-            contex.setFile(this.file);
-            contex.setReadBuffer(IO.FILE_BYTES_BUFFER_SIZE);
-            contex.setRange(new LoadFileRange(begin, end, -1));
+            LoadFileExecutorContext context = new LoadFileExecutorContext();
+            context.setFile(this.file);
+            context.setReadBuffer(IO.FILE_BYTES_BUFFER_SIZE);
+            context.setRange(new LoadFileRange(begin, end, -1));
 
             this.index = end + 1; // 下一次读取位置
-            return new ExpandLengthJob(contex, this.target, this.set);
+            return new ExpandLengthJob(context, this.target, this.set);
         }
 
         public void close() throws IOException {
@@ -164,7 +164,7 @@ public class OverLengthExceptionProcessor {
     /**
      * 分段扫描数据文件中的字段长度是否超过限制
      */
-    static class ExpandLengthJob extends AbstractJob {
+    private static class ExpandLengthJob extends AbstractJob {
 
         /** 目标表信息 */
         private LoadTable target;

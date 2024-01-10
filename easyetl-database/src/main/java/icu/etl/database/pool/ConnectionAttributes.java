@@ -10,6 +10,7 @@ import icu.etl.ioc.EasyContext;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 
 /**
  * 数据库连接设置信息
@@ -49,12 +50,7 @@ public class ConnectionAttributes implements Cloneable {
 
     public ConnectionAttributes(EasyContext context, Connection conn) {
         this();
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
-
-        this.context = context;
+        this.context = Ensure.notNull(context);
 
         try {
             this.autoCommit = conn.getAutoCommit();
@@ -149,16 +145,20 @@ public class ConnectionAttributes implements Cloneable {
             if (this.hasAutoCommit) {
                 conn.setAutoCommit(this.autoCommit);
             }
-        } catch (Exception e) {
-            // log.warn(this.autoCommit + " is valid!", e);
+        } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             if (this.hasCatalog) {
                 conn.setCatalog(this.catalog);
             }
-        } catch (Exception e) {
-            // log.warn(this.catalog + " is valid!", e);
+        } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
@@ -166,56 +166,70 @@ public class ConnectionAttributes implements Cloneable {
                 DatabaseDialect dialect = this.context.getBean(DatabaseDialect.class, conn);
                 dialect.setSchema(conn, this.schema);
             }
-        } catch (Exception e) {
-            // log.warn(this.schema + " is valid!", e);
+        } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             if (this.hasReadOnly) {
                 conn.setReadOnly(this.readOnly);
             }
-        } catch (Exception e) {
-            // log.warn(this.readOnly + " is valid!", e);
+        } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             if (this.hasTransactionIsolation) {
                 conn.setTransactionIsolation(this.transactionIsolation);
             }
-        } catch (Exception e) {
-            // log.warn(this.transactionIsolation + " is valid!", e);
+        } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             if (this.hasClientInfo) {
                 JavaDialectFactory.getDialect().setClientInfo(conn, this.clientInfo);
             }
-        } catch (Exception e) {
-            // log.warn(StringUtils.toString(this.clientInfo) + " is valid!", e);
+        } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             if (this.hasHoldability) {
                 conn.setHoldability(this.holdability);
             }
-        } catch (Exception e) {
-            // log.warn(this.holdability + " is valid!", e);
+        } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
-        // try {
-        // if (this.hasNetworkTimeout) {
-        // conn.setNetworkTimeout(null, this.networkTimeout);
-        // }
-        // } catch (Exception e) {
-        // log.warn(this.networkTimeout + " is valid!", e);
-        // }
+//        try {
+//            if (this.hasNetworkTimeout) {
+//                conn.setNetworkTimeout(null, this.networkTimeout);
+//            }
+//        } catch (Throwable e) {
+//            if (log.isDebugEnabled()) {
+//                log.debug(e.getLocalizedMessage(), e);
+//            }
+//        }
 
         try {
             if (this.hasTypeMap) {
                 conn.setTypeMap(this.types);
             }
-        } catch (Exception e) {
-            // log.warn(StringUtils.toString(this.types) + " is valid!", e);
+        } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
     }
 

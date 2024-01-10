@@ -83,13 +83,6 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
         };
     }
 
-    // 返回一个副本
-    public DB2ExportFile clone() {
-        DB2ExportFile obj = new DB2ExportFile();
-        this.clone(obj);
-        return obj;
-    }
-
     /**
      * 解析字符串参数str中的字段 <br>
      * 默认使用半角逗号分隔字段 <br>
