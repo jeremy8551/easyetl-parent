@@ -370,7 +370,7 @@ public class Linuxs {
      */
     public static String parseIpRouteShow(List<String> stdouts) {
         for (String line : stdouts) {
-            String[] array = StringUtils.splitByBlank(line);
+            String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(line));
             if (array.length >= 3 && NetUtils.isIP(array[2])) {
                 return array[2];
             }

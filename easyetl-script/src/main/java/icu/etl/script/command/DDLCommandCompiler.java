@@ -22,7 +22,7 @@ public class DDLCommandCompiler extends AbstractTraceCommandCompiler {
 
     @Override
     public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException {
-        String[] array = StringUtils.splitByBlank(command);
+        String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(command));
         if (array.length > 1) {
             String schema = Jdbc.getSchema(array[1]);
             String tableName = Jdbc.removeSchema(array[1]);

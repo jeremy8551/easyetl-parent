@@ -61,7 +61,7 @@ public class SleepCommand extends AbstractTraceCommand implements UniversalScrip
         }
 
         try {
-            Thread.sleep(millis);
+            Thread.sleep(sleep);
             return 0;
         } catch (Throwable e) {
             stderr.println(ResourcesUtils.getScriptStderrMessage(42), e);

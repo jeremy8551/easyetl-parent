@@ -215,6 +215,10 @@ public class StandardPrinter implements Printer, java.io.Closeable {
     }
 
     public void flush() {
+        if (this.writer == null) {
+            return;
+        }
+        
         if (this.buffer.length() > 0) {
             try {
                 IO.write(this.writer, this.buffer);

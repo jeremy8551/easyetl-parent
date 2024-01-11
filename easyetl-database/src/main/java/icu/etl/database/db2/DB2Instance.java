@@ -723,7 +723,7 @@ public class DB2Instance {
                 }
 
                 if (line.indexOf(applicationId) != -1) {
-                    String[] array = StringUtils.splitByBlank(line);
+                    String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(line));
                     if (array.length >= 3 && array[3].equals(applicationId)) {
                         applicationHandle = array[2];
                         break;

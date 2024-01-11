@@ -91,6 +91,7 @@ public class ScriptProcessJob implements Runnable {
         this.alreadyRun = true;
         this.environment.getWaitRun().wakeup(); // 唤醒等待启动的线程
 
+        Writer out = null;
         ScriptStdout cmdout = null;
         ScriptStderr cmderr = null;
         UniversalScriptSession session = this.environment.getSession();
@@ -112,7 +113,7 @@ public class ScriptProcessJob implements Runnable {
 
                 // 标准信息与错误信息均写入日志文件
                 ScriptWriterFactory factory = new ScriptWriterFactory(logfile.getAbsolutePath(), true);
-                Writer out = factory.build(session, context);
+                out = factory.build(session, context);
                 cmdout = new ScriptStdout(out, stdout.getFormatter());
                 cmderr = new ScriptStderr(out, stderr.getFormatter());
 
@@ -133,7 +134,19 @@ public class ScriptProcessJob implements Runnable {
             this.running = false;
             this.alive = false;
             this.environment.getWaitDone().wakeup();
-            IO.close(cmdout, cmderr);
+
+            // 因为 cmdout 与 cmderr 公用一个 out，所以关闭流时需要先将缓存清空，再抓个关闭流
+            if (cmdout != null) {
+                cmdout.flush();
+                cmdout.setWriter(null);
+            }
+
+            if (cmderr != null) {
+                cmderr.flush();
+                cmderr.setWriter(null);
+            }
+
+            IO.close(out, cmdout, cmderr);
         }
     }
 

@@ -89,7 +89,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     protected void init() throws IOException {
         File file = new File("/proc/version");
         String kernelStr = FileUtils.readline(file, CharsetName.ISO_8859_1, 0);
-        String[] array = StringUtils.splitByBlank(kernelStr);
+        String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(kernelStr));
         this.name = array[0];
         this.kernel = array[2];
 

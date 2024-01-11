@@ -138,7 +138,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
         );
 
         String username = OSCommandUtils.join(stdouts.get("whoami"));
-        String[] unames = StringUtils.splitByBlank(OSCommandUtils.join(stdouts.get("uname")));
+        String[] unames = StringUtils.splitByBlank(StringUtils.trimBlank(OSCommandUtils.join(stdouts.get("uname"))));
         this.name = unames[0]; // 操作系统名
         this.kernel = unames[2]; // 内核版本
         this.users.addAll(Linuxs.parseEtcPasswd(stdouts.get("/etc/passwd"))); // 用户信息
@@ -724,7 +724,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
                     continue;
                 }
 
-                String ethfile = ArrayUtils.lastElement(StringUtils.splitByBlank(eth));
+                String ethfile = ArrayUtils.lastElement(StringUtils.splitByBlank(StringUtils.trimBlank(eth)));
                 if (!ethfile.startsWith("/etc")) {
                     continue;
                 }

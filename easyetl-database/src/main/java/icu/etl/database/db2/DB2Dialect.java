@@ -1302,7 +1302,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                         log.debug(line);
                     }
 
-                    String[] array = StringUtils.splitByBlank(line);
+                    String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(line));
                     if (array.length >= 3 && array[3].equals(applicationid)) {
                         String number = array[2];
                         if (StringUtils.isInt(number)) {

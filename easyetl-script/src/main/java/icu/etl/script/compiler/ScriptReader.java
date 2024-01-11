@@ -433,7 +433,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
         }
 
         int[] value = null;
-        String[] begArray = StringUtils.splitByBlank(beginStr); // 语句段落的起始词组
+        String[] begArray = StringUtils.splitByBlank(StringUtils.trimBlank(beginStr)); // 语句段落的起始词组
         Ensure.isTrue(begArray.length >= 1, (Object) begArray);
 
         String[] endArray = StringUtils.splitByBlank(StringUtils.trimBlank(endStr)); // 语句段落的结束词组

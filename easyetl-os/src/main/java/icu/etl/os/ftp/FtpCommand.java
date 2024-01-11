@@ -169,7 +169,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
         List<OSFile> list = new ArrayList<OSFile>();
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
-            String[] array = StringUtils.splitByBlank(line);
+            String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(line));
             if (array.length < 9) {
                 throw new IOException(status + "\nlineno: " + (i + 1) + ", content: " + line);
             }
@@ -202,7 +202,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
         // 第一行不可用
         String line = it.hasNext() ? it.next().toString() : null;
-        if (StringUtils.splitByBlank(line).length >= 9) {
+        if (StringUtils.splitByBlank(StringUtils.trimBlank(line)).length >= 9) {
             throw new OSFileCommandException(status);
         }
 
@@ -210,7 +210,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
             line = it.next().toString();
 
             // 如果是最后一行则退出
-            if (!it.hasNext() && (line.endsWith("End of status.") || StringUtils.splitByBlank(line).length < 9)) {
+            if (!it.hasNext() && (line.endsWith("End of status.") || StringUtils.splitByBlank(StringUtils.trimBlank(line)).length < 9)) {
                 break;
             } else {
                 list.add(line);
@@ -234,7 +234,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
         List<String> list = this.parse(status);
         for (String line : list) {
-            String[] array = StringUtils.splitByBlank(line);
+            String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(line));
             OSFileImpl file = this.toFtpFile(line, array, "null");
             if (filename.equals(file.getName())) {
                 if (file.isDirectory() || file.isLink()) {

@@ -60,7 +60,7 @@ public class MacOS extends LinuxLocalOS {
             }
 
             this.cmd.execute("uname -a");
-            this.kernel = StringUtils.trimBlank(StringUtils.splitByBlank(this.cmd.getStdout())[2]);
+            this.kernel = StringUtils.trimBlank(StringUtils.splitByBlank(StringUtils.trimBlank(this.cmd.getStdout()))[2]);
 
             if (log.isDebugEnabled()) {
                 log.debug(this.name + " " + this.kernel + " " + this.release);
