@@ -1,6 +1,5 @@
 package icu.etl.script.method;
 
-import java.util.Arrays;
 import java.util.List;
 
 import icu.etl.annotation.ScriptFunction;
@@ -68,9 +67,7 @@ public class SplitMethod extends AbstractMethod {
             String value = (String) object;
             String[] array = null; // string array
             if (parameters.size() == 0) {
-                System.out.println("[" + value + "]");
                 array = StringUtils.splitByBlank(value);
-                System.out.println(Arrays.toString(array));
             } else if (escape == null) {
                 array = StringUtils.split(value, delimiter);
             } else {
