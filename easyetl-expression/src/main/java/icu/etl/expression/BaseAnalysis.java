@@ -295,14 +295,14 @@ public class BaseAnalysis implements Analysis {
     }
 
     public int indexOfParenthes(CharSequence str, int from) {
-        if (from < 0 || from >= str.length()) {
+        if (str == null || from < 0 || from >= str.length()) {
             throw new IllegalArgumentException(str + ", " + from);
         }
 
         for (int i = from + 1, count = 1; i < str.length(); i++) {
             char c = str.charAt(i);
             if (c == '\'') {
-                int end = StringUtils.indexOfQuotation(str, i, this.escape);
+                int end = this.indexOfQuotation(str, i);
                 if (end == -1) {
                     return -1;
                 } else {
@@ -312,7 +312,7 @@ public class BaseAnalysis implements Analysis {
             }
 
             if (c == '\"') {
-                int end = StringUtils.indexOfDoubleQuotation(str, i, this.escape);
+                int end = this.indexOfDoubleQuotation(str, i);
                 if (end == -1) {
                     return -1;
                 } else {
@@ -386,6 +386,9 @@ public class BaseAnalysis implements Analysis {
     }
 
     public int indexOfBrace(CharSequence str, int from) {
+        if (str == null) {
+            throw new NullPointerException();
+        }
         if (from < 0 || from >= str.length()) {
             throw new IllegalArgumentException(str + ", " + from);
         }
@@ -393,7 +396,7 @@ public class BaseAnalysis implements Analysis {
         for (int i = from + 1, count = 1; i < str.length(); i++) {
             char c = str.charAt(i);
             if (c == '\'') {
-                int end = StringUtils.indexOfQuotation(str, i, this.escape);
+                int end = this.indexOfQuotation(str, i);
                 if (end == -1) {
                     return -1;
                 } else {
@@ -403,7 +406,7 @@ public class BaseAnalysis implements Analysis {
             }
 
             if (c == '\"') {
-                int end = StringUtils.indexOfDoubleQuotation(str, i, this.escape);
+                int end = this.indexOfDoubleQuotation(str, i);
                 if (end == -1) {
                     return -1;
                 } else {

@@ -2,11 +2,11 @@ package icu.etl.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Iterator;
 
 import icu.etl.ioc.EasyBeanContext;
-import icu.etl.util.IO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class QueryManagerTest { // TODO 需要重新测试
+public class QueryManagerTest {
 
     public final static String tableName = "TEST.test_table_name_temp".toUpperCase();
 
@@ -48,7 +48,7 @@ public class QueryManagerTest { // TODO 需要重新测试
     }
 
     @Test
-    public void testInitConnectionStringIntInt() {
+    public void testInitConnectionStringIntInt() throws SQLException {
         Connection conn = this.connection;
         try {
             JdbcQueryStatement query = new JdbcQueryStatement(conn, "select * from " + tableName, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
@@ -56,15 +56,15 @@ public class QueryManagerTest { // TODO 需要重新测试
             String[] colNames = Jdbc.getColumnName(result);
             while (query.next()) {
                 Iterator<String> it = Arrays.asList(colNames).iterator();
-                StringBuilder sb = new StringBuilder();
+                StringBuilder buf = new StringBuilder();
                 while (it.hasNext()) {
                     String name = it.next();
-                    sb.append(result.getObject(name));
+                    buf.append(result.getObject(name));
                     if (it.hasNext()) {
-                        sb.append(", ");
+                        buf.append(", ");
                     }
                 }
-                System.out.println(sb.toString());
+                System.out.println(buf.toString());
             }
 
             conn.commit();
@@ -72,7 +72,7 @@ public class QueryManagerTest { // TODO 需要重新测试
             e.printStackTrace();
             fail();
         } finally {
-            IO.close(conn);
+            conn.close();
         }
     }
 
