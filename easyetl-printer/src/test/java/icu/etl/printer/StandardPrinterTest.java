@@ -170,10 +170,4 @@ public class StandardPrinterTest {
         out.close();
     }
 
-    public static void main(String[] args) {
-        char[] f = {'a', 'b', 'c'};
-        System.out.println(String.valueOf(f));
-        System.out.println(String.valueOf((Object) f));
-    }
-
 }
