@@ -164,7 +164,7 @@ public class Progress {
     /**
      * 返回进度输出信息
      *
-     * @return
+     * @return 进度信息
      */
     public String getMessage() {
         return this.message;
@@ -253,7 +253,7 @@ public class Progress {
     /**
      * 返回进度输出接口
      *
-     * @return
+     * @return 输出接口
      */
     public ProgressPrinter getPrinter() {
         return out;
@@ -262,7 +262,7 @@ public class Progress {
     /**
      * 设置当前次数
      *
-     * @param count
+     * @param count 次数
      */
     public void setCount(long count) {
         this.count = new AtomicLong(count);
@@ -271,7 +271,7 @@ public class Progress {
     /**
      * 返回当前次数
      *
-     * @return
+     * @return 次数
      */
     public AtomicLong getCount() {
         return count;
@@ -280,7 +280,7 @@ public class Progress {
     /**
      * 返回任务编号（仅适用于多任务时）
      *
-     * @return
+     * @return 任务编号
      */
     public String getTaskId() {
         return this.taskId;

@@ -13,7 +13,7 @@ public interface UniversalCommandListener {
      * @param stderr      错误信息输出接口
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param in          脚本语句的输入流
-     * @throws Exception
+     * @throws Exception 发生错误
      */
     void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws Exception;
 
@@ -29,7 +29,7 @@ public interface UniversalCommandListener {
      * @param result      脚本命令执行结果
      * @param e           执行脚本命令时抛出了异常信息
      * @return 返回 true 表示执行了业务逻辑，false 表示无业务逻辑
-     * @throws Exception
+     * @throws Exception 发生错误
      */
     boolean catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws Exception;
 
@@ -43,7 +43,7 @@ public interface UniversalCommandListener {
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param command     脚本命令
      * @param result      脚本命令执行结果
-     * @throws Exception
+     * @throws Exception 发生错误
      */
     void exitScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception;
 
@@ -57,7 +57,7 @@ public interface UniversalCommandListener {
      * @param command 脚本命令
      * @return 返回 true 表示可以执行 {@linkplain UniversalScriptCommand#execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean)} 方法 <br>
      * 返回 false 表示跳过 {@linkplain UniversalScriptCommand#execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean)} 方法执行下一个命令
-     * @throws Exception
+     * @throws Exception 发生错误
      */
     boolean beforeCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptCommand command) throws Exception;
 
@@ -71,7 +71,7 @@ public interface UniversalCommandListener {
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param command     脚本命令
      * @param result      脚本命令执行结果
-     * @throws Exception
+     * @throws Exception 发生错误
      */
     void afterCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) throws Exception;
 
@@ -87,7 +87,7 @@ public interface UniversalCommandListener {
      * @param result      脚本命令执行结果
      * @param e           执行脚本命令时抛出了异常信息
      * @return 返回 true 表示执行了业务逻辑，false 表示无业务逻辑
-     * @throws Exception
+     * @throws Exception 发生错误
      */
     boolean catchCommand(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws Exception;
 

@@ -31,8 +31,8 @@ public class CommandResultSet implements UniversalCommandResultSet {
         return this.exit;
     }
 
-    public void setExitSession(boolean val) {
-        this.exit = val;
+    public void setExitSession(boolean exit) {
+        this.exit = exit;
     }
 
 }

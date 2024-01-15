@@ -80,34 +80,6 @@ public class StandardPrinter implements Printer, java.io.Closeable {
         }
     }
 
-    public void print(char c) {
-        this.print(String.valueOf(c));
-    }
-
-    public void print(int i) {
-        this.print(String.valueOf(i));
-    }
-
-    public void print(float f) {
-        this.print(String.valueOf(f));
-    }
-
-    public void print(double d) {
-        this.print(String.valueOf(d));
-    }
-
-    public void print(boolean b) {
-        this.print(b ? "true" : "false");
-    }
-
-    public void print(long l) {
-        this.print(String.valueOf(l));
-    }
-
-    public void print(char[] a) {
-        this.print(new String(a));
-    }
-
     public void print(Object object) {
         this.print(this.converter == null ? String.valueOf(object) : this.converter.format(object));
     }
@@ -159,34 +131,6 @@ public class StandardPrinter implements Printer, java.io.Closeable {
         this.println("");
     }
 
-    public void println(char c) {
-        this.println(String.valueOf(c));
-    }
-
-    public void println(int i) {
-        this.println(String.valueOf(i));
-    }
-
-    public void println(float f) {
-        this.println(String.valueOf(f));
-    }
-
-    public void println(double d) {
-        this.println(String.valueOf(d));
-    }
-
-    public void println(boolean b) {
-        this.println(b ? "true" : "false");
-    }
-
-    public void println(long l) {
-        this.println(String.valueOf(l));
-    }
-
-    public void println(char[] array) {
-        this.println(new String(array));
-    }
-
     public void println(Object object) {
         this.println(this.converter == null ? String.valueOf(object) : this.converter.format(object));
     }
@@ -218,7 +162,7 @@ public class StandardPrinter implements Printer, java.io.Closeable {
         if (this.writer == null) {
             return;
         }
-        
+
         if (this.buffer.length() > 0) {
             try {
                 IO.write(this.writer, this.buffer);

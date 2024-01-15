@@ -26,30 +26,14 @@ public class ScriptChecker implements UniversalScriptChecker {
     public ScriptChecker() {
     }
 
-    /**
-     * 设置数据库关键字
-     *
-     * @param databaseKeyword
-     */
-    public void setDatabaseKeywords(Set<String> databaseKeyword) {
-        this.databaseKeyword = databaseKeyword;
+    public void setDatabaseKeywords(Set<String> set) {
+        this.databaseKeyword = set;
     }
 
-    /**
-     * 设置脚本引擎关键字
-     *
-     * @param scriptKeyword
-     */
-    public void setScriptEngineKeywords(Set<String> scriptKeyword) {
-        this.scriptKeyword = scriptKeyword;
+    public void setScriptEngineKeywords(Set<String> set) {
+        this.scriptKeyword = set;
     }
 
-    /**
-     * 判断变量名是否合法
-     *
-     * @param name 变量名
-     * @return
-     */
     public boolean isVariableName(String name) {
         if (name.length() == 0) { // 变量名不能为空
             return false;
@@ -76,12 +60,6 @@ public class ScriptChecker implements UniversalScriptChecker {
         return this.scriptKeyword != null && !this.scriptKeyword.contains(name);
     }
 
-    /**
-     * 判断字符串参数 name 是否是数据库关键字
-     *
-     * @param name 字符串
-     * @return
-     */
     public boolean isDatabaseKeyword(String name) {
         return this.databaseKeyword != null && this.databaseKeyword.contains(name);
     }

@@ -66,7 +66,7 @@ public class StandardPrinterTest {
         StandardPrinter p = new StandardPrinter(writer);
         p.print(true);
         p.print('1');
-        p.print(new char[]{'2', '3', '4'});
+        p.print("234");
         p.print("567");
         p.print(890.123);
         p.print((float) 456.789);
@@ -87,10 +87,6 @@ public class StandardPrinterTest {
         writer.reset();
         p.println('0');
         Assert.assertEquals("0" + FileUtils.lineSeparator, writer.toString());
-
-        writer.reset();
-        p.println(new char[]{'1', '2', '3'});
-        Assert.assertEquals("123" + FileUtils.lineSeparator, writer.toString());
 
         writer.reset();
         p.println("456");
@@ -172,6 +168,12 @@ public class StandardPrinterTest {
         out.println("test");
         out.println("test", new IOException());
         out.close();
+    }
+
+    public static void main(String[] args) {
+        char[] f = {'a', 'b', 'c'};
+        System.out.println(String.valueOf(f));
+        System.out.println(String.valueOf((Object) f));
     }
 
 }

@@ -8,7 +8,7 @@ public interface ProgressPrinter {
     /**
      * 输出字符序列信息
      *
-     * @param msg
+     * @param msg 字符序列
      */
     void println(CharSequence msg);
 

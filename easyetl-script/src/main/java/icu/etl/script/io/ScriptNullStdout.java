@@ -41,34 +41,6 @@ public class ScriptNullStdout implements UniversalScriptStdout {
 
     }
 
-    public void print(char c) {
-
-    }
-
-    public void print(int i) {
-
-    }
-
-    public void print(float f) {
-
-    }
-
-    public void print(double d) {
-
-    }
-
-    public void print(boolean b) {
-
-    }
-
-    public void print(long d) {
-
-    }
-
-    public void print(char[] ca) {
-
-    }
-
     public void print(Object obj) {
 
     }
@@ -82,34 +54,6 @@ public class ScriptNullStdout implements UniversalScriptStdout {
     }
 
     public void println(CharSequence msg, Throwable e) {
-
-    }
-
-    public void println(char c) {
-
-    }
-
-    public void println(int i) {
-
-    }
-
-    public void println(float f) {
-
-    }
-
-    public void println(double d) {
-
-    }
-
-    public void println(boolean b) {
-
-    }
-
-    public void println(long d) {
-
-    }
-
-    public void println(char[] ca) {
 
     }
 

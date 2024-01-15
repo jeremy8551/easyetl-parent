@@ -14,7 +14,7 @@ public interface UniversalScriptConfiguration {
      * 查询脚本引擎属性
      *
      * @param name 属性名
-     * @return
+     * @return 属性值
      */
     String getProperty(String name);
 

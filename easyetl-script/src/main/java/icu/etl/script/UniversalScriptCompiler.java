@@ -12,7 +12,7 @@ public interface UniversalScriptCompiler {
     /**
      * 创建子编译器
      *
-     * @return
+     * @return 编译器
      */
     UniversalScriptCompiler buildCompiler();
 
@@ -44,35 +44,35 @@ public interface UniversalScriptCompiler {
     /**
      * 返回编译成功的命令
      *
-     * @return
+     * @return 脚本引擎命令
      */
     UniversalScriptCommand next();
 
     /**
      * 返回语句分析器
      *
-     * @return
+     * @return 语句分析器
      */
     UniversalScriptAnalysis getAnalysis();
 
     /**
      * 返回语义分析器
      *
-     * @return
+     * @return 语义分析器
      */
     UniversalScriptParser getParser();
 
     /**
      * 返回命令仓库
      *
-     * @return
+     * @return 命令仓库
      */
     UniversalCommandRepository getRepository();
 
     /**
      * 返回已读取的行号，从 1 开始
      *
-     * @return
+     * @return 行号，从 1 开始
      */
     long getLineNumber();
 

@@ -46,34 +46,6 @@ public class ScriptStdbuf implements UniversalScriptStdout {
         this.buf.append(msg);
     }
 
-    public void print(char c) {
-        this.buf.append(c);
-    }
-
-    public void print(int i) {
-        this.buf.append(i);
-    }
-
-    public void print(float f) {
-        this.buf.append(f);
-    }
-
-    public void print(double d) {
-        this.buf.append(d);
-    }
-
-    public void print(boolean b) {
-        this.buf.append(b);
-    }
-
-    public void print(long l) {
-        this.buf.append(l);
-    }
-
-    public void print(char[] a) {
-        this.buf.append(new String(a));
-    }
-
     public void print(Object obj) {
         this.buf.append(obj);
     }
@@ -88,34 +60,6 @@ public class ScriptStdbuf implements UniversalScriptStdout {
 
     public void println(CharSequence msg) {
         this.buf.append(msg).append(FileUtils.lineSeparator);
-    }
-
-    public void println(char c) {
-        this.buf.append(c).append(FileUtils.lineSeparator);
-    }
-
-    public void println(int i) {
-        this.buf.append(i).append(FileUtils.lineSeparator);
-    }
-
-    public void println(float f) {
-        this.buf.append(f).append(FileUtils.lineSeparator);
-    }
-
-    public void println(double d) {
-        this.buf.append(d).append(FileUtils.lineSeparator);
-    }
-
-    public void println(boolean b) {
-        this.buf.append(b).append(FileUtils.lineSeparator);
-    }
-
-    public void println(long l) {
-        this.buf.append(l).append(FileUtils.lineSeparator);
-    }
-
-    public void println(char[] array) {
-        this.buf.append(new String(array)).append(FileUtils.lineSeparator);
     }
 
     public void println(Object object) {
@@ -157,10 +101,6 @@ public class ScriptStdbuf implements UniversalScriptStdout {
 
     public String rtrimBlank() {
         return StringUtils.rtrimBlank(this.buf);
-    }
-
-    public String ltrimBlank() {
-        return StringUtils.ltrimBlank(this.buf);
     }
 
     public String trimBlank() {
