@@ -1,10 +1,10 @@
 package icu.etl.script.command;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import javax.sql.DataSource;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
@@ -202,11 +202,11 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
                 // 设置启动条件
                 if (analysis.equals(key, "launch")) {
                     String expr = StringUtils.trimBlank(analysis.unQuotation(value));
-                    Class<LoadEngineLaunch> cls = ClassUtils.forName(expr, true, context.getFactory().getContext().getClassLoader());
+                    Class<LoadEngineLaunch> cls = ClassUtils.forName(expr, true, context.getContainer().getClassLoader());
                     if (cls == null) {
                         cmd.setRule(expr);
                     } else {
-                        cmd.setRule((LoadEngineLaunch) context.getFactory().getContext().createBean(cls));
+                        cmd.setRule((LoadEngineLaunch) context.getContainer().createBean(cls));
                     }
                     continue;
                 }
@@ -301,7 +301,7 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
         // 查找接口对应的的实现类
-        List<EasyBeanInfo> list1 = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
+        List<EasyBeanInfo> list1 = context.getContainer().getBeanInfoList(TextTableFile.class);
         CharTable ct1 = new CharTable(context.getCharsetName());
         ct1.addTitle("");
         ct1.addTitle("");

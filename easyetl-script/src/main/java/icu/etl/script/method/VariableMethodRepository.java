@@ -74,7 +74,7 @@ public class VariableMethodRepository {
         if (method == null) {
             return method;
         } else {
-            return this.context.getFactory().getContext().createBean(method.getClass());
+            return this.context.getContainer().createBean(method.getClass());
         }
     }
 

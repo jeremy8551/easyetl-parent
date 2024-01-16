@@ -76,7 +76,7 @@ public class VariableMethodScanner {
             }
 
             try {
-                method = this.context.getFactory().getContext().createBean(cls);
+                method = this.context.getContainer().createBean(cls);
             } catch (Throwable e) {
                 if (log.isWarnEnabled()) {
                     log.warn(ResourcesUtils.getScriptStdoutMessage(42, cls.getName()), e);

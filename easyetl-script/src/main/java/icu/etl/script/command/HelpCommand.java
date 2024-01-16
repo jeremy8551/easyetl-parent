@@ -1,21 +1,19 @@
 package icu.etl.script.command;
 
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
 
 import icu.etl.ProjectPom;
 import icu.etl.annotation.EasyBean;
@@ -246,7 +244,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
             }
 
             // 读取大版本号
-            List<EasyBeanInfo> list = context.getFactory().getContext().getBeanInfoList(JavaDialect.class);
+            List<EasyBeanInfo> list = context.getContainer().getBeanInfoList(JavaDialect.class);
             for (EasyBeanInfo anno : list) {
                 set.add(anno.getType().getSimpleName());
             }
@@ -262,7 +260,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
 
     public String toAllImplements(UniversalScriptContext scriptContext) {
         StringBuilder buf = new StringBuilder();
-        EasyContext context = scriptContext.getFactory().getContext();
+        EasyContext context = scriptContext.getContainer();
         Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getBeanInfoTypes());
 
         // 以下这些接口的实现类已在帮助说明中删除
@@ -320,7 +318,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
      * @return
      */
     public String supportedDatabase(UniversalScriptContext context) {
-        List<EasyBeanInfo> list = context.getFactory().getContext().getBeanInfoList(DatabaseDialect.class);
+        List<EasyBeanInfo> list = context.getContainer().getBeanInfoList(DatabaseDialect.class);
         Collections.sort(list, new Comparator<EasyBeanInfo>() {
             public int compare(EasyBeanInfo o1, EasyBeanInfo o2) {
                 return o1.getName().compareTo(o2.getName());
@@ -378,7 +376,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         List<ScriptEngineFactory> engineFactories = manager.getEngineFactories();
         for (ScriptEngineFactory factory : engineFactories) {
             if (factory instanceof UniversalScriptEngineFactory) { // 使用当前脚本引擎的容器上下文信息，防止新脚本引擎创建新容器，导致重新扫描
-                ((UniversalScriptEngineFactory) factory).setContext(context.getFactory().getContext());
+                ((UniversalScriptEngineFactory) factory).setContext(context.getContainer());
             }
 
             table.addCell(titles[0]);

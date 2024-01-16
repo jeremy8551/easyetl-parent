@@ -77,7 +77,7 @@ public class JavaCommand extends AbstractTraceCommand implements UniversalScript
         if (cls == null) {
             throw new Exception(ResourcesUtils.getScriptStderrMessage(94, this.command, className, AbstractJavaCommand.class.getName()));
         }
-        this.obj = context.getFactory().getContext().createBean(cls);
+        this.obj = context.getContainer().createBean(cls);
 
         session.removeValue();
         session.putValue("obj", this.obj);

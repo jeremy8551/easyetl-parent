@@ -62,8 +62,9 @@ public class EasyBeanContext implements EasyContext {
      * @param args        参数数组
      */
     public EasyBeanContext(ClassLoader classLoader, String... args) {
-        this(classLoader);
+        this.setClassLoader(classLoader);
         this.setArgument(args);
+        this.init();
 
         // 扫描并加载组件
         EasyScanPatternList list = new EasyScanPatternList();
@@ -71,20 +72,29 @@ public class EasyBeanContext implements EasyContext {
         list.addArgument(args);
         list.addGroupID();
         this.loadBeanInfo(list.toArray());
+        this.addSelf();
     }
 
     /**
      * 容器上下文信息
-     *
-     * @param classLoader 类加载器
      */
-    public EasyBeanContext(ClassLoader classLoader) {
-        this.setClassLoader(classLoader);
+    protected void init() {
         this.iocManager = new ContainerContextManager(this);
         this.factory = new EasyBeanFactoryImpl(this);
         this.table = new EasyBeanTable(this);
         this.eventManager = new BeanEventManager(this);
         this.builders = new BeanBuilderManager(this);
+    }
+
+    /**
+     * 注册自身
+     */
+    protected void addSelf() {
+        EasyBeanInfoImpl beanInfo = new EasyBeanInfoImpl(EasyBeanContext.class);
+        beanInfo.setSingleton(true);
+        beanInfo.setLazy(false);
+        beanInfo.setBean(this);
+        this.addBean(beanInfo);
     }
 
     public EasyContext getParent() {

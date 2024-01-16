@@ -1,7 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.annotation.ScriptCommand;
@@ -64,7 +63,7 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
         it.assertNext("order");
         it.assertNext("by");
 
-        EasyContext ioccxt = context.getFactory().getContext();
+        EasyContext ioccxt = context.getContainer();
         String position = it.readOther();
         String[] array = StringUtils.split(StringUtils.trimBlank(position), analysis.getSegment()); // int(1) desc,2, 4,5
         OrderByExpression[] orders = new OrderByExpression[array.length];
@@ -75,7 +74,7 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
     }
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) { // 查找接口对应的的实现类
-        List<EasyBeanInfo> list = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
+        List<EasyBeanInfo> list = context.getContainer().getBeanInfoList(TextTableFile.class);
         CharTable ct = new CharTable(context.getCharsetName());
         ct.addTitle("");
         ct.addTitle("");

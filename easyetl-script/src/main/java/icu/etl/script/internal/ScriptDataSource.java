@@ -1,9 +1,9 @@
 package icu.etl.script.internal;
 
+import javax.sql.DataSource;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
-import javax.sql.DataSource;
 
 import icu.etl.database.Jdbc;
 import icu.etl.database.JdbcDao;
@@ -56,7 +56,7 @@ public class ScriptDataSource {
      */
     public ScriptDataSource(UniversalScriptContext context) {
         this.map = new Hashtable<String, DataSource>();
-        this.dao = new JdbcDao(context.getFactory().getContext());
+        this.dao = new JdbcDao(context.getContainer());
         this.catalog = null;
         this.context = context;
     }
@@ -121,8 +121,8 @@ public class ScriptDataSource {
             throw new UniversalScriptException(ResourcesUtils.getDatabaseMessage(25, Jdbc.driverClassName, Jdbc.url, OSConnectCommand.username, OSConnectCommand.password, StringUtils.toString(catalog)));
         }
 
-        SimpleDatasource dataSource = new SimpleDatasource(this.context.getFactory().getContext(), catalog); // 创建一个数据库连接池
-        DataSource dataSourceProxy = Jdbc.getDataSourceLogger(this.context.getFactory().getContext(), dataSource);
+        SimpleDatasource dataSource = new SimpleDatasource(this.context.getContainer(), catalog); // 创建一个数据库连接池
+        DataSource dataSourceProxy = Jdbc.getDataSourceLogger(this.context.getContainer(), dataSource);
         this.map.put(key, dataSourceProxy); // 保存到用户自定义数据库连接池集合中
         return dataSourceProxy;
     }

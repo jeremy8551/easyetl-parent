@@ -169,7 +169,7 @@ public class IncrementExpression implements Attribute<String> {
         // 如果设置了数据库名表
         if (this.attributes.containsKey("table")) {
             ScriptDataSource dataSource = ScriptDataSource.get(context);
-            JdbcDao dao = new JdbcDao(context.getFactory().getContext());
+            JdbcDao dao = new JdbcDao(context.getContainer());
             try {
                 if (this.attributes.containsKey("catalog")) { // 使用指定数据库连接
                     Properties p = context.getCatalog(this.attributes.get("catalog"));
@@ -185,7 +185,7 @@ public class IncrementExpression implements Attribute<String> {
                         ClassUtils.loadClass(driver);
                         Connection conn = Jdbc.getConnection(url, username, password);
                         DatabaseConfigurationContainer container = context.getContainer().getBean(DatabaseConfigurationContainer.class);
-                        container.add(new StandardDatabaseConfiguration(context.getFactory().getContext(), null, driver, url, username, password, null, null, null, null, null));
+                        container.add(new StandardDatabaseConfiguration(context.getContainer(), null, driver, url, username, password, null, null, null, null, null));
                         dao.setConnection(conn, true);
                     }
                 } else { // 使用默认数据库连接

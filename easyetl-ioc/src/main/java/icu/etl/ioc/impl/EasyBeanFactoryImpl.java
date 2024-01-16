@@ -1,9 +1,11 @@
 package icu.etl.ioc.impl;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.EasyBeanFactory;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
@@ -13,6 +15,7 @@ import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
+import icu.etl.util.ObjectUtils;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -24,10 +27,11 @@ import icu.etl.util.ResourcesUtils;
 public class EasyBeanFactoryImpl implements EasyBeanFactory {
     private final static Log log = LogFactory.getLog(EasyBeanFactoryImpl.class);
 
+    /** 容器上下文信息 */
     private EasyContext context;
 
     public EasyBeanFactoryImpl(EasyContext context) {
-        this.context = context;
+        this.context = Ensure.notNull(context);
     }
 
     public <E> E createBean(Class<?> type, Object... args) {
@@ -38,11 +42,44 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
         BeanArgument argument = new BeanArgument("", args);
         E obj = this.create(type, argument);
 
-        // 自动注入容器上下文信息 TODO 改成反射注入
+        // 自动注入容器上下文信息
         if (obj instanceof EasyContextAware) {
             ((EasyContextAware) obj).setContext(this.context);
         }
+
+        // 反射注入
+        this.autoInjection(obj);
         return obj;
+    }
+
+    /**
+     * 向实例对象中注入属性值
+     *
+     * @param obj 对象
+     */
+    public void autoInjection(Object obj) {
+        Field[] fields = obj.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            EasyBean annotation = field.getAnnotation(EasyBean.class);
+            if (annotation != null) {
+                boolean isFinal = Modifier.isFinal(field.getModifiers()); // 判断属性是否被 final 修饰
+                if (isFinal) {
+                    throw new UnsupportedOperationException(ResourcesUtils.getMessage("ioc.standard.output.msg007", annotation.toString(), field.getName(), obj));
+                }
+
+                // 返回属性值
+                Object value = ClassUtils.getField(obj, field);
+                if (value == null) { // 如果属性值为null，则在容器中查找对应的对象
+                    String name = ObjectUtils.coalesce(annotation.name(), "");
+                    Object bean = this.context.getBean(field.getType(), name);
+                    if (bean == null) {
+                        throw new UnsupportedOperationException(ResourcesUtils.getMessage("ioc.standard.output.msg008", field.getType(), field.getName(), obj));
+                    } else {
+                        ClassUtils.setField(obj, field, bean);
+                    }
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -88,16 +125,16 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
 
         // 使用其他构造方法
         List<Constructor<?>> others = constructors.getConstructors();
-        for (Constructor<?> c : others) {
+        for (Constructor<?> constructor : others) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getIocMessage(1, type.getName(), c.toGenericString()));
+                log.debug(ResourcesUtils.getIocMessage(1, type.getName(), constructor.toGenericString()));
             }
 
-            Object[] parameters = this.toArgs(c.getParameterTypes(), argument.getArgs());
+            Object[] parameters = this.toArgs(constructor.getParameterTypes(), argument.getArgs());
             try {
-                return (E) c.newInstance(parameters);
+                return (E) constructor.newInstance(parameters);
             } catch (Throwable e) {
-                String message = ResourcesUtils.getIocMessage(2, type.getName(), c.toGenericString(), BeanArgument.toString(parameters));
+                String message = ResourcesUtils.getIocMessage(2, type.getName(), constructor.toGenericString(), BeanArgument.toString(parameters));
                 buf.append(FileUtils.lineSeparator).append(message);
 
                 if (log.isDebugEnabled()) {
@@ -119,13 +156,14 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
     protected Object[] toArgs(Class<?>[] types, Object[] args) {
         Object[] array = new Object[types.length]; // 构造方法的参数值
         for (int i = 0; i < types.length; i++) {
-            if (ClassUtils.equals(EasyContext.class, types[i])) { // 通过构造方法注入容器上下文信息
+            Class<?> cls = types[i];
+            if (ClassUtils.equals(EasyContext.class, cls)) { // 通过构造方法注入容器上下文信息
                 array[i] = this.context;
                 continue;
             }
 
             // 基础类型不能为null，设置默认值
-            String name = types[i].getName();
+            String name = cls.getName();
             if (name.equals("int")) {
                 array[i] = 0;
                 continue;
@@ -166,16 +204,16 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
                 continue;
             }
 
-            Object param = ArrayUtils.indexOf(args, types[i], 0);
-            if (param != null) {
-                array[i] = param;
-                int index = ArrayUtils.indexOf(array, 0, param);
+            Object value = ArrayUtils.indexOf(args, cls, 0);
+            if (value != null) {
+                array[i] = value;
+                int index = ArrayUtils.indexOf(array, 0, value);
                 Ensure.isFromZero(index);
                 args[index] = null; // 参数被使用一次后, 不能再次使用
                 continue;
             }
 
-            array[i] = this.context.getBean(types[i], args);
+            array[i] = this.context.getBean(cls, args);
         }
         return array;
     }

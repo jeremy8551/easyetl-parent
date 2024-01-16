@@ -75,7 +75,7 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
 
     public void usage(UniversalScriptContext context, UniversalScriptStdout out) {
         // 查找接口对应的的实现类
-        List<EasyBeanInfo> list1 = context.getFactory().getContext().getBeanInfoList(TextTableFile.class);
+        List<EasyBeanInfo> list1 = context.getContainer().getBeanInfoList(TextTableFile.class);
         CharTable ct1 = new CharTable(context.getCharsetName());
         ct1.addTitle("");
         ct1.addTitle("");
@@ -87,7 +87,7 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
         }
 
         // 查找接口对应的的实现类
-        List<EasyBeanInfo> list2 = context.getFactory().getContext().getBeanInfoList(ExtractWriter.class);
+        List<EasyBeanInfo> list2 = context.getContainer().getBeanInfoList(ExtractWriter.class);
         CharTable ct2 = new CharTable(context.getCharsetName());
         ct2.addTitle("");
         ct2.addTitle("");

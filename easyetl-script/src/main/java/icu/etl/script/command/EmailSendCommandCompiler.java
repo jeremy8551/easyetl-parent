@@ -2,7 +2,6 @@ package icu.etl.script.command;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class EmailSendCommandCompiler extends AbstractTraceCommandCompiler {
         String sender = attrs.getAttribute("sender"); // 发送地址
         String charsetName = attrs.getAttribute("charset"); // 邮件服务器字符集
         String content = FileUtils.readline(new File(filepath), charsetName, 0); // 正文
-        EasyContext ioccxt = context.getFactory().getContext();
+        EasyContext ioccxt = context.getContainer();
 
         // 附件
         String[] attaches = StringUtils.split(attrs.getAttribute("attach"), ',');

@@ -118,7 +118,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
 
     public boolean isPrepared(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr) throws Exception {
         if (this.engine == null) {
-            this.engine = new ExportEngine(context.getFactory().getContext());
+            this.engine = new ExportEngine(context.getContainer());
 
             UniversalScriptAnalysis analysis = session.getAnalysis();
             String newTarget = FileUtils.replaceFolderSeparator(analysis.replaceShellVariable(session, context, this.dataTarget, true, true, true, false));
@@ -136,7 +136,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             }
 
             JdbcConverterMapper mapper = new StandardJdbcConverterMapper(attribute.getAttribute("convert"), String.valueOf(analysis.getSegment()), String.valueOf(analysis.getMapdel()));
-            UserListenerList listeners = new UserListenerList(context.getFactory().getContext(), attribute.getAttribute("listener"));
+            UserListenerList listeners = new UserListenerList(context.getContainer(), attribute.getAttribute("listener"));
 
             // 保存属性
             ExtracterContext cxt = this.engine.getContext();

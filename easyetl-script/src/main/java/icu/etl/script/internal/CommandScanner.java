@@ -56,7 +56,7 @@ public class CommandScanner {
         this.repository = repository;
 
         // 显示所有已加载的脚本引擎命令
-        EasyContext cxt = context.getFactory().getContext();
+        EasyContext cxt = context.getContainer();
         List<EasyBeanInfo> beanList = cxt.getBeanInfoList(UniversalCommandCompiler.class);
         for (EasyBeanInfo beanInfo : beanList) {
             Class<? extends UniversalCommandCompiler> cls = beanInfo.getType();
@@ -94,7 +94,7 @@ public class CommandScanner {
 
             UniversalCommandCompiler compiler;
             try {
-                compiler = this.context.getFactory().getContext().createBean(cls);
+                compiler = this.context.getContainer().createBean(cls);
             } catch (Exception e) {
                 if (log.isWarnEnabled()) {
                     log.warn(ResourcesUtils.getClassMessage(12, cls.getName()), e);

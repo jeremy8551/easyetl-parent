@@ -31,7 +31,7 @@ public interface EasyBeanInfoContext {
      * @param name 组件名
      * @return 组件类信息
      */
-    EasyBeanInfo getBeanInfo(Class<?> type, String name);
+    EasyBeanInfoValue getBeanInfo(Class<?> type, String name);
 
     /**
      * 查找类或接口对应的（所有）组件信息

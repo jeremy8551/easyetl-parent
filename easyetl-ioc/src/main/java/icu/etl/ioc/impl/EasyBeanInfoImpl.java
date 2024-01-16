@@ -4,6 +4,7 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyBeanInfoValue;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 /**
@@ -41,11 +42,7 @@ public class EasyBeanInfoImpl implements EasyBeanInfoValue {
      * @param type 组件类信息
      */
     public EasyBeanInfoImpl(Class<?> type) {
-        if (type == null) {
-            throw new NullPointerException();
-        }
-
-        this.type = type;
+        this.type = Ensure.notNull(type);
         this.instance = null;
         EasyBean annotation = type.getAnnotation(EasyBean.class); // 取得类上配置的注解
         if (annotation != null) {
@@ -69,17 +66,14 @@ public class EasyBeanInfoImpl implements EasyBeanInfoValue {
      * @param beanInfo 组件信息
      */
     public EasyBeanInfoImpl(EasyBeanInfo beanInfo) {
-        if (beanInfo == null) {
-            throw new NullPointerException();
-        }
-
-        this.instance = null;
+        Ensure.notNull(beanInfo);
         this.type = beanInfo.getType();
         this.name = beanInfo.getName();
         this.singleton = beanInfo.singleton();
         this.priority = beanInfo.getPriority();
         this.lazy = beanInfo.isLazy();
         this.description = beanInfo.getDescription();
+        this.instance = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -105,6 +99,51 @@ public class EasyBeanInfoImpl implements EasyBeanInfoValue {
 
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * 设置是否使用单例模式
+     *
+     * @param singleton true表示使用单例模式 false表示原型模式
+     */
+    public void setSingleton(boolean singleton) {
+        this.singleton = singleton;
+    }
+
+    /**
+     * 设置组件名
+     *
+     * @param name 组件名
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 设置权重，从0开始权重值逐增高
+     *
+     * @param priority 权重
+     */
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    /**
+     * 设置是否延迟加载
+     *
+     * @param lazy true表示延迟加载 false表示容器启动时加载
+     */
+    public void setLazy(boolean lazy) {
+        this.lazy = lazy;
+    }
+
+    /**
+     * 设置组件说明信息
+     *
+     * @param description 说明信息
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean equals(Class<?> cls) {
