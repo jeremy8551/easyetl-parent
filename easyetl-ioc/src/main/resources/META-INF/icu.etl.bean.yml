@@ -1,9 +1,0 @@
-icu.etl.os.ssh.SftpCommand:
-  singleton: true
-  lazy: false
-  name:
-  priority:
-  description:
-  disable: true
-icu.etl.ioc.impl.ClassScanRuleImpl:
-

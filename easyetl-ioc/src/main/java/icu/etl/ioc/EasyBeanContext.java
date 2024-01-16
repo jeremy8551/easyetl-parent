@@ -7,7 +7,6 @@ import icu.etl.ProjectPom;
 import icu.etl.ioc.impl.EasyBeanFactoryImpl;
 import icu.etl.ioc.impl.EasyBeanInfoImpl;
 import icu.etl.ioc.scan.BeanClassScanner;
-import icu.etl.ioc.scan.BeanSpiScanner;
 import icu.etl.ioc.scan.EasyScanPatternList;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Ensure;
@@ -71,7 +70,7 @@ public class EasyBeanContext implements EasyContext {
         list.addProperty();
         list.addArgument(args);
         list.addGroupID();
-        this.loadBeanInfo(list.toArray());
+        this.scanPackages(list.toArray());
         this.addSelf();
     }
 
@@ -141,18 +140,11 @@ public class EasyBeanContext implements EasyContext {
         this.eventManager.clear();
     }
 
-    public synchronized int loadBeanInfo(String... args) {
-        // SPI扫描
-        BeanSpiScanner scanner1 = new BeanSpiScanner();
-        int load1 = scanner1.load(this);
-
-        // 类扫描
-        BeanClassScanner scanner2 = new BeanClassScanner();
-        int load2 = scanner2.load(this, args);
-
-        // 刷新
-        this.table.refresh();
-        return load1 + load2;
+    public synchronized int scanPackages(String... args) {
+        BeanClassScanner scanner = new BeanClassScanner();
+        int load = scanner.load(this, args);
+        this.table.refresh(); // 刷新
+        return load;
     }
 
     public EasyBeanInfoValue getBeanInfo(Class<?> type, String name) {
@@ -206,6 +198,10 @@ public class EasyBeanContext implements EasyContext {
 
     public boolean containsBeanInfo(Class<?> type, Class<?> cls) {
         return this.table.get(type).contains(cls);
+    }
+
+    public boolean removeBeanInfo(Class<?> type, Class<?> cls) {
+        return this.table.get(type).remove(cls);
     }
 
     public List<EasyBeanInfo> getBeanInfoList(Class<?> type) {

@@ -27,7 +27,7 @@ public class ClassScannerTest {
         Assert.assertFalse(exists);
         Assert.assertTrue(exists1);
 
-        int num = context.loadBeanInfo(TestLoader1.class.getPackage().getName(), ":info");
+        int num = context.scanPackages(TestLoader1.class.getPackage().getName(), ":info");
         Assert.assertEquals(1, num);
         exists = false;
         exists1 = false;

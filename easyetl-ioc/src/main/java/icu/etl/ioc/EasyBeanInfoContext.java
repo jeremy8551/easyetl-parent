@@ -11,11 +11,11 @@ import java.util.List;
 public interface EasyBeanInfoContext {
 
     /**
-     * 初始化操作
+     * 扫描包下的组件
      *
      * @param args 参数数组
      */
-    int loadBeanInfo(String... args);
+    int scanPackages(String... args);
 
     /**
      * 返回容器中存储的所有组件的查询条件（按组件添加的顺序）
@@ -58,6 +58,15 @@ public interface EasyBeanInfoContext {
      * @return true表示存在组件实现类
      */
     boolean containsBeanInfo(Class<?> type, Class<?> cls);
+
+    /**
+     * 删除组件的某个实现类
+     *
+     * @param type 组件的类信息
+     * @param cls  需要删除的实现类
+     * @return 返回true表示删除成功 false表示实现类不存在
+     */
+    boolean removeBeanInfo(Class<?> type, Class<?> cls);
 
     /**
      * 删除接口信息对应的实现类集合
