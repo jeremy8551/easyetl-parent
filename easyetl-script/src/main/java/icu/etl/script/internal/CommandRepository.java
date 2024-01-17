@@ -10,6 +10,7 @@ import java.util.Map;
 
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.script.UniversalCommandCompiler;
+import icu.etl.script.UniversalCommandCompilerResult;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
@@ -179,17 +180,17 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
         String key = name.toUpperCase();
 
         // 尝试匹配 * 命令
-        for (CommandCompilerContext cxt : this.rule1) {
-            int code = cxt.getCompiler().match(name, script);
+        for (CommandCompilerContext context : this.rule1) {
+            UniversalCommandCompilerResult code = context.getCompiler().match(name, script);
             switch (code) {
-                case 0:
-                    this.cache.add(cxt.getCompiler());
+                case NEUTRAL:
+                    this.cache.add(context.getCompiler());
                     break;
-                case 1:
-                    return cxt.getCompiler();
-                case 2:
+                case ACCEPT:
+                    return context.getCompiler();
+                case IGNORE:
                     continue;
-                case 3:
+                case DENY:
                     return this.defaultCompiler;
                 default:
                     throw new UnsupportedOperationException(String.valueOf(code));
@@ -213,16 +214,16 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
         if (list != null) {
             for (int i = 0; i < list.size(); i++) {
                 CommandCompilerContext ccxt = list.get(i);
-                int code = ccxt.getCompiler().match(name, script);
+                UniversalCommandCompilerResult code = ccxt.getCompiler().match(name, script);
                 switch (code) {
-                    case 0:
+                    case NEUTRAL:
                         this.cache.add(ccxt.getCompiler());
                         break;
-                    case 1:
+                    case ACCEPT:
                         return ccxt.getCompiler();
-                    case 2:
+                    case IGNORE:
                         continue;
-                    case 3:
+                    case DENY:
                         return this.defaultCompiler;
                     default:
                         throw new UnsupportedOperationException(String.valueOf(code));
@@ -238,16 +239,16 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
 
         // 尝试匹配 * 命令
         for (CommandCompilerContext obj : this.rule4) {
-            int code = obj.getCompiler().match(name, script);
+            UniversalCommandCompilerResult code = obj.getCompiler().match(name, script);
             switch (code) {
-                case 0:
+                case NEUTRAL:
                     this.cache.add(obj.getCompiler());
                     break;
-                case 1:
+                case ACCEPT:
                     return obj.getCompiler();
-                case 2:
+                case IGNORE:
                     continue;
-                case 3:
+                case DENY:
                     return this.defaultCompiler;
                 default:
                     throw new UnsupportedOperationException(String.valueOf(code));

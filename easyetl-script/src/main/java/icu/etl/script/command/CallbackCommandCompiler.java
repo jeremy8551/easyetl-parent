@@ -1,13 +1,13 @@
 package icu.etl.script.command;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.expression.WordIterator;
 import icu.etl.script.UniversalCommandCompiler;
+import icu.etl.script.UniversalCommandCompilerResult;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -37,8 +37,8 @@ public class CallbackCommandCompiler extends AbstractGlobalCommandCompiler {
 
     private Pattern pattern = Pattern.compile(REGEX, Pattern.DOTALL | Pattern.MULTILINE);
 
-    public int match(String name, String script) {
-        return pattern.matcher(script).find() ? 0 : 2;
+    public UniversalCommandCompilerResult match(String name, String script) {
+        return pattern.matcher(script).find() ? UniversalCommandCompilerResult.NEUTRAL : UniversalCommandCompilerResult.IGNORE;
     }
 
     public String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException {

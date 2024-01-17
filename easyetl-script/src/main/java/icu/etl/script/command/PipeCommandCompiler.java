@@ -1,12 +1,12 @@
 package icu.etl.script.command;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import icu.etl.annotation.ScriptCommand;
+import icu.etl.script.UniversalCommandCompilerResult;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -29,11 +29,11 @@ public class PipeCommandCompiler extends AbstractCommandCompiler implements Univ
         this.context = context;
     }
 
-    public int match(String name, String line) {
+    public UniversalCommandCompilerResult match(String name, String line) {
         if (this.analysis == null) {
             this.analysis = this.context.getFactory().buildCompiler().getAnalysis();
         }
-        return this.containsPipe(line) ? 1 : 2;
+        return this.containsPipe(line) ? UniversalCommandCompilerResult.ACCEPT : UniversalCommandCompilerResult.IGNORE;
     }
 
     public String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException {

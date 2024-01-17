@@ -1,6 +1,7 @@
 package icu.etl.script.command;
 
 import icu.etl.script.UniversalCommandCompiler;
+import icu.etl.script.UniversalCommandCompilerResult;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -12,8 +13,8 @@ import icu.etl.script.internal.ScriptUsage;
 
 public abstract class AbstractCommandCompiler implements UniversalCommandCompiler {
 
-    public int match(String name, String script) {
-        return 0;
+    public UniversalCommandCompilerResult match(String name, String script) {
+        return UniversalCommandCompilerResult.NEUTRAL;
     }
 
     public abstract String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws Exception;

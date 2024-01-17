@@ -3,6 +3,7 @@ package icu.etl.script.command;
 import java.io.IOException;
 
 import icu.etl.annotation.ScriptCommand;
+import icu.etl.script.UniversalCommandCompilerResult;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptContextAware;
@@ -20,18 +21,18 @@ public class ExecuteFunctionCommandCompiler extends AbstractTraceCommandCompiler
         this.context = context;
     }
 
-    public int match(String name, String line) {
+    public UniversalCommandCompilerResult match(String name, String line) {
         FunctionSet local = FunctionSet.get(this.context, false); // 优先从局部域中查
         if (local.contains(name)) {
-            return 0;
+            return UniversalCommandCompilerResult.NEUTRAL;
         }
 
         FunctionSet global = FunctionSet.get(this.context, true); // 再次从全局域中查
         if (global.contains(name)) {
-            return 0;
+            return UniversalCommandCompilerResult.NEUTRAL;
         }
 
-        return 2;
+        return UniversalCommandCompilerResult.IGNORE;
     }
 
     public String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException {

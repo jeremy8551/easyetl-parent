@@ -10,6 +10,7 @@ import icu.etl.database.Jdbc;
 import icu.etl.expression.WordIterator;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.os.OSShellCommand;
+import icu.etl.script.UniversalCommandCompilerResult;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptContext;
@@ -29,8 +30,8 @@ public class DeclareCatalogCommandCompiler extends AbstractGlobalCommandCompiler
 
     private Pattern pattern = Pattern.compile(REGEX, Pattern.DOTALL | Pattern.MULTILINE);
 
-    public int match(String name, String script) {
-        return pattern.matcher(script).find() ? 0 : 2;
+    public UniversalCommandCompilerResult match(String name, String script) {
+        return pattern.matcher(script).find() ? UniversalCommandCompilerResult.NEUTRAL : UniversalCommandCompilerResult.IGNORE;
     }
 
     public String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException {

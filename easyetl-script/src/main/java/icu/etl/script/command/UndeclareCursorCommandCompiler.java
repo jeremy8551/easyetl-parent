@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.expression.WordIterator;
+import icu.etl.script.UniversalCommandCompilerResult;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptParser;
@@ -18,8 +19,8 @@ public class UndeclareCursorCommandCompiler extends AbstractTraceCommandCompiler
 
     private Pattern pattern = Pattern.compile(REGEX, Pattern.DOTALL | Pattern.MULTILINE);
 
-    public int match(String name, String script) {
-        return pattern.matcher(script).find() ? 0 : 2;
+    public UniversalCommandCompilerResult match(String name, String script) {
+        return pattern.matcher(script).find() ? UniversalCommandCompilerResult.NEUTRAL : UniversalCommandCompilerResult.IGNORE;
     }
 
     public String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException {
