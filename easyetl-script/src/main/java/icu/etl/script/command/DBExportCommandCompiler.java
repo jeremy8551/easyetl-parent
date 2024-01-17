@@ -8,7 +8,7 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
 import icu.etl.database.JdbcObjectConverter;
 import icu.etl.database.export.ExtractWriter;
-import icu.etl.database.export.UserListener;
+import icu.etl.database.export.ExtractUserListener;
 import icu.etl.expression.WordIterator;
 import icu.etl.io.TextTable;
 import icu.etl.io.TextTableFile;
@@ -101,7 +101,7 @@ public class DBExportCommandCompiler extends AbstractTraceCommandCompiler {
         out.println(new ScriptUsage(this.getClass() //
                 , TextTable.class.getName() // 0
                 , EasyBean.class.getName() // 1
-                , UserListener.class.getName() // 2
+                , ExtractUserListener.class.getName() // 2
                 , JdbcObjectConverter.class.getName() // 3
                 , ExtractWriter.class.getName() // 4
                 , ct1.toString(CharTable.Style.simple) // 5

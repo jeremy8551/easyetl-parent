@@ -6,7 +6,7 @@ package icu.etl.database.export;
  * @author jeremy8551@qq.com
  * @createtime 2021-02-18
  */
-public interface UserListener {
+public interface ExtractUserListener {
 
     /**
      * 返回 true 表示卸数任务已准备就绪可以执行

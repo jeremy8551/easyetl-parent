@@ -1,8 +1,8 @@
 package icu.etl.database.export;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.util.List;
-import javax.sql.DataSource;
 
 import icu.etl.database.JdbcConverterMapper;
 import icu.etl.io.TextTable;
@@ -17,7 +17,7 @@ import icu.etl.printer.Progress;
 public class ExtracterContext {
 
     private ExportEngine extracter;
-    private List<UserListener> listener;
+    private List<ExtractUserListener> listener;
     private JdbcConverterMapper converters;
     private TextTable format;
     private DataSource dataSource;
@@ -69,7 +69,7 @@ public class ExtracterContext {
      *
      * @param list
      */
-    public void setListener(List<UserListener> list) {
+    public void setListener(List<ExtractUserListener> list) {
         this.listener = list;
     }
 
@@ -78,7 +78,7 @@ public class ExtracterContext {
      *
      * @return
      */
-    public List<UserListener> getListener() {
+    public List<ExtractUserListener> getListener() {
         return this.listener;
     }
 

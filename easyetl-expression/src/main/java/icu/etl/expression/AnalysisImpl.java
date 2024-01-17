@@ -3,7 +3,6 @@ package icu.etl.expression;
 import java.util.ArrayList;
 import java.util.List;
 
-import icu.etl.annotation.EasyBean;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -12,7 +11,6 @@ import icu.etl.util.StringUtils;
  *
  * @author jeremy8551@qq.com
  */
-@EasyBean
 public class AnalysisImpl extends BaseAnalysis {
 
     /** 语句分隔符 */

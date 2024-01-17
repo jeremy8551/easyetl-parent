@@ -64,6 +64,7 @@ public class EasyBeanContext implements EasyContext {
         this.setClassLoader(classLoader);
         this.setArgument(args);
         this.init();
+        this.addSelf();
 
         // 扫描并加载组件
         EasyScanPatternList list = new EasyScanPatternList();
@@ -71,7 +72,6 @@ public class EasyBeanContext implements EasyContext {
         list.addArgument(args);
         list.addGroupID();
         this.scanPackages(list.toArray());
-        this.addSelf();
     }
 
     /**
@@ -86,7 +86,7 @@ public class EasyBeanContext implements EasyContext {
     }
 
     /**
-     * 注册自身
+     * 注册容器上下文信息
      */
     protected void addSelf() {
         EasyBeanInfoImpl beanInfo = new EasyBeanInfoImpl(EasyBeanContext.class);

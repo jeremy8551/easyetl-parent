@@ -7,7 +7,7 @@ import icu.etl.concurrent.EasyJob;
 import icu.etl.database.JdbcConverterMapper;
 import icu.etl.database.export.ExportEngine;
 import icu.etl.database.export.ExtracterContext;
-import icu.etl.database.export.UserListener;
+import icu.etl.database.export.ExtractUserListener;
 import icu.etl.database.internal.StandardJdbcConverterMapper;
 import icu.etl.io.TextTableFile;
 import icu.etl.ioc.EasyContext;
@@ -182,7 +182,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
         return true;
     }
 
-    private static class UserListenerList extends ArrayList<UserListener> {
+    private static class UserListenerList extends ArrayList<ExtractUserListener> {
         private final static long serialVersionUID = 1L;
 
         public UserListenerList(EasyContext context, String listeners) {
@@ -194,7 +194,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             String[] array = StringUtils.split(StringUtils.trimBlank(listeners), ',');
             for (String className : array) {
                 if (StringUtils.isNotBlank(className)) {
-                    this.add((UserListener) context.createBean(ClassUtils.loadClass(className)));
+                    this.add((ExtractUserListener) context.createBean(ClassUtils.loadClass(className)));
                 }
             }
         }

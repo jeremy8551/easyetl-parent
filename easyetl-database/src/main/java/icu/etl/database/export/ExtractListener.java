@@ -13,7 +13,7 @@ import icu.etl.util.ResourcesUtils;
  */
 public class ExtractListener {
 
-    private List<UserListener> list;
+    private List<ExtractUserListener> list;
 
     private ExtracterContext context;
 
@@ -24,7 +24,7 @@ public class ExtractListener {
      */
     public ExtractListener(ExtracterContext context) {
         this.context = context;
-        this.list = new ArrayList<UserListener>();
+        this.list = new ArrayList<ExtractUserListener>();
     }
 
     /**
@@ -32,10 +32,10 @@ public class ExtractListener {
      *
      * @param listeners 用户自定义监听器集合
      */
-    public void setListener(List<UserListener> listeners) {
+    public void setListener(List<ExtractUserListener> listeners) {
         if (listeners != null) {
             this.list.clear();
-            for (UserListener obj : listeners) {
+            for (ExtractUserListener obj : listeners) {
                 if (obj != null) {
                     this.list.add(obj);
                 }
@@ -49,7 +49,7 @@ public class ExtractListener {
      * @return
      */
     public boolean ready() {
-        for (UserListener l : this.list) {
+        for (ExtractUserListener l : this.list) {
             if (!l.ready(this.context)) {
                 return false;
             }
@@ -61,7 +61,7 @@ public class ExtractListener {
      * 卸数任务运行前执行的逻辑
      */
     public void before() {
-        for (UserListener l : this.list) {
+        for (ExtractUserListener l : this.list) {
             l.before(this.context);
         }
     }
@@ -76,7 +76,7 @@ public class ExtractListener {
             throw new ExtractException(ResourcesUtils.getExtractMessage(3), e);
         }
 
-        for (UserListener l : this.list) {
+        for (ExtractUserListener l : this.list) {
             l.catchException(this.context, e);
         }
     }
@@ -85,7 +85,7 @@ public class ExtractListener {
      * 卸数任务运行完毕后执行的逻辑
      */
     public void after() {
-        for (UserListener l : this.list) {
+        for (ExtractUserListener l : this.list) {
             l.after(this.context);
         }
     }
@@ -94,7 +94,7 @@ public class ExtractListener {
      * 退出卸数任务前执行的逻辑
      */
     public void destory() {
-        for (UserListener l : this.list) {
+        for (ExtractUserListener l : this.list) {
             l.quit(this.context);
         }
     }
