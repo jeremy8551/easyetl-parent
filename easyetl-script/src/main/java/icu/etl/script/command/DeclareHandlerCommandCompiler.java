@@ -57,7 +57,7 @@ public class DeclareHandlerCommandCompiler extends AbstractGlobalCommandCompiler
                 && analysis.indexOf(condition, "errorcode", 0, 1, 1) == -1 //
                 && analysis.indexOf(condition, "exitcode", 0, 1, 1) == -1 //
         ) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(60, command, "exception", "sqlstate", "errorcode", "exitcode"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr060", command, "exception", "sqlstate", "errorcode", "exitcode"));
         }
 
         it.assertLast("end");
@@ -65,7 +65,7 @@ public class DeclareHandlerCommandCompiler extends AbstractGlobalCommandCompiler
         List<UniversalScriptCommand> commands = parser.read(body);
         for (UniversalScriptCommand cmd : commands) { // 在 declare handler 语句中不能使用的语句
             if ((cmd instanceof LoopCommandSupported) && !((LoopCommandSupported) cmd).enableLoop()) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "declare handler", cmd.getScript()));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr030", "declare handler", cmd.getScript()));
             }
         }
 

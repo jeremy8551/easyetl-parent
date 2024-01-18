@@ -35,20 +35,20 @@ public class UndeclareSSHCommand extends AbstractTraceCommand {
         boolean print = session.isEchoEnable() || forceStdout;
         if ("client".equalsIgnoreCase(this.type)) {
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(44, this.name));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout044", this.name));
             }
 
             SSHClientMap.get(context).close(this.name);
             return 0;
         } else if ("tunnel".equalsIgnoreCase(this.type)) {
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(45, this.name));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout045", this.name));
             }
 
             SSHClientMap.get(context).close(this.name);
             return 0;
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(131, this.command, this.type, "client, tunnel"));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr131", this.command, this.type, "client, tunnel"));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }

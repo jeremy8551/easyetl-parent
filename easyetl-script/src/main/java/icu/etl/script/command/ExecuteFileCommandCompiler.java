@@ -24,7 +24,7 @@ public class ExecuteFileCommandCompiler extends AbstractTraceCommandCompiler {
             String filepath = analysis.trim(command.substring(1), 0, 1); // 脚本文件路径
             return new ExecuteFileCommand(this, orginalScript, filepath);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(33, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr033", command));
         }
     }
 

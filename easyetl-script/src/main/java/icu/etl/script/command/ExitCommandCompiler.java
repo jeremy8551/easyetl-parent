@@ -21,7 +21,7 @@ public class ExitCommandCompiler extends AbstractTraceCommandCompiler {
     public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException {
         String exitcode = analysis.trim(command.substring("exit".length()), 0, 1);
         if (exitcode.length() == 0) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(84, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr084", command));
         } else {
             return new ExitCommand(this, orginalScript, exitcode);
         }

@@ -28,7 +28,7 @@ public class BreakCommand extends AbstractSlaveCommand implements LoopCommandKin
 //			}
             return 0;
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(1));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr001"));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }

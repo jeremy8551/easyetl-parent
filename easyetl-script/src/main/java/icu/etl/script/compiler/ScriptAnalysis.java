@@ -139,7 +139,7 @@ public class ScriptAnalysis extends AnalysisImpl implements UniversalScriptAnaly
             if (c == '(') {
                 int end = this.indexOfParenthes(str, i);
                 if (end == -1) {
-                    throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(112, str));
+                    throw new IllegalArgumentException(ResourcesUtils.getMessage("script.message.stderr112", str));
                 }
                 i = end;
                 continue;
@@ -149,7 +149,7 @@ public class ScriptAnalysis extends AnalysisImpl implements UniversalScriptAnaly
             else if (c == '[') {
                 int end = this.indexOfBracket(str, i);
                 if (end == -1) {
-                    throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(115, str));
+                    throw new IllegalArgumentException(ResourcesUtils.getMessage("script.message.stderr115", str));
                 }
                 i = end;
                 continue;
@@ -396,7 +396,7 @@ public class ScriptAnalysis extends AnalysisImpl implements UniversalScriptAnaly
                     ScriptStdbuf cache = new ScriptStdbuf(stdout);
                     int exitcode = context.getEngine().eval(session, context, cache, stderr, command);
                     if (exitcode != 0) {
-                        throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(58, command));
+                        throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr058", command));
                     }
 
                     String message = cache.rtrimBlank();

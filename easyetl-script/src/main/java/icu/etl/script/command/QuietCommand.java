@@ -41,7 +41,7 @@ public class QuietCommand extends AbstractTraceCommand implements UniversalScrip
 
     public void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws Exception {
         if (this.subcommand != null) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "quiet", this.subcommand.getScript()));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "quiet", this.subcommand.getScript()));
         }
 
         String script = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
@@ -50,7 +50,7 @@ public class QuietCommand extends AbstractTraceCommand implements UniversalScrip
         if (list.size() == 1) {
             this.subcommand = list.get(0);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(78, script));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr078", script));
         }
     }
 

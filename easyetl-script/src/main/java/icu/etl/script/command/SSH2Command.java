@@ -55,7 +55,7 @@ public class SSH2Command extends AbstractTraceCommand implements JumpCommandSupp
         }
 
         if (analysis.isBlankline(oscommand)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(98, this.command));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr098", this.command));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -63,7 +63,7 @@ public class SSH2Command extends AbstractTraceCommand implements JumpCommandSupp
         this.client = context.getContainer().getBean(OSSecureShellCommand.class);
         try {
             if (!this.client.connect(host, Integer.parseInt(port), username, password)) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(38, "ssh2"));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr038", "ssh2"));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
@@ -82,7 +82,7 @@ public class SSH2Command extends AbstractTraceCommand implements JumpCommandSupp
                 if (!analysis.isBlankline(errout)) {
                     stderr.println(errout);
                 }
-                stderr.println(ResourcesUtils.getScriptStderrMessage(20, oscommand, exitcode, host));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr020", oscommand, exitcode, host));
                 return exitcode;
             }
         } finally {

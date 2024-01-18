@@ -58,14 +58,14 @@ public class NohupCommand extends AbstractCommand {
 
             if (!hasPrint) {
                 if (print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(24, this.subcommand));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout024", this.subcommand));
                 }
                 hasPrint = true;
             }
 
             // 判断是否大于超时时间
             if (watch.useMillis() > timeout) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(25, this.subcommand.getScript()));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr025", this.subcommand.getScript()));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
         }

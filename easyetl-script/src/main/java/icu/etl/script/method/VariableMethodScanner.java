@@ -72,14 +72,14 @@ public class VariableMethodScanner {
             String[] words = StringUtils.trimBlank(anno.keywords());
             UniversalScriptVariableMethod method = this.repository.get(name);
             if (method != null) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(128, name, method.getClass().getName(), cls.getName()));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr128", name, method.getClass().getName(), cls.getName()));
             }
 
             try {
                 method = this.context.getContainer().createBean(cls);
             } catch (Throwable e) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getScriptStdoutMessage(42, cls.getName()), e);
+                    log.warn(ResourcesUtils.getMessage("script.message.stdout042", cls.getName()), e);
                 }
                 return;
             }
@@ -88,7 +88,7 @@ public class VariableMethodScanner {
             this.repository.add(name, method);
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getScriptStdoutMessage(51, cls.getName()));
+                log.debug(ResourcesUtils.getMessage("script.message.stdout051", cls.getName()));
             }
 
             // 添加关键字
@@ -97,7 +97,7 @@ public class VariableMethodScanner {
             }
         } else {
             if (log.isDebugEnabled()) { // 只有调试模式才会打印警告
-                log.warn(ResourcesUtils.getScriptStderrMessage(52, cls.getName(), UniversalScriptVariableMethod.class.getName(), ScriptFunction.class.getName()));
+                log.warn(ResourcesUtils.getMessage("script.message.stderr052", cls.getName(), UniversalScriptVariableMethod.class.getName(), ScriptFunction.class.getName()));
             }
         }
     }

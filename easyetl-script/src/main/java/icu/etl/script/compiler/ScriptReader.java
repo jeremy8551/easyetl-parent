@@ -294,7 +294,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
                         }
                     }
 
-                    throw new IOException(ResourcesUtils.getScriptStderrMessage(104, buf));
+                    throw new IOException(ResourcesUtils.getMessage("script.message.stderr104", buf));
                 } else {
                     buf.append(currentLine.substring(i, index + 1)); // 保存多行注释
                     i = index;
@@ -334,7 +334,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
                             }
                         }
 
-                        throw new IOException(ResourcesUtils.getScriptStderrMessage(104, buf));
+                        throw new IOException(ResourcesUtils.getMessage("script.message.stderr104", buf));
                     } else {
                         buf.append(currentLine.substring(next));
                         return buf;
@@ -514,7 +514,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
 
             buf.append(line).append(in.getLineSeparator());
         } while ((line = in.readLine()) != null);
-        throw new IOException(ResourcesUtils.getScriptStderrMessage(89, buf, exists ? endStr : beginStr));
+        throw new IOException(ResourcesUtils.getMessage("script.message.stderr089", buf, exists ? endStr : beginStr));
     }
 
     public synchronized String readSymmetryScript(String str) throws IOException {
@@ -570,7 +570,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
                 continue;
             }
         }
-        throw new IOException(ResourcesUtils.getScriptStderrMessage(89, currentLine, flag));
+        throw new IOException(ResourcesUtils.getMessage("script.message.stderr089", currentLine, flag));
     }
 
     public synchronized String readSingleWord() throws IOException {

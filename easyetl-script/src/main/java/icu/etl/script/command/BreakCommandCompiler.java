@@ -22,7 +22,7 @@ public class BreakCommandCompiler extends AbstractSlaveCommandCompiler {
         if ("break".equalsIgnoreCase(command)) {
             return new BreakCommand(this, orginalScript);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(109, command, "break"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr109", command, "break"));
         }
     }
 

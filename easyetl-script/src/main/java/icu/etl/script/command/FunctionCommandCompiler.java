@@ -31,13 +31,13 @@ public class FunctionCommandCompiler extends AbstractCommandCompiler {
 
         String name = it.next(); // functionName()
         if (!name.endsWith("()")) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(80, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr080", command));
         }
 
         String functionName = name.substring(0, name.length() - 2); // 自定义方法名
         UniversalScriptChecker checker = context.getChecker();
         if (!checker.isVariableName(functionName)) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(81, command, functionName));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr081", command, functionName));
         }
 
         String part = it.readOther(); // { ... }
@@ -45,7 +45,7 @@ public class FunctionCommandCompiler extends AbstractCommandCompiler {
         List<UniversalScriptCommand> commands = parser.read(body);
         for (UniversalScriptCommand cmd : commands) { // 在语句中不能使用的语句
             if ((cmd instanceof LoopCommandSupported) && !((LoopCommandSupported) cmd).enableLoop()) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "function name() {}", cmd.getScript()));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr030", "function name() {}", cmd.getScript()));
             }
         }
 

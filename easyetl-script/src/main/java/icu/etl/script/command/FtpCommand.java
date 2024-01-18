@@ -55,7 +55,7 @@ public class FtpCommand extends AbstractFileCommand implements UniversalScriptIn
 
     public void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws IOException {
         if (!analysis.isBlankline(this.host) || !analysis.isBlankline(this.port) || !analysis.isBlankline(this.username) || !analysis.isBlankline(this.password)) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "ftp", "ftp " + username + "@" + host + ":" + port + "?password=" + password));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "ftp", "ftp " + username + "@" + host + ":" + port + "?password=" + password));
         }
 
         String expression = StringUtils.trimBlank(IO.read(in, new StringBuilder("ftp ")));
@@ -73,7 +73,7 @@ public class FtpCommand extends AbstractFileCommand implements UniversalScriptIn
 
         OSFtpCommand ftp = context.getContainer().getBean(OSFtpCommand.class, "ftp");
         if (!ftp.connect(this.host, Integer.parseInt(this.port), this.username, this.password)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(38, "ftp"));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr038", "ftp"));
             return UniversalScriptCommand.COMMAND_ERROR;
         } else {
             FtpList.get(context).add(ftp);

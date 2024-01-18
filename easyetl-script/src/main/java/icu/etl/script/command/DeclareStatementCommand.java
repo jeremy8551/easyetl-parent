@@ -52,14 +52,14 @@ public class DeclareStatementCommand extends AbstractCommand {
         this.dao = dataSource.getDao();
         try {
             if (!this.dao.isConnected()) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(65, this.command));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr065", this.command));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
             String name = analysis.replaceVariable(session, context, this.name, false);
             UniversalScriptChecker checker = context.getChecker();
             if (!checker.isVariableName(name) || checker.isDatabaseKeyword(name)) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(79, this.command, name));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr079", this.command, name));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 

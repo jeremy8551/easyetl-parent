@@ -39,7 +39,7 @@ public class ProgressCommand extends AbstractTraceCommand {
         }
 
         if (progress == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(73, this.command));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr073", this.command));
             return UniversalScriptCommand.COMMAND_ERROR;
         } else {
             progress.print(session.isEchoEnable() || forceStdout);

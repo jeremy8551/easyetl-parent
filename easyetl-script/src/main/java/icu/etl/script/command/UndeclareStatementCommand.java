@@ -35,7 +35,7 @@ public class UndeclareStatementCommand extends AbstractTraceCommand {
 
         StatementMap map = StatementMap.get(context);
         if (map.remove(this.name) == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(3, this.name));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr003", this.name));
             return UniversalScriptCommand.COMMAND_ERROR;
         } else {
             return 0;

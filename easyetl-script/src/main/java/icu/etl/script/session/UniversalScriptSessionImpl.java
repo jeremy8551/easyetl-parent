@@ -99,7 +99,7 @@ public class UniversalScriptSessionImpl implements UniversalScriptSession {
     private UniversalScriptSessionImpl(String scriptEngineId) {
         this.scriptEngineId = Ensure.notBlank(scriptEngineId);
         this.sessionId = "M" + StringUtils.toRandomUUID();
-        this.name = ResourcesUtils.getScriptStdoutMessage(14); // 脚本引擎
+        this.name = ResourcesUtils.getMessage("script.message.stdout014"); // 脚本引擎
         this.sessionResult = new SessionResult();
         this.isAlive = true;
         this.startTime = new Date();
@@ -142,9 +142,9 @@ public class UniversalScriptSessionImpl implements UniversalScriptSession {
 
         StringBuilder buf = new StringBuilder();
         if (StringUtils.isNotBlank(this.parentSessionId) && this.factory.get(this.parentSessionId).isScriptFile()) {
-            buf.append(ResourcesUtils.getScriptStdoutMessage(16)); // 子脚本文件
+            buf.append(ResourcesUtils.getMessage("script.message.stdout016")); // 子脚本文件
         } else {
-            buf.append(ResourcesUtils.getScriptStdoutMessage(17)); // 脚本文件
+            buf.append(ResourcesUtils.getMessage("script.message.stdout017")); // 脚本文件
         }
         buf.append(file.getAbsolutePath());
         this.name = buf.toString();

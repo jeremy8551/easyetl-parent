@@ -24,19 +24,19 @@ public class ElementMethod extends AbstractMethod {
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws Exception {
         int end = analysis.indexOf(methodHandle, "]", 1, 2, 2);
         if (end == -1) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(115, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr115", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         int index = -1;
         if ((index = StringUtils.parseInt(analysis.replaceShellVariable(session, context, methodHandle.substring(1, end), true, true, false, false), -1)) == -1) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(116, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr116", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         Object object = session.getMethodVariable(variableName);
         if (object == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(127, variableName));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr127", variableName));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         } else if (object instanceof String) {
             String value = (String) object;
@@ -47,7 +47,7 @@ public class ElementMethod extends AbstractMethod {
                 return this.executeNextMethod(session, context, stdout, stderr, analysis, variableName, methodHandle, this.value, next);
             } else {
                 this.value = null;
-                stderr.println(ResourcesUtils.getScriptStderrMessage(117, methodHandle, index));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr117", methodHandle, index));
                 return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
             }
         } else if (object.getClass().isArray()) {
@@ -59,12 +59,12 @@ public class ElementMethod extends AbstractMethod {
                 return this.executeNextMethod(session, context, stdout, stderr, analysis, variableName, methodHandle, this.value, next);
             } else {
                 this.value = null;
-                stderr.println(ResourcesUtils.getScriptStderrMessage(117, methodHandle, index));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr117", methodHandle, index));
                 return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
             }
         } else {
             this.value = null;
-            stderr.println(ResourcesUtils.getScriptStderrMessage(124, object.getClass().getName(), methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr124", object.getClass().getName(), methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
     }

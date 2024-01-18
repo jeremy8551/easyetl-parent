@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandRepository;
@@ -39,7 +38,7 @@ public class DefaultCommand extends AbstractTraceCommand implements UniversalScr
         if (analysis.isBlankline(this.script)) {
             this.script = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "default", this.script));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "default", this.script));
         }
     }
 
@@ -53,7 +52,7 @@ public class DefaultCommand extends AbstractTraceCommand implements UniversalScr
         if (StringUtils.isBlank(script)) { // 打印默认命令
             UniversalCommandCompiler obj = repository.getDefault();
             if (obj != null && print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(25, obj.getClass().getName()));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout025", obj.getClass().getName()));
             }
             return 0;
         } else { // 设置默认命令
@@ -64,7 +63,7 @@ public class DefaultCommand extends AbstractTraceCommand implements UniversalScr
 
             repository.setDefault(obj);
             if (obj != null && print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(25, obj.getClass().getName()));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout025", obj.getClass().getName()));
             }
             return 0;
         }

@@ -23,7 +23,7 @@ public class JumpCommandCompiler extends AbstractTraceCommandCompiler {
         String message = analysis.trim(str, 0, 1);
 
         if (analysis.isBlankline(message)) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(95, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr095", command));
         } else {
             return new JumpCommand(this, orginalScript, message);
         }

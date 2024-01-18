@@ -45,7 +45,7 @@ public class JavaCommand extends AbstractTraceCommand implements UniversalScript
 
     public void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws IOException {
         if (this.args != null && !this.args.isEmpty()) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "java " + this.className, this.args));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "java " + this.className, this.args));
         }
         this.args = analysis.split(StringUtils.trimBlank(IO.read(in, new StringBuilder())));
     }
@@ -75,7 +75,7 @@ public class JavaCommand extends AbstractTraceCommand implements UniversalScript
         // 初始化
         Class<? extends AbstractJavaCommand> cls = ClassUtils.forName(this.className, true, context.getContainer().getClassLoader());
         if (cls == null) {
-            throw new Exception(ResourcesUtils.getScriptStderrMessage(94, this.command, className, AbstractJavaCommand.class.getName()));
+            throw new Exception(ResourcesUtils.getMessage("script.message.stderr094", this.command, className, AbstractJavaCommand.class.getName()));
         }
         this.obj = context.getContainer().createBean(cls);
 
@@ -91,7 +91,7 @@ public class JavaCommand extends AbstractTraceCommand implements UniversalScript
             try {
                 this.obj.terminate();
             } catch (Throwable e) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(27, this.command), e);
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr027", this.command), e);
             }
         }
     }

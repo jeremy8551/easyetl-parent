@@ -35,7 +35,7 @@ public class UndeclareCursorCommand extends AbstractTraceCommand {
 
         CursorMap map = CursorMap.get(context);
         if (map.remove(this.name) == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(2, this.name));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr002", this.name));
             return UniversalScriptCommand.COMMAND_ERROR;
         } else {
             return 0;

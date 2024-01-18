@@ -48,7 +48,7 @@ public class CursorCommand extends AbstractCommand implements WithBodyCommandSup
         String name = analysis.replaceVariable(session, context, this.name, false);
         CursorMap map = CursorMap.get(context);
         if (!map.contains(name)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(2, name));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr002", name));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -57,7 +57,7 @@ public class CursorCommand extends AbstractCommand implements WithBodyCommandSup
         if (dao.isConnected()) {
             return this.execute(session, context, stdout, stderr, forceStdout, this.body);
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(65, this.command));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr065", this.command));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }

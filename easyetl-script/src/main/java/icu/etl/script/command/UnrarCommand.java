@@ -39,7 +39,7 @@ public class UnrarCommand extends AbstractFileCommand implements UniversalScript
         if (analysis.isBlankline(this.filepath)) {
             this.filepath = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "unrar", this.filepath));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "unrar", this.filepath));
         }
     }
 

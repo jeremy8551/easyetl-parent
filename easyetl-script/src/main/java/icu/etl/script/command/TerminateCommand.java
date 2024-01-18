@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -45,7 +43,7 @@ public class TerminateCommand extends AbstractTraceCommand {
                     return UniversalScriptCommand.COMMAND_ERROR;
                 } else {
                     if (print) {
-                        stdout.println(ResourcesUtils.getScriptStdoutMessage(9, "[" + pid + "] " + process.getCommand().getScript()));
+                        stdout.println(ResourcesUtils.getMessage("script.message.stdout009", "[" + pid + "] " + process.getCommand().getScript()));
                     }
                     process.terminate();
                 }
@@ -62,7 +60,7 @@ public class TerminateCommand extends AbstractTraceCommand {
                     return UniversalScriptCommand.COMMAND_ERROR;
                 } else {
                     if (print) {
-                        stdout.println(ResourcesUtils.getScriptStdoutMessage(8, id));
+                        stdout.println(ResourcesUtils.getMessage("script.message.stdout008", id));
                     }
                     manager.terminate(id);
                 }
@@ -72,7 +70,7 @@ public class TerminateCommand extends AbstractTraceCommand {
         // 未设置用户会话id和后台进程id时，终止所有用户会话
         if (ArrayUtils.isEmpty(this.processid) && ArrayUtils.isEmpty(this.sessionid)) {
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(4));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout004"));
             }
             manager.terminate();
             return UniversalScriptCommand.TERMINATE;

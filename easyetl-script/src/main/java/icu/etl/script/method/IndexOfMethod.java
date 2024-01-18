@@ -25,14 +25,14 @@ public class IndexOfMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws Exception {
         if (methodHandle.charAt("indexOf".length()) != '(') {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(111, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr111", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         int funcStart = "indexOf(".length();
         int funcEnd = analysis.indexOf(methodHandle, ")", funcStart, 2, 2);
         if (funcEnd == -1) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(112, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr112", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
@@ -40,7 +40,7 @@ public class IndexOfMethod extends AbstractMethod {
         List<String> parameters = analysis.split(params, analysis.getSegment());
 
         if (parameters.size() != 1 && parameters.size() != 2) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(110, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr110", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
@@ -50,21 +50,21 @@ public class IndexOfMethod extends AbstractMethod {
         if (parameters.size() == 1) {
             str = analysis.replaceShellVariable(session, context, parameters.get(0), true, true, true, false);
             if (str.length() == 0) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(129, methodHandle));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr129", methodHandle));
                 return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
             }
         } else if (parameters.size() == 2) {
             str = analysis.replaceShellVariable(session, context, parameters.get(0), true, true, true, false);
             from = StringUtils.parseInt(analysis.replaceShellVariable(session, context, parameters.get(1), true, true, true, false), -1);
             if (from < 0) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(123, methodHandle));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr123", methodHandle));
                 return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
             }
         }
 
         Object object = session.getMethodVariable(variableName);
         if (object == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(127, variableName));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr127", variableName));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         } else if (object instanceof String) {
             String value = (String) object;
@@ -101,7 +101,7 @@ public class IndexOfMethod extends AbstractMethod {
             int next = funcEnd + 1;
             return this.executeNextMethod(session, context, stdout, stderr, analysis, variableName, methodHandle, index, next);
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(124, object.getClass().getName(), methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr124", object.getClass().getName(), methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
     }

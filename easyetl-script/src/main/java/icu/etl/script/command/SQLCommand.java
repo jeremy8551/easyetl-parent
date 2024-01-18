@@ -38,7 +38,7 @@ public class SQLCommand extends AbstractCommand implements JumpCommandSupported,
             UniversalScriptAnalysis analysis = session.getAnalysis();
             String sql = analysis.replaceVariable(session, context, this.sql, true);
             if (!this.dao.isConnected()) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(65, sql));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr065", sql));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 

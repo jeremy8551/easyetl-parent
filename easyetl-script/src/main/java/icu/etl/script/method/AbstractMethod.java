@@ -53,14 +53,14 @@ public abstract class AbstractMethod implements UniversalScriptVariableMethod {
                 String nextMethod = StringUtils.ltrimBlank(method.substring(next), '.');
                 String methodName = VariableMethodCommand.parseName(nextMethod);
                 if (methodName == null) {
-                    stderr.println(ResourcesUtils.getScriptStderrMessage(125, methodName));
+                    stderr.println(ResourcesUtils.getMessage("script.message.stderr125", methodName));
                     return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
                 }
 
                 UniversalScriptVariableMethod obj = repository.get(methodName);
                 if (obj == null) {
                     this.value = null;
-                    stderr.println(ResourcesUtils.getScriptStderrMessage(125, nextMethod));
+                    stderr.println(ResourcesUtils.getMessage("script.message.stderr125", nextMethod));
                     return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
                 } else {
                     int exitcode = obj.execute(session, context, stdout, stderr, analysis, variableName, nextMethod);

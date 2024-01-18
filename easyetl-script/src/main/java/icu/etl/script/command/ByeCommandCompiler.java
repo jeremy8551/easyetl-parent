@@ -22,7 +22,7 @@ public class ByeCommandCompiler extends AbstractTraceCommandCompiler {
         if ("bye".equalsIgnoreCase(command)) {
             return new ByeCommand(this, orginalScript);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(109, command, "bye"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr109", command, "bye"));
         }
     }
 

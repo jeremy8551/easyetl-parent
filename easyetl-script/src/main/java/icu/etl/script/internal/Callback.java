@@ -84,9 +84,9 @@ public class Callback {
                     } else if (type == ReturnCommand.KIND) { // Exit method
                         return exitcode;
                     } else if (type == BreakCommand.KIND) { // break
-                        throw new UnsupportedOperationException(ResourcesUtils.getScriptStderrMessage(31));
+                        throw new UnsupportedOperationException(ResourcesUtils.getMessage("script.message.stderr031"));
                     } else if (type == ContinueCommand.KIND) { // continue
-                        throw new UnsupportedOperationException(ResourcesUtils.getScriptStderrMessage(32));
+                        throw new UnsupportedOperationException(ResourcesUtils.getMessage("script.message.stderr032"));
                     }
                 }
             }

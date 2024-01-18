@@ -91,13 +91,13 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
                 ScriptWriterFactory out = new ScriptWriterFactory(cmd.length() > length ? cmd.substring(length) : this.readLogfile(it, command), append);
                 if (cmd.charAt(0) == '2') {
                     if (stderr != null) {
-                        throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(63, command));
+                        throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr063", command));
                     } else {
                         stderr = out;
                     }
                 } else {
                     if (stdout != null) {
-                        throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(63, command));
+                        throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr063", command));
                     } else {
                         stdout = out;
                     }
@@ -112,19 +112,19 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
                 ScriptWriterFactory out = new ScriptWriterFactory(cmd.length() > length ? cmd.substring(length) : this.readLogfile(it, command), append);
                 if (cmd.charAt(0) == '2') {
                     if (stderr != null) {
-                        throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(63, command));
+                        throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr063", command));
                     } else {
                         stderr = out;
                     }
                 } else {
                     if (stdout != null) {
-                        throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(63, command));
+                        throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr063", command));
                     } else {
                         stdout = out;
                     }
                 }
             } else {
-                throw new UnsupportedOperationException(ResourcesUtils.getScriptStderrMessage(63, cmd));
+                throw new UnsupportedOperationException(ResourcesUtils.getMessage("script.message.stderr063", cmd));
             }
         }
 
@@ -142,7 +142,7 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
         if (it.hasNext()) {
             return it.next();
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(63, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr063", command));
         }
     }
 

@@ -58,7 +58,7 @@ public class CallbackCommandCompiler extends AbstractGlobalCommandCompiler {
         String commandExpr = it.readUntil("begin");
         UniversalCommandCompiler compiler = session.getCompiler().getRepository().get(commandExpr);
         if (compiler == null) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(47, commandExpr));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr047", commandExpr));
         }
         Class<?> cls = compiler.getClass();
 
@@ -67,7 +67,7 @@ public class CallbackCommandCompiler extends AbstractGlobalCommandCompiler {
         List<UniversalScriptCommand> commands = parser.read(body);
         for (UniversalScriptCommand cmd : commands) { // 在 declare handler 语句中不能使用的语句
             if ((cmd instanceof LoopCommandSupported) && !((LoopCommandSupported) cmd).enableLoop()) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "declare command callback", cmd.getScript()));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr030", "declare command callback", cmd.getScript()));
             }
         }
 

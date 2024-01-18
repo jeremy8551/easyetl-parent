@@ -38,7 +38,7 @@ public class ReadCommandCompiler extends AbstractCommandCompiler {
         if (StringUtils.isNotBlank(loopScript) && StringUtils.isNotBlank(inputScript) && analysis.startsWith(inputScript, "<", 0, true)) {
             return script;
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(90, script, "<"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr090", script, "<"));
         }
     }
 
@@ -61,7 +61,7 @@ public class ReadCommandCompiler extends AbstractCommandCompiler {
         // 在语句中不能使用的语句
         for (UniversalScriptCommand cmd : commands) {
             if ((cmd instanceof LoopCommandSupported) && !((LoopCommandSupported) cmd).enableLoop()) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "while read line do .. done", cmd.getScript()));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr030", "while read line do .. done", cmd.getScript()));
             }
         }
 

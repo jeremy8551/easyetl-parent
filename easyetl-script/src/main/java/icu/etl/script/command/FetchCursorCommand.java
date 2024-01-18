@@ -37,13 +37,13 @@ public class FetchCursorCommand extends AbstractCommand {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         if (!context.getChecker().isVariableName(this.name)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(88, this.command, this.name));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr088", this.command, this.name));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
         CursorMap map = CursorMap.get(context);
         if (!map.contains(this.name)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(2, this.name));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr002", this.name));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -53,7 +53,7 @@ public class FetchCursorCommand extends AbstractCommand {
 
         int size = this.variableNames.size();
         if (size > column) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(13, size, column));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr013", size, column));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 

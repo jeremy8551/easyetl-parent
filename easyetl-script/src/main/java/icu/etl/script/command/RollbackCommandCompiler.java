@@ -22,7 +22,7 @@ public class RollbackCommandCompiler extends AbstractTraceCommandCompiler {
         if ("rollback".equalsIgnoreCase(command)) {
             return new RollbackCommand(this, orginalScript);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(109, command, "rollback"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr109", command, "rollback"));
         }
     }
 

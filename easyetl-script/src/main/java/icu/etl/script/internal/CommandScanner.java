@@ -87,7 +87,7 @@ public class CommandScanner {
 
             if (StringUtils.isBlank(names)) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getScriptStderrMessage(48, cls.getName(), ScriptCommand.class.getName(), "name"));
+                    log.warn(ResourcesUtils.getMessage("script.message.stderr048", cls.getName(), ScriptCommand.class.getName(), "name"));
                 }
                 return;
             }
@@ -112,7 +112,7 @@ public class CommandScanner {
             this.repository.add(names, compiler);
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getScriptStdoutMessage(50, cls.getName()));
+                log.debug(ResourcesUtils.getMessage("script.message.stdout050", cls.getName()));
             }
 
             // 关键字
@@ -121,7 +121,7 @@ public class CommandScanner {
             }
         } else {
             if (log.isDebugEnabled()) { // 只有调试模式才会打印警告
-                log.warn(ResourcesUtils.getScriptStderrMessage(52, cls.getName(), UniversalScriptCommand.class.getName(), ScriptCommand.class.getName()));
+                log.warn(ResourcesUtils.getMessage("script.message.stderr052", cls.getName(), UniversalScriptCommand.class.getName(), ScriptCommand.class.getName()));
             }
         }
     }

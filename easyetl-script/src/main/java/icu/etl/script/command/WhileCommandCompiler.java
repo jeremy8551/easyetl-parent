@@ -38,7 +38,7 @@ public class WhileCommandCompiler extends AbstractCommandCompiler {
         it.assertNext("while");
         String condition = it.readUntil("loop");
         if (analysis.isBlankline(condition)) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(100, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr100", command));
         }
         it.assertLast("loop");
         it.assertLast("end");
@@ -47,7 +47,7 @@ public class WhileCommandCompiler extends AbstractCommandCompiler {
         List<UniversalScriptCommand> commands = parser.read(body);
         for (UniversalScriptCommand cmd : commands) {
             if ((cmd instanceof LoopCommandSupported) && !((LoopCommandSupported) cmd).enableLoop()) { // 在语句中不能使用的语句
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "while .. loop .. end loop", cmd.getScript()));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr030", "while .. loop .. end loop", cmd.getScript()));
             }
         }
 
@@ -68,7 +68,7 @@ public class WhileCommandCompiler extends AbstractCommandCompiler {
 //		
 //		String condition = command.substring(start, loop);
 //		if (analysis.isBlankline(condition)) {
-//			throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(100, command));
+//			throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr100", command));
 //		}
 //		
 //		int end = analysis.lastIndexOf(command, "end", command.length() - 1, 1, 0);
@@ -80,7 +80,7 @@ public class WhileCommandCompiler extends AbstractCommandCompiler {
 //		// 在语句中不能使用的语句
 //		for (UniversalScriptCommand cmd : commands) {
 //			if (!cmd.enableLoop()) {
-//				throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "while .. loop .. end loop", cmd.getScript()));
+//				throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr030", "while .. loop .. end loop", cmd.getScript()));
 //			}
 //		}
 //		

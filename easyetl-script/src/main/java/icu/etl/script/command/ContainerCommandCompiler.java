@@ -57,7 +57,7 @@ public class ContainerCommandCompiler extends AbstractCommandCompiler {
         List<UniversalScriptCommand> cmdlist = parser.read(body);
         for (UniversalScriptCommand cmd : cmdlist) {
             if (!(cmd instanceof UniversalScriptJob)) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "container to execute tasks in parallel .. begin .. end", cmd.getScript()));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr030", "container to execute tasks in parallel .. begin .. end", cmd.getScript()));
             }
         }
         return new ContainerCommand(this, command, attributes, cmdlist);

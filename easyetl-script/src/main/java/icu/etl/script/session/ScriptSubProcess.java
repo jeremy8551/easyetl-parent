@@ -91,7 +91,7 @@ public class ScriptSubProcess {
                     process.terminate();
                 } catch (Throwable e) {
                     if (log.isErrorEnabled()) {
-                        log.error(ResourcesUtils.getScriptStdoutMessage(9, process.getPid()) + " error!", e);
+                        log.error(ResourcesUtils.getMessage("script.message.stdout009", process.getPid()) + " error!", e);
                     }
                     exception = e;
                 }
@@ -99,7 +99,7 @@ public class ScriptSubProcess {
         }
 
         if (exception != null) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(27), exception);
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr027"), exception);
         }
     }
 

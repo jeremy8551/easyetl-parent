@@ -49,7 +49,7 @@ public class UndeclareCallbackCommandCompiler extends AbstractGlobalCommandCompi
         String commandExpr = it.readOther();
         UniversalCommandCompiler compiler = session.getCompiler().getRepository().get(commandExpr);
         if (compiler == null) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(47, commandExpr));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr047", commandExpr));
         } else {
             Class<? extends UniversalCommandCompiler> cls = compiler.getClass();
             return new UndeclareCallbackCommand(this, command, cls, global);

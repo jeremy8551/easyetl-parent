@@ -31,7 +31,7 @@ public class ContinueCommand extends AbstractSlaveCommand implements LoopCommand
 //			}
             return 0;
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(5));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr005"));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }

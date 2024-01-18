@@ -45,7 +45,7 @@ public class ExecuteOSCommand extends AbstractTraceCommand implements UniversalS
         if (analysis.isBlankline(this.oscommand)) {
             this.oscommand = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "os", this.oscommand));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "os", this.oscommand));
         }
     }
 

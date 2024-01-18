@@ -46,7 +46,7 @@ public class DeclareCursorCommand extends AbstractCommand implements WithBodyCom
         this.dao = dataSource.getDao();
         try {
             if (!this.dao.isConnected()) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(65, this.command));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr065", this.command));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
@@ -54,7 +54,7 @@ public class DeclareCursorCommand extends AbstractCommand implements WithBodyCom
             String name = analysis.replaceVariable(session, context, this.name, false);
             UniversalScriptChecker checker = context.getChecker();
             if (!checker.isVariableName(name) || checker.isDatabaseKeyword(name)) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(77, this.command, name));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr077", this.command, name));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 

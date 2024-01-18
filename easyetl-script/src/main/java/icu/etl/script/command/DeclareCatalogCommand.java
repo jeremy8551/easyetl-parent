@@ -1,7 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -52,31 +50,31 @@ public class DeclareCatalogCommand extends AbstractGlobalCommand {
         if (this.catalog.containsKey(DeclareCatalogCommandCompiler.file)) {
             String filepath = FileUtils.replaceFolderSeparator(this.catalog.getProperty(DeclareCatalogCommandCompiler.file));
             if (!FileUtils.exists(filepath)) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(39, this.command, filepath));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr039", this.command, filepath));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
             if (this.isGlobal()) {
                 Object old = context.addGlobalCatalog(name, filepath);
                 if (old != null && print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(30, filepath, name, StringUtils.toString(old)));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout030", filepath, name, StringUtils.toString(old)));
                 }
             } else {
                 Properties old = context.addLocalCatalog(name, filepath);
                 if (old != null && print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(30, filepath, name, StringUtils.toString(old)));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout030", filepath, name, StringUtils.toString(old)));
                 }
             }
         } else {
             if (this.isGlobal()) {
                 Object old = context.addGlobalCatalog(name, this.catalog);
                 if (old != null && print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(30, this.catalog, name, StringUtils.toString(old)));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout030", this.catalog, name, StringUtils.toString(old)));
                 }
             } else {
                 Properties old = context.addLocalCatalog(name, this.catalog);
                 if (old != null && print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(30, this.catalog, name, StringUtils.toString(old)));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout030", this.catalog, name, StringUtils.toString(old)));
                 }
             }
         }

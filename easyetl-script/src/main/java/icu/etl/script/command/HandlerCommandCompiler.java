@@ -22,7 +22,7 @@ public class HandlerCommandCompiler extends AbstractTraceCommandCompiler {
         if ("handler".equalsIgnoreCase(command)) {
             return new HandlerCommand(this, orginalScript);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(109, command, "handler"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr109", command, "handler"));
         }
     }
 

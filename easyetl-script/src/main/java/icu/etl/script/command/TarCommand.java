@@ -44,7 +44,7 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
         if (analysis.isBlankline(this.filepath)) {
             this.filepath = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "tar", this.filepath));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "tar", this.filepath));
         }
     }
 

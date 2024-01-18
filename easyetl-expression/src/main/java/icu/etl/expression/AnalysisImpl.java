@@ -188,7 +188,7 @@ public class AnalysisImpl extends BaseAnalysis {
             if (c == '(') {
                 int end = this.indexOfParenthes(str, i);
                 if (end == -1) {
-                    throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(112, str));
+                    throw new IllegalArgumentException(ResourcesUtils.getMessage("script.message.stderr112", str));
                 }
                 i = end;
                 continue;

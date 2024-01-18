@@ -36,7 +36,7 @@ public class RollbackCommand extends AbstractTraceCommand implements JumpCommand
             dao.rollback();
             return 0;
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(65, this.command));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr065", this.command));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }

@@ -68,14 +68,14 @@ public class VariableMethodCommand extends AbstractTraceCommand implements Nohup
             // 提取变量方法名
             String name = VariableMethodCommand.parseName(methodStr); // 方法名的前缀: ls, [
             if (name == null) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(125, name));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr125", name));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
             // 根据方法名查找对应的变量方法
             UniversalScriptVariableMethod repository = this.repository.get(name);
             if (repository == null) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(125, methodStr));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr125", methodStr));
                 return UniversalScriptCommand.COMMAND_ERROR;
             } else {
                 int exitcode = repository.execute(session, context, stdout, stderr, analysis, variableName, methodStr);
@@ -87,7 +87,7 @@ public class VariableMethodCommand extends AbstractTraceCommand implements Nohup
                         this.value = !b;
                         return b ? UniversalScriptCommand.VARIABLE_METHOD_ERROR : 0;
                     } else {
-                        stderr.println(ResourcesUtils.getScriptStderrMessage(68, this.getScript()));
+                        stderr.println(ResourcesUtils.getMessage("script.message.stderr068", this.getScript()));
                         return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
                     }
                 } else {

@@ -163,7 +163,7 @@ public class DBExportCommand extends AbstractTraceCommand implements UniversalSc
             ScriptDataSource pool = ScriptDataSource.get(context);
             String catalog = StringUtils.defaultString(attribute.getAttribute("catalog"), pool.getCatalog());
             if (StringUtils.isBlank(catalog)) { // 默认使用脚本引擎当前正在使用的数据库编目
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(65, this.command));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr065", this.command));
             } else {
                 cxt.setDataSource(pool.getPool(catalog));
             }

@@ -37,13 +37,13 @@ public class FetchStatementCommand extends AbstractCommand implements JumpComman
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws Exception {
         if (!context.getChecker().isVariableName(this.name)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(88, this.command, this.name));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr088", this.command, this.name));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
         StatementMap map = StatementMap.get(context);
         if (!map.contains(this.name)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(3, this.name));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr003", this.name));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -51,7 +51,7 @@ public class FetchStatementCommand extends AbstractCommand implements JumpComman
         ScriptStatement statement = map.get(this.name);
         int size = statement.getParameterCount();
         if (size != this.variableNames.size()) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(138, this.command, size));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr138", this.command, size));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 

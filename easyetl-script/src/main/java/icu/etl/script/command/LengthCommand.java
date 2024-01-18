@@ -57,7 +57,7 @@ public class LengthCommand extends AbstractTraceCommand implements UniversalScri
         if (analysis.isBlankline(this.parameter)) {
             this.parameter = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "length", this.parameter));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "length", this.parameter));
         }
     }
 
@@ -67,7 +67,7 @@ public class LengthCommand extends AbstractTraceCommand implements UniversalScri
         if (this.type == 'r') { // remote file path
             OSFtpCommand ftp = FtpList.get(context).getFTPClient();
             if (ftp == null) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(35));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr035"));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
@@ -85,7 +85,7 @@ public class LengthCommand extends AbstractTraceCommand implements UniversalScri
                     }
                 }
 
-                stderr.println(ResourcesUtils.getScriptStderrMessage(50, filepath));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr050", filepath));
                 return UniversalScriptCommand.COMMAND_ERROR;
             } else if (ftp.isFile(filepath)) { // expression is remote file path
                 OSFile file = CollectionUtils.firstElement(ftp.ls(filepath));
@@ -97,7 +97,7 @@ public class LengthCommand extends AbstractTraceCommand implements UniversalScri
                 }
                 return 0;
             } else {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(50, filepath));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr050", filepath));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
         } else if (this.type == 'f') { // local file path

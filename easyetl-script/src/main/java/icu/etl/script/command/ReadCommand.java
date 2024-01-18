@@ -53,10 +53,10 @@ public class ReadCommand extends AbstractCommand implements WithBodyCommandSuppo
             if (session.getAnalysis().startsWith(this.inputStr, "`", 0, false)) {
                 int end = analysis.indexOfAccent(this.inputStr, 0);
                 if (end == -1) {
-                    throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(108, this.inputStr));
+                    throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr108", this.inputStr));
                 }
                 if (end != this.inputStr.length() - 1) {
-                    throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(66, this.inputStr));
+                    throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr066", this.inputStr));
                 }
                 command = this.inputStr.substring(1, end);
             } else {

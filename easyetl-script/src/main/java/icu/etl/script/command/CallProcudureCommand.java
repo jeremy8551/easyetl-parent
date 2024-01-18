@@ -48,7 +48,7 @@ public class CallProcudureCommand extends AbstractTraceCommand implements JumpCo
             UniversalScriptAnalysis analysis = session.getAnalysis();
             String sql = analysis.replaceVariable(session, context, this.sql, true);
             if (!this.dao.isConnected()) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(65, sql));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr065", sql));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
@@ -64,7 +64,7 @@ public class CallProcudureCommand extends AbstractTraceCommand implements JumpCo
                 if (parameter.isOutMode() && checker.isVariableName(parameter.getExpression())) {
                     List<String> list = StringUtils.splitVariable(parameter.getExpression(), new ArrayList<String>());
                     if (list.size() != 1) {
-                        stderr.println(ResourcesUtils.getScriptStderrMessage(43, sql, parameter.getPlaceholder(), parameter.getExpression()));
+                        stderr.println(ResourcesUtils.getMessage("script.message.stderr043", sql, parameter.getPlaceholder(), parameter.getExpression()));
                         return UniversalScriptCommand.COMMAND_ERROR;
                     } else {
                         String variableName = list.get(0);

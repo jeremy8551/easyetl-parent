@@ -108,20 +108,20 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
             String next = null;
             while ((next = it.previewNext()) != null && ((pb = analysis.startsWith(next, "p(", 0, false)) || (cb = analysis.startsWith(next, "c(", 0, false)))) {
                 if (!next.endsWith(")")) {
-                    throw new IOException(ResourcesUtils.getScriptStderrMessage(139, next));
+                    throw new IOException(ResourcesUtils.getMessage("script.message.stderr139", next));
                 }
 
                 it.next();
                 String columnExpr = next.substring(2, next.length() - 1); // 截取小括号中的字段或位置信息
                 List<String> columns = analysis.split(columnExpr, analysis.getSegment()); // 提取小括号中的字段名或位置信息
                 if (columns.isEmpty()) {
-                    throw new IOException(ResourcesUtils.getScriptStderrMessage(141, next));
+                    throw new IOException(ResourcesUtils.getMessage("script.message.stderr141", next));
                 }
 
                 // 解析 p(..) 语句
                 if (pb) {
                     if (cxt.getFileColumn() != null && cxt.getFileColumn().size() > 0) {
-                        throw new IOException(ResourcesUtils.getScriptStderrMessage(142, command));
+                        throw new IOException(ResourcesUtils.getMessage("script.message.stderr142", command));
                     } else {
                         cxt.setFileColumn(columns);
                     }
@@ -130,7 +130,7 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
                 // 解析 c(..) 语句
                 if (cb) {
                     if (cxt.getIndexColumn() != null && cxt.getIndexColumn().size() > 0) {
-                        throw new IOException(ResourcesUtils.getScriptStderrMessage(143, command));
+                        throw new IOException(ResourcesUtils.getMessage("script.message.stderr143", command));
                     } else {
                         cxt.setIndexColumn(columns);
                     }
@@ -193,7 +193,7 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
                 if (analysis.equals(key, "progress")) {
                     ScriptProgress progress = ProgressMap.getProgress(context, value);
                     if (progress == null) {
-                        throw new IOException(ResourcesUtils.getScriptStderrMessage(144, value));
+                        throw new IOException(ResourcesUtils.getMessage("script.message.stderr144", value));
                     } else {
                         cxt.setProgress(progress);
                         continue;
@@ -247,12 +247,12 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
             String tableColumns = targetExpr.substring(begin + 1, targetExpr.length() - 1); // 截取小括号中的内容
             List<String> columnList = analysis.split(tableColumns, analysis.getSegment());
             if (columnList.isEmpty()) {
-                throw new IOException(ResourcesUtils.getScriptStderrMessage(139, targetExpr));
+                throw new IOException(ResourcesUtils.getMessage("script.message.stderr139", targetExpr));
             } else {
                 cxt.setTableColumn(columnList);
             }
         } else {
-            throw new IOException(ResourcesUtils.getScriptStderrMessage(139, targetExpr));
+            throw new IOException(ResourcesUtils.getMessage("script.message.stderr139", targetExpr));
         }
 
         // 解析 for exception schema.tableName 用于保存主键冲突不能入库数据
@@ -264,7 +264,7 @@ public class DBLoadCommandCompiler extends AbstractTraceCommandCompiler {
             cxt.setErrorTableName(Jdbc.removeSchema(tableExpr));
 
             if (Jdbc.equals(cxt.getTableSchema(), cxt.getErrorTableSchema(), cxt.getTableName(), cxt.getErrorTableName())) {
-                throw new IOException(ResourcesUtils.getScriptStderrMessage(140, command));
+                throw new IOException(ResourcesUtils.getMessage("script.message.stderr140", command));
             }
         }
 

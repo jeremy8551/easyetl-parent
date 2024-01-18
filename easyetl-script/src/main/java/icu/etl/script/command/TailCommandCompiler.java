@@ -27,7 +27,7 @@ public class TailCommandCompiler extends AbstractFileCommandCompiler {
         String filepath = analysis.trim(expr.getParameter(), 0, 1);
 
         if (line <= 0) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(87, command, line));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr087", command, line));
         } else {
             return new TailCommand(this, orginalScript, line, charsetName, filepath);
         }

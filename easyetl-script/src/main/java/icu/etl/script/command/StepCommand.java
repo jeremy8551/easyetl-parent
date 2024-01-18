@@ -38,7 +38,7 @@ public class StepCommand extends AbstractTraceCommand implements CallbackCommand
 
         // step 命令中不能包含 || 符号
         if (message.indexOf('\'') != -1 || message.indexOf('|') != -1) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(45, message));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr045", message));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -52,7 +52,7 @@ public class StepCommand extends AbstractTraceCommand implements CallbackCommand
 
         // 判断 step 命令是否重复
         else if (obj.containsStep(message)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(26, message));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr026", message));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -66,12 +66,12 @@ public class StepCommand extends AbstractTraceCommand implements CallbackCommand
                 context.addGlobalVariable(UniversalScriptVariable.SESSION_VARNAME_JUMP, "false"); // 移除标示变量
                 obj.addStep(message);
                 if (print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(32, message));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout032", message));
                 }
                 return this.execute(session, context, stdout, stderr, forceStdout, context.getSteper(), message);
             } else { // 未找到对应的 step 命令
                 if (print) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(33, message));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout033", message));
                 }
                 return 0;
             }

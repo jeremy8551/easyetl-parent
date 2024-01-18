@@ -22,7 +22,7 @@ public class ContinueCommandCompiler extends AbstractSlaveCommandCompiler {
         if ("continue".equalsIgnoreCase(command)) {
             return new ContinueCommand(this, orginalScript);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(109, command, "continue"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr109", command, "continue"));
         }
     }
 

@@ -98,7 +98,7 @@ public class ScriptExpressionParser extends Parser {
 
                 int index = this.analysis.indexOfAccent(str, i);
                 if (index == -1) {
-                    throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(108, str));
+                    throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr108", str));
                 }
 
                 String command = str.substring(i + 1, index);
@@ -108,7 +108,7 @@ public class ScriptExpressionParser extends Parser {
                     datas.add(ExpressionParameter.parseStr(cache.trimBlank()));
                     return index;
                 } else {
-                    throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(58, command));
+                    throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr058", command));
                 }
             }
 
@@ -165,7 +165,7 @@ public class ScriptExpressionParser extends Parser {
                         datas.add(ExpressionParameter.parse(value));
                         return end;
                     } else {
-                        throw new ExpressionException(ResourcesUtils.getScriptStderrMessage(107, variableName), i + 1);
+                        throw new ExpressionException(ResourcesUtils.getMessage("script.message.stderr107", variableName), i + 1);
                     }
                 } else if (nc == '_' || StringUtils.isLetter(nc)) { // 变量名 $name
                     int end = this.analysis.indexOfVariableName(str, next);
@@ -176,7 +176,7 @@ public class ScriptExpressionParser extends Parser {
                         datas.add(ExpressionParameter.parse(value));
                         return end - 1;
                     } else {
-                        throw new ExpressionException(ResourcesUtils.getScriptStderrMessage(107, variableName), i + 1);
+                        throw new ExpressionException(ResourcesUtils.getMessage("script.message.stderr107", variableName), i + 1);
                     }
                 } else {
                     throw new ExpressionException(ResourcesUtils.getExpressionMessage(47, i + 1), i + 1);
@@ -189,7 +189,7 @@ public class ScriptExpressionParser extends Parser {
                 String variableName = str.substring(i, next);
 
                 if (!this.containsVariable(variableName)) {
-                    throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(107, str, variableName));
+                    throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr107", str, variableName));
                 }
                 if (isData) {
                     throw new ExpressionException(ResourcesUtils.getExpressionMessage(34, str, i + 1), i + 1);

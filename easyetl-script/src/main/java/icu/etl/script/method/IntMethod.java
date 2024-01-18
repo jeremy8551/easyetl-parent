@@ -1,8 +1,5 @@
 package icu.etl.script.method;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.annotation.ScriptFunction;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;
@@ -18,26 +15,26 @@ public class IntMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws Exception {
         if (methodHandle.charAt("int".length()) != '(') {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(111, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr111", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         int begin = "int(".length();
         int end = analysis.indexOf(methodHandle, ")", begin, 2, 2);
         if (end == -1) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(112, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr112", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         String parameters = methodHandle.substring(begin, end);
         if (StringUtils.isNotBlank(parameters)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(113, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr113", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         Object value = session.getMethodVariable(variableName);
         if (value == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(127, variableName));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr127", variableName));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
@@ -47,7 +44,7 @@ public class IntMethod extends AbstractMethod {
             int next = end + 1;
             return this.executeNextMethod(session, context, stdout, stderr, analysis, variableName, methodHandle, this.value, next);
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(124, value.getClass().getName(), methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr124", value.getClass().getName(), methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
     }

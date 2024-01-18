@@ -49,11 +49,11 @@ public class EchoCommand extends AbstractTraceCommand implements CallbackCommand
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.turnOn) {
             session.setEchoEnabled(true);
-            stdout.println(ResourcesUtils.getScriptStdoutMessage(22));
+            stdout.println(ResourcesUtils.getMessage("script.message.stdout022"));
             return 0;
         } else if (this.turnOff) {
             session.setEchoEnabled(false);
-            stdout.println(ResourcesUtils.getScriptStdoutMessage(23));
+            stdout.println(ResourcesUtils.getMessage("script.message.stdout023"));
             return 0;
         }
 

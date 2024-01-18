@@ -18,26 +18,26 @@ public class PrintMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws Exception {
         if (methodHandle.charAt("print".length()) != '(') {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(111, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr111", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         int begin = "print(".length();
         int end = analysis.indexOf(methodHandle, ")", begin, 2, 2);
         if (end == -1) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(112, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr112", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         String parameters = methodHandle.substring(begin, end);
         if (StringUtils.isNotBlank(parameters)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(113, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr113", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         Object value = session.getMethodVariable(variableName);
         if (value == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(127, variableName));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr127", variableName));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         } else if (value.getClass().isArray()) {
             Object[] array = (Object[]) value;

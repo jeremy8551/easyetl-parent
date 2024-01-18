@@ -49,7 +49,7 @@ public class DeclareProgressCommand extends AbstractGlobalCommand {
         boolean global = this.isGlobal();
 
         if (!StringUtils.isInt(this.number)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(130, this.command, this.number));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr130", this.command, this.number));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -61,7 +61,7 @@ public class DeclareProgressCommand extends AbstractGlobalCommand {
         } else if ("step".equalsIgnoreCase(this.type)) {
             out = context.getSteper();
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(131, this.command, this.type, "out, err, step"));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr131", this.command, this.type, "out, err, step"));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 

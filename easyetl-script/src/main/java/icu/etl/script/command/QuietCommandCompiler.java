@@ -21,7 +21,7 @@ public class QuietCommandCompiler extends AbstractTraceCommandCompiler implement
     public String read(UniversalScriptReader in, UniversalScriptAnalysis analysis) throws IOException {
         String word = in.readSingleWord();
         if (word.endsWith(String.valueOf(analysis.getToken()))) { // 单词右侧不能有语句分隔符
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(78, word));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr078", word));
         } else {
             Ensure.exists("quiet", word);
             return word;

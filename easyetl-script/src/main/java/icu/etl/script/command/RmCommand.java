@@ -50,7 +50,7 @@ public class RmCommand extends AbstractFileCommand implements UniversalScriptInp
 
     public void read(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, Reader in) throws IOException {
         if (!analysis.isBlankline(this.filepath)) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "rm", this.filepath));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "rm", this.filepath));
         }
 
         this.filepath = StringUtils.trimBlank(IO.read(in, new StringBuilder()));

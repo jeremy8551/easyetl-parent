@@ -20,38 +20,38 @@ public class FormatMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws Exception {
         if (methodHandle.charAt("format".length()) != '(') {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(111, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr111", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         int begin = "format(".length();
         int end = analysis.indexOf(methodHandle, ")", begin, 2, 2);
         if (end == -1) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(112, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr112", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         String parameters = methodHandle.substring(begin, end);
         if (StringUtils.isBlank(parameters)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(97, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr097", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         String pattern = analysis.unQuotation(analysis.trim(parameters, 0, 0));
         if (StringUtils.isBlank(pattern)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(97, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr097", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         Object value = session.getMethodVariable(variableName);
         if (value == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(127, variableName));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr127", variableName));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         Date date = Dates.testParse(value);
         if (date == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(124, value.getClass().getName(), methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr124", value.getClass().getName(), methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         } else {
             this.value = Dates.format(date, pattern);

@@ -67,7 +67,7 @@ public class SetCommand extends AbstractGlobalCommand {
                 return 0;
 
             default: // 未知操作
-                stderr.println(ResourcesUtils.getScriptStderrMessage(131, this.command, this.type, "0, 1, 2, 3"));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr131", this.command, this.type, "0, 1, 2, 3"));
                 return UniversalScriptCommand.COMMAND_ERROR;
         }
     }
@@ -130,7 +130,7 @@ public class SetCommand extends AbstractGlobalCommand {
         JdbcDao dao = dataSource.getDao();
         sql = session.getAnalysis().replaceVariable(session, context, sql, false);
         if (!dao.isConnected()) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(65, sql));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr065", sql));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 

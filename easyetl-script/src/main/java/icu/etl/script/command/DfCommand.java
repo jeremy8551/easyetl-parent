@@ -28,7 +28,7 @@ public class DfCommand extends AbstractTraceCommand implements NohupCommandSuppo
         OS os = context.getContainer().getBean(OS.class);
         try {
             CharTable table = new CharTable();
-            String[] titles = StringUtils.split(ResourcesUtils.getScriptStdoutMessage(3), ',');
+            String[] titles = StringUtils.split(ResourcesUtils.getMessage("script.message.stdout003"), ',');
             table.addTitle(titles[0]);
             table.addTitle(titles[1]);
             table.addTitle(titles[2]);

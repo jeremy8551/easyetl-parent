@@ -154,7 +154,7 @@ public class ScriptListener implements UniversalScriptListener {
 
         public void startScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Reader in) throws Exception {
             if (context.getEngine().isClose()) { // 脚本引擎已关闭
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(999, IO.read(in, new StringBuilder())));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr999", IO.read(in, new StringBuilder())));
             }
         }
 
@@ -176,13 +176,13 @@ public class ScriptListener implements UniversalScriptListener {
         public void exitScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result) {
             if (session.isTerminate()) { // 会话已被终止
                 result.setExitcode(UniversalScriptCommand.TERMINATE);
-                stderr.println(ResourcesUtils.getScriptStderrMessage(46, session.getScriptName()));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr046", session.getScriptName()));
             }
 
             // 打印发生错误的脚本行号及语句报错信息
             if (result.getExitcode() != 0 && session.isScriptFile()) {
                 UniversalScriptCompiler compiler = session.getCompiler();
-                stderr.println(ResourcesUtils.getScriptStderrMessage(55, session.getScriptName(), compiler.getLineNumber(), command.getClass().getSimpleName(), StringUtils.escapeLineSeparator(command.getScript())));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr055", session.getScriptName(), compiler.getLineNumber(), command.getClass().getSimpleName(), StringUtils.escapeLineSeparator(command.getScript())));
             }
         }
     }

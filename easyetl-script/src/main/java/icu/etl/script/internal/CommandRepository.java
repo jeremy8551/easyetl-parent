@@ -99,7 +99,7 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
     public void add(String[] names, UniversalCommandCompiler compiler) {
         Class<? extends UniversalCommandCompiler> cls = compiler.getClass();
         if (this.contains(cls)) { // 校验是否重复添加
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(54, cls.getName(), cls.getName(), "kind()"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr054", cls.getName(), cls.getName(), "kind()"));
         }
 
         CommandCompilerContext context = new CommandCompilerContext(compiler);
@@ -200,7 +200,7 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
         if (this.cache.size() == 1) {
             return this.cache.get(0);
         } else if (this.cache.size() > 1) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(51, script, this.cache.size(), StringUtils.join(this.cache, ", ")));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr051", script, this.cache.size(), StringUtils.join(this.cache, ", ")));
         }
 
         // 优先根据命令的名称查找对应的编译器
@@ -234,7 +234,7 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
         if (this.cache.size() == 1) {
             return this.cache.get(0);
         } else if (this.cache.size() > 1) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(51, script, this.cache.size(), StringUtils.join(this.cache, ", ")));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr051", script, this.cache.size(), StringUtils.join(this.cache, ", ")));
         }
 
         // 尝试匹配 * 命令
@@ -258,7 +258,7 @@ public class CommandRepository implements UniversalCommandRepository, Iterable<C
         if (this.cache.size() == 1) {
             return this.cache.get(0);
         } else if (this.cache.size() > 1) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(51, script, this.cache.size(), StringUtils.join(this.cache, ", ")));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr051", script, this.cache.size(), StringUtils.join(this.cache, ", ")));
         } else { // count == 0
             return this.defaultCompiler; // 默认命令
         }

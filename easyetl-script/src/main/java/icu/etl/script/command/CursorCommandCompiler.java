@@ -35,7 +35,7 @@ public class CursorCommandCompiler extends AbstractCommandCompiler {
         List<UniversalScriptCommand> commands = parser.read(body);
         for (UniversalScriptCommand cmd : commands) {
             if ((cmd instanceof LoopCommandSupported) && !((LoopCommandSupported) cmd).enableLoop()) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(30, "cursor loop", cmd.getScript())); // 在语句中不能使用的语句
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr030", "cursor loop", cmd.getScript())); // 在语句中不能使用的语句
             }
         }
 

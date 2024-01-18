@@ -66,10 +66,10 @@ public class IfCommand extends AbstractCommand implements LoopCommandKind, WithB
      */
     public void setIf(String condition, List<UniversalScriptCommand> list) {
         if (!this.elseIfCondition.isEmpty() || this.hasElseCmds) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(101));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr101"));
         }
         if (StringUtils.isBlank(condition)) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(102));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr102"));
         }
 
         this.ifCondition = condition;
@@ -85,10 +85,10 @@ public class IfCommand extends AbstractCommand implements LoopCommandKind, WithB
      */
     public void addElseIf(String condition, List<UniversalScriptCommand> list) {
         if (this.ifCondition == null || this.hasElseCmds) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(101));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr101"));
         }
         if (StringUtils.isBlank(condition)) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(103));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr103"));
         }
 
         this.elseIfCondition.add(condition);

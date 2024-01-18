@@ -57,7 +57,7 @@ public class SetCommandCompiler extends AbstractGlobalCommandCompiler {
         // 变量名
         String name = StringUtils.trimBlank(str.substring(0, index));
         if (!context.getChecker().isVariableName(name) || name.startsWith("$")) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(88, command, name));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr088", command, name));
         }
 
         // 变量值

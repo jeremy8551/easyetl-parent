@@ -22,7 +22,7 @@ public class CommitCommandCompiler extends AbstractTraceCommandCompiler {
         if ("commit".equalsIgnoreCase(command)) {
             return new CommitCommand(this, orginalScript);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(109, command, "commit"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr109", command, "commit"));
         }
     }
 

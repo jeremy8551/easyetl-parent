@@ -34,18 +34,18 @@ public class NohupCommandCompiler extends AbstractCommandCompiler {
 
         List<UniversalScriptCommand> list = parser.read(script);
         if (list.isEmpty()) { // nohup 命令中语句不能为空
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(24, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr024", command));
         }
 
         if (list.size() != 1) { // nohup 命令只能并发执行一个命令
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(22, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr022", command));
         }
 
         UniversalScriptCommand subcommand = list.get(0);
         if ((subcommand instanceof NohupCommandSupported) && ((NohupCommandSupported) subcommand).enableNohup()) { // 检查是否支持后台运行
             return new NohupCommand(this, command, subcommand);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(23, command, subcommand.getScript()));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr023", command, subcommand.getScript()));
         }
     }
 

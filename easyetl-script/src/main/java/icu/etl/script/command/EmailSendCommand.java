@@ -60,7 +60,7 @@ public class EmailSendCommand extends AbstractTraceCommand {
         mail.setCharsetName(this.charset);
         String number = mail.send(this.protocal, this.port, this.ssl, this.sender, this.receivers, this.title, this.content, this.attchments);
         if (session.isEchoEnable() || forceStdout) {
-            stdout.println(ResourcesUtils.getScriptStdoutMessage(46) + FileUtils.lineSeparator + number);
+            stdout.println(ResourcesUtils.getMessage("script.message.stdout046") + FileUtils.lineSeparator + number);
         }
         return 0;
     }

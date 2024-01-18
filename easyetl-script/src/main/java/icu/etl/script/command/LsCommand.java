@@ -54,7 +54,7 @@ public class LsCommand extends AbstractFileCommand implements UniversalScriptInp
             String expression = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
             this.filepathList = analysis.split(expression);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "ls", this.filepathList));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "ls", this.filepathList));
         }
     }
 

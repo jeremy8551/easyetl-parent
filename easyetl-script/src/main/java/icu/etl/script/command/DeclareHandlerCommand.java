@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandListener;
@@ -116,23 +114,23 @@ public class DeclareHandlerCommand extends AbstractGlobalCommand implements Loop
             int lv = lm.catchCommandError(session, context, stdout, stderr, forceStdout, command.getScript(), e);
             if (gv == ErrorHandlerMap.CONTINUE_HANDLER || lv == ErrorHandlerMap.CONTINUE_HANDLER) {
                 result.setExitSession(false);
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(11, command.getScript()));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout011", command.getScript()));
             } else if (gv == ErrorHandlerMap.EMPTY_HANDLER && lv == ErrorHandlerMap.EMPTY_HANDLER) {
                 result.setExitSession(true);
-                stderr.println(ResourcesUtils.getScriptStderrMessage(10, command.getScript()), e);
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr010", command.getScript()), e);
             } else if (gv == ErrorHandlerMap.EXIT_HANDLER || lv == ErrorHandlerMap.EXIT_HANDLER) {
                 result.setExitSession(true);
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(10, command.getScript()), e);
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout010", command.getScript()), e);
             } else {
                 result.setExitSession(true);
-                stderr.println(ResourcesUtils.getScriptStderrMessage(57, session.getScriptName(), gv));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr057", session.getScriptName(), gv));
             }
             return true;
         }
 
         public boolean catchScript(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command, UniversalCommandResultSet result, Throwable e) throws Exception {
             UniversalScriptCompiler compiler = session.getCompiler();
-            String message = ResourcesUtils.getScriptStderrMessage(56, session.getScriptName(), compiler.getLineNumber());
+            String message = ResourcesUtils.getMessage("script.message.stderr056", session.getScriptName(), compiler.getLineNumber());
             ErrorHandlerMap gl = ErrorHandlerMap.get(context, true);
             ErrorHandlerMap ll = ErrorHandlerMap.get(context, false);
             if (gl.alreadyCatchEvalError() || ll.alreadyCatchEvalError()) {
@@ -141,11 +139,11 @@ public class DeclareHandlerCommand extends AbstractGlobalCommand implements Loop
                 int gv = gl.catchEvalError(session, context, stdout, stderr, forceStdout, message, e);
                 int lv = ll.catchEvalError(session, context, stdout, stderr, forceStdout, message, e);
                 if (gv == ErrorHandlerMap.CONTINUE_HANDLER || lv == ErrorHandlerMap.CONTINUE_HANDLER) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(13, message));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout013", message));
                 } else if (gv == ErrorHandlerMap.EMPTY_HANDLER && lv == ErrorHandlerMap.EMPTY_HANDLER) {
                     stderr.println(message, e);
                 } else {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(12, message), e);
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout012", message), e);
                 }
             }
             return true;

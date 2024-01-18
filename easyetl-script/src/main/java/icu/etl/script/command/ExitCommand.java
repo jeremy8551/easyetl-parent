@@ -38,7 +38,7 @@ public class ExitCommand extends AbstractTraceCommand implements UniversalScript
         if (analysis.isBlankline(this.exitcode)) {
             this.exitcode = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "exit", this.exitcode));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "exit", this.exitcode));
         }
     }
 
@@ -46,13 +46,13 @@ public class ExitCommand extends AbstractTraceCommand implements UniversalScript
         session.getCompiler().terminate();
 
         if (this.exitcode.length() == 0) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(11));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr011"));
             return UniversalScriptCommand.COMMAND_ERROR;
         } else if (StringUtils.isInt(this.exitcode)) {
             // 根节点的脚本引擎需要释放资源
             if (context.getParent() == null) {
                 if (session.isEchoEnable() || forceStdout) {
-                    stdout.println(ResourcesUtils.getScriptStdoutMessage(999));
+                    stdout.println(ResourcesUtils.getMessage("script.message.stdout999"));
                 }
 
                 context.getEngine().close();
@@ -67,7 +67,7 @@ public class ExitCommand extends AbstractTraceCommand implements UniversalScript
             session.putValue("exit", value);
             return value;
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(12));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr012"));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }

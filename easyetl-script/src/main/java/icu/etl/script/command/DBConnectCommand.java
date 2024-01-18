@@ -1,9 +1,9 @@
 package icu.etl.script.command;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import javax.sql.DataSource;
 
 import icu.etl.database.JdbcDao;
 import icu.etl.script.UniversalCommandCompiler;
@@ -44,13 +44,13 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
         if (analysis.isBlankline(this.name)) {
             this.name = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "db connect to", this.name));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "db connect to", this.name));
         }
     }
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, File outfile, File errfile) throws Exception {
         if (this.name.length() == 0) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(4, this.command));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr004", this.command));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -59,7 +59,7 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
         boolean print = session.isEchoEnable() || forceStdout;
         if ("reset".equalsIgnoreCase(this.name)) { // 关闭当前数据库连接
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(7, "", dataSource.getCatalog()));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout007", "", dataSource.getCatalog()));
             }
 
             dao.commit();
@@ -79,7 +79,7 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
 
         if (dao.isConnected()) {
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(6, "", this.name));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout006", "", this.name));
             }
 
             if (dao.getDialect() != null) {
@@ -87,7 +87,7 @@ public class DBConnectCommand extends AbstractTraceCommand implements UniversalS
             }
             return 0;
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(8, context, this.name));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr008", context, this.name));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }

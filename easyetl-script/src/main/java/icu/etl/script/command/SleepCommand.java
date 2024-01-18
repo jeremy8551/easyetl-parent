@@ -40,7 +40,7 @@ public class SleepCommand extends AbstractTraceCommand implements UniversalScrip
         if (analysis.isBlankline(this.time)) {
             this.time = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "sleep", this.time));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "sleep", this.time));
         }
     }
 
@@ -64,7 +64,7 @@ public class SleepCommand extends AbstractTraceCommand implements UniversalScrip
             Thread.sleep(sleep);
             return 0;
         } catch (Throwable e) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(42), e);
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr042"), e);
 
             sleep = millis - (System.currentTimeMillis() - compileMillis);
             if (sleep > 0) {

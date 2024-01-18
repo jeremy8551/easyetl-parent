@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.os.OSFtpCommand;
 import icu.etl.script.UniversalCommandCompiler;
@@ -53,7 +51,7 @@ public class GetCommand extends AbstractFileCommand implements NohupCommandSuppo
         try {
             this.ftp = FtpList.get(context).getFTPClient();
             if (this.ftp == null) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(35));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr035"));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
@@ -63,7 +61,7 @@ public class GetCommand extends AbstractFileCommand implements NohupCommandSuppo
 
             File file = new ScriptFile(session, context, localfilepath);
             if (!file.exists()) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(37, localfilepath));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr037", localfilepath));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 

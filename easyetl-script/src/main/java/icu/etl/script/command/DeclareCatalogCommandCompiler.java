@@ -80,7 +80,7 @@ public class DeclareCatalogCommandCompiler extends AbstractGlobalCommandCompiler
             } else if (key.equalsIgnoreCase(OSShellCommand.sshPort)) {
                 key = OSShellCommand.sshPort;
             } else {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(131, command, key, StringUtils.join(keys, ", ")));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr131", command, key, StringUtils.join(keys, ", ")));
             }
 
             int next = i + 1;

@@ -46,7 +46,7 @@ public class DeclareSSHClientCommand extends AbstractCommand {
         OSSecureShellCommand client = context.getContainer().getBean(OSSecureShellCommand.class);
         if (client.connect(this.host, Integer.parseInt(this.port), this.username, this.password)) {
             if (session.isEchoEnable() || forceStdout) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(40, this.name, this.username + "@" + this.host + ":" + this.port + "?password=" + DESEncrypt.encrypt(this.password, context.getCharsetName(), StringUtils.toBytes(Dates.format08(new Date()), context.getCharsetName()))));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout040", this.name, this.username + "@" + this.host + ":" + this.port + "?password=" + DESEncrypt.encrypt(this.password, context.getCharsetName(), StringUtils.toBytes(Dates.format08(new Date()), context.getCharsetName()))));
             }
 
             client.setStdout(new OutputStreamPrinter(stdout, client.getCharsetName()));
@@ -56,7 +56,7 @@ public class DeclareSSHClientCommand extends AbstractCommand {
             SSHClientMap.get(context).add(name, client);
             return 0;
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(38, "ssh2"));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr038", "ssh2"));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
     }

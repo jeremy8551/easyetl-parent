@@ -43,7 +43,7 @@ public class JumpCommand extends AbstractTraceCommand implements UniversalScript
         if (analysis.isBlankline(this.message)) {
             this.message = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "jump", this.message));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "jump", this.message));
         }
     }
 
@@ -51,7 +51,7 @@ public class JumpCommand extends AbstractTraceCommand implements UniversalScript
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String target = analysis.replaceVariable(session, context, this.message, true);
         if (session.isEchoEnable() || forceStdout) {
-            stdout.println(ResourcesUtils.getScriptStdoutMessage(31, target));
+            stdout.println(ResourcesUtils.getMessage("script.message.stdout031", target));
         }
 
         // 保存目标位置信息

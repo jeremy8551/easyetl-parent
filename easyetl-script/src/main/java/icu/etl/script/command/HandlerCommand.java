@@ -53,7 +53,7 @@ public class HandlerCommand extends AbstractTraceCommand implements NohupCommand
             }
 
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(15, session.getScriptName(), count));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout015", session.getScriptName(), count));
             }
 
             // 全局

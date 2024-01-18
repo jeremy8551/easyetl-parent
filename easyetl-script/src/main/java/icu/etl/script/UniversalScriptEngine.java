@@ -162,7 +162,7 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
         if (context instanceof UniversalScriptContext) {
             return (UniversalScriptContext) context;
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(72, context.getClass().getName(), UniversalScriptContext.class.getName()));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr072", context.getClass().getName(), UniversalScriptContext.class.getName()));
         }
     }
 
@@ -292,13 +292,13 @@ public class UniversalScriptEngine implements ScriptEngine, Closeable {
             }
 
             if (session.isTerminate()) { // 会话已被终止
-                stderr.println(ResourcesUtils.getScriptStderrMessage(46, session.getScriptName()));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr046", session.getScriptName()));
                 return UniversalScriptCommand.TERMINATE;
             } else {
                 return exitcode;
             }
         } catch (Throwable e) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(58, str), e);
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr058", str), e);
         } finally {
             compiler.close(); // 关闭当前编译器
 

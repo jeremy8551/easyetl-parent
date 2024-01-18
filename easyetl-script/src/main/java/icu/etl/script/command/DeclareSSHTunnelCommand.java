@@ -56,7 +56,7 @@ public class DeclareSSHTunnelCommand extends AbstractCommand {
         // 连接代理服务器
         OSSecureShellCommand client = context.getContainer().getBean(OSSecureShellCommand.class);
         if (!client.connect(host, port, username, password)) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(38, "ssh2"));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr038", "ssh2"));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 
@@ -76,7 +76,7 @@ public class DeclareSSHTunnelCommand extends AbstractCommand {
         ) { // 端口为0 或 1024-65535
             inputPort = Integer.parseInt(localStr);
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(70, this.command, localStr));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr070", this.command, localStr));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
 

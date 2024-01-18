@@ -27,7 +27,7 @@ public class ByeCommand extends AbstractTraceCommand {
 
         OSFtpCommand ftp = FtpList.get(context).getFTPClient();
         if (ftp == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(35));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr035"));
             return UniversalScriptCommand.COMMAND_ERROR;
         } else {
             FtpList.get(context).close();

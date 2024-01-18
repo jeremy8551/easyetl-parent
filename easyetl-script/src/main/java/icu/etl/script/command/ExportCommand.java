@@ -63,7 +63,7 @@ public class ExportCommand extends AbstractCommand {
 
             CommandList body = FunctionSet.get(context).get(name);
             if (body == null) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(34, name));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr034", name));
             } else {
                 FunctionSet.get(context, true).add(body); // 添加到全局域
                 FunctionSet.get(context, false).remove(body.getName()); // 从局部域中移除

@@ -21,7 +21,7 @@ public class ReturnCommandCompiler extends AbstractSlaveCommandCompiler {
     public AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws IOException {
         String returnCode = analysis.trim(command.substring("return".length()), 0, 1);
         if (returnCode.length() == 0) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(96, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr096", command));
         } else {
             return new ReturnCommand(this, orginalScript, returnCode);
         }

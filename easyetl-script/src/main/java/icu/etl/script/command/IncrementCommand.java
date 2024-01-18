@@ -143,7 +143,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
 
             IncrementPosition position = new IncrementPositionImpl(this.newfileExpr.getIndexPosition(), this.oldfileExpr.getIndexPosition(), newCompars, oldCompars);
             if (ArrayUtils.isEmpty(this.newfileExpr.getIndexPosition()) || ArrayUtils.isEmpty(this.oldfileExpr.getIndexPosition())) {
-                throw new IOException(ResourcesUtils.getScriptStderrMessage(137, "index"));
+                throw new IOException(ResourcesUtils.getMessage("script.message.stderr137", "index"));
             }
 
             IncrementReplaceListener replaceList = new IncrementReplaceListener();
@@ -159,7 +159,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
                     if (logfilepath == null) {
                         logfilepath = expr.getFilepath();
                     } else {
-                        throw new IOException(ResourcesUtils.getScriptStderrMessage(132, this.command));
+                        throw new IOException(ResourcesUtils.getMessage("script.message.stderr132", this.command));
                     }
                 } else {
                     String filetype = expr.getFiletype();
@@ -175,7 +175,7 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
                             updReplace.addAll(expr.getUpdChg());
                             delReplace.addAll(expr.getDelChg());
                         } else {
-                            throw new IOException(ResourcesUtils.getScriptStderrMessage(133, this.command));
+                            throw new IOException(ResourcesUtils.getMessage("script.message.stderr133", this.command));
                         }
                     } else {
                         for (String kind : kinds) {
@@ -184,21 +184,21 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
                                     newout = out;
                                     newReplace.addAll(expr.getNewChg());
                                 } else {
-                                    throw new IOException(ResourcesUtils.getScriptStderrMessage(134, this.command));
+                                    throw new IOException(ResourcesUtils.getMessage("script.message.stderr134", this.command));
                                 }
                             } else if (kind.equalsIgnoreCase("upd")) { // 修改数据
                                 if (updout == null) {
                                     updout = out;
                                     updReplace.addAll(expr.getUpdChg());
                                 } else {
-                                    throw new IOException(ResourcesUtils.getScriptStderrMessage(135, this.command));
+                                    throw new IOException(ResourcesUtils.getMessage("script.message.stderr135", this.command));
                                 }
                             } else if (kind.equalsIgnoreCase("del")) { // 删除数据
                                 if (delout == null) {
                                     delout = out;
                                     delReplace.addAll(expr.getDelChg());
                                 } else {
-                                    throw new IOException(ResourcesUtils.getScriptStderrMessage(136, this.command));
+                                    throw new IOException(ResourcesUtils.getMessage("script.message.stderr136", this.command));
                                 }
                             }
                         }

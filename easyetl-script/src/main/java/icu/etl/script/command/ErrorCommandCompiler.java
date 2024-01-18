@@ -23,7 +23,7 @@ public class ErrorCommandCompiler extends AbstractTraceCommandCompiler {
             String message = analysis.trim(command.substring("error".length()), 0, 1); // 脚本文件路径
             return new ErrorCommand(this, orginalScript, message);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(33, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr033", command));
         }
     }
 

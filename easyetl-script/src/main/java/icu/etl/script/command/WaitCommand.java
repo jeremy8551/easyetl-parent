@@ -46,7 +46,7 @@ public class WaitCommand extends AbstractTraceCommand {
 
         ScriptProcess process = session.getSubProcess().get(pid);
         if (process == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(44, pid));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr044", pid));
             return UniversalScriptCommand.COMMAND_ERROR;
         }
         this.process = process;
@@ -61,9 +61,9 @@ public class WaitCommand extends AbstractTraceCommand {
         long timeout = new MillisExpression(timeoutExpression).value();
         boolean usetimeout = timeout > 0;
         if (usetimeout && print) {
-            stdout.println(ResourcesUtils.getScriptStdoutMessage(36, script, Dates.format(timeout, TimeUnit.MILLISECONDS, true)));
+            stdout.println(ResourcesUtils.getMessage("script.message.stdout036", script, Dates.format(timeout, TimeUnit.MILLISECONDS, true)));
         } else {
-            stdout.println(ResourcesUtils.getScriptStdoutMessage(37, script));
+            stdout.println(ResourcesUtils.getMessage("script.message.stdout037", script));
         }
 
         boolean terminate = false;
@@ -73,10 +73,10 @@ public class WaitCommand extends AbstractTraceCommand {
                     process.terminate();
                     continue;
                 } catch (Throwable e) {
-                    stderr.println(ResourcesUtils.getScriptStderrMessage(27), e);
+                    stderr.println(ResourcesUtils.getMessage("script.message.stderr027"), e);
                 } finally {
                     terminate = true;
-                    stderr.println(ResourcesUtils.getScriptStderrMessage(28, script));
+                    stderr.println(ResourcesUtils.getMessage("script.message.stderr028", script));
                 }
             }
 
@@ -95,12 +95,12 @@ public class WaitCommand extends AbstractTraceCommand {
         if (this.terminate) {
             return UniversalScriptCommand.TERMINATE;
         } else if (process.getExitcode() == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(9, script));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr009", script));
             return UniversalScriptCommand.COMMAND_ERROR;
         } else {
             Integer exitcode = process.getExitcode();
             if (print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(39, script, exitcode));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout039", script, exitcode));
             }
             return exitcode;
         }

@@ -546,7 +546,7 @@ public class UniversalScriptContext implements ScriptContext {
                 break;
 
             default:
-                throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(59, scope));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("script.message.stderr059", scope));
         }
     }
 
@@ -602,7 +602,7 @@ public class UniversalScriptContext implements ScriptContext {
                 return getEnvironmentVariable(name);
 
             default:
-                throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(59, scope));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("script.message.stderr059", scope));
         }
     }
 
@@ -623,7 +623,7 @@ public class UniversalScriptContext implements ScriptContext {
                 return this.globalVariable.remove(name);
 
             default:
-                throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(59, scope));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("script.message.stderr059", scope));
         }
     }
 
@@ -647,7 +647,7 @@ public class UniversalScriptContext implements ScriptContext {
                 return;
         }
 
-        throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(59, scope));
+        throw new IllegalArgumentException(ResourcesUtils.getMessage("script.message.stderr059", scope));
     }
 
     /**
@@ -694,7 +694,7 @@ public class UniversalScriptContext implements ScriptContext {
                 return this.environmentVariable;
 
             default:
-                throw new IllegalArgumentException(ResourcesUtils.getScriptStderrMessage(59, scope));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("script.message.stderr059", scope));
         }
     }
 

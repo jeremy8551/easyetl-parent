@@ -50,7 +50,7 @@ public class DateCommand extends AbstractTraceCommand implements UniversalScript
         if (analysis.isBlankline(this.dateStr)) {
             this.dateStr = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "date", this.dateStr));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "date", this.dateStr));
         }
     }
 

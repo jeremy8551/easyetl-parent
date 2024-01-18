@@ -22,7 +22,7 @@ public class UUIDCommandCompiler extends AbstractTraceCommandCompiler {
         if ("uuid".equalsIgnoreCase(command)) {
             return new UUIDCommand(this, orginalScript);
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(109, command, "uuid"));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr109", command, "uuid"));
         }
     }
 

@@ -1,7 +1,5 @@
 package icu.etl.script.method;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.annotation.ScriptFunction;
@@ -19,14 +17,14 @@ public class SubstrMethod extends AbstractMethod {
 
     public int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String variableName, String methodHandle) throws Exception {
         if (methodHandle.charAt("substr".length()) != '(') {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(111, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr111", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         int funcStart = "substr(".length();
         int funcEnd = analysis.indexOf(methodHandle, ")", funcStart, 2, 2);
         if (funcEnd == -1) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(112, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr112", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
@@ -35,20 +33,20 @@ public class SubstrMethod extends AbstractMethod {
         List<String> parameters = analysis.split(params, analysis.getSegment());
 
         if (parameters.size() != 1 && parameters.size() != 2) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(118, methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr118", methodHandle));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         }
 
         Object value = session.getMethodVariable(variableName);
         if (value == null) {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(127, variableName));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr127", variableName));
             return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
         } else if (value instanceof String) {
             String str = (String) value;
 
             int begin = -1;
             if ((begin = StringUtils.parseInt(analysis.replaceShellVariable(session, context, parameters.get(0), true, true, false, false), -1)) == -1 || begin > str.length()) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(123, methodHandle));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr123", methodHandle));
                 return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
             }
 
@@ -56,7 +54,7 @@ public class SubstrMethod extends AbstractMethod {
             if (parameters.size() == 2 //
                     && ((end = StringUtils.parseInt(analysis.replaceShellVariable(session, context, parameters.get(1), true, true, false, false), -1)) == -1 || end < begin || end > str.length()) //
             ) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(123, methodHandle));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr123", methodHandle));
                 return UniversalScriptCommand.VARIABLE_METHOD_ERROR;
             }
 
@@ -72,7 +70,7 @@ public class SubstrMethod extends AbstractMethod {
 
             int begin = -1;
             if ((begin = StringUtils.parseInt(parameters.get(0), -1)) == -1 || begin > array.length) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(123, methodHandle));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr123", methodHandle));
                 return 4;
             }
 
@@ -80,7 +78,7 @@ public class SubstrMethod extends AbstractMethod {
             if (parameters.size() == 2 //
                     && ((end = StringUtils.parseInt(parameters.get(1), -1)) == -1 || end < begin || end > array.length) //
             ) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(123, methodHandle));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr123", methodHandle));
                 return 5;
             }
 
@@ -90,7 +88,7 @@ public class SubstrMethod extends AbstractMethod {
             this.value = newarray;
             return this.executeNextMethod(session, context, stdout, stderr, analysis, variableName, methodHandle, newarray, funcEnd + 1);
         } else {
-            stderr.println(ResourcesUtils.getScriptStderrMessage(124, value.getClass().getName(), methodHandle));
+            stderr.println(ResourcesUtils.getMessage("script.message.stderr124", value.getClass().getName(), methodHandle));
             return 9;
         }
     }

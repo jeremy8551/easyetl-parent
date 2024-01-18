@@ -56,13 +56,13 @@ public class PutCommand extends AbstractFileCommand implements JumpCommandSuppor
         try {
             this.ftp = FtpList.get(context).getFTPClient();
             if (this.ftp == null) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(35));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr035"));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 
             File localfile = new ScriptFile(session, context, localfilepath);
             if (!localfile.exists()) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(36, localfilepath));
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr036", localfilepath));
                 return UniversalScriptCommand.COMMAND_ERROR;
             }
 

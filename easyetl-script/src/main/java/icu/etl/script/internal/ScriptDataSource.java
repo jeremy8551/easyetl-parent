@@ -114,7 +114,7 @@ public class ScriptDataSource {
 
         Properties catalog = this.context.getCatalog(key); // 查找数据库编目信息
         if (catalog == null) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(8, this.map.keySet(), name));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr008", this.map.keySet(), name));
         }
 
         if (!catalog.containsKey(Jdbc.url)) {

@@ -38,7 +38,7 @@ public class FunctionCommand extends AbstractCommand implements LoopCommandSuppo
             CommandList old = set.add(this.body);
             boolean print = session.isEchoEnable() || forceStdout;
             if (old != null && print) {
-                stdout.println(ResourcesUtils.getScriptStdoutMessage(5, session.getScriptName(), old.getName()));
+                stdout.println(ResourcesUtils.getMessage("script.message.stdout005", session.getScriptName(), old.getName()));
             }
         }
         return 0;

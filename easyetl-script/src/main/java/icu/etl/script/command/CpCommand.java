@@ -38,7 +38,7 @@ public class CpCommand extends AbstractFileCommand implements UniversalScriptInp
         if (analysis.isBlankline(this.srcFileExpression)) {
             this.srcFileExpression = StringUtils.trimBlank(IO.read(in, new StringBuilder()));
         } else {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(14, this.command, "cat", this.destFileExpression));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr014", this.command, "cat", this.destFileExpression));
         }
     }
 

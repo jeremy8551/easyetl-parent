@@ -33,7 +33,7 @@ public class IfCommandCompiler extends AbstractCommandCompiler {
 
         String condition = it.readUntil("then");
         if (analysis.isBlankline(condition)) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(91, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr091", command));
         }
 
         // 搜索 elseif 与 else 关键字
@@ -44,7 +44,7 @@ public class IfCommandCompiler extends AbstractCommandCompiler {
             if (it.equals("elseif")) { // 如果下一个起始单词是 elseif 关键字
                 condition = it.readUntil("then");
                 if (analysis.isBlankline(condition)) {
-                    throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(91, command));
+                    throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr091", command));
                 }
 
                 String elseifbody = it.read(rule);

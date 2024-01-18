@@ -153,7 +153,7 @@ public class ScriptHandler {
             try {
                 this.execute(session, context, stdout, stderr, forceStdout, this.body, new String[]{"handler"});
             } catch (Throwable e) {
-                stderr.println(ResourcesUtils.getScriptStderrMessage(61, this.toString()), e);
+                stderr.println(ResourcesUtils.getMessage("script.message.stderr061", this.toString()), e);
             }
             return true;
         }
@@ -259,9 +259,9 @@ public class ScriptHandler {
                     } else if (type == ReturnCommand.KIND) { // Exit method
                         return exitcode;
                     } else if (type == BreakCommand.KIND) { // break
-                        throw new UnsupportedOperationException(ResourcesUtils.getScriptStderrMessage(31));
+                        throw new UnsupportedOperationException(ResourcesUtils.getMessage("script.message.stderr031"));
                     } else if (type == ContinueCommand.KIND) { // continue
-                        throw new UnsupportedOperationException(ResourcesUtils.getScriptStderrMessage(32));
+                        throw new UnsupportedOperationException(ResourcesUtils.getMessage("script.message.stderr032"));
                     }
                 }
             }

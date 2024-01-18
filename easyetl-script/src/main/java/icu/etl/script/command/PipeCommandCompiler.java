@@ -48,12 +48,12 @@ public class PipeCommandCompiler extends AbstractCommandCompiler implements Univ
             String script = it.next();
 
             if (analysis.isBlankline(script)) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(21, command));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr021", command));
             }
 
             List<UniversalScriptCommand> cmds = parser.read(script);
             if (cmds.size() != 1) {
-                throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(29, command));
+                throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr029", command));
             } else {
                 commands.add(cmds.get(0));
             }

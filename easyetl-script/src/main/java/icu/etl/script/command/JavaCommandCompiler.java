@@ -25,7 +25,7 @@ public class JavaCommandCompiler extends AbstractTraceCommandCompiler {
         it.assertNext("java");
         String className = it.next(); // JAVA 类名
         if (className == null) {
-            throw new UniversalScriptException(ResourcesUtils.getScriptStderrMessage(19, command));
+            throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr019", command));
         } else {
             List<String> args = it.asList(); // 截取参数
             return new JavaCommand(this, orginalScript, className, args);
