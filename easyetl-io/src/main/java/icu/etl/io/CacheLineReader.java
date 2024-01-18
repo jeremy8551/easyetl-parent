@@ -138,7 +138,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
         if (this.open) {
             return this.cacher.cacheLine(n);
         } else {
-            throw new IOException(ResourcesUtils.getIoxMessage(34));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg034"));
         }
     }
 
@@ -176,7 +176,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
                 this.cacher.setCurrentLine(line, null); // 添加到缓存中
             }
         } else {
-            throw new IOException(ResourcesUtils.getIoxMessage(34));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg034"));
         }
     }
 
@@ -190,7 +190,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
         if (this.open) {
             return this.cacher.getCacheLine();
         } else {
-            throw new IOException(ResourcesUtils.getIoxMessage(34));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg034"));
         }
     }
 

@@ -181,7 +181,7 @@ public class TextTableFileCounter {
                     in.seek(this.filePointer);
 
                     if (log.isTraceEnabled()) {
-                        log.trace(ResourcesUtils.getIoxMessage(43, this.getName(), this.filePointer));
+                        log.trace(ResourcesUtils.getMessage("io.standard.output.msg043", this.getName(), this.filePointer));
                     }
                 }
 

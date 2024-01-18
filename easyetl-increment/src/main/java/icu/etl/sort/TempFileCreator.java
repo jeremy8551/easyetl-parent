@@ -60,7 +60,7 @@ public class TempFileCreator {
             return;
         }
 
-        throw new IOException(ResourcesUtils.getIoxMessage(46, this.parent.getAbsolutePath()));
+        throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg046", this.parent.getAbsolutePath()));
     }
 
     /**

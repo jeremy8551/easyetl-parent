@@ -81,7 +81,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean connect(String host, int port, String username, String password) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(13, "SFTP", username + "@" + host + ":" + port + "?password=" + password));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg013", "SFTP", username + "@" + host + ":" + port + "?password=" + password));
         }
 
         try {
@@ -263,7 +263,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public void terminate() {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "terminate"));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "terminate"));
         }
 
         if (this.channel != null) {
@@ -288,7 +288,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean mkdir(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "mkdir " + filepath));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "mkdir " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -315,7 +315,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean cd(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "cd " + filepath));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "cd " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -332,7 +332,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean rm(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "rm " + filepath));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "rm " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -382,7 +382,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public String pwd() {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "pwd"));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "pwd"));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -397,7 +397,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public List<OSFile> ls(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "ls " + filepath));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "ls " + filepath));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -476,7 +476,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean upload(File localFile, String remoteDir) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "upload " + localFile + " " + remoteDir));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "upload " + localFile + " " + remoteDir));
         }
 
         if (!FileUtils.exists(localFile)) {
@@ -538,7 +538,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean rename(String filepath, String dest) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "rename " + filepath + " " + dest));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "rename " + filepath + " " + dest));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -559,7 +559,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public File download(String filepath, File localDir) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "download " + filepath + " " + localDir));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "download " + filepath + " " + localDir));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -633,7 +633,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public String read(String filepath, String charsetName, int lineno) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "read " + filepath + " " + charsetName + " " + lineno));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "read " + filepath + " " + charsetName + " " + lineno));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -663,7 +663,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean write(String filepath, String charsetName, boolean append, CharSequence content) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "write " + filepath + " " + append + " " + content));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "write " + filepath + " " + append + " " + content));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -698,7 +698,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public boolean copy(String filepath, String directory) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "copy " + filepath + " " + directory));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "copy " + filepath + " " + directory));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -732,7 +732,7 @@ public class SftpCommand implements OSFtpCommand {
 
     public List<OSFile> find(String filepath, String name, char type, OSFileFilter filter) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getSSH2JschMessage(12, "find " + filepath + " " + name + " " + type + " " + filter));
+            log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "find " + filepath + " " + name + " " + type + " " + filter));
         }
 
         JschChannel channel = this.getChannelSftp();
@@ -812,7 +812,7 @@ public class SftpCommand implements OSFtpCommand {
         try {
             if (this.channel != null) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getSSH2JschMessage(12, "bye"));
+                    log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg012", "bye"));
                 }
                 this.channel.closeSftp();
             }

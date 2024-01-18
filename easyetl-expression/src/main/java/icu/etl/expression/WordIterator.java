@@ -255,7 +255,7 @@ public class WordIterator implements Iterator<String> {
                     return StringUtils.trimBlank(str);
                 }
             }
-            throw new UnsupportedOperationException(ResourcesUtils.getIoxMessage(39, this.src, this.index + 1, words)); // 在字符串 str 中找不到单词 str
+            throw new UnsupportedOperationException(ResourcesUtils.getMessage("io.standard.output.msg039", this.src, this.index + 1, words)); // 在字符串 str 中找不到单词 str
         }
     }
 

@@ -60,7 +60,7 @@ public class CommonTextTableFileReaderListener implements TextTableFileReaderLis
         line.setContext(content.toString());
 
         if (log.isWarnEnabled()) {
-            log.warn(ResourcesUtils.getIoxMessage(11, file.getAbsolutePath(), lineNumber, StringUtils.join(list, ", "), StringUtils.escapeLineSeparator(old)));
+            log.warn(ResourcesUtils.getMessage("io.standard.output.msg011", file.getAbsolutePath(), lineNumber, StringUtils.join(list, ", "), StringUtils.escapeLineSeparator(old)));
         }
     }
 

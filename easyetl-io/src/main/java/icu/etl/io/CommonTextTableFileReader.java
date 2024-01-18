@@ -155,7 +155,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      */
     protected void ensureClose() throws IOException {
         if (this.in != null) {
-            throw new IOException(ResourcesUtils.getIoxMessage(34));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg034"));
         }
     }
 
@@ -166,7 +166,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      */
     protected void ensureOpen() throws IOException {
         if (this.in == null) {
-            throw new IOException(ResourcesUtils.getIoxMessage(10, this.file.getAbsolutePath()));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg010", this.file.getAbsolutePath()));
         }
     }
 
@@ -177,7 +177,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
             return true;
         } else {
             if (log.isErrorEnabled()) {
-                log.error(ResourcesUtils.getIoxMessage(33, this.file.getAbsolutePath(), value[0], value[1]));
+                log.error(ResourcesUtils.getMessage("io.standard.output.msg033", this.file.getAbsolutePath(), value[0], value[1]));
             }
             return false;
         }
@@ -215,7 +215,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
 
         int column = (array.length == 0) ? 0 : Numbers.max(array);
         if (array.length > 0 && log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getIoxMessage(8, this.file.getAbsolutePath(), column));
+            log.debug(ResourcesUtils.getMessage("io.standard.output.msg008", this.file.getAbsolutePath(), column));
         }
         return column;
     }
@@ -304,7 +304,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
         } else if (this.fields.size() < this.column && this.mergeNextLine(line)) {
             return;
         } else if (this.listener == null || this.listener.processColumnException(this, line, this.lineNumber)) {
-            throw new IOException(ResourcesUtils.getIoxMessage(12, this.file.getAbsolutePath(), this.in.getLineNumber(), this.fields.size(), this.column, this.line));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg012", this.file.getAbsolutePath(), this.in.getLineNumber(), this.fields.size(), this.column, this.line));
         }
     }
 

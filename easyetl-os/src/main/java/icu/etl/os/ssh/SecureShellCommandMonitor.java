@@ -88,7 +88,7 @@ public class SecureShellCommandMonitor extends TimerTask {
         try {
             if (!client.connect(this.host, this.port, this.username, this.password)) { // establish a ssh2 connection
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getSSH2JschMessage(1, this.username + "@" + this.host + ":" + this.port + "?password=" + this.password));
+                    log.warn(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg001", this.username + "@" + this.host + ":" + this.port + "?password=" + this.password));
                 }
                 return;
             }
@@ -98,7 +98,7 @@ public class SecureShellCommandMonitor extends TimerTask {
             }
         } catch (Exception e) {
             if (log.isWarnEnabled()) {
-                log.warn(ResourcesUtils.getSSH2JschMessage(4), e);
+                log.warn(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg004"), e);
             }
         } finally {
             client.close();
@@ -119,7 +119,7 @@ public class SecureShellCommandMonitor extends TimerTask {
         if (exitcode == 0 || exitcode == 1) {
             if (StringUtils.isBlank(client.getStdout())) { // not exists system process
                 if (log.isInfoEnabled()) {
-                    log.info(ResourcesUtils.getSSH2JschMessage(6, pid));
+                    log.info(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg006", pid));
                 }
 
                 Dates.sleep(3000); // wait 3sec
@@ -128,14 +128,14 @@ public class SecureShellCommandMonitor extends TimerTask {
                 return false;
             } else {
                 if (log.isInfoEnabled()) {
-                    log.info(ResourcesUtils.getSSH2JschMessage(5, pid));
+                    log.info(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg005", pid));
                 }
                 this.lastRunningTime = new Date();
                 return true;
             }
         } else {
             if (log.isWarnEnabled()) {
-                log.warn(ResourcesUtils.getSSH2JschMessage(4, shell + ", exitcode is " + exitcode));
+                log.warn(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg004", shell + ", exitcode is " + exitcode));
             }
             return true;
         }
@@ -211,7 +211,7 @@ public class SecureShellCommandMonitor extends TimerTask {
                     if (shellPidIdx != -1) {
                         if (lastActiveTime == null) {
                             if (log.isInfoEnabled()) {
-                                log.info(ResourcesUtils.getSSH2JschMessage(7, pid, line));
+                                log.info(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg007", pid, line));
                             }
                             return true;
                         }
@@ -219,7 +219,7 @@ public class SecureShellCommandMonitor extends TimerTask {
                         String dateStr = line.substring(dateStartPos, timeEndPos);
                         if (Dates.parse(dateStr).compareTo(lastActiveTime) >= 0) {
                             if (log.isInfoEnabled()) {
-                                log.info(ResourcesUtils.getSSH2JschMessage(7, pid, line));
+                                log.info(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg007", pid, line));
                             }
                             return true;
                         }

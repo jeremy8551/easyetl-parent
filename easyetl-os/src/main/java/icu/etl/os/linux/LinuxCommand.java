@@ -119,7 +119,7 @@ public class LinuxCommand implements OSCommand {
 
     public synchronized int execute(String command, long timeout, OutputStream stdout, OutputStream stderr) throws OSCommandException {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getOSMessage(3, command, timeout));
+            log.debug(ResourcesUtils.getMessage("os.standard.output.msg003", command, timeout));
         }
 
         this.terminate = false;
@@ -141,7 +141,7 @@ public class LinuxCommand implements OSCommand {
             for (int len = in.read(array, 0, array.length); len != -1; len = in.read(array, 0, array.length)) {
                 if (timeout > 0 && watch.useSeconds() > timeoutSec) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getOSMessage(7, cmd));
+                        log.debug(ResourcesUtils.getMessage("os.standard.output.msg007", cmd));
                     }
                     break;
                 }
@@ -163,7 +163,7 @@ public class LinuxCommand implements OSCommand {
             for (int len = is.read(array, 0, array.length); len != -1; len = is.read(array, 0, array.length)) {
                 if (timeout > 0 && watch.useSeconds() > timeoutSec) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getOSMessage(8, cmd));
+                        log.debug(ResourcesUtils.getMessage("os.standard.output.msg008", cmd));
                     }
                     break;
                 }
@@ -184,30 +184,30 @@ public class LinuxCommand implements OSCommand {
                 int count = 0;
                 while (process.waitFor() != 0) {
                     if (++count <= 100 && log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getOSMessage(6, cmd));
+                        log.debug(ResourcesUtils.getMessage("os.standard.output.msg006", cmd));
                     }
                 }
                 // while (!process.waitFor(timeout, TimeUnit.MILLISECONDS)) {
                 // if (++count <= 100 && log.isDebugEnabled()) {
-                // log.debug(ResourcesUtils.getOSMessage(6, cmd));
+                // log.debug(ResourcesUtils.getMessage("os.standard.output.msg006", cmd));
                 // }
                 // }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getOSMessage(6, cmd));
+                    log.debug(ResourcesUtils.getMessage("os.standard.output.msg006", cmd));
                 }
                 process.waitFor();
             }
 
             return process.exitValue();
         } catch (Throwable e) {
-            throw new OSCommandException(ResourcesUtils.getOSMessage(4, command), e);
+            throw new OSCommandException(ResourcesUtils.getMessage("os.standard.output.msg004", command), e);
         } finally {
             if (process != null) {
                 process.destroy();
             }
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getOSMessage(9, command, this.getStdout(), this.getStderr()));
+                log.debug(ResourcesUtils.getMessage("os.standard.output.msg009", command, this.getStdout(), this.getStderr()));
             }
         }
     }
@@ -236,13 +236,13 @@ public class LinuxCommand implements OSCommand {
             process.exitValue();
             return;
         } catch (Throwable e) {
-            throw new OSCommandException(ResourcesUtils.getOSMessage(4, command), e);
+            throw new OSCommandException(ResourcesUtils.getMessage("os.standard.output.msg004", command), e);
         } finally {
             if (process != null) {
                 process.destroy();
             }
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getOSMessage(5, command));
+                log.debug(ResourcesUtils.getMessage("os.standard.output.msg005", command));
             }
         }
     }
@@ -275,7 +275,7 @@ public class LinuxCommand implements OSCommand {
             if (StringUtils.isNotBlank(pid)) {
                 this.setPid(pid);
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getSSH2JschMessage(8, "localhost", pid));
+                    log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg008", "localhost", pid));
                 }
                 int next = end + 1; // 中括号的结束位置的下一个位置
                 if (next >= logstr.length()) {

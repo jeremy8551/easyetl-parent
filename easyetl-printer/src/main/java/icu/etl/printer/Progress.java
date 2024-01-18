@@ -229,7 +229,7 @@ public class Progress {
                             lefttime = this.lastLeftTime;
                         }
 
-                        str = StringUtils.replaceAll(str, "${leftTime}", ResourcesUtils.getIoxMessage(30, StringUtils.removeBlank(Dates.format(lefttime, TimeUnit.SECONDS, false))));
+                        str = StringUtils.replaceAll(str, "${leftTime}", ResourcesUtils.getMessage("io.standard.output.msg030", StringUtils.removeBlank(Dates.format(lefttime, TimeUnit.SECONDS, false))));
                         this.lastLeftTime = lefttime;
                     } else {
                         str = StringUtils.replaceAll(str, "${leftTime}", "");

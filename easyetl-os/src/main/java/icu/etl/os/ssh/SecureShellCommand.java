@@ -197,7 +197,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
             this.session.connect(0);
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getSSH2JschMessage(13, "SSH2", username + "@" + host + ":" + port + "?password=" + password + " " + this.session.getServerVersion()));
+                log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg013", "SSH2", username + "@" + host + ":" + port + "?password=" + password + " " + this.session.getServerVersion()));
             }
 
             this.config.clear();
@@ -224,7 +224,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
             return true;
         } catch (Throwable e) {
             if (log.isWarnEnabled()) {
-                log.warn(ResourcesUtils.getSSH2JschMessage(1, "ssh " + username + "@" + host + ":" + port + "?password=" + password), e);
+                log.warn(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg001", "ssh " + username + "@" + host + ":" + port + "?password=" + password), e);
             }
             return false;
         }
@@ -243,7 +243,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
             String password = this.config.getProperty(OSConnectCommand.password);
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getSSH2JschMessage(17, host + ":" + port));
+                log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg017", host + ":" + port));
             }
 
             try {
@@ -277,7 +277,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
                     this.ftp.setRemoteServerName(this.connectInfo);
                 }
             } catch (Throwable e) {
-                throw new OSCommandException(ResourcesUtils.getSSH2JschMessage(1, "ssh " + username + "@" + host + ":" + port + "?password=" + password), e);
+                throw new OSCommandException(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg001", "ssh " + username + "@" + host + ":" + port + "?password=" + password), e);
             }
         }
     }
@@ -307,7 +307,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
                 }
                 this.session = null;
             } catch (Throwable e1) {
-                log.error(ResourcesUtils.getSSH2JschMessage(9), e1);
+                log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg009",, e1);
             }
         } finally {
             Object[] array = this.forwards.toArray(new SecureShellForwardCommand[this.forwards.size()]);
@@ -377,13 +377,13 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
             if (array == null) {
                 String str = this.toShellCommand(command);
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getSSH2JschMessage(11, this.connectInfo, str));
+                    log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg011", this.connectInfo, str));
                 }
                 channel.setCommand(str);
             } else {
                 String str = this.toShellCommand(array[0]);
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getSSH2JschMessage(11, this.connectInfo, str + " -> " + array[1]));
+                    log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg011", this.connectInfo, str + " -> " + array[1]));
                 }
                 channel.setCommand(str);
                 OutputStream out = channel.getOutputStream();
@@ -406,7 +406,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
             byte[] buffer = new byte[1024];
             while (true) {
                 if (log.isDebugEnabled() && watch.useSeconds() > 0 && watch.useSeconds() % 30 == 0) {
-                    log.debug(ResourcesUtils.getSSH2JschMessage(14, this.connectInfo, 30));
+                    log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg014", this.connectInfo, 30));
                 }
 
                 if (this.terminate || !this.isConnected()) {
@@ -430,7 +430,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
                         }
                     } catch (Throwable e) {
                         if (log.isErrorEnabled()) {
-                            log.error(ResourcesUtils.getSSH2JschMessage(2, this.stdoutLog.toString(this.getCharsetName())), e);
+                            log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg002", this.stdoutLog.toString(this.getCharsetName())), e);
                         }
                     }
                 }
@@ -456,7 +456,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
                             }
                         } catch (Throwable e) {
                             if (log.isErrorEnabled()) {
-                                log.error(ResourcesUtils.getSSH2JschMessage(3, errorLog.toString(this.getCharsetName())), e);
+                                log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg003", errorLog.toString(this.getCharsetName())), e);
                             }
                         }
                     }
@@ -472,7 +472,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
                 Dates.sleep(1000);
             }
         } catch (Throwable e) {
-            throw new OSCommandException(ResourcesUtils.getSSH2JschMessage(4, command), e);
+            throw new OSCommandException(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg004", command), e);
         } finally {
             this.terminate = false;
             this.stopMonitor();
@@ -482,7 +482,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
 
             if (log.isDebugEnabled()) {
                 String pid = this.config.getProperty("pid");
-                log.debug(ResourcesUtils.getSSH2JschMessage(15, (pid == null ? "" : pid), this.getStdout(), this.getStderr()));
+                log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg015", (pid == null ? "" : pid), this.getStdout(), this.getStderr()));
             }
         }
     }
@@ -532,7 +532,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
             }
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
-                log.error(ResourcesUtils.getSSH2JschMessage(10), e);
+                log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg010",, e);
             }
         }
     }
@@ -559,7 +559,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
             if (StringUtils.isNotBlank(pid)) {
                 this.setPid(pid);
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getSSH2JschMessage(8, this.connectInfo, pid));
+                    log.debug(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg008", this.connectInfo, pid));
                 }
 
                 int endPos = logstr.indexOf("]", searchPos);

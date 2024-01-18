@@ -100,7 +100,7 @@ public class ClobWriter {
             }
             return buf.toString();
         } catch (Throwable e) {
-            throw new RuntimeException(ResourcesUtils.getIoxMessage(3), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("io.standard.output.msg003"), e);
         } finally {
             IO.close(in);
         }

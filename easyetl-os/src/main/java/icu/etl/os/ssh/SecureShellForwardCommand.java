@@ -204,7 +204,7 @@ public class SecureShellForwardCommand implements OSConnectCommand {
             String localServer = String.valueOf(port);
             String proxyServer = this.proxySSHUsername + "@" + this.proxySSHHost + ":" + proxySSHPort;
             String remotServer = remoteHost + ":" + remotePort;
-            this.stdout(ResourcesUtils.getSSH2JschMessage(16, localServer, proxyServer, remotServer));
+            this.stdout(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg016", localServer, proxyServer, remotServer));
             return port;
         } catch (Throwable e) {
             this.stderr("establishing an SSH tunnel fail!", e);

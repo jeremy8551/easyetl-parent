@@ -138,7 +138,7 @@ public class TableFileDeduplicateSorter implements Terminate {
         FileUtils.assertFile(file.getFile());
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getIoxMessage(56, file.getAbsolutePath(), Arrays.toString(orders)));
+            log.debug(ResourcesUtils.getMessage("io.standard.output.msg056", file.getAbsolutePath(), Arrays.toString(orders)));
         }
 
         this.context.setFile(file);
@@ -195,12 +195,12 @@ public class TableFileDeduplicateSorter implements Terminate {
         // 判断移动前后文件大小是否有变化
         long mergefilelength = mergefile.length() - (this.context.isRemoveLastField() ? 0L : (Long) this.context.getAttribute(FILESIZE_MORE));
         if (!mergefile.exists() || mergefilelength != oldlength) {
-            throw new IOException(ResourcesUtils.getIoxMessage(15, mergefile.getAbsolutePath(), mergefilelength, oldfile.getAbsolutePath(), oldlength));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg015", mergefile.getAbsolutePath(), mergefilelength, oldfile.getAbsolutePath(), oldlength));
         }
 
         // 判断合并前与合并后文件记录数是否相等
         if (this.context.getReadLineNumber() != this.context.getMergeLineNumber()) {
-            throw new IOException(ResourcesUtils.getIoxMessage(36, file.getAbsolutePath(), this.context.getReadLineNumber(), this.context.getMergeLineNumber()));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg036", file.getAbsolutePath(), this.context.getReadLineNumber(), this.context.getMergeLineNumber()));
         }
 
         // 保留源文件时，直接返回排序后的文件
@@ -208,17 +208,17 @@ public class TableFileDeduplicateSorter implements Terminate {
             File newfile = creator.toSortfile();
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getIoxMessage(53, oldfile.getAbsolutePath(), newfile.getAbsolutePath(), watch.useTime()));
+                log.debug(ResourcesUtils.getMessage("io.standard.output.msg053", oldfile.getAbsolutePath(), newfile.getAbsolutePath(), watch.useTime()));
             }
 
             if (mergefile.renameTo(newfile)) {
                 return newfile;
             } else {
-                throw new IOException(ResourcesUtils.getIoxMessage(35, mergefile.getAbsolutePath(), newfile.getAbsolutePath()));
+                throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg035", mergefile.getAbsolutePath(), newfile.getAbsolutePath()));
             }
         } else {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getIoxMessage(54, oldfile.getAbsolutePath(), mergefile.getAbsolutePath(), oldfile.getAbsolutePath(), watch.useTime()));
+                log.debug(ResourcesUtils.getMessage("io.standard.output.msg054", oldfile.getAbsolutePath(), mergefile.getAbsolutePath(), oldfile.getAbsolutePath(), watch.useTime()));
             }
 
             // 不保留源文件的处理逻辑:
@@ -229,7 +229,7 @@ public class TableFileDeduplicateSorter implements Terminate {
             if (FileUtils.rename(mergefile, oldfile, bakfile) && bakfile.delete()) { // 删除备份文件
                 return oldfile;
             } else {
-                throw new IOException(ResourcesUtils.getIoxMessage(16, bakfile.getAbsolutePath()));
+                throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg016", bakfile.getAbsolutePath()));
             }
         }
     }
@@ -348,7 +348,7 @@ public class TableFileDeduplicateSorter implements Terminate {
     private File merge(File listfile, String charsetName) throws Exception {
         long number = FileUtils.count(listfile, charsetName);
         if (number == 0) {
-            throw new IOException(ResourcesUtils.getIoxMessage(18, listfile.getAbsolutePath()));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg018", listfile.getAbsolutePath()));
         }
 
         // 清单文件中只有一个文件路径时
@@ -681,7 +681,7 @@ public class TableFileDeduplicateSorter implements Terminate {
                 TextTableLine line = this.array[i];
                 int v = this.recordComparator.compare(last, line);
                 if (v == 0) {
-                    throw new IOException(ResourcesUtils.getIoxMessage(29, this.file.getAbsolutePath(), last.getLineNumber(), line.getLineNumber()));
+                    throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg029", this.file.getAbsolutePath(), last.getLineNumber(), line.getLineNumber()));
                 } else {
                     last = line;
                 }
@@ -756,7 +756,7 @@ public class TableFileDeduplicateSorter implements Terminate {
         public MergeJob(TableFileSortContext context, MergeJobReader in, ListfileWriter out, RecordComparator recordComparator, List<TextTableFile> list) {
             super();
             this.context = Ensure.notNull(context);
-            this.setName(ResourcesUtils.getIoxMessage(24, FileUtils.getFilename(context.getFile().getAbsolutePath())));
+            this.setName(ResourcesUtils.getMessage("io.standard.output.msg024", FileUtils.getFilename(context.getFile().getAbsolutePath())));
             this.reader = in;
             this.files = list;
             this.out = out;
@@ -785,7 +785,7 @@ public class TableFileDeduplicateSorter implements Terminate {
             }
 
             if (files.size() == 0) {
-                throw new IllegalArgumentException(ResourcesUtils.getIoxMessage(27));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("io.standard.output.msg027"));
             }
 
             // 如果只有一个文件则直接退出
@@ -813,11 +813,11 @@ public class TableFileDeduplicateSorter implements Terminate {
                 boolean delete1 = file1.delete();
 
                 if (!delete0) {
-                    throw new IOException(ResourcesUtils.getIoxMessage(25, file0.getAbsolutePath()));
+                    throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg025", file0.getAbsolutePath()));
                 }
 
                 if (!delete1) {
-                    throw new IOException(ResourcesUtils.getIoxMessage(25, file1.getAbsolutePath()));
+                    throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg025", file1.getAbsolutePath()));
                 }
             }
 
@@ -918,7 +918,7 @@ public class TableFileDeduplicateSorter implements Terminate {
                     if (duplicate) {
                         int column1 = line1.getColumn(); // 最右侧字段的位置，代表就在原文件中的行号
                         int column2 = line2.getColumn();
-                        throw new IOException(ResourcesUtils.getIoxMessage(29, file.getAbsolutePath(), line1.getColumn(column1), line2.getColumn(column2)));
+                        throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg029", file.getAbsolutePath(), line1.getColumn(column1), line2.getColumn(column2)));
                     } else {
                         out.writeLine(line1.getContent(), reader1.getLineSeparator());
                         out.writeLine(line2.getContent(), reader2.getLineSeparator());

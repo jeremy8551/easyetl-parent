@@ -150,24 +150,24 @@ public class TableFileSorter implements Terminate {
 
         // 判断移动前后文件大小是否有变化
         if (!newfile.exists() || newfile.length() != oldlength) {
-            throw new IOException(ResourcesUtils.getIoxMessage(15, newfile.getAbsolutePath(), newfile.length(), oldfile.getAbsolutePath(), oldlength));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg015", newfile.getAbsolutePath(), newfile.length(), oldfile.getAbsolutePath(), oldlength));
         }
 
         // 判断合并前与合并后文件记录数是否相等
         if (this.context.getReadLineNumber() != this.context.getMergeLineNumber()) {
-            throw new IOException(ResourcesUtils.getIoxMessage(36, file.getAbsolutePath(), this.context.getReadLineNumber(), this.context.getMergeLineNumber()));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg036", file.getAbsolutePath(), this.context.getReadLineNumber(), this.context.getMergeLineNumber()));
         }
 
         // 删除临时文件
         if (this.context.isDeleteFile()) {
             if (!this.context.keepSource() && !oldfile.delete()) {
-                throw new IOException(ResourcesUtils.getIoxMessage(16, oldfile.getAbsolutePath()));
+                throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg016", oldfile.getAbsolutePath()));
             }
         } else { // 保留排序前的文件
             String newfilename = FileUtils.getFilenameNoSuffix(oldfile.getName()) + ".bak" + Dates.format17() + StringUtils.toRandomUUID();
             File bakfile = new File(oldfile.getParentFile(), newfilename);
             if (!oldfile.renameTo(bakfile)) {
-                throw new IOException(ResourcesUtils.getIoxMessage(35, oldfile.getAbsolutePath(), bakfile.getAbsolutePath()));
+                throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg035", oldfile.getAbsolutePath(), bakfile.getAbsolutePath()));
             }
         }
 
@@ -176,7 +176,7 @@ public class TableFileSorter implements Terminate {
         } else if (newfile.renameTo(oldfile)) { // 不保留源文件
             return oldfile;
         } else {
-            throw new IOException(ResourcesUtils.getIoxMessage(35, oldfile.getAbsolutePath(), newfile.getAbsolutePath()));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg035", oldfile.getAbsolutePath(), newfile.getAbsolutePath()));
         }
     }
 
@@ -221,15 +221,15 @@ public class TableFileSorter implements Terminate {
         while (true) {
             long number = FileUtils.count(listfile, file.getCharsetName());
             if (number == 0) {
-                throw new IOException(ResourcesUtils.getIoxMessage(18, listfile.getAbsolutePath()));
+                throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg018", listfile.getAbsolutePath()));
             } else if (number == 1) {
                 String filePath = StringUtils.trimBlank(FileUtils.readline(listfile, file.getCharsetName(), 0));
                 File newfile = new File(filePath);
                 if (!newfile.exists() || !newfile.isFile() || !newfile.canRead()) {
-                    throw new IOException(ResourcesUtils.getIoxMessage(19, filePath));
+                    throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg019", filePath));
                 }
                 if (this.context.isDeleteFile() && !listfile.delete()) {
-                    throw new IOException(ResourcesUtils.getIoxMessage(20, listfile));
+                    throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg020", listfile));
                 }
                 if (this.context.getMergeLineNumber() == 0) { // 如果是单线程
                     this.context.setMergeLineNumber(new TextTableFileCounter(this.context.getThreadSource(), this.context.getThreadNumber()).execute(newfile, file.getCharsetName()));
@@ -260,7 +260,7 @@ public class TableFileSorter implements Terminate {
                     this.context.setMergeLineNumber(in.getLineNumber());
                 }
                 if (this.context.isDeleteFile() && !listfile.delete()) {
-                    throw new IOException(ResourcesUtils.getIoxMessage(20, listfile));
+                    throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg020", listfile));
                 }
                 listfile = in.getListfile();
             }
@@ -283,7 +283,7 @@ public class TableFileSorter implements Terminate {
         } else if (FileUtils.createFile(listfile)) {
             return listfile;
         } else {
-            throw new IOException(ResourcesUtils.getIoxMessage(22, listfile.getAbsolutePath()));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg022", listfile.getAbsolutePath()));
         }
     }
 
@@ -303,7 +303,7 @@ public class TableFileSorter implements Terminate {
         } else if (FileUtils.createFile(mergefile)) {
             return mergefile;
         } else {
-            throw new IOException(ResourcesUtils.getIoxMessage(22, mergefile.getAbsolutePath()));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg022", mergefile.getAbsolutePath()));
         }
     }
 
@@ -323,7 +323,7 @@ public class TableFileSorter implements Terminate {
         } else if (FileUtils.createFile(file)) {
             return file;
         } else {
-            throw new IOException(ResourcesUtils.getIoxMessage(22, file.getAbsolutePath()));
+            throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg022", file.getAbsolutePath()));
         }
     }
 
@@ -440,7 +440,7 @@ public class TableFileSorter implements Terminate {
          */
         public MergeExecutorReader(TableFileSortContext cxt, File listfile, RecordComparator recordComparator) throws IOException {
             if (listfile == null || !listfile.exists()) {
-                throw new IllegalArgumentException(ResourcesUtils.getIoxMessage(23, listfile));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("io.standard.output.msg023", listfile));
             }
 
             this.context = cxt;
@@ -468,7 +468,7 @@ public class TableFileSorter implements Terminate {
             if (list.size() == 0) {
                 return false;
             } else {
-                String name = ResourcesUtils.getIoxMessage(24, FileUtils.getFilename(file.getAbsolutePath()));
+                String name = ResourcesUtils.getMessage("io.standard.output.msg024", FileUtils.getFilename(file.getAbsolutePath()));
                 this.task = new MergeExecutor(name, this.listfileout, this.context, this.recordComparator);
                 this.task.setFiles(list);
                 return true;
@@ -672,13 +672,13 @@ public class TableFileSorter implements Terminate {
             if (this.deleteTempFile) {
                 for (TextTableFile f : this.files) {
                     if (!f.getAbsolutePath().equals(file.getAbsolutePath()) && !f.delete()) {
-                        throw new IOException(ResourcesUtils.getIoxMessage(25, f.getAbsolutePath()));
+                        throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg025", f.getAbsolutePath()));
                     }
                 }
 
                 for (TextTableFile f : this.tmpFiles) {
                     if (!f.getAbsolutePath().equals(file.getAbsolutePath()) && !f.delete()) {
-                        throw new IOException(ResourcesUtils.getIoxMessage(26, f.getAbsolutePath()));
+                        throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg026", f.getAbsolutePath()));
                     }
                 }
             }
@@ -695,7 +695,7 @@ public class TableFileSorter implements Terminate {
          */
         public TextTableFile merge(List<TextTableFile> files) throws IOException {
             if (files == null || files.size() == 0) {
-                throw new IllegalArgumentException(ResourcesUtils.getIoxMessage(27));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("io.standard.output.msg027"));
             } else if (files.size() == 1) {
                 return files.get(0); // 如果只有一个文件则直接退出
             }
