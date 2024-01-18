@@ -10,7 +10,7 @@
         <relativePath>../../easyetl-parent</relativePath>
     </parent>
 
-    <artifactId>easyetl-file</artifactId>
+    <artifactId>easyetl-increment</artifactId>
 
     <dependencies>
         <dependency>

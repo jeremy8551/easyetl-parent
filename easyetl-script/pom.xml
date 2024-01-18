@@ -81,7 +81,7 @@
 
         <dependency>
             <groupId>icu.etl</groupId>
-            <artifactId>easyetl-file</artifactId>
+            <artifactId>easyetl-increment</artifactId>
             <scope>compile</scope>
         </dependency>
 
