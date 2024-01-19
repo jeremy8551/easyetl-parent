@@ -53,7 +53,7 @@ public abstract class Parser {
             defaultFormat = new Parser(new BaseAnalysis()) {
 
                 public int parse(String array, int start, boolean isData, List<Parameter> datas, List<Operator> operation) throws ExpressionException {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(26, String.valueOf(array), start + 1), start + 1);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg026", String.valueOf(array), start + 1), start + 1);
                 }
             };
         }
@@ -130,7 +130,7 @@ public abstract class Parser {
                     isData = false;
                 } else {
                     if (next >= length || "0123456789".indexOf(str.charAt(next)) == -1) {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                     }
 
                     int index = this.analysis.indexOfFloat(str, next);
@@ -149,7 +149,7 @@ public abstract class Parser {
             // 乘法
             else if (c == '*') {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 MupliOper oper = new MupliOper();
@@ -161,7 +161,7 @@ public abstract class Parser {
             // 除法
             else if (c == '/') {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 DivOper oper = new DivOper();
@@ -173,7 +173,7 @@ public abstract class Parser {
             // 取余
             else if (c == '%') {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 ModOper oper = new ModOper();
@@ -185,10 +185,10 @@ public abstract class Parser {
             // 解析并且
             else if (c == '&') {
                 if (!isData || next >= length) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 if (str.charAt(next) != '&') {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(29, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg029", str, next), next);
                 }
 
                 AndOper oper = new AndOper();
@@ -201,7 +201,7 @@ public abstract class Parser {
             // 解析并且 and
             else if ((c == 'a' || c == 'A') && this.analysis.indexOf(str, "and", i, 1, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 AndOper oper = new AndOper();
@@ -214,10 +214,10 @@ public abstract class Parser {
             // 解析或
             else if (c == '|') {
                 if (!isData || next >= length) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 if (str.charAt(next) != '|') {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(30, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg030", str, next), next);
                 }
 
                 OrOper oper = new OrOper();
@@ -230,7 +230,7 @@ public abstract class Parser {
             // 解析或 or
             else if ((c == 'o' || c == 'O') && this.analysis.indexOf(str, "or", i, 1, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 OrOper oper = new OrOper();
@@ -243,7 +243,7 @@ public abstract class Parser {
             // 解析大于 和 大于等于
             else if (c == '>') {
                 if (!isData || next >= length) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 if (str.charAt(next) == '=') {
@@ -259,7 +259,7 @@ public abstract class Parser {
             // 解析小于 和 小于等于
             else if (c == '<') {
                 if (!isData || next >= length) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 if (str.charAt(next) == '=') {
@@ -275,10 +275,10 @@ public abstract class Parser {
             // 解析等于
             else if (c == '=') {
                 if (!isData || next >= length) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 if (str.charAt(next) != '=') {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(31, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg031", str, next), next);
                 }
 
                 operations.add(new EqualsOper());
@@ -290,7 +290,7 @@ public abstract class Parser {
             // 解析不等于
             else if (c == '!' && next < length && str.charAt(next) == '=') { // 只解析不等于, 取反操作放在扩展方法中实现
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 operations.add(new NotEqualsOper());
@@ -303,7 +303,7 @@ public abstract class Parser {
             else if (c == '(') {
                 int index = this.analysis.indexOfParenthes(str, i);
                 if (index == -1) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(32, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg032", str, next), next);
                 }
 
                 // 如果上一个是 in 操作符
@@ -328,17 +328,17 @@ public abstract class Parser {
 
             // 非法字符
             else if (c == ')') {
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(33, str, next), next);
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg033", str, next), next);
             }
 
             // 字符常量
             else if (c == '\'') {
                 if (isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(34, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg034", str, next), next);
                 }
                 int index = this.analysis.indexOfQuotation(str, i);
                 if (index == -1) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(27, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg027", str, next), next);
                 }
 
                 String content = this.analysis.unescapeString(str.substring(next, index));
@@ -351,11 +351,11 @@ public abstract class Parser {
             // 字符变量
             else if (c == '\"') {
                 if (isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(34, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg034", str, next), next);
                 }
                 int index = this.analysis.indexOfDoubleQuotation(str, i);
                 if (index == -1) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(27, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg027", str, next), next);
                 }
 
                 String content = this.analysis.unescapeString(str.substring(next, index));
@@ -368,7 +368,7 @@ public abstract class Parser {
             // 十六进制数 0x1e4d 和八进制数 01234
             else if (c == '0') {
                 if (isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(34, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg034", str, next), next);
                 }
 
                 if (next < length) {
@@ -377,7 +377,7 @@ public abstract class Parser {
                         int start = next + 1;
                         int index = this.analysis.indexOfHex(str, start);
                         if (index == -1) {
-                            throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                         }
 
                         datas.add(new ExpressionParameter(Parameter.LONG, Long.parseLong(str.substring(start, index), 16)));
@@ -387,7 +387,7 @@ public abstract class Parser {
                     } else if ("0123456789".indexOf(nc) != -1) { // 八进制
                         int index = this.analysis.indexOfOctal(str, next);
                         if (index == -1) {
-                            throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                         }
 
                         datas.add(new ExpressionParameter(Parameter.LONG, Long.parseLong(str.substring(next, index), 8)));
@@ -412,7 +412,7 @@ public abstract class Parser {
             // 解析数字
             else if ("0123456789".indexOf(c) != -1) {
                 if (isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(34, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg034", str, next), next);
                 }
 
                 int index = this.analysis.indexOfFloat(str, i);
@@ -430,12 +430,12 @@ public abstract class Parser {
             // 三目运算符 boolean ? value1 : value2
             else if (c == '?') {
                 if (datas.isEmpty()) { // 如果是三目操作则只能有一个操作符
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(35, str), i);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg035", str), i);
                 }
 
                 int index = this.analysis.indexOfSemicolon(str, i);
                 if (index == -1) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(36, str), i);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg036", str), i);
                 }
 
                 ComplexParameter trueRun = new ComplexParameter(str.substring(next, index));
@@ -456,7 +456,7 @@ public abstract class Parser {
             // 在范围内 in
             else if ((c == 'i' || c == 'I') && this.analysis.indexOf(str, "in", i, 0, 1) == i) {
                 if (!isData || next >= length) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
 
                 InOper oper = new InOper();
@@ -470,11 +470,11 @@ public abstract class Parser {
             else if ((c == 'n' || c == 'N') && this.analysis.indexOf(str, "not", i, 1, 0) == i && this.analysis.startsWith(str, "in", i + 3, true)) {
                 int index = str.indexOf("in", i + 3); // 查找 not in 语句中 in 关键字的位置
                 if (index == -1) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(5, str, i + 4), i + 4);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg005", str, i + 4), i + 4);
                 }
                 index += "in".length(); // in 关键字的结束位置
                 if (!isData || index >= str.length() || !this.analysis.charAt(str, index, 1)) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, index), index);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, index), index);
                 }
 
                 NotInOper oper = new NotInOper();
@@ -487,11 +487,11 @@ public abstract class Parser {
             // 日 day
             else if ((c == 'd' || c == 'D') && this.analysis.indexOf(str, "day", i, 2, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 int index = datas.size() - 1;
                 if (index < 0) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(4, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg004", str, next), next);
                 }
 
                 datas.set(index, new DateUnitParameter(datas.get(index), Calendar.DAY_OF_MONTH));
@@ -502,11 +502,11 @@ public abstract class Parser {
             // 月份 month
             else if ((c == 'm' || c == 'M') && this.analysis.indexOf(str, "month", i, 2, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 int index = datas.size() - 1;
                 if (index < 0) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(4, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg004", str, next), next);
                 }
 
                 datas.set(index, new DateUnitParameter(datas.get(index), Calendar.MONTH));
@@ -517,11 +517,11 @@ public abstract class Parser {
             // 年份 year
             else if ((c == 'y' || c == 'Y') && this.analysis.indexOf(str, "year", i, 2, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 int index = datas.size() - 1;
                 if (index < 0) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(4, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg004", str, next), next);
                 }
 
                 datas.set(index, new DateUnitParameter(datas.get(index), Calendar.YEAR));
@@ -532,11 +532,11 @@ public abstract class Parser {
             // 小时 hour
             else if ((c == 'h' || c == 'H') && this.analysis.indexOf(str, "hour", i, 2, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 int index = datas.size() - 1;
                 if (index < 0) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(4, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg004", str, next), next);
                 }
 
                 datas.set(index, new DateUnitParameter(datas.get(index), Calendar.HOUR));
@@ -547,11 +547,11 @@ public abstract class Parser {
             // 分钟 minute
             else if ((c == 'm' || c == 'M') && this.analysis.indexOf(str, "minute", i, 2, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 int index = datas.size() - 1;
                 if (index < 0) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(4, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg004", str, next), next);
                 }
 
                 datas.set(index, new DateUnitParameter(datas.get(index), Calendar.MINUTE));
@@ -562,11 +562,11 @@ public abstract class Parser {
             // 秒 second
             else if ((c == 's' || c == 'S') && this.analysis.indexOf(str, "second", i, 2, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 int index = datas.size() - 1;
                 if (index < 0) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(4, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg004", str, next), next);
                 }
 
                 datas.set(index, new DateUnitParameter(datas.get(index), Calendar.SECOND));
@@ -577,11 +577,11 @@ public abstract class Parser {
             // 毫秒 millisecond
             else if ((c == 'm' || c == 'M') && this.analysis.indexOf(str, "millis", i, 2, 1) == i) {
                 if (!isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(28, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg028", str, next), next);
                 }
                 int index = datas.size() - 1;
                 if (index < 0) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(4, str, next), next);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg004", str, next), next);
                 }
 
                 datas.set(index, new DateUnitParameter(datas.get(index), Calendar.MILLISECOND));

@@ -49,7 +49,7 @@ public class CommandOptionPattern {
                 break;
 
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(70, expr.getPattern(), str));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg070", expr.getPattern(), str));
         }
     }
 

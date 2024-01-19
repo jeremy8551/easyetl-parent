@@ -126,7 +126,7 @@ public class CommandExpression {
             else if (this.name.match(str)) {
                 this.name.parse(str);
             } else {
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(70, this.pattern, str));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg070", this.pattern, str));
             }
         }
     }
@@ -190,7 +190,7 @@ public class CommandExpression {
                 String optionValue = (b == -1 || b == tmp.length() - 1) ? null : tmp.substring(b + 1); // 长选项的值
 
                 if (!this.option.supportName(optionName)) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, optionName));
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg071", this.command, optionName));
                 }
 
                 // 如果可以有选项值
@@ -228,14 +228,14 @@ public class CommandExpression {
                         if (this.option.supportName(optionName)) {
                             this.option.addOption(new CommandOptionValue(optionName, null, false));
                         } else {
-                            throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, "-" + optionName));
+                            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg071", this.command, "-" + optionName));
                         }
                     }
                     return end - 1;
                 } else { // 解析单选项-
                     String optionName = word.substring(1);
                     if (!this.option.supportName(optionName)) {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.command, word));
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg071", this.command, word));
                     }
 
                     // 如果选项可以有值

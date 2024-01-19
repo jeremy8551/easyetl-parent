@@ -42,7 +42,7 @@ public class PlusOper implements Operator {
         if (d1.getType() == Parameter.STRING && d2.getType() == Parameter.DATEUNIT) {
             java.util.Date date = Dates.testParse(d1.value());
             if (date == null) {
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(62, d1.stringValue()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg062", d1.stringValue()));
             }
             DateUnitParameter p = (DateUnitParameter) d2;
             data.setType(Parameter.DATE);
@@ -82,7 +82,7 @@ public class PlusOper implements Operator {
         if (d1.getType() == Parameter.LONG && d2.getType() == Parameter.DATEUNIT) {
             java.util.Date date = Dates.testParse(d1.longValue());
             if (date == null) {
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(62, d1.stringValue()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg062", d1.stringValue()));
             }
             DateUnitParameter p = (DateUnitParameter) d2;
             data.setType(Parameter.DATE);
@@ -110,6 +110,6 @@ public class PlusOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(19);
+        return ResourcesUtils.getMessage("expression.standard.output.msg019");
     }
 }

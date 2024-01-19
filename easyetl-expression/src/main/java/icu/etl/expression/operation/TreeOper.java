@@ -11,7 +11,7 @@ public class TreeOper implements Operator {
     public Parameter execute(Parameter condition, Parameter d2) {
         condition.execute();
         if (condition.getType() != Parameter.BOOLEAN) {
-            throw new ExpressionException(ResourcesUtils.getExpressionMessage(37, condition.getType()));
+            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg037", condition.getType()));
         }
         TwoParameter run = (TwoParameter) d2;
 
@@ -35,7 +35,7 @@ public class TreeOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(21);
+        return ResourcesUtils.getMessage("expression.standard.output.msg021");
     }
 
 }

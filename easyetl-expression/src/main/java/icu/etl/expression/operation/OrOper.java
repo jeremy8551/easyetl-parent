@@ -28,6 +28,6 @@ public class OrOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(18);
+        return ResourcesUtils.getMessage("expression.standard.output.msg018");
     }
 }

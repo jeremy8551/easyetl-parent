@@ -76,7 +76,7 @@ public class CommandOptionList {
             if (str.length() >= 3 && str.charAt(1) == '-') { // 长选项
                 CommandOptionPattern option = new CommandOptionPattern(this.expr, str);
                 if (this.patterns.put(option.getName(), option) != null) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.expr.getCommand(), "-" + option.getName()));
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg071", this.expr.getCommand(), "-" + option.getName()));
                 }
             } else {
                 String tmp = StringUtils.ltrim(str, '-'); // 选项名
@@ -93,7 +93,7 @@ public class CommandOptionList {
                     String pattern = "-" + c + right; // 选项规则
                     CommandOptionPattern option = new CommandOptionPattern(this.expr, pattern);
                     if (this.patterns.put(option.getName(), option) != null) {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.expr.getCommand(), "-" + option.getName()));
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg071", this.expr.getCommand(), "-" + option.getName()));
                     }
                 }
             }
@@ -109,7 +109,7 @@ public class CommandOptionList {
                     this.patterns.put(pattern.getName(), pattern);
                     list.add(pattern.getName());
                 } else {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(71, this.expr.getCommand(), optExpr));
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg071", this.expr.getCommand(), optExpr));
                 }
             }
 
@@ -222,7 +222,7 @@ public class CommandOptionList {
                 Set<String> errornames = this.rules.get(name); // 不能同时使用的选项名集合
                 for (String errorname : errornames) {
                     if (this.values.containsKey(errorname)) {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(74, this.expr.getCommand(), "-" + name, "-" + errorname));
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg074", this.expr.getCommand(), "-" + name, "-" + errorname));
                     }
                 }
             }
@@ -247,7 +247,7 @@ public class CommandOptionList {
                         buf.append(" ");
                     }
                 }
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(75, this.expr.getCommand(), buf));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg075", this.expr.getCommand(), buf));
             }
         }
 
@@ -263,10 +263,10 @@ public class CommandOptionList {
                     if (value != null) { // 校验参数值是否复合规则
                         if (regex.equalsIgnoreCase("date")) {
                             if (Dates.testParse(value) == null) {
-                                throw new ExpressionException(ResourcesUtils.getExpressionMessage(76, this.expr.getCommand(), "-" + option.getName(), value, regex));
+                                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg076", this.expr.getCommand(), "-" + option.getName(), value, regex));
                             }
                         } else if (!value.matches(regex)) {
-                            throw new ExpressionException(ResourcesUtils.getExpressionMessage(76, this.expr.getCommand(), "-" + option.getName(), value, regex));
+                            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg076", this.expr.getCommand(), "-" + option.getName(), value, regex));
                         }
                     }
                 }

@@ -90,10 +90,10 @@ public class ScriptExpressionParser extends Parser {
             // 执行命令替换操作
             if (c == '`') {
                 if (isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(34, str, i + 1), i + 1);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg034", str, i + 1), i + 1);
                 }
                 if (reverse) { // 不支持在命令替换符前面使用取反符!
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(61, str, reverseIndex), reverseIndex);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg061", str, reverseIndex), reverseIndex);
                 }
 
                 int index = this.analysis.indexOfAccent(str, i);
@@ -122,16 +122,16 @@ public class ScriptExpressionParser extends Parser {
             // 替换变量 $? $# $0 $1 ... $name ${name}
             else if (c == '$') {
                 if (isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(34, str, i + 1), i + 1);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg034", str, i + 1), i + 1);
                 }
                 if (reverse) { // 不支持取反操作符!
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(61, str, reverseIndex), reverseIndex);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg061", str, reverseIndex), reverseIndex);
                 }
 
                 // exists next character
                 int next = i + 1;
                 if (next >= str.length()) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(47, str, i + 1), i + 1);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg047", str, i + 1), i + 1);
                 }
 
                 // variable name
@@ -150,13 +150,13 @@ public class ScriptExpressionParser extends Parser {
                     if (index < args.length) {
                         datas.add(ExpressionParameter.parseStr(args[index]));
                     } else {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(60, str, i + 1, "$" + index), i + 1);
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg060", str, i + 1, "$" + index), i + 1);
                     }
                     return end - 1;
                 } else if (nc == '{') { // 变量名 ${name}
                     int end = this.analysis.indexOfBrace(str, next);
                     if (end == -1) {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(46, str, i + 1), i + 1);
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg046", str, i + 1), i + 1);
                     }
 
                     String variableName = str.substring(next + 1, end);
@@ -179,7 +179,7 @@ public class ScriptExpressionParser extends Parser {
                         throw new ExpressionException(ResourcesUtils.getMessage("script.message.stderr107", variableName), i + 1);
                     }
                 } else {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(47, i + 1), i + 1);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg047", i + 1), i + 1);
                 }
             }
 
@@ -192,13 +192,13 @@ public class ScriptExpressionParser extends Parser {
                     throw new UniversalScriptException(ResourcesUtils.getMessage("script.message.stderr107", str, variableName));
                 }
                 if (isData) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(34, str, i + 1), i + 1);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg034", str, i + 1), i + 1);
                 }
 
                 // 打印变量值
                 if (next >= str.length()) {
                     if (reverse) {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(61, str, reverseIndex), reverseIndex);
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg061", str, reverseIndex), reverseIndex);
                     }
 
                     Object value = this.getVariable(variableName);
@@ -229,7 +229,7 @@ public class ScriptExpressionParser extends Parser {
                 // 打印变量值
                 else {
                     if (reverse) { // 不支持取反操作符!
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(61, str, reverseIndex), reverseIndex);
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg061", str, reverseIndex), reverseIndex);
                     }
 
                     Object value = this.getVariable(variableName);
@@ -237,7 +237,7 @@ public class ScriptExpressionParser extends Parser {
                     return next - 1;
                 }
             } else if (reverse) {
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(61, str, reverseIndex), reverseIndex);
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg061", str, reverseIndex), reverseIndex);
             }
         }
         return start;

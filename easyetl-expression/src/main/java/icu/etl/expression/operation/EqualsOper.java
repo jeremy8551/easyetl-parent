@@ -59,7 +59,7 @@ public class EqualsOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(12);
+        return ResourcesUtils.getMessage("expression.standard.output.msg012");
     }
 
 }

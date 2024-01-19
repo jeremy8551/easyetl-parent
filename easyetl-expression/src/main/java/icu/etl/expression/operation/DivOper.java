@@ -44,7 +44,7 @@ public class DivOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(13);
+        return ResourcesUtils.getMessage("expression.standard.output.msg013");
     }
 
 }

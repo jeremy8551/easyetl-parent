@@ -48,6 +48,6 @@ public class GreaterOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(24);
+        return ResourcesUtils.getMessage("expression.standard.output.msg024");
     }
 }

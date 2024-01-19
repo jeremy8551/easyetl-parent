@@ -25,6 +25,6 @@ public class AndOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(14);
+        return ResourcesUtils.getMessage("expression.standard.output.msg014");
     }
 }

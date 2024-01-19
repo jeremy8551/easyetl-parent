@@ -47,6 +47,6 @@ public class MupliOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(16);
+        return ResourcesUtils.getMessage("expression.standard.output.msg016");
     }
 }

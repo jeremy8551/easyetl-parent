@@ -24,7 +24,7 @@ public class InOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(11);
+        return ResourcesUtils.getMessage("expression.standard.output.msg011");
     }
 
 }

@@ -132,15 +132,15 @@ public class LoginExpression extends CommandExpression {
         }
 
         if (!StringUtils.isInt(this.port)) {
-            throw new ExpressionException(ResourcesUtils.getExpressionMessage(54, this.command, this.port));
+            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg054", this.command, this.port));
         }
 
         if (StringUtils.isBlank(this.host)) {
-            throw new ExpressionException(ResourcesUtils.getExpressionMessage(55, this.command));
+            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg055", this.command));
         }
 
         if (StringUtils.isBlank(this.username)) {
-            throw new ExpressionException(ResourcesUtils.getExpressionMessage(56, this.command));
+            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg056", this.command));
         }
     }
 

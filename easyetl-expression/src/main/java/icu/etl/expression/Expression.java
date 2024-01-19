@@ -137,7 +137,7 @@ public class Expression {
      */
     public Expression(Parser format, String str) {
         if (log.isTraceEnabled()) {
-            log.trace(ResourcesUtils.getExpressionMessage(6, str));
+            log.trace(ResourcesUtils.getMessage("expression.standard.output.msg006", str));
         }
 
         this.expression = str;
@@ -199,7 +199,7 @@ public class Expression {
             case Parameter.STRING:
                 return new BigDecimal(this.result.stringValue());
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), BigDecimal.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), BigDecimal.class.getSimpleName()));
         }
     }
 
@@ -226,7 +226,7 @@ public class Expression {
             case Parameter.STRING:
                 return new Double(this.result.stringValue());
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), Double.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), Double.class.getSimpleName()));
         }
     }
 
@@ -253,7 +253,7 @@ public class Expression {
             case Parameter.STRING:
                 return new Float(this.result.stringValue());
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), Float.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), Float.class.getSimpleName()));
         }
     }
 
@@ -280,7 +280,7 @@ public class Expression {
             case Parameter.STRING:
                 return new Integer(this.result.stringValue());
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), Integer.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), Integer.class.getSimpleName()));
         }
     }
 
@@ -310,7 +310,7 @@ public class Expression {
             case Parameter.DATE:
                 return this.result.dateValue().getTime();
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), Long.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), Long.class.getSimpleName()));
         }
     }
 
@@ -335,7 +335,7 @@ public class Expression {
             case Parameter.STRING:
                 return Boolean.valueOf(this.result.stringValue());
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), Boolean.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), Boolean.class.getSimpleName()));
         }
     }
 
@@ -362,7 +362,7 @@ public class Expression {
             case Parameter.STRING:
                 return new Short(this.result.stringValue());
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), Short.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), Short.class.getSimpleName()));
         }
     }
 
@@ -394,7 +394,7 @@ public class Expression {
             case Parameter.DATE:
                 return StringUtils.toString(this.result.dateValue());
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), String.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), String.class.getSimpleName()));
         }
     }
 
@@ -420,7 +420,7 @@ public class Expression {
             case Parameter.DATE:
                 return this.result.dateValue();
             default:
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(1, this.expression, ExpressionParameter.getTypeName(type), Date.class.getSimpleName()));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg001", this.expression, ExpressionParameter.getTypeName(type), Date.class.getSimpleName()));
         }
     }
 

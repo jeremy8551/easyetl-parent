@@ -49,6 +49,6 @@ public class GreaterEqualsOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(25);
+        return ResourcesUtils.getMessage("expression.standard.output.msg025");
     }
 }

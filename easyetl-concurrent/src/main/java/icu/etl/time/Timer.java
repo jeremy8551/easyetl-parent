@@ -119,7 +119,7 @@ public class Timer {
             return;
         }
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getTimerMessage(1));
+            log.debug(ResourcesUtils.getMessage("timer.standard.output.msg001"));
         }
 
         this.setStartOrStop(true);
@@ -138,31 +138,31 @@ public class Timer {
             return;
         } else {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(2));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg002"));
             }
             this.queue.cancelAllTasks(); // 取消所有任务
 
             if (isForce) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getTimerMessage(3));
+                    log.debug(ResourcesUtils.getMessage("timer.standard.output.msg003"));
                 }
                 this.queue.killRunningTask();
             }
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(4));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg004"));
             }
             while (this.queue.getRunningTaskSize() > 0) {
             }
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(5));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg005"));
             }
             this.queue.removeTask();
 
             this.setStartOrStop(false);
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(6));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg006"));
             }
         }
     }
@@ -185,7 +185,7 @@ public class Timer {
             throw new NullPointerException();
         }
         if (this.isStop()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(7));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         }
 
         int size = list.size();
@@ -217,7 +217,7 @@ public class Timer {
      */
     public synchronized int addTask(TimerTask task) {
         if (isStop()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(7));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         }
         if (task == null) {
             return Timer.START_UNCHECK_NULL;
@@ -286,7 +286,7 @@ public class Timer {
      */
     public synchronized TimerTask cancelTask(String taskId) {
         if (this.isStop()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(7));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         } else {
             return this.queue.cancelTask(taskId);
         }
@@ -301,7 +301,7 @@ public class Timer {
      */
     public synchronized TimerTask removeTask(String taskId) {
         if (isStop()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(7));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         }
 
         TimerTask task = this.queue.cancelTask(taskId);
@@ -325,7 +325,7 @@ public class Timer {
      */
     public synchronized TimerTask findTask(String taskId) {
         if (this.isStop()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(7));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         } else {
             return queue.getTask(taskId);
         }
@@ -338,7 +338,7 @@ public class Timer {
      */
     public synchronized List<TimerTask> getTasks() {
         if (this.isStop()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(7));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         } else {
             return this.queue.getTask();
         }
@@ -351,7 +351,7 @@ public class Timer {
      */
     public synchronized void killTask(String taskId) {
         if (this.isStop()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(7));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         } else {
             this.queue.killTask(taskId);
         }
@@ -362,7 +362,7 @@ public class Timer {
      */
     public synchronized void clearCancelTask() {
         if (this.isStop()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(7));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         } else {
             this.queue.clearCancel();
         }

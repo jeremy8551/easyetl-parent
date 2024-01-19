@@ -121,14 +121,14 @@ public abstract class TimerTask implements Runnable {
     public boolean start() {
         if (isRunning()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(48, this.getTaskId()));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg048", this.getTaskId()));
             }
             return false;
         }
 
         if (isCancel()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(49, this.getTaskId()));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg049", this.getTaskId()));
             }
             return false;
         }
@@ -138,7 +138,7 @@ public abstract class TimerTask implements Runnable {
                 TimerTaskThread thread = (TimerTaskThread) this.runThread;
                 if (thread.isRunning()) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getTimerMessage(50, this.getTaskId()));
+                        log.debug(ResourcesUtils.getMessage("timer.standard.output.msg050", this.getTaskId()));
                     }
                     return false;
                 }
@@ -146,14 +146,14 @@ public abstract class TimerTask implements Runnable {
 
             if (this.runThread.isAlive()) { // 如果线程已经执行 start
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getTimerMessage(51, this.getTaskId()));
+                    log.debug(ResourcesUtils.getMessage("timer.standard.output.msg051", this.getTaskId()));
                 }
                 return false;
             }
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getTimerMessage(13, this.getTaskId()));
+            log.debug(ResourcesUtils.getMessage("timer.standard.output.msg013", this.getTaskId()));
         }
 
         calcNextRunMillis();
@@ -186,7 +186,7 @@ public abstract class TimerTask implements Runnable {
     void calcNextRunMillis() {
         if (this.schedule == Timer.SCHEDULE_AT_TIME) {
             if (getScheduleTime() == TimerTask.DEFAULT_PARAM_VALUE) {
-                throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(14, this.getTaskId()));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg014", this.getTaskId()));
             }
 
             setPeriod(-1);
@@ -197,10 +197,10 @@ public abstract class TimerTask implements Runnable {
 
         if (this.schedule == Timer.SCHEDULE_AT_TIME_LOOP) {
             if (getPeriod() == TimerTask.DEFAULT_PARAM_VALUE) {
-                throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(15));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg015"));
             }
             if (getScheduleTime() == TimerTask.DEFAULT_PARAM_VALUE) {
-                throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(16));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg016"));
             }
 
             long period = getPeriod();
@@ -216,7 +216,7 @@ public abstract class TimerTask implements Runnable {
 
         if (this.schedule == Timer.SCHEDULE_DELAY) {
             if (getDelay() == TimerTask.DEFAULT_PARAM_VALUE) {
-                throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(17));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg017"));
             }
 
             setPeriod(-1);
@@ -226,10 +226,10 @@ public abstract class TimerTask implements Runnable {
 
         if (this.schedule == Timer.SCHEDULE_DELAY_LOOP) {
             if (getPeriod() == TimerTask.DEFAULT_PARAM_VALUE) {
-                throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(18));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg018"));
             }
             if (getDelay() == TimerTask.DEFAULT_PARAM_VALUE) {
-                throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(19));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg019"));
             }
 
             if (this.runTimes == 0) {
@@ -281,7 +281,7 @@ public abstract class TimerTask implements Runnable {
         TimeoutMonitor monitor = null;
         try {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(20, taskId));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg020", taskId));
             }
 
             if (existsQueue()) {
@@ -293,10 +293,10 @@ public abstract class TimerTask implements Runnable {
             execute();
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(21, taskId));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg021", taskId));
             }
         } catch (Throwable e) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(22, taskId));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg022", taskId));
         } finally {
             this.runTimes++;
             this.isRunning = false;
@@ -336,7 +336,7 @@ public abstract class TimerTask implements Runnable {
             }
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
-                log.error(ResourcesUtils.getTimerMessage(23, this.getTaskId()), e);
+                log.error(ResourcesUtils.getMessage("timer.standard.output.msg023", this.getTaskId()), e);
             }
         }
     }
@@ -358,7 +358,7 @@ public abstract class TimerTask implements Runnable {
             }
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(24, this.getTaskId()));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg024", this.getTaskId()));
             }
             return true;
         }
@@ -374,7 +374,7 @@ public abstract class TimerTask implements Runnable {
             }
         } catch (Throwable e) {
             if (log.isErrorEnabled()) {
-                log.error(ResourcesUtils.getTimerMessage(25, this.getTaskId()), e);
+                log.error(ResourcesUtils.getMessage("timer.standard.output.msg025", this.getTaskId()), e);
             }
         }
     }
@@ -389,7 +389,7 @@ public abstract class TimerTask implements Runnable {
                 thread.interrupt();
             } catch (Throwable e) {
                 if (log.isErrorEnabled()) {
-                    log.error(ResourcesUtils.getTimerMessage(26, this.getTaskId()), e);
+                    log.error(ResourcesUtils.getMessage("timer.standard.output.msg026", this.getTaskId()), e);
                 }
             }
         }
@@ -518,10 +518,10 @@ public abstract class TimerTask implements Runnable {
      */
     public void setSchedule(int schedule) {
         if (existsQueue()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(27, this.getTaskId()));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg027", this.getTaskId()));
         }
         if (!Timer.checkSchedule(schedule)) {
-            throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(28, schedule));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg028", schedule));
         }
 
         this.schedule = schedule;
@@ -534,10 +534,10 @@ public abstract class TimerTask implements Runnable {
      */
     public void setPeriod(long period) {
         if (existsQueue()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(27, this.getTaskId()));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg027", this.getTaskId()));
         }
         if (period < -1) {
-            throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(29, period));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg029", period));
         }
 
         this.period = period;
@@ -550,10 +550,10 @@ public abstract class TimerTask implements Runnable {
      */
     public void setDelay(long delay) {
         if (existsQueue()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(27, this.getTaskId()));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg027", this.getTaskId()));
         }
         if (delay < 0) {
-            throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(30, delay));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg030", delay));
         }
 
         this.delay = delay;
@@ -566,10 +566,10 @@ public abstract class TimerTask implements Runnable {
      */
     public void setScheduleTime(long time) {
         if (existsQueue()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(27, this.getTaskId()));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg027", this.getTaskId()));
         }
         if (time < 0) {
-            throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(31, time));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg031", time));
         }
 
         this.startTime = time;
@@ -583,10 +583,10 @@ public abstract class TimerTask implements Runnable {
      */
     public void setTimeout(long timeout) {
         if (existsQueue()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(27, this.getTaskId()));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg027", this.getTaskId()));
         }
         if (timeout < 0) {
-            throw new IllegalArgumentException(ResourcesUtils.getTimerMessage(32, timeout));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("timer.standard.output.msg032", timeout));
         }
 
         this.timeout = timeout;
@@ -599,7 +599,7 @@ public abstract class TimerTask implements Runnable {
      */
     public void setTaskId(String taskId) {
         if (existsQueue()) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(27, this.getTaskId()));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg027", this.getTaskId()));
         }
 
         if (StringUtils.isBlank(taskId)) {
@@ -644,14 +644,14 @@ public abstract class TimerTask implements Runnable {
                 if (type != 1) {
                     type = 1;
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getTimerMessage(52, this.getTaskId()));
+                        log.debug(ResourcesUtils.getMessage("timer.standard.output.msg052", this.getTaskId()));
                     }
                 }
             } else {
                 if (type != 2) {
                     type = 2;
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getTimerMessage(53, this.getTaskId()));
+                        log.debug(ResourcesUtils.getMessage("timer.standard.output.msg053", this.getTaskId()));
                     }
                 }
             }
@@ -683,7 +683,7 @@ public abstract class TimerTask implements Runnable {
     void setNextRunMillis(long nextRunMillis) {
         this.nextRunMillis = nextRunMillis;
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getTimerMessage(33, this.getTaskId(), Dates.format19(new Date(this.nextRunMillis))));
+            log.debug(ResourcesUtils.getMessage("timer.standard.output.msg033", this.getTaskId(), Dates.format19(new Date(this.nextRunMillis))));
         }
     }
 
@@ -704,7 +704,7 @@ public abstract class TimerTask implements Runnable {
     public void setMistake(long mistake) {
         mistake = mistake < 0 ? -mistake : mistake; // 取绝对值
         if (mistake <= TimerTask.DEFAULT_MISTAKE) {
-            throw new TimerException(ResourcesUtils.getTimerMessage(34, this.getTaskId(), TimerTask.DEFAULT_MISTAKE));
+            throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg034", this.getTaskId(), TimerTask.DEFAULT_MISTAKE));
         }
 
         this.mistake = -mistake;

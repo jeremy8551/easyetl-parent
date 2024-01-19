@@ -69,7 +69,7 @@ public class ScriptAnalysis extends AnalysisImpl implements UniversalScriptAnaly
         // 在脚本语句中搜索变量名结束位置 <br>
         // 变量名中只能有英文字母, 数字, 下划线, 首字母不能是数字
         if (StringUtils.isNumber(str.charAt(from))) {
-            throw new IllegalArgumentException(ResourcesUtils.getExpressionMessage(60, str, from + 1));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("expression.standard.output.msg060", str, from + 1));
         }
 
         for (int i = from + 1; i < str.length(); i++) {

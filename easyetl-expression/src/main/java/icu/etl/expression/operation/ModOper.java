@@ -47,6 +47,6 @@ public class ModOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(15);
+        return ResourcesUtils.getMessage("expression.standard.output.msg015");
     }
 }

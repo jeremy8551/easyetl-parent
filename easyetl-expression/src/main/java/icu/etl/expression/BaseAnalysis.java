@@ -240,7 +240,7 @@ public class BaseAnalysis implements Analysis {
                         i = last;
                         continue;
                     } else {
-                        throw new ExpressionException(ResourcesUtils.getExpressionMessage(38, String.valueOf(str), next), next);
+                        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg038", String.valueOf(str), next), next);
                     }
                 }
 

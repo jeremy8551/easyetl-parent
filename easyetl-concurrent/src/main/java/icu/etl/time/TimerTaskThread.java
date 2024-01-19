@@ -53,17 +53,17 @@ public class TimerTaskThread extends Thread implements UncaughtExceptionHandler 
         this.isRunning = true;
         try {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(42, this.getName()));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg042", this.getName()));
             }
 
             loop();
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getTimerMessage(43, this.getName()));
+                log.debug(ResourcesUtils.getMessage("timer.standard.output.msg043", this.getName()));
             }
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
-                log.error(ResourcesUtils.getTimerMessage(44, this.getName()), e);
+                log.error(ResourcesUtils.getMessage("timer.standard.output.msg044", this.getName()), e);
             }
 
             try {
@@ -99,14 +99,14 @@ public class TimerTaskThread extends Thread implements UncaughtExceptionHandler 
             } else { // 还未到执行时间
                 try {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getTimerMessage(45, this.getName(), delay));
+                        log.debug(ResourcesUtils.getMessage("timer.standard.output.msg045", this.getName(), delay));
                     }
                     synchronized (task) {
                         task.wait(delay); // 任务线程进入等待状态
                     }
                 } catch (Throwable e) {
                     if (log.isErrorEnabled()) {
-                        log.error(ResourcesUtils.getTimerMessage(46, this.getName()), e);
+                        log.error(ResourcesUtils.getMessage("timer.standard.output.msg046", this.getName()), e);
                     }
                 }
                 continue;
@@ -148,7 +148,7 @@ public class TimerTaskThread extends Thread implements UncaughtExceptionHandler 
      */
     public void uncaughtException(Thread t, Throwable e) {
         if (log.isErrorEnabled()) {
-            log.error(ResourcesUtils.getTimerMessage(47, t.getName()), e);
+            log.error(ResourcesUtils.getMessage("timer.standard.output.msg047", t.getName()), e);
         }
 
         cancelTask(); // 取消任务

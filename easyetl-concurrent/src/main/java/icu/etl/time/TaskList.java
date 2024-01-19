@@ -173,7 +173,7 @@ public class TaskList {
             }
         } catch (TimerException e) {
             if (log.isErrorEnabled()) {
-                log.error(ResourcesUtils.getTimerMessage(35, task.getTaskId()), e);
+                log.error(ResourcesUtils.getMessage("timer.standard.output.msg035", task.getTaskId()), e);
             }
         }
     }

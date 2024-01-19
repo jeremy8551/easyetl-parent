@@ -49,6 +49,6 @@ public class LessOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(22);
+        return ResourcesUtils.getMessage("expression.standard.output.msg022");
     }
 }

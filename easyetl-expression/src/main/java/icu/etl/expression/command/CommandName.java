@@ -85,12 +85,12 @@ public class CommandName {
      */
     public void check() {
         if (this.rangs != null && !this.rangs.isEmpty() && !this.rangs.contains(this.value)) {
-            throw new ExpressionException(ResourcesUtils.getExpressionMessage(72, this.expr.getCommand(), this.value, StringUtils.join(this.rangs, ", ")));
+            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg072", this.expr.getCommand(), this.value, StringUtils.join(this.rangs, ", ")));
         }
 
         // 检查命令取反符号使用是否正确
         if (!this.supportReverse && this.reverse) {
-            throw new ExpressionException(ResourcesUtils.getExpressionMessage(73, this.expr.getCommand()));
+            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg073", this.expr.getCommand()));
         }
     }
 

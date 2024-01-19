@@ -74,7 +74,7 @@ public class GPatternExpression {
         this.toJavaRegexs();
 
         if (log.isTraceEnabled()) {
-            log.trace(ResourcesUtils.getExpressionMessage(63, pattern, this.patterns, this.javaRegexs));
+            log.trace(ResourcesUtils.getMessage("expression.standard.output.msg063", pattern, this.patterns, this.javaRegexs));
         }
     }
 

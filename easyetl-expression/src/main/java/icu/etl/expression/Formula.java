@@ -82,7 +82,7 @@ public class Formula {
             if (this.operations.isEmpty()) {
                 return this.datas.get(0);
             } else {
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(39), this.operations.size());
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg039"), this.operations.size());
             }
         }
 
@@ -105,7 +105,7 @@ public class Formula {
             for (int index = 0; index < this.operations.size(); index++) {
                 int next = index + 1;
                 if (next >= this.datas.size()) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(39), index);
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg039"), index);
                 }
 
                 // 如果等于运算符优先级，执行运算并替换原公式中的参数
@@ -126,14 +126,14 @@ public class Formula {
                 if (this.operations.size() == 0) {
                     return this.datas.get(0);
                 } else {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(39));
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg039"));
                 }
             }
         }
 
         // 预防无限循环
         if (++this.loop >= 100) {
-            throw new ExpressionException(ResourcesUtils.getExpressionMessage(2, this.toString(this.datas, this.operations)));
+            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg002", this.toString(this.datas, this.operations)));
         } else {
             return this.execute();
         }
@@ -160,7 +160,7 @@ public class Formula {
             }
         } else {
             if (left == null || right == null) {
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(40, left, right));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg040", left, right));
             }
 
             left.execute();
@@ -172,11 +172,11 @@ public class Formula {
 
             Parameter parameter = operation.execute(left, right);
             if (parameter == null) {
-                throw new ExpressionException(ResourcesUtils.getExpressionMessage(41));
+                throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg041"));
             }
 
             if (log.isTraceEnabled()) {
-                log.trace("{} data1={}, data2={}, {}", operation, left, right, ResourcesUtils.getExpressionMessage(42, parameter));
+                log.trace("{} data1={}, data2={}, {}", operation, left, right, ResourcesUtils.getMessage("expression.standard.output.msg042", parameter));
             }
 
             parameter.execute();

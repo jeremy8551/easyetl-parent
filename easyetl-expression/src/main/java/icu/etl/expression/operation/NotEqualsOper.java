@@ -66,6 +66,6 @@ public class NotEqualsOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(17);
+        return ResourcesUtils.getMessage("expression.standard.output.msg017");
     }
 }

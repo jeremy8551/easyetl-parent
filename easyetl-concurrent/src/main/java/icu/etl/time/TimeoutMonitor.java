@@ -37,7 +37,7 @@ public class TimeoutMonitor extends TimerTask {
         if (target != null && target.isRunning()) {
             long second = getDelay() / 1000;
             if (log.isWarnEnabled()) {
-                log.warn(ResourcesUtils.getTimerMessage(41, target.getTaskId(), second));
+                log.warn(ResourcesUtils.getMessage("timer.standard.output.msg041", target.getTaskId(), second));
             }
             target.terminate();
         }

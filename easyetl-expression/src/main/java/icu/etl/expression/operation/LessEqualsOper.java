@@ -52,6 +52,6 @@ public class LessEqualsOper implements Operator {
     }
 
     public String toString() {
-        return ResourcesUtils.getExpressionMessage(23);
+        return ResourcesUtils.getMessage("expression.standard.output.msg023");
     }
 }

@@ -56,7 +56,7 @@ public class CommandParameter {
 
         // 不设置参数个数限制
         if (StringUtils.isBlank(expr)) {
-            throw new ExpressionException(ResourcesUtils.getExpressionMessage(77, this.expr.getCommand(), expr));
+            throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg077", this.expr.getCommand(), expr));
         }
 
         String[] array = StringUtils.split(expr, '|');
@@ -64,7 +64,7 @@ public class CommandParameter {
             if (number.indexOf('-') != -1) {
                 String[] range = StringUtils.removeBlank(StringUtils.splitProperty(number, '-'));
                 if (!StringUtils.isInt(range[0]) || !StringUtils.isInt(range[1])) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(77, this.expr.getCommand(), expr));
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg077", this.expr.getCommand(), expr));
                 }
 
                 int i1 = Integer.parseInt(range[0]);
@@ -75,7 +75,7 @@ public class CommandParameter {
                 }
             } else {
                 if (!StringUtils.isInt(number)) {
-                    throw new ExpressionException(ResourcesUtils.getExpressionMessage(77, this.expr.getCommand(), expr));
+                    throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg077", this.expr.getCommand(), expr));
                 }
                 this.ranges.add(new Integer(number));
             }
@@ -161,7 +161,7 @@ public class CommandParameter {
             }
         }
 
-        throw new ExpressionException(ResourcesUtils.getExpressionMessage(78, this.expr.getCommand(), size, StringUtils.join(this.ranges, ", "), StringUtils.join(this.values, "\n")));
+        throw new ExpressionException(ResourcesUtils.getMessage("expression.standard.output.msg078", this.expr.getCommand(), size, StringUtils.join(this.ranges, ", "), StringUtils.join(this.values, "\n")));
     }
 
     public String toString() {
