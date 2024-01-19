@@ -38,7 +38,7 @@ public class MD5Encrypt {
      */
     public static String encrypt(File file, int radix, Terminate obj) {
         if (!Numbers.inArray(radix, 16, 32, 128)) {
-            throw new RuntimeException(ResourcesUtils.getCryptoMessage(6, radix));
+            throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg006", radix));
         }
 
         FileInputStream in = null;
@@ -72,7 +72,7 @@ public class MD5Encrypt {
             }
             return buf.toString();
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getCryptoMessage(7, file.getAbsolutePath()), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg007", file.getAbsolutePath()), e);
         } finally {
             IO.close(in);
         }
@@ -115,7 +115,7 @@ public class MD5Encrypt {
             }
             return buf.toString().toUpperCase(); // 生成MD5码
         } catch (Throwable e) {
-            throw new RuntimeException(ResourcesUtils.getCryptoMessage(8, str), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg008", str), e);
         }
     }
 

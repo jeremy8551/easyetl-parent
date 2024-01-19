@@ -1,11 +1,11 @@
 package icu.etl.crypto;
 
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -42,7 +42,7 @@ public class DESEncrypt {
             byte[] bytes = encrypt(str.getBytes(charsetName), key); // 对字符串加密
             return StringUtils.toHexString(bytes);
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getCryptoMessage(1, str), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg001", str), e);
         }
     }
 
@@ -61,7 +61,7 @@ public class DESEncrypt {
             byte[] decrypt = decrypt(bytes, key);
             return new String(decrypt, charsetName);
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getCryptoMessage(2, str), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg002", str), e);
         }
     }
 
@@ -83,7 +83,7 @@ public class DESEncrypt {
             byte[] enMsgBytes = cipher.doFinal(bytes);
             return enMsgBytes;
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getCryptoMessage(3, StringUtils.toHexString(bytes)), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg003", StringUtils.toHexString(bytes)), e);
         }
     }
 
@@ -105,7 +105,7 @@ public class DESEncrypt {
             byte[] deMsgBytes = deCipher.doFinal(bytes);
             return deMsgBytes;
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getCryptoMessage(4, StringUtils.toHexString(bytes)), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg004", StringUtils.toHexString(bytes)), e);
         }
     }
 
@@ -116,7 +116,7 @@ public class DESEncrypt {
      */
     private static void checkSecureKey(byte[] keys) {
         if (keys == null || keys.length < 8) { // 校验密钥长度是否符合规范
-            throw new RuntimeException(ResourcesUtils.getCryptoMessage(5, StringUtils.toHexString(keys)));
+            throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg005", StringUtils.toHexString(keys)));
         }
     }
 }

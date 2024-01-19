@@ -1,5 +1,6 @@
 package icu.etl.crypto;
 
+import javax.crypto.Cipher;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -12,7 +13,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
-import javax.crypto.Cipher;
 
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -185,36 +185,36 @@ public class RSAEncrypt {
         // 私钥字符串
         String privateKeyHexStr = StringUtils.toHexString(privateKey);
 
-        System.out.println(ResourcesUtils.getCryptoMessage(9) + "/n" + publicKeyHexStr);
-        System.out.println(ResourcesUtils.getCryptoMessage(10) + "/n" + privateKeyHexStr);
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg009") + "/n" + publicKeyHexStr);
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg010") + "/n" + privateKeyHexStr);
 
-        System.out.println(ResourcesUtils.getCryptoMessage(11));
-        String str = ResourcesUtils.getCryptoMessage(12);
-        System.out.println("/n" + ResourcesUtils.getCryptoMessage(13));
-        System.out.println(ResourcesUtils.getCryptoMessage(19) + str);
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg011"));
+        String str = ResourcesUtils.getMessage("crypto.standard.output.msg012");
+        System.out.println("/n" + ResourcesUtils.getMessage("crypto.standard.output.msg013"));
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg019") + str);
         // 甲方进行数据的加密
         byte[] code1 = RSAEncrypt.encryptByPrivateKey(str.getBytes(), privateKey);
-        System.out.println(ResourcesUtils.getCryptoMessage(14) + StringUtils.toHexString(code1));
-        System.out.println(ResourcesUtils.getCryptoMessage(15));
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg014") + StringUtils.toHexString(code1));
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg015"));
         // 乙方进行数据的解密
         byte[] decode1 = RSAEncrypt.decryptByPublicKey(code1, StringUtils.parseHexString(publicKeyHexStr));
-        System.out.println(ResourcesUtils.getCryptoMessage(16) + new String(decode1) + "/n/n");
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg016") + new String(decode1) + "/n/n");
 
-        System.out.println(ResourcesUtils.getCryptoMessage(17) + "/n/n");
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg017") + "/n/n");
 
-        str = ResourcesUtils.getCryptoMessage(18);
-        System.out.println(ResourcesUtils.getCryptoMessage(19) + str);
+        str = ResourcesUtils.getMessage("crypto.standard.output.msg018");
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg019") + str);
 
         // 乙方使用公钥对数据进行加密
         byte[] code2 = RSAEncrypt.encryptByPublicKey(str.getBytes(), publicKey);
-        System.out.println(ResourcesUtils.getCryptoMessage(20));
-        System.out.println(ResourcesUtils.getCryptoMessage(21) + StringUtils.toHexString(code2)); // 吧字节数组转为64位字符串
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg020"));
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg021") + StringUtils.toHexString(code2)); // 吧字节数组转为64位字符串
 
-        System.out.println(ResourcesUtils.getCryptoMessage(22));
-        System.out.println(ResourcesUtils.getCryptoMessage(23));
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg022"));
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg023"));
 
         // 甲方使用私钥对数据进行解密
         byte[] decode2 = RSAEncrypt.decryptByPrivateKey(code2, StringUtils.parseHexString(privateKeyHexStr));
-        System.out.println(ResourcesUtils.getCryptoMessage(24) + new String(decode2));
+        System.out.println(ResourcesUtils.getMessage("crypto.standard.output.msg024") + new String(decode2));
     }
 }
