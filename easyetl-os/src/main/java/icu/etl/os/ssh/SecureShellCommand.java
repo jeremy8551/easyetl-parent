@@ -307,7 +307,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
                 }
                 this.session = null;
             } catch (Throwable e1) {
-                log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg009",, e1);
+                log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg009"), e1);
             }
         } finally {
             Object[] array = this.forwards.toArray(new SecureShellForwardCommand[this.forwards.size()]);
@@ -532,7 +532,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
             }
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
-                log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg010",, e);
+                log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg010"), e);
             }
         }
     }
