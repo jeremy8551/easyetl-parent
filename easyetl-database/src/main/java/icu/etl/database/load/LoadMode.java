@@ -45,7 +45,7 @@ public enum LoadMode {
         } else if ("merge".equalsIgnoreCase(str)) {
             return MERGE;
         } else {
-            throw new UnsupportedOperationException(ResourcesUtils.getLoadMessage(15));
+            throw new UnsupportedOperationException(ResourcesUtils.getMessage("load.standard.output.msg015"));
         }
     }
 

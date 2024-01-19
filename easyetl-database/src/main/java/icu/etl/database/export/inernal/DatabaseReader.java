@@ -1,6 +1,5 @@
 package icu.etl.database.export.inernal;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -221,7 +220,7 @@ public class DatabaseReader implements ExtractReader {
         String source = context.getSource();
         String target = context.getTarget();
 
-        String[] titles = StringUtils.split(ResourcesUtils.getExtractMessage(4), ',');
+        String[] titles = StringUtils.split(ResourcesUtils.getMessage("extract.standard.output.msg004"), ',');
         CharTable table = new CharTable();
         table.addTitle(titles[0], CharTable.ALIGN_RIGHT);
         table.addTitle(titles[1], CharTable.ALIGN_LEFT);
@@ -243,8 +242,8 @@ public class DatabaseReader implements ExtractReader {
 
         CharTable cb = new CharTable();
         cb.addTitle("");
-        cb.addCell(ResourcesUtils.getExtractMessage(5, source));
-        cb.addCell(ResourcesUtils.getExtractMessage(6, target));
+        cb.addCell(ResourcesUtils.getMessage("extract.standard.output.msg005", source));
+        cb.addCell(ResourcesUtils.getMessage("extract.standard.output.msg006", target));
         cb.addCell(table.toString(CharTable.Style.standard));
         return FileUtils.lineSeparator + cb.toString(CharTable.Style.simple);
     }

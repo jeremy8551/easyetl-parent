@@ -111,7 +111,7 @@ public class DataWriter {
             this.count = 0;
             this.dao.openLoadMode(this.table.getFullName());
         } else {
-            throw new DatabaseException(ResourcesUtils.getLoadMessage(12));
+            throw new DatabaseException(ResourcesUtils.getMessage("load.standard.output.msg012"));
         }
     }
 

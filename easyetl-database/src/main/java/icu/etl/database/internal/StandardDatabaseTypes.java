@@ -40,7 +40,7 @@ public class StandardDatabaseTypes implements DatabaseTypeSet {
 
     public String toString() {
         CharTable cb = new CharTable();
-        String title = ResourcesUtils.getDatabaseMessage(38);
+        String title = ResourcesUtils.getMessage("database.standard.output.msg038");
         String[] array = StringUtils.split(title, ';');
         for (String str : array) {
             cb.addTitle(str);

@@ -39,9 +39,9 @@ public class IncrementContextValidator {
         if (listeners != null) {
             for (IncrementListener obj : listeners) {
                 if (obj.equals(logger)) {
-                    throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(35));
+                    throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg035"));
                 } else if (obj.equals(replaces)) {
-                    throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(36));
+                    throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg036"));
                 }
             }
         }
@@ -60,10 +60,10 @@ public class IncrementContextValidator {
         TextTableFileWriter delOuter = context.getDelWriter();
 
         if (newtabfile == null) {
-            throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(12));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg012"));
         }
         if (oldtabfile == null) {
-            throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(13));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg013"));
         }
 
         File newfile = newtabfile.getFile();
@@ -71,28 +71,28 @@ public class IncrementContextValidator {
 
         // 新文件与旧文件不能相等
         if (oldfile.equals(newfile)) {
-            throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(14));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg014"));
         }
 
         // 输出文件与新旧文件不能相等
         if (newOuter != null) {
             File createfile = new File(newOuter.getTable().getAbsolutePath());
             if (createfile.equals(oldfile) || createfile.equals(newfile)) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(15));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg015"));
             }
         }
 
         if (updOuter != null) {
             File updatefile = new File(updOuter.getTable().getAbsolutePath());
             if (updatefile.equals(oldfile) || updatefile.equals(newfile)) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(16));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg016"));
             }
         }
 
         if (delOuter != null) {
             File deletefile = new File(delOuter.getTable().getAbsolutePath());
             if (deletefile.equals(oldfile) || deletefile.equals(newfile)) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(17));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg017"));
             }
         }
     }
@@ -105,20 +105,20 @@ public class IncrementContextValidator {
     protected void checkPosition(IncrementContext context) {
         IncrementPosition position = context.getPosition();
         if (position == null || position.getNewIndexPosition().length == 0 || position.getOldIndexPosition().length == 0) {
-            throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(25));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg025"));
         }
         if (position.getNewIndexPosition().length != position.getOldIndexPosition().length) {
-            throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(26));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg026"));
         }
         if (position.getNewComparePosition().length != position.getNewComparePosition().length) {
-            throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(27));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg027"));
         }
 
         // 新文件中索引字段位置信息
         Set<Integer> set = new HashSet<Integer>(position.getNewIndexPosition().length);
         for (int i : position.getNewIndexPosition()) {
             if (set.contains(i)) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(71, i));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg071", i));
             } else {
                 set.add(i);
             }
@@ -128,7 +128,7 @@ public class IncrementContextValidator {
         set.clear();
         for (int i : position.getOldIndexPosition()) {
             if (set.contains(i)) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(71, i));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg071", i));
             } else {
                 set.add(i);
             }
@@ -136,25 +136,25 @@ public class IncrementContextValidator {
 
         for (int i : position.getNewIndexPosition()) {
             if (i <= 0) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(28));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg028"));
             }
         }
 
         for (int i : position.getOldIndexPosition()) {
             if (i <= 0) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(29));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg029"));
             }
         }
 
         for (int i : position.getNewComparePosition()) {
             if (i <= 0) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(30));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg030"));
             }
         }
 
         for (int i : position.getOldComparePosition()) {
             if (i <= 0) {
-                throw new IllegalArgumentException(ResourcesUtils.getIncrementMessage(31));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("increment.standard.output.msg031"));
             }
         }
     }

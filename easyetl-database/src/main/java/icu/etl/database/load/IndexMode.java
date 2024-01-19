@@ -53,7 +53,7 @@ public enum IndexMode {
         } else if ("autoselect".equalsIgnoreCase(str)) {
             return AUTOSELECT;
         } else {
-            throw new UnsupportedOperationException(ResourcesUtils.getLoadMessage(16, REBUILD.getName(), INCREMENTAL.getName(), AUTOSELECT.getName()));
+            throw new UnsupportedOperationException(ResourcesUtils.getMessage("load.standard.output.msg016", REBUILD.getName(), INCREMENTAL.getName(), AUTOSELECT.getName()));
         }
     }
 

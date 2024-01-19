@@ -73,7 +73,7 @@ public class ExtractListener {
      */
     public void catchError(Throwable e) {
         if (this.list.isEmpty()) {
-            throw new ExtractException(ResourcesUtils.getExtractMessage(3), e);
+            throw new ExtractException(ResourcesUtils.getMessage("extract.standard.output.msg003"), e);
         }
 
         for (ExtractUserListener l : this.list) {

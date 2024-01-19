@@ -46,7 +46,7 @@ public class IncrementListenerImpl implements IncrementListener {
 
     public void afterCreateRecord(TextTableLine line) {
         LogStr str = new LogStr();
-        str.append(ResourcesUtils.getIncrementMessage(48, this.newFilepath, line.getLineNumber()));
+        str.append(ResourcesUtils.getMessage("increment.standard.output.msg048", this.newFilepath, line.getLineNumber()));
         str.appendIndex(this.newfile, line, this.newIndexPosition);
         this.out.println(str);
     }
@@ -56,7 +56,7 @@ public class IncrementListenerImpl implements IncrementListener {
 
     public void afterUpdateRecord(TextTableLine newLine, TextTableLine oldLine, int position) {
         LogStr str = new LogStr();
-        str.append(ResourcesUtils.getIncrementMessage(49, this.newFilepath, newLine.getLineNumber()));
+        str.append(ResourcesUtils.getMessage("increment.standard.output.msg049", this.newFilepath, newLine.getLineNumber()));
         str.appendIndex(this.newfile, newLine, this.newIndexPosition);
         str.append(", ");
 
@@ -65,12 +65,12 @@ public class IncrementListenerImpl implements IncrementListener {
         String columnName = this.newfile.getColumnName(newPosition);
 
         if (StringUtils.isBlank(columnName)) {
-            str.append(ResourcesUtils.getIncrementMessage(52, newPosition));
+            str.append(ResourcesUtils.getMessage("increment.standard.output.msg052", newPosition));
         } else {
             str.append(columnName).append(' ');
         }
-        str.append(ResourcesUtils.getIncrementMessage(53, oldLine.getColumn(oldPosition)));
-        str.append(ResourcesUtils.getIncrementMessage(54, newLine.getColumn(newPosition)));
+        str.append(ResourcesUtils.getMessage("increment.standard.output.msg053", oldLine.getColumn(oldPosition)));
+        str.append(ResourcesUtils.getMessage("increment.standard.output.msg054", newLine.getColumn(newPosition)));
         this.out.println(str);
     }
 
@@ -79,7 +79,7 @@ public class IncrementListenerImpl implements IncrementListener {
 
     public void afterDeleteRecord(TextTableLine line) {
         LogStr str = new LogStr();
-        str.append(ResourcesUtils.getIncrementMessage(50, this.oldFilepath, line.getLineNumber()));
+        str.append(ResourcesUtils.getMessage("increment.standard.output.msg050", this.oldFilepath, line.getLineNumber()));
         str.appendIndex(this.oldfile, line, this.oldIndexPosition);
         this.out.println(str);
     }
@@ -114,7 +114,7 @@ public class IncrementListenerImpl implements IncrementListener {
                 String columnName = table.getColumnName(position);
 
                 if (StringUtils.isBlank(columnName)) {
-                    this.buf.append(ResourcesUtils.getIncrementMessage(51, position));
+                    this.buf.append(ResourcesUtils.getMessage("increment.standard.output.msg051", position));
                 } else {
                     this.buf.append(columnName).append('=');
                 }

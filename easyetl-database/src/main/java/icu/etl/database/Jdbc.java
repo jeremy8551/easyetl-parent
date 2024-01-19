@@ -79,7 +79,7 @@ public class Jdbc {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getDatabaseMessage(26, url, username, password));
+            log.debug(ResourcesUtils.getMessage("database.standard.output.msg026", url, username, password));
         }
 
         try {
@@ -93,7 +93,7 @@ public class Jdbc {
                 return conn;
             }
         } catch (SQLException e) {
-            throw new DatabaseException(ResourcesUtils.getDatabaseMessage(28, url, username, password), e);
+            throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg028", url, username, password), e);
         }
     }
 
@@ -325,7 +325,7 @@ public class Jdbc {
             try {
                 conn.commit();
             } catch (SQLException e) {
-                throw new DatabaseException(ResourcesUtils.getDatabaseMessage(30), e);
+                throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg030"), e);
             }
         }
     }
@@ -341,7 +341,7 @@ public class Jdbc {
                 conn.commit();
             } catch (Throwable e) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getDatabaseMessage(30), e);
+                    log.warn(ResourcesUtils.getMessage("database.standard.output.msg030"), e);
                 }
             }
         }
@@ -374,7 +374,7 @@ public class Jdbc {
             try {
                 conn.rollback();
             } catch (SQLException e) {
-                throw new DatabaseException(ResourcesUtils.getDatabaseMessage(31), e);
+                throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg031"), e);
             }
         }
     }
@@ -389,7 +389,7 @@ public class Jdbc {
             try {
                 conn.rollback(savepoint);
             } catch (SQLException e) {
-                throw new DatabaseException(ResourcesUtils.getDatabaseMessage(31), e);
+                throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg031"), e);
             }
         }
     }
@@ -405,7 +405,7 @@ public class Jdbc {
                 conn.rollback();
             } catch (Throwable e) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getDatabaseMessage(31), e);
+                    log.warn(ResourcesUtils.getMessage("database.standard.output.msg031"), e);
                 }
             }
         }
@@ -444,7 +444,7 @@ public class Jdbc {
                     Jdbc.closeDataSource(dataSource);
                 } catch (Throwable e) {
                     if (log.isWarnEnabled()) {
-                        log.warn(ResourcesUtils.getDatabaseMessage(27, dataSource), e);
+                        log.warn(ResourcesUtils.getMessage("database.standard.output.msg027", dataSource), e);
                     }
                 }
             }
@@ -467,7 +467,7 @@ public class Jdbc {
                 Jdbc.closeDataSource(dataSource);
             } catch (Throwable e) {
                 if (log.isErrorEnabled()) {
-                    log.error(ResourcesUtils.getDatabaseMessage(27, dataSource), e);
+                    log.error(ResourcesUtils.getMessage("database.standard.output.msg027", dataSource), e);
                 }
 
                 list.add(e);
@@ -475,7 +475,7 @@ public class Jdbc {
         }
 
         if (list.size() > 0) {
-            throw new DatabaseException(ResourcesUtils.getDatabaseMessage(27));
+            throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg027"));
         }
     }
 
@@ -492,12 +492,12 @@ public class Jdbc {
         // 关闭数据库连接池
         if (SimpleDatasource.instanceOf(dataSource)) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(24, dataSource));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg024", dataSource));
             }
 
             IO.close(dataSource);
         } else {
-            throw new UnsupportedOperationException(ResourcesUtils.getDatabaseMessage(27, dataSource));
+            throw new UnsupportedOperationException(ResourcesUtils.getMessage("database.standard.output.msg027", dataSource));
         }
     }
 

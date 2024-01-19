@@ -45,7 +45,7 @@ public class EasyBeanTableRow extends ArrayList<EasyBeanInfoValue> {
      */
     public boolean push(EasyBeanInfoValue beanInfo) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getIocMessage(5, type.getName(), beanInfo.getType().getName()));
+            log.debug(ResourcesUtils.getMessage("ioc.standard.output.msg005", type.getName(), beanInfo.getType().getName()));
         }
         return !this.contains(beanInfo) && super.add(beanInfo);
     }

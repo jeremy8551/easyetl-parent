@@ -1,8 +1,6 @@
 package icu.etl.database.export;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 
 import icu.etl.concurrent.AbstractJob;
 import icu.etl.expression.DataUnitExpression;
@@ -57,7 +55,7 @@ public class ExportEngine extends AbstractJob {
     public int execute() throws Exception {
         this.watch.start();
         new ExtracterValidator().check(this.context);
-        this.setName(ResourcesUtils.getExtractMessage(1, " " + this.context.getTarget()));
+        this.setName(ResourcesUtils.getMessage("extract.standard.output.msg001", " " + this.context.getTarget()));
         this.listener.setListener(this.context.getListener());
         this.message = new ExtractMessage(this.context.getMessagefile(), this.context.getFormat().getCharsetName());
         this.listener.before();
@@ -76,9 +74,9 @@ public class ExportEngine extends AbstractJob {
 
         if (log.isInfoEnabled()) {
             if (this.message.getMessagefile() == null) {
-                log.info(ResourcesUtils.getExtractMessage(8, this.message.getTarget(), this.message.getRows(), DataUnitExpression.toString(new BigDecimal(this.message.getBytes())), this.watch.useTime()));
+                log.info(ResourcesUtils.getMessage("extract.standard.output.msg008", this.message.getTarget(), this.message.getRows(), DataUnitExpression.toString(new BigDecimal(this.message.getBytes())), this.watch.useTime()));
             } else {
-                log.info(ResourcesUtils.getExtractMessage(2, this.message.getTarget(), this.message.getRows(), DataUnitExpression.toString(new BigDecimal(this.message.getBytes())), this.message.getMessagefile(), this.watch.useTime()));
+                log.info(ResourcesUtils.getMessage("extract.standard.output.msg002", this.message.getTarget(), this.message.getRows(), DataUnitExpression.toString(new BigDecimal(this.message.getBytes())), this.message.getMessagefile(), this.watch.useTime()));
             }
         }
 

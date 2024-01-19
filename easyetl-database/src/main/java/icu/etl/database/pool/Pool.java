@@ -99,7 +99,7 @@ public class Pool implements Closeable {
             return;
         }
 
-        this.out.println(ResourcesUtils.getDataSourceMessage(2, SimpleDatasource.class.getName(), this.idles.size(), this.actives.size()));
+        this.out.println(ResourcesUtils.getMessage("dataSource.standard.output.msg002", SimpleDatasource.class.getName(), this.idles.size(), this.actives.size()));
         this.idles.close();
         this.actives.close();
         this.dialect = null;
@@ -116,7 +116,7 @@ public class Pool implements Closeable {
      */
     public synchronized ConnectionProxy getConnection(String username, String password) throws SQLException {
         if (this.close) {
-            throw new SQLException(ResourcesUtils.getDataSourceMessage(3));
+            throw new SQLException(ResourcesUtils.getMessage("dataSource.standard.output.msg003"));
         }
 
         if (username == null) {
@@ -135,14 +135,14 @@ public class Pool implements Closeable {
             Connection conn = this.create(driver, url, username, password);
             poolConn = new PoolConnection(this, conn, username, password);
             this.actives.push(poolConn);
-            this.out.println(ResourcesUtils.getDataSourceMessage(4, poolConn.toString()));
+            this.out.println(ResourcesUtils.getMessage("dataSource.standard.output.msg004", poolConn.toString()));
             return poolConn.getProxy();
         } else {
             Connection conn = poolConn.getConnection();
             try {
                 if (Jdbc.canUse(conn)) {
                     this.actives.push(poolConn);
-                    this.out.println(ResourcesUtils.getDataSourceMessage(5, poolConn.toString()));
+                    this.out.println(ResourcesUtils.getMessage("dataSource.standard.output.msg005", poolConn.toString()));
                     return poolConn.getProxy();
                 } else {
                     Jdbc.commitQuiet(conn);
@@ -152,7 +152,7 @@ public class Pool implements Closeable {
             } catch (Throwable e) {
                 if (Jdbc.testConnection(conn, this.dialect)) {
                     this.actives.push(poolConn);
-                    this.out.println(ResourcesUtils.getDataSourceMessage(5, poolConn.toString()));
+                    this.out.println(ResourcesUtils.getMessage("dataSource.standard.output.msg005", poolConn.toString()));
                     return poolConn.getProxy();
                 } else {
                     Jdbc.commitQuiet(conn);
@@ -217,7 +217,7 @@ public class Pool implements Closeable {
                     }
                 }
             }
-            throw new DatabaseException(ResourcesUtils.getDataSourceMessage(6));
+            throw new DatabaseException(ResourcesUtils.getMessage("dataSource.standard.output.msg006"));
         }
     }
 
@@ -229,7 +229,7 @@ public class Pool implements Closeable {
      */
     public synchronized void returnPool(PoolConnection conn) throws SQLException {
         if (this.close) {
-            throw new SQLException(ResourcesUtils.getDataSourceMessage(3));
+            throw new SQLException(ResourcesUtils.getMessage("dataSource.standard.output.msg003"));
         }
 
         // 遍历空闲的数据库连接，并关闭
@@ -242,7 +242,7 @@ public class Pool implements Closeable {
             }
         }
 
-        this.out.println(ResourcesUtils.getDataSourceMessage(7, conn.toString()));
+        this.out.println(ResourcesUtils.getMessage("dataSource.standard.output.msg007", conn.toString()));
         PoolConnection copy = new PoolConnection(conn);
         conn.close();
         this.idles.push(copy);
@@ -256,7 +256,7 @@ public class Pool implements Closeable {
      */
     public synchronized void remove(PoolConnection conn) throws SQLException {
         if (this.close) {
-            throw new SQLException(ResourcesUtils.getDataSourceMessage(3));
+            throw new SQLException(ResourcesUtils.getMessage("dataSource.standard.output.msg003"));
         }
 
         // 遍历空闲的数据库连接，并关闭
@@ -279,7 +279,7 @@ public class Pool implements Closeable {
             }
         }
 
-        this.out.println(ResourcesUtils.getDataSourceMessage(8, conn.toString()));
+        this.out.println(ResourcesUtils.getMessage("dataSource.standard.output.msg008", conn.toString()));
     }
 
     /**

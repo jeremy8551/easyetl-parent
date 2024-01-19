@@ -52,7 +52,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
             String catalog = dao.getDialect().getCatalog(dao.getConnection());
             return dao.getDialect().getProcedureForceOne(dao.getConnection(), catalog, names[0], names[1]);
         } else {
-            throw new IllegalArgumentException(ResourcesUtils.getDatabaseMessage(11, sql));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("database.standard.output.msg011", sql));
         }
     }
 
@@ -326,7 +326,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
             result[0] = split[0];
             result[1] = split[1];
         } else {
-            throw new DatabaseException(ResourcesUtils.getDatabaseMessage(13, fullName));
+            throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg013", fullName));
         }
         return result;
     }
@@ -362,7 +362,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
             result[0] = split[0];
             result[1] = split[1];
         } else {
-            throw new DatabaseException(ResourcesUtils.getDatabaseMessage(13, fullName));
+            throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg013", fullName));
         }
         return result;
     }

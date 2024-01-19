@@ -572,7 +572,7 @@ public abstract class AbstractDialect implements DatabaseDialect {
         if (list.isEmpty()) {
             return null;
         } else if (list.size() != 1) {
-            throw new DatabaseException(ResourcesUtils.getDatabaseMessage(33, catalog, schema, procedureName, StringUtils.join(list, ", ")));
+            throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg033", catalog, schema, procedureName, StringUtils.join(list, ", ")));
         } else {
             return list.get(0);
         }

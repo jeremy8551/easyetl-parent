@@ -57,7 +57,7 @@ public class LoadFileExecutor extends AbstractJob {
 
     public int execute() throws Exception {
         if (log.isTraceEnabled()) {
-            log.trace(ResourcesUtils.getLoadMessage(9, this.getName()));
+            log.trace(ResourcesUtils.getMessage("load.standard.output.msg009", this.getName()));
         }
 
         // 创建一个表格型文件对象
@@ -78,7 +78,7 @@ public class LoadFileExecutor extends AbstractJob {
             this.resultSet.addTotal(out.getCommitRecords(), out.getSkipRecords(), out.getCommitRecords(), out.getDeleteRecords(), out.getRejectedRecords());
 
             if (log.isTraceEnabled()) {
-                log.trace(ResourcesUtils.getLoadMessage(10, this.getName(), out.getCommitRecords()));
+                log.trace(ResourcesUtils.getMessage("load.standard.output.msg010", this.getName(), out.getCommitRecords()));
             }
             return 0;
         } finally {

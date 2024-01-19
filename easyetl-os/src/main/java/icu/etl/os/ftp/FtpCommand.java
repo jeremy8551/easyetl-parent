@@ -65,7 +65,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized boolean connect(String host, int port, String username, String password) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(1, username + "@" + host + ":" + port + "?password=" + password));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg001", username + "@" + host + ":" + port + "?password=" + password));
         }
 
         try {
@@ -322,7 +322,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public void terminate() {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "terminate"));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "terminate"));
         }
 
         try {
@@ -334,7 +334,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized boolean exists(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "exists " + filepath));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "exists " + filepath));
         }
 
         try {
@@ -346,7 +346,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized boolean isFile(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "isFile " + filepath));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "isFile " + filepath));
         }
 
         try {
@@ -359,7 +359,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized boolean isDirectory(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "isDirectory " + filepath));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "isDirectory " + filepath));
         }
 
         try {
@@ -372,7 +372,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized boolean mkdir(String filepath) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "mkdir " + filepath));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "mkdir " + filepath));
         }
 
         return this.client.makeDirectory(filepath);
@@ -380,7 +380,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized boolean cd(String filepath) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "cd " + filepath));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "cd " + filepath));
         }
 
         try {
@@ -392,7 +392,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized boolean rm(String filepath) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "rm " + filepath));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "rm " + filepath));
         }
         return this.rmfile(filepath);
     }
@@ -413,13 +413,13 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
             boolean success = this.client.removeDirectory(remoteDir);
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "delete remote directory " + remoteDir + "  [" + success + "]"));
+                log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "delete remote directory " + remoteDir + "  [" + success + "]"));
             }
             return success;
         } else {
             boolean success = this.client.deleteFile(filepath);
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "delete remote file " + filepath + " [" + success + "]"));
+                log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "delete remote file " + filepath + " [" + success + "]"));
             }
             return success;
         }
@@ -428,7 +428,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized String pwd() {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "pwd"));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "pwd"));
         }
 
         try {
@@ -440,7 +440,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized List<OSFile> ls(String filepath) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "ls " + filepath));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "ls " + filepath));
         }
 
         ApacheFtpFile file = this.toFtpFile(filepath);
@@ -450,7 +450,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
     public boolean copy(String filepath, String directory) {
         Ensure.isTrue(!filepath.equals(directory), filepath, directory);
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "copy " + filepath + " " + directory));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "copy " + filepath + " " + directory));
         }
 
         try {
@@ -480,7 +480,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized boolean upload(File localFile, String remoteDir) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "put " + localFile.getAbsolutePath() + " " + remoteDir));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "put " + localFile.getAbsolutePath() + " " + remoteDir));
         }
 
         try {
@@ -558,7 +558,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized File download(String filepath, File localFile) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "get " + filepath + " " + localFile.getAbsolutePath()));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "get " + filepath + " " + localFile.getAbsolutePath()));
         }
 
         try {
@@ -620,7 +620,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public boolean rename(String filepath, String newfilepath) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "rename " + filepath + " " + newfilepath));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "rename " + filepath + " " + newfilepath));
         }
 
         return this.client.rename(filepath, newfilepath);
@@ -628,7 +628,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public String read(String filepath, String charsetName, int lineno) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "read " + filepath + " " + charsetName + " " + lineno));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "read " + filepath + " " + charsetName + " " + lineno));
         }
 
         try {
@@ -645,7 +645,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public boolean write(String filepath, String charsetName, boolean append, CharSequence content) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "write " + filepath + " " + append + " " + content));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "write " + filepath + " " + append + " " + content));
         }
 
         try {
@@ -675,7 +675,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public List<OSFile> find(String filepath, String name, char type, OSFileFilter filter) {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "find " + filepath + " -name " + name + " -type " + type));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "find " + filepath + " -name " + name + " -type " + type));
         }
 
         try {
@@ -743,7 +743,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
 
     public synchronized void close() {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getFtpApacheMessage(2, this.remoteServerName, "bye"));
+            log.debug(ResourcesUtils.getMessage("ftp.apache.standard.output.msg002", this.remoteServerName, "bye"));
         }
 
         this.params.clear();

@@ -64,7 +64,7 @@ public class CommandScanner {
                 this.loadScriptCommand(cls);
             } catch (Throwable e) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getClassMessage(18, cls.getName()), e);
+                    log.warn(ResourcesUtils.getMessage("class.standard.output.msg018", cls.getName()), e);
                 }
             }
         }
@@ -97,7 +97,7 @@ public class CommandScanner {
                 compiler = this.context.getContainer().createBean(cls);
             } catch (Exception e) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getClassMessage(12, cls.getName()), e);
+                    log.warn(ResourcesUtils.getMessage("class.standard.output.msg012", cls.getName()), e);
                 }
                 return;
             }

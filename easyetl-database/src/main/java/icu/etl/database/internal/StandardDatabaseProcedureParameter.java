@@ -459,7 +459,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
 
             default:
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getDatabaseMessage(14, type));
+                    log.warn(ResourcesUtils.getMessage("database.standard.output.msg014", type));
                 }
 
                 statement.setString(this.getPlaceholder(), StringUtils.unquotation(expression));

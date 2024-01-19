@@ -110,7 +110,7 @@ public class LoadErrorTable {
                 if (StringUtils.isNumber(str) && (position = Integer.parseInt(str)) > 0) {
                     positions[i] = position;
                 } else {
-                    throw new IllegalArgumentException(ResourcesUtils.getLoadMessage(5, str));
+                    throw new IllegalArgumentException(ResourcesUtils.getMessage("load.standard.output.msg005", str));
                 }
             }
             return positions;
@@ -137,7 +137,7 @@ public class LoadErrorTable {
                 if (StringUtils.isNumber(name) && (position = Integer.parseInt(name)) >= 1 && position <= table.columns()) {
                     DatabaseTableColumn col = table.getColumns().getColumn(position);
                     if (col == null) {
-                        throw new IllegalArgumentException(ResourcesUtils.getLoadMessage(6, name));
+                        throw new IllegalArgumentException(ResourcesUtils.getMessage("load.standard.output.msg006", name));
                     } else {
                         list.add(col);
                     }
@@ -145,7 +145,7 @@ public class LoadErrorTable {
                     String key = name.toUpperCase();
                     DatabaseTableColumn col = table.getColumns().getColumn(key);
                     if (col == null) {
-                        throw new IllegalArgumentException(ResourcesUtils.getLoadMessage(6, name));
+                        throw new IllegalArgumentException(ResourcesUtils.getMessage("load.standard.output.msg006", name));
                     } else {
                         list.add(col);
                     }
@@ -182,7 +182,7 @@ public class LoadErrorTable {
             } else if (database.contains(column.getFieldType())) {
                 array[i] = database.get(column.getFieldType());
             } else {
-                throw new IllegalArgumentException(ResourcesUtils.getLoadMessage(7, fieldName, javaClassName));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("load.standard.output.msg007", fieldName, javaClassName));
             }
         }
         return array;
@@ -221,7 +221,7 @@ public class LoadErrorTable {
         } catch (Throwable e) {
             if (dao.getDialect().isRebuildTableException(e)) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getLoadMessage(8, tableName));
+                    log.warn(ResourcesUtils.getMessage("load.standard.output.msg008", tableName));
                 }
 
                 DatabaseTableDDL ddl = this.getTableDDL();

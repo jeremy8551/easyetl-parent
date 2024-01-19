@@ -82,7 +82,7 @@ public class IncrementExpression implements Attribute<String> {
             if (it.isNext(new String[]{"new", "upd", "del", "log"})) {
                 String word = it.next();
                 if (this.kinds.contains(word)) {
-                    throw new IOException(ResourcesUtils.getIncrementMessage(57, word));
+                    throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg057", word));
                 } else {
                     this.kinds.add(word);
                 }
@@ -92,7 +92,7 @@ public class IncrementExpression implements Attribute<String> {
             } else if (it.isNext("and")) {
                 it.assertNext("and");
                 if (!it.isNext(new String[]{"new", "upd", "del", "log"})) {
-                    throw new IOException(ResourcesUtils.getIncrementMessage(58));
+                    throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg058"));
                 }
             }
         }
@@ -117,7 +117,7 @@ public class IncrementExpression implements Attribute<String> {
                 }
 
                 if (this.attributes.isEmpty()) {
-                    throw new IOException(ResourcesUtils.getIncrementMessage(64));
+                    throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg064"));
                 }
             }
         } else {
@@ -125,7 +125,7 @@ public class IncrementExpression implements Attribute<String> {
         }
 
         if (it.hasNext()) {
-            throw new IOException(ResourcesUtils.getIncrementMessage(65, it.readOther()));
+            throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg065", it.readOther()));
         } else {
             this.parseAttribute(session, context);
         }
@@ -140,24 +140,24 @@ public class IncrementExpression implements Attribute<String> {
      */
     private void parseAttribute(UniversalScriptSession session, UniversalScriptContext context) throws Exception {
         if (this.kinds.contains("log") && (this.attributes.containsKey("newchg") || this.attributes.containsKey("updchg") || this.attributes.containsKey("delchg"))) {
-            throw new IOException(ResourcesUtils.getIncrementMessage(66));
+            throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg066"));
         }
         if (this.attributes.containsKey("newchg") && (!this.kinds.contains("new") && this.kinds.size() > 0)) {
-            throw new IOException(ResourcesUtils.getIncrementMessage(67));
+            throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg067"));
         }
         if (this.attributes.containsKey("updchg") && (!this.kinds.contains("upd") && this.kinds.size() > 0)) {
-            throw new IOException(ResourcesUtils.getIncrementMessage(68));
+            throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg068"));
         }
         if (this.attributes.containsKey("delchg") && (!this.kinds.contains("del") && this.kinds.size() > 0)) {
-            throw new IOException(ResourcesUtils.getIncrementMessage(69));
+            throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg069"));
         }
         if (this.attributes.containsKey("charset") && this.attributes.containsKey("codepage")) {
-            throw new IOException(ResourcesUtils.getIncrementMessage(70));
+            throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg070"));
         }
 
         this.isLogExpr = this.kinds.contains("log");
         if (this.isLogExpr && this.kinds.size() > 1) {
-            throw new IOException(ResourcesUtils.getIncrementMessage(60));
+            throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg060"));
         }
 
         String[] indexs = StringUtils.removeBlank(StringUtils.split(this.attributes.get("index"), this.analysis.getSegment()));

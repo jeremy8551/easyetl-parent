@@ -480,10 +480,10 @@ public class DB2Instance {
             env.append("").append(lineSeperator);
             os.getOSFileCommand().write(filepath, os.getOSFileCommand().getCharsetName(), true, env);
 
-            log.info(ResourcesUtils.getDatabaseMessage(52, username, filepath, db2profile));
+            log.info(ResourcesUtils.getMessage("database.standard.output.msg052", username, filepath, db2profile));
             return true;
         } else {
-            log.info(ResourcesUtils.getDatabaseMessage(53, username, profile, db2profile));
+            log.info(ResourcesUtils.getMessage("database.standard.output.msg053", username, profile, db2profile));
             return false;
         }
     }

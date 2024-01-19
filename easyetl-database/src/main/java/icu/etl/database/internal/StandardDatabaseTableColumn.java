@@ -360,14 +360,14 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
         int nameCompare = column1.getName().compareTo(column2.getName());
         if (nameCompare != 0) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg043", name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName()));
             }
             return nameCompare;
         }
 
         if (column1.getSqlType() != column2.getSqlType()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getSqlType(), column2.getSqlType()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg043", name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getSqlType(), column2.getSqlType()));
             }
             return column1.getSqlType() - column2.getSqlType();
         }
@@ -375,42 +375,42 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
         int typeNameCompare = column1.getFieldType().compareTo(column2.getFieldType());
         if (typeNameCompare != 0) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getFieldType(), column2.getFieldType()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg043", name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getFieldType(), column2.getFieldType()));
             }
             return typeNameCompare;
         }
 
         if (column1.length() != column2.length()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.length(), column2.length()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg043", name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.length(), column2.length()));
             }
             return column1.length() - column2.length();
         }
 
         if (column1.getMaxLength() != column2.getMaxLength()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getMaxLength(), column2.getMaxLength()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg043", name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getMaxLength(), column2.getMaxLength()));
             }
             return column1.getMaxLength() - column2.getMaxLength();
         }
 
         if (column1.getPosition() != column2.getPosition()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getPosition(), column2.getPosition()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg043", name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getPosition(), column2.getPosition()));
             }
             return column1.getPosition() - column2.getPosition();
         }
 
         if (column1.getDigit() != column2.getDigit()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getDigit(), column2.getDigit()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg043", name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getDigit(), column2.getDigit()));
             }
             return column1.getDigit() - column2.getDigit();
         }
 
         if (column1.getRadix() != column2.getRadix()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(43, name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getRadix(), column2.getRadix()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg043", name1, column1.getPosition(), column1.getName(), name2, column2.getPosition(), column2.getName(), column1.getRadix(), column2.getRadix()));
             }
             return column1.getRadix() - column2.getRadix();
         }

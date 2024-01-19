@@ -277,7 +277,7 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
                 return str.subSequence(0, start) + newStr + str.subSequence(end + 1, str.length());
             }
         } else {
-            throw new RuntimeException(ResourcesUtils.getDatabaseMessage(51, str, column));
+            throw new RuntimeException(ResourcesUtils.getMessage("database.standard.output.msg051", str, column));
         }
     }
 

@@ -47,7 +47,7 @@ public class LoadEngineContextImpl implements LoadEngineContext {
      * 初始化上下文信息
      */
     public LoadEngineContextImpl() {
-        this.id = ResourcesUtils.getLoadMessage(1) + String.valueOf(++number);
+        this.id = ResourcesUtils.getMessage("load.standard.output.msg001") + String.valueOf(++number);
         this.files = new ArrayList<String>();
         this.dataColumn = new ArrayList<String>();
         this.fileColumn = new ArrayList<String>();

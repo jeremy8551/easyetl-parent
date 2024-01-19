@@ -802,7 +802,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 List<Map<String, String>> list0 = JdbcDao.queryListMaps(connection, "select tabname, tbspace, index_tbspace from syscat.tables a where tabschema='" + table.getSchema() + "' and tabname='" + table.getName() + "'");
                 if (list0.size() != 1) {
                     String fullTablename = SQL.toTableName(table.getSchema(), table.getName());
-                    throw new DatabaseException(ResourcesUtils.getDatabaseMessage(58, list0.size(), fullTablename));
+                    throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg058", list0.size(), fullTablename));
                 }
 
                 Map<String, String> map = list0.get(0);
@@ -1173,7 +1173,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         }
 
         if (StringUtils.isBlank(Jdbc.getSchema(fullTableName))) {
-            throw new DatabaseException(ResourcesUtils.getDatabaseMessage(54, fullTableName));
+            throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg054", fullTableName));
         }
 
         JdbcDao dao = new JdbcDao(this.context, conn);
@@ -1214,7 +1214,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 }
 
                 if (StringUtils.isNotBlank(applicationHandle) && this.forceApplication(conn, username, password, applicationHandle)) {
-                    log.debug(ResourcesUtils.getDatabaseMessage(55, applicationHandle));
+                    log.debug(ResourcesUtils.getMessage("database.standard.output.msg055", applicationHandle));
                     return true;
                 }
             }
@@ -1229,14 +1229,14 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
                 }
 
                 if (StringUtils.isNotBlank(applicationHandle) && this.forceApplication(conn, username, password, applicationHandle)) {
-                    log.debug(ResourcesUtils.getDatabaseMessage(55, applicationHandle));
+                    log.debug(ResourcesUtils.getMessage("database.standard.output.msg055", applicationHandle));
                     return true;
                 }
             }
-            log.warn(ResourcesUtils.getDatabaseMessage(56, applicationHandle));
+            log.warn(ResourcesUtils.getMessage("database.standard.output.msg056", applicationHandle));
             return false;
         } catch (SQLException e) {
-            log.error(ResourcesUtils.getDatabaseMessage(56, applicationHandle), e);
+            log.error(ResourcesUtils.getMessage("database.standard.output.msg056", applicationHandle), e);
             return false;
         }
     }
@@ -1263,7 +1263,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
             if (method != null) {
                 String applicationId = StringUtils.toString(ClassUtils.executeMethod(obj, "getDB2Correlator"));
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getDatabaseMessage(57, obj, applicationId));
+                    log.debug(ResourcesUtils.getMessage("database.standard.output.msg057", obj, applicationId));
                 }
                 config.put(DB2Dialect.APPLICATION_ID, applicationId);
             }

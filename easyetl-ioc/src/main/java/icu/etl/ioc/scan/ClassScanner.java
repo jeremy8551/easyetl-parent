@@ -121,7 +121,7 @@ public class ClassScanner {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getIocMessage(6, this.includePackageNames.isEmpty() ? "" : " " + this.includePackageNames + " ", count));
+            log.debug(ResourcesUtils.getMessage("ioc.standard.output.msg006", this.includePackageNames.isEmpty() ? "" : " " + this.includePackageNames + " ", count));
         }
         return count;
     }
@@ -144,7 +144,7 @@ public class ClassScanner {
             enu = classLoader.getResources(uri);
         } catch (Throwable e) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getClassMessage(7, uri), e);
+                log.debug(ResourcesUtils.getMessage("class.standard.output.msg007", uri), e);
             }
             return 0;
         }
@@ -159,7 +159,7 @@ public class ClassScanner {
             String urlpath = StringUtils.decodeJvmUtf8HexString(url.getPath());
             String lowderPath = urlpath.toLowerCase();
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getClassMessage(1, urlpath, packageName));
+                log.debug(ResourcesUtils.getMessage("class.standard.output.msg001", urlpath, packageName));
             }
 
             // 加载类文件
@@ -169,7 +169,7 @@ public class ClassScanner {
                     count += this.scanPackage(classLoader, packageName, urlpath);
                 } catch (Throwable e) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getClassMessage(10, packageName, urlpath), e);
+                        log.debug(ResourcesUtils.getMessage("class.standard.output.msg010", packageName, urlpath), e);
                     }
                 }
             }
@@ -192,7 +192,7 @@ public class ClassScanner {
             // 不能识别的资源信息
             else {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getClassMessage(17, protocol, urlpath));
+                    log.debug(ResourcesUtils.getMessage("class.standard.output.msg017", protocol, urlpath));
                 }
             }
 
@@ -218,14 +218,14 @@ public class ClassScanner {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getClassMessage(6, packageName.length() == 0 ? "" : packageName, packagePath));
+            log.debug(ResourcesUtils.getMessage("class.standard.output.msg006", packageName.length() == 0 ? "" : packageName, packagePath));
         }
 
         int count = 0;
         File packagefile = new File(packagePath);
         if (!packagefile.exists()) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getClassMessage(27, packageName, packagePath));
+                log.debug(ResourcesUtils.getMessage("class.standard.output.msg027", packageName, packagePath));
             }
             return count;
         }
@@ -248,9 +248,9 @@ public class ClassScanner {
 
             if (log.isTraceEnabled()) {
                 if (file.isDirectory()) {
-                    log.trace(ResourcesUtils.getClassMessage(24, packageName, filename, FileUtils.joinPath(StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename)));
+                    log.trace(ResourcesUtils.getMessage("class.standard.output.msg024", packageName, filename, FileUtils.joinPath(StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename)));
 //                } else { 与下面日志重复，需要注释掉
-//                    log.trace(ResourcesUtils.getClassMessage(7, StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename, packageName));
+//                    log.trace(ResourcesUtils.getMessage("class.standard.output.msg007", StringUtils.decodeJvmUtf8HexString(packagefile.getAbsolutePath()), filename, packageName));
                 }
             }
 
@@ -281,7 +281,7 @@ public class ClassScanner {
                     }
 
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getClassMessage(4, className, filepath));
+                        log.debug(ResourcesUtils.getMessage("class.standard.output.msg004", className, filepath));
                     }
 
                     Class<?> cls = this.forName(className, false, loader);
@@ -290,7 +290,7 @@ public class ClassScanner {
                     }
                 } else {
                     if (log.isTraceEnabled()) {
-                        log.trace(ResourcesUtils.getClassMessage(8, file.getAbsolutePath()));
+                        log.trace(ResourcesUtils.getMessage("class.standard.output.msg008", file.getAbsolutePath()));
                     }
                 }
             }
@@ -327,7 +327,7 @@ public class ClassScanner {
             return Class.forName(className, initialize, loader);
         } catch (Throwable e) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getClassMessage(5, className), e);
+                log.debug(ResourcesUtils.getMessage("class.standard.output.msg005", className), e);
             }
             return null;
         }
@@ -351,7 +351,7 @@ public class ClassScanner {
                 jarfile = conn.getJarFile();
             } catch (Throwable e) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getClassMessage(28, urlpath));
+                    log.warn(ResourcesUtils.getMessage("class.standard.output.msg028", urlpath));
                 }
                 return null;
             }
@@ -359,7 +359,7 @@ public class ClassScanner {
             File file = new File(StringUtils.decodeJvmUtf8HexString(jarfile.getName()));
             if (this.jarfiles.contains(file)) { // 判断是否已扫描
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getClassMessage(16, jarfile.getName()));
+                    log.debug(ResourcesUtils.getMessage("class.standard.output.msg016", jarfile.getName()));
                 }
                 return null;
             } else {
@@ -373,7 +373,7 @@ public class ClassScanner {
             File file = (File) obj;
             if (this.jarfiles.contains(file)) { // 判断是否已扫描jar
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getClassMessage(16, file));
+                    log.debug(ResourcesUtils.getMessage("class.standard.output.msg016", file));
                 }
                 return null;
             }
@@ -384,7 +384,7 @@ public class ClassScanner {
                 return jarfile;
             } catch (Throwable e) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getClassMessage(29, file.getAbsolutePath()));
+                    log.debug(ResourcesUtils.getMessage("class.standard.output.msg029", file.getAbsolutePath()));
                 }
                 return null;
             }
@@ -408,7 +408,7 @@ public class ClassScanner {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getClassMessage(3, StringUtils.decodeJvmUtf8HexString(name)));
+            log.debug(ResourcesUtils.getMessage("class.standard.output.msg003", StringUtils.decodeJvmUtf8HexString(name)));
         }
 
         // 读取类路径的上级目录
@@ -467,7 +467,7 @@ public class ClassScanner {
                 }
 
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getClassMessage(4, className));
+                    log.debug(ResourcesUtils.getMessage("class.standard.output.msg004", className));
                 }
 
                 Class<?> cls = this.forName(className, false, loader);
@@ -482,7 +482,7 @@ public class ClassScanner {
                 File unzipJarfile = FileUtils.allocate(tempDir, filename); // 解压后的jar文件
 
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getClassMessage(14, jarfile.getName(), filename, unzipJarfile.getParentFile()));
+                    log.debug(ResourcesUtils.getMessage("class.standard.output.msg014", jarfile.getName(), filename, unzipJarfile.getParentFile()));
                 }
 
                 FileUtils.assertCreateFile(unzipJarfile);
@@ -492,7 +492,7 @@ public class ClassScanner {
                     newJarfile = new JarFile(unzipJarfile);
                 } catch (Throwable e) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getClassMessage(30, jarfile.getName(), entry.getName()), e);
+                        log.debug(ResourcesUtils.getMessage("class.standard.output.msg030", jarfile.getName(), entry.getName()), e);
                     }
                     continue;
                 }
@@ -538,7 +538,7 @@ public class ClassScanner {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getClassMessage(22, className, this.includePackageNames.toString()));
+            log.debug(ResourcesUtils.getMessage("class.standard.output.msg022", className, this.includePackageNames.toString()));
         }
         return true;
     }
@@ -555,9 +555,9 @@ public class ClassScanner {
             if (className.startsWith(name)) {
                 if (log.isDebugEnabled()) {
                     if (pkgOrCls) {
-                        log.debug(ResourcesUtils.getClassMessage(25, className, name));
+                        log.debug(ResourcesUtils.getMessage("class.standard.output.msg025", className, name));
                     } else {
-                        log.debug(ResourcesUtils.getClassMessage(23, className, name));
+                        log.debug(ResourcesUtils.getMessage("class.standard.output.msg023", className, name));
                     }
                 }
                 return true;

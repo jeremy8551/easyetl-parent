@@ -145,7 +145,7 @@ public class TableFileSorter implements Terminate {
 
         // 已被终止
         if (this.terminate) {
-            throw new IOException(ResourcesUtils.getCommonMessage(6, "sort " + file.getAbsolutePath()));
+            throw new IOException(ResourcesUtils.getMessage("commons.standard.output.msg006", "sort " + file.getAbsolutePath()));
         }
 
         // 判断移动前后文件大小是否有变化

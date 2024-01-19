@@ -100,7 +100,7 @@ public class IncrementJob extends AbstractJob {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getIncrementMessage(3, this.getName()));
+            log.debug(ResourcesUtils.getMessage("increment.standard.output.msg003", this.getName()));
         }
 
         // 开始执行增量剥离
@@ -121,7 +121,7 @@ public class IncrementJob extends AbstractJob {
             arith.execute(ruler, newIn, oldIn, out);
 
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getIncrementMessage(4, this.getName(), watch.useTime()));
+                log.debug(ResourcesUtils.getMessage("increment.standard.output.msg004", this.getName(), watch.useTime()));
             }
             return 0;
         } finally {

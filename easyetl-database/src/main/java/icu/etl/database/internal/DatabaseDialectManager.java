@@ -91,7 +91,7 @@ public class DatabaseDialectManager {
             }
         }
 
-        throw new UnsupportedOperationException(ResourcesUtils.getDatabaseMessage(5, str));
+        throw new UnsupportedOperationException(ResourcesUtils.getMessage("database.standard.output.msg005", str));
     }
 
     public synchronized void add(EasyContext context, EasyBeanInfo beanInfo) {
@@ -115,7 +115,7 @@ public class DatabaseDialectManager {
         DialectInfo dialectInfo = new DialectInfo(beanInfo, dialect.getDatabaseMajorVersion(), dialect.getDatabaseMinorVersion());
         if (!list.contains(dialectInfo)) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(3, beanInfo.getName(), beanInfo.getType().getName())); // 注册数据库方言类 {0} -> {1}
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg003", beanInfo.getName(), beanInfo.getType().getName())); // 注册数据库方言类 {0} -> {1}
             }
             list.add(dialectInfo);
             list.sortByDesc();
@@ -125,7 +125,7 @@ public class DatabaseDialectManager {
     public Class<?> getDialectClass(String name, final String major, final String minor) {
         EasyBeanTableRow list = this.map.get(name);
         if (list == null) {
-            throw new UnsupportedOperationException(ResourcesUtils.getDatabaseMessage(5, name));
+            throw new UnsupportedOperationException(ResourcesUtils.getMessage("database.standard.output.msg005", name));
         }
 
         // 如果查询条件包含版本号，则根据版本号进行过滤
@@ -152,7 +152,7 @@ public class DatabaseDialectManager {
         }).getBeanInfo();
 
         if (beanInfo == null) {
-            throw new UnsupportedOperationException(ResourcesUtils.getDatabaseMessage(5, name));
+            throw new UnsupportedOperationException(ResourcesUtils.getMessage("database.standard.output.msg005", name));
         } else {
             return beanInfo.getType();
         }

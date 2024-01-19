@@ -102,7 +102,7 @@ public class TableFileDeduplicateSorter implements Terminate {
     private void terminated() throws IOException {
         if (this.terminate) { // 已被终止
             TextTableFile file = this.context.getFile();
-            throw new IOException(ResourcesUtils.getCommonMessage(6, "sort " + file));
+            throw new IOException(ResourcesUtils.getMessage("commons.standard.output.msg006", "sort " + file));
         }
     }
 

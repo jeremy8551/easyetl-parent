@@ -21,7 +21,7 @@ public class BeanRepeatDefineException extends RuntimeException {
      * @param list 重复的组件
      */
     public BeanRepeatDefineException(Class<?> type, String name, List<?> list) {
-        super(ResourcesUtils.getClassMessage(13, name, type == null ? "" : " " + type.getName() + " ", toBeanInfoList(list)));
+        super(ResourcesUtils.getMessage("class.standard.output.msg013", name, type == null ? "" : " " + type.getName() + " ", toBeanInfoList(list)));
     }
 
     /**

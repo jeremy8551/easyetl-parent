@@ -36,7 +36,7 @@ public class BeanContainerContextImpl implements EasyContainerContext {
             try {
                 return (E) factory.getBean(this.context, args);
             } catch (Throwable e) {
-                throw new RuntimeException(ResourcesUtils.getClassMessage(12, type.getName()), e);
+                throw new RuntimeException(ResourcesUtils.getMessage("class.standard.output.msg012", type.getName()), e);
             }
         }
 

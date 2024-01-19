@@ -109,7 +109,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      */
     public void setConnection(Connection connection) throws SQLException {
         if (connection == null || connection.isClosed()) {
-            throw new IllegalArgumentException(ResourcesUtils.getDatabaseMessage(1));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("database.standard.output.msg001"));
         } else {
             this.connection = connection;
         }

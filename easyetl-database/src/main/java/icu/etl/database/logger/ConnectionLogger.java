@@ -71,7 +71,7 @@ public class ConnectionLogger implements InvocationHandler {
     public Connection getProxy() {
         Connection conn = (Connection) Proxy.newProxyInstance(this.conn.getClass().getClassLoader(), new Class[]{Connection.class}, this);
         if (log.isInfoEnabled()) {
-            log.info(ResourcesUtils.getDatabaseMessage(34, this.getName(), this.conn.getClass().getName()));
+            log.info(ResourcesUtils.getMessage("database.standard.output.msg034", this.getName(), this.conn.getClass().getName()));
         }
         return conn;
     }
@@ -79,7 +79,7 @@ public class ConnectionLogger implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String id = this.getName();
         if (log.isInfoEnabled()) {
-            log.info(ResourcesUtils.getDatabaseMessage(35, id, this.conn.getClass().getName(), StringUtils.toString(method), StringUtils.toString(args)));
+            log.info(ResourcesUtils.getMessage("database.standard.output.msg035", id, this.conn.getClass().getName(), StringUtils.toString(method), StringUtils.toString(args)));
         }
 
         TimeWatch watch = new TimeWatch();
@@ -92,7 +92,7 @@ public class ConnectionLogger implements InvocationHandler {
             }
         } finally {
             if (log.isInfoEnabled()) {
-                log.info(ResourcesUtils.getDatabaseMessage(36, id, this.conn.getClass().getName(), StringUtils.toString(method), value, watch.useTime()));
+                log.info(ResourcesUtils.getMessage("database.standard.output.msg036", id, this.conn.getClass().getName(), StringUtils.toString(method), value, watch.useTime()));
             }
         }
     }
@@ -121,6 +121,6 @@ public class ConnectionLogger implements InvocationHandler {
      * @return
      */
     public String getName() {
-        return ResourcesUtils.getDatabaseMessage(37, this.number);
+        return ResourcesUtils.getMessage("database.standard.output.msg037", this.number);
     }
 }

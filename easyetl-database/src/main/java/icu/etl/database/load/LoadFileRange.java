@@ -96,16 +96,16 @@ public class LoadFileRange {
 
                 String[] split = StringUtils.split(range, ',');
                 if (split.length != 3) {
-                    throw new IOException(ResourcesUtils.getLoadMessage(2, range));
+                    throw new IOException(ResourcesUtils.getMessage("load.standard.output.msg002", range));
                 }
                 if (!StringUtils.isLong(split[0])) {
-                    throw new IOException(ResourcesUtils.getLoadMessage(3, range));
+                    throw new IOException(ResourcesUtils.getMessage("load.standard.output.msg003", range));
                 }
                 if (!StringUtils.isLong(split[1])) {
-                    throw new IOException(ResourcesUtils.getLoadMessage(3, range));
+                    throw new IOException(ResourcesUtils.getMessage("load.standard.output.msg003", range));
                 }
                 if (!StringUtils.inArray(split[2], "-1", "0", "1", "2")) {
-                    throw new IOException(ResourcesUtils.getLoadMessage(3, range));
+                    throw new IOException(ResourcesUtils.getMessage("load.standard.output.msg003", range));
                 }
 
                 LoadFileRange obj = new LoadFileRange(Long.parseLong(split[0]), Long.parseLong(split[1]), Integer.parseInt(split[2]));

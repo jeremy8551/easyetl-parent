@@ -969,7 +969,7 @@ public class JdbcDao implements OSConnectCommand {
                     }
                 }
 
-                log.debug(ResourcesUtils.getDatabaseMessage(16, call, watch.useTime(), buf.toString()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg016", call, watch.useTime(), buf.toString()));
             }
 
             return procedure;

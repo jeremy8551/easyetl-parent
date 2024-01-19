@@ -55,7 +55,7 @@ public class LoadIndex {
             for (DatabaseIndex index : list) {
                 String sql = dao.dropPrimaryKey(index);
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getLoadMessage(13, context.getId(), sql));
+                    log.debug(ResourcesUtils.getMessage("load.standard.output.msg013", context.getId(), sql));
                 }
             }
 
@@ -64,7 +64,7 @@ public class LoadIndex {
             for (DatabaseIndex index : indexs) {
                 String sql = dao.dropIndex(index);
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getLoadMessage(13, context.getId(), sql));
+                    log.debug(ResourcesUtils.getMessage("load.standard.output.msg013", context.getId(), sql));
                 }
             }
         } else {
@@ -87,7 +87,7 @@ public class LoadIndex {
                 DatabaseDDL ddl = dao.toDDL(index, true);
                 for (String sql : ddl) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getLoadMessage(14, context.getId(), sql));
+                        log.debug(ResourcesUtils.getMessage("load.standard.output.msg014", context.getId(), sql));
                     }
                     dao.execute(sql);
                 }
@@ -99,7 +99,7 @@ public class LoadIndex {
                 DatabaseDDL ddl = dao.toDDL(index, false);
                 for (String sql : ddl) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getLoadMessage(14, context.getId(), sql));
+                        log.debug(ResourcesUtils.getMessage("load.standard.output.msg014", context.getId(), sql));
                     }
                     dao.execute(sql);
                 }

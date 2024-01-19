@@ -77,7 +77,7 @@ public class JdbcBatchStatement {
      */
     protected void init(Connection connection, String sql) throws SQLException {
         if (connection == null || connection.isClosed()) {
-            throw new IllegalArgumentException(ResourcesUtils.getDatabaseMessage(1));
+            throw new IllegalArgumentException(ResourcesUtils.getMessage("database.standard.output.msg001"));
         }
         if (StringUtils.isBlank(sql)) {
             throw new IllegalArgumentException(sql);

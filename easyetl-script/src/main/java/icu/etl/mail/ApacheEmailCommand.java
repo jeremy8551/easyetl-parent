@@ -278,7 +278,7 @@ public class ApacheEmailCommand implements MailCommand {
             folder.appendMessages(draftMessages);
             folder.close(false);
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getMailMessage(6), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("mail.standard.output.msg006"), e);
         } finally {
             IO.close(store);
         }
@@ -315,7 +315,7 @@ public class ApacheEmailCommand implements MailCommand {
 
                 String messageId = mail.send();
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getMailMessage(1));
+                    log.debug(ResourcesUtils.getMessage("mail.standard.output.msg001"));
                 }
                 return messageId;
             } else {
@@ -347,7 +347,7 @@ public class ApacheEmailCommand implements MailCommand {
                         attachment.setName(MimeUtility.encodeText(file.getName()));
 
                         if (log.isDebugEnabled()) {
-                            log.debug(ResourcesUtils.getMailMessage(10, file.getPath(), file.getName()));
+                            log.debug(ResourcesUtils.getMessage("mail.standard.output.msg010", file.getPath(), file.getName()));
                         }
 
                         mail.attach(attachment);
@@ -357,12 +357,12 @@ public class ApacheEmailCommand implements MailCommand {
                 // send the email
                 String messageId = mail.send();
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getMailMessage(1));
+                    log.debug(ResourcesUtils.getMessage("mail.standard.output.msg001"));
                 }
                 return messageId;
             }
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getMailMessage(2), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("mail.standard.output.msg002"), e);
         }
     }
 
@@ -390,7 +390,7 @@ public class ApacheEmailCommand implements MailCommand {
             folder.setSSL(true);
             return folder.getMails();
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getMailMessage(6), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("mail.standard.output.msg006"), e);
         } finally {
             IO.close(store);
         }
@@ -402,7 +402,7 @@ public class ApacheEmailCommand implements MailCommand {
             folder = this.getDefaultFolder(store.getDefaultFolder());
             name = folder.getFullName();
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getMailMessage(9, name));
+                log.debug(ResourcesUtils.getMessage("mail.standard.output.msg009", name));
             }
         } else {
             folder = store.getFolder(name);
@@ -593,7 +593,7 @@ public class ApacheEmailCommand implements MailCommand {
             Folder folder = store.getFolder(folderName);
             if (folder == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getMailMessage(8, folderName));
+                    log.debug(ResourcesUtils.getMessage("mail.standard.output.msg008", folderName));
                 }
                 return null;
             }
@@ -603,7 +603,7 @@ public class ApacheEmailCommand implements MailCommand {
                 Message message = folder.getMessage(messageId);
                 if (message == null) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getMailMessage(7, messageId));
+                        log.debug(ResourcesUtils.getMessage("mail.standard.output.msg007", messageId));
                     }
                     return null;
                 } else {
@@ -615,7 +615,7 @@ public class ApacheEmailCommand implements MailCommand {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getMailMessage(6), e);
+            throw new RuntimeException(ResourcesUtils.getMessage("mail.standard.output.msg006"), e);
         } finally {
             IO.close(store);
         }
@@ -651,7 +651,7 @@ public class ApacheEmailCommand implements MailCommand {
 
         File file = new File(parent, filename);
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getMailMessage(4, file));
+            log.debug(ResourcesUtils.getMessage("mail.standard.output.msg004", file));
         }
 
         BufferedOutputStream out = null;
@@ -664,7 +664,7 @@ public class ApacheEmailCommand implements MailCommand {
             }
             return file;
         } catch (Exception e) {
-            throw new RuntimeException(ResourcesUtils.getMailMessage(5, filename));
+            throw new RuntimeException(ResourcesUtils.getMessage("mail.standard.output.msg005", filename));
         } finally {
             out.close();
         }

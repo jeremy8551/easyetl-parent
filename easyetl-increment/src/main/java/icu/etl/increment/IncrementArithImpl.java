@@ -94,7 +94,7 @@ public class IncrementArithImpl implements IncrementArith {
             if (log.isErrorEnabled()) {
                 log.error(e.getLocalizedMessage(), e);
             }
-            throw new IOException(ResourcesUtils.getIncrementMessage(72, newIn.getLineNumber(), oldIn.getLineNumber()));
+            throw new IOException(ResourcesUtils.getMessage("increment.standard.output.msg072", newIn.getLineNumber(), oldIn.getLineNumber()));
         } finally {
             oldIn.close();
             newIn.close();

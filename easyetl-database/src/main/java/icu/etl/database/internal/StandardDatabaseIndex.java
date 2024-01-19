@@ -191,13 +191,13 @@ public class StandardDatabaseIndex implements DatabaseIndex {
 
         if (nameList1.size() != nameList2.size()) { // 判断字段数
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(39, index1.getName(), index2.getName(), nameList1.size(), nameList2.size()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg039", index1.getName(), index2.getName(), nameList1.size(), nameList2.size()));
             }
             return nameList1.size() - nameList2.size();
         }
         if (icsList1.size() != icsList2.size()) { // 判断字段数
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getDatabaseMessage(39, index1.getName(), index2.getName(), icsList1.size(), icsList2.size()));
+                log.debug(ResourcesUtils.getMessage("database.standard.output.msg039", index1.getName(), index2.getName(), icsList1.size(), icsList2.size()));
             }
             return icsList1.size() - icsList2.size();
         }
@@ -206,7 +206,7 @@ public class StandardDatabaseIndex implements DatabaseIndex {
             int c = nameList1.get(i).compareTo(nameList2.get(i));
             if (c != 0) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getDatabaseMessage(40, index1.getName(), index2.getName(), (i + 1), nameList1.get(i), nameList2.get(i)));
+                    log.debug(ResourcesUtils.getMessage("database.standard.output.msg040", index1.getName(), index2.getName(), (i + 1), nameList1.get(i), nameList2.get(i)));
                 }
                 return c;
             }
@@ -216,7 +216,7 @@ public class StandardDatabaseIndex implements DatabaseIndex {
             int c = icsList1.get(i).compareTo(icsList2.get(i));
             if (c != 0) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getDatabaseMessage(41, index1.getName(), index2.getName(), (i + 1), icsList1.get(i), icsList2.get(i)));
+                    log.debug(ResourcesUtils.getMessage("database.standard.output.msg041", index1.getName(), index2.getName(), (i + 1), icsList1.get(i), icsList2.get(i)));
                 }
                 return c;
             }

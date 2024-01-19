@@ -29,7 +29,7 @@ public class PoolConnectionList extends Stack<PoolConnection> {
                 Connection conn = proxy.getConnection();
                 if (Jdbc.canUseQuietly(conn)) {
                     if (log.isDebugEnabled()) {
-                        log.debug(ResourcesUtils.getDataSourceMessage(9, proxy));
+                        log.debug(ResourcesUtils.getMessage("dataSource.standard.output.msg009", proxy));
                     }
 
                     try {

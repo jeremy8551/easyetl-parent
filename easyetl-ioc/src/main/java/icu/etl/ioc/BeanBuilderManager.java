@@ -47,7 +47,7 @@ public class BeanBuilderManager {
             Class<Object> genCls = ClassUtils.forName(className, true, this.context.getClassLoader());
             if (genCls == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getClassMessage(11, className));
+                    log.debug(ResourcesUtils.getMessage("class.standard.output.msg011", className));
                 }
                 return false;
             }
@@ -75,12 +75,12 @@ public class BeanBuilderManager {
         EasyBeanBuilder<?> factory = this.map.get(type);
         if (factory != null) {
             if (log.isWarnEnabled()) {
-                log.warn(ResourcesUtils.getClassMessage(26, type.getName(), builder.getClass().getName(), factory.getClass().getName()));
+                log.warn(ResourcesUtils.getMessage("class.standard.output.msg026", type.getName(), builder.getClass().getName(), factory.getClass().getName()));
             }
             return false;
         } else {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getClassMessage(19, type.getName(), builder.getClass().getName()));
+                log.debug(ResourcesUtils.getMessage("class.standard.output.msg019", type.getName(), builder.getClass().getName()));
             }
             this.map.put(type, builder);
             return true;

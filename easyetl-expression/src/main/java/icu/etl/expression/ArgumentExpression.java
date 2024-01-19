@@ -122,7 +122,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
         String old = this.values.put(key, value);
         if (old != null) {
             if (log.isTraceEnabled()) {
-                log.trace(ResourcesUtils.getParamMessage(1, key, old, value));
+                log.trace(ResourcesUtils.getMessage("param.standard.output.msg001", key, old, value));
             }
         }
     }
@@ -145,7 +145,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
             // 判断选项名是否合法
             if (!this.isOption(name)) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getParamMessage(2, name + "=" + value));
+                    log.warn(ResourcesUtils.getMessage("param.standard.output.msg002", name + "=" + value));
                 }
                 continue;
             }
@@ -153,7 +153,7 @@ public class ArgumentExpression implements Serializable, Cloneable {
             // 判断选项值是否合法
             if (value == null) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getParamMessage(3, name + "=null"));
+                    log.warn(ResourcesUtils.getMessage("param.standard.output.msg003", name + "=null"));
                 }
                 continue;
             }

@@ -568,7 +568,7 @@ public class OracleDialect extends AbstractDialect {
                 a[1] = "IN";
                 a[2] = array[1].toUpperCase();
             } else {
-                throw new DatabaseException(ResourcesUtils.getDatabaseMessage(12, s));
+                throw new DatabaseException(ResourcesUtils.getMessage("database.standard.output.msg012", s));
             }
 
             result[i] = a;

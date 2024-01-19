@@ -36,7 +36,7 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
 
     public <E> E createBean(Class<?> type, Object... args) {
         if (Modifier.isAbstract(type.getModifiers())) { // 不能是接口或抽象类
-            throw new UnsupportedOperationException(ResourcesUtils.getIocMessage(4, type.getName()));
+            throw new UnsupportedOperationException(ResourcesUtils.getMessage("ioc.standard.output.msg004", type.getName()));
         }
 
         BeanArgument argument = new BeanArgument("", args);
@@ -90,13 +90,13 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
         // 优先使用参数匹配的构造方法
         if (constructors.getMatchConstructor() != null) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getIocMessage(1, type.getName(), constructors.getMatchConstructor().toGenericString()));
+                log.debug(ResourcesUtils.getMessage("ioc.standard.output.msg001", type.getName(), constructors.getMatchConstructor().toGenericString()));
             }
 
             try {
                 return (E) constructors.getMatchConstructor().newInstance(argument.getArgs());
             } catch (Throwable e) {
-                String message = ResourcesUtils.getIocMessage(2, type.getName(), constructors.getMatchConstructor().toGenericString(), BeanArgument.toString(argument.getArgs()));
+                String message = ResourcesUtils.getMessage("ioc.standard.output.msg002", type.getName(), constructors.getMatchConstructor().toGenericString(), BeanArgument.toString(argument.getArgs()));
                 buf.append(FileUtils.lineSeparator).append(message);
 
                 if (log.isDebugEnabled()) {
@@ -108,13 +108,13 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
         // 使用无参构造方法
         if (constructors.getBaseConstructor() != null) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getIocMessage(1, type.getName(), constructors.getBaseConstructor().toGenericString()));
+                log.debug(ResourcesUtils.getMessage("ioc.standard.output.msg001", type.getName(), constructors.getBaseConstructor().toGenericString()));
             }
 
             try {
                 return (E) constructors.getBaseConstructor().newInstance();
             } catch (Throwable e) {
-                String message = ResourcesUtils.getIocMessage(2, type.getName(), constructors.getBaseConstructor().toGenericString(), "");
+                String message = ResourcesUtils.getMessage("ioc.standard.output.msg002", type.getName(), constructors.getBaseConstructor().toGenericString(), "");
                 buf.append(FileUtils.lineSeparator).append(message);
 
                 if (log.isDebugEnabled()) {
@@ -127,14 +127,14 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
         List<Constructor<?>> others = constructors.getConstructors();
         for (Constructor<?> constructor : others) {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getIocMessage(1, type.getName(), constructor.toGenericString()));
+                log.debug(ResourcesUtils.getMessage("ioc.standard.output.msg001", type.getName(), constructor.toGenericString()));
             }
 
             Object[] parameters = this.toArgs(constructor.getParameterTypes(), argument.getArgs());
             try {
                 return (E) constructor.newInstance(parameters);
             } catch (Throwable e) {
-                String message = ResourcesUtils.getIocMessage(2, type.getName(), constructor.toGenericString(), BeanArgument.toString(parameters));
+                String message = ResourcesUtils.getMessage("ioc.standard.output.msg002", type.getName(), constructor.toGenericString(), BeanArgument.toString(parameters));
                 buf.append(FileUtils.lineSeparator).append(message);
 
                 if (log.isDebugEnabled()) {
@@ -143,7 +143,7 @@ public class EasyBeanFactoryImpl implements EasyBeanFactory {
             }
         }
 
-        throw new UnsupportedOperationException(ResourcesUtils.getIocMessage(3, type.getName(), buf));
+        throw new UnsupportedOperationException(ResourcesUtils.getMessage("ioc.standard.output.msg003", type.getName(), buf));
     }
 
     /**

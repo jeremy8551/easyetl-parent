@@ -130,7 +130,7 @@ public class PoolConnection implements InvocationHandler {
     private ConnectionProxy createProxy(ClassLoader classLoader, Connection conn, String id) {
         ConnectionProxy proxy = (ConnectionProxy) Proxy.newProxyInstance(classLoader, new Class[]{ConnectionProxy.class}, this);
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getDatabaseMessage(42, id, conn.getClass().getName()));
+            log.debug(ResourcesUtils.getMessage("database.standard.output.msg042", id, conn.getClass().getName()));
         }
         return proxy;
     }
@@ -146,7 +146,7 @@ public class PoolConnection implements InvocationHandler {
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (log.isDebugEnabled()) {
-            log.debug(ResourcesUtils.getDatabaseMessage(35, this.id, this.connection.getClass().getName(), StringUtils.toString(method), StringUtils.toString(args)));
+            log.debug(ResourcesUtils.getMessage("database.standard.output.msg035", this.id, this.connection.getClass().getName(), StringUtils.toString(method), StringUtils.toString(args)));
         }
 
         String methodName = method.getName();
@@ -209,7 +209,7 @@ public class PoolConnection implements InvocationHandler {
                 }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getDataSourceMessage(11, this.toString()));
+                    log.debug(ResourcesUtils.getMessage("dataSource.standard.output.msg011", this.toString()));
                 }
 
                 if (this.testConnection(this.connection)) {

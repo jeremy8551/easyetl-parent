@@ -183,7 +183,7 @@ public class OverLengthExceptionProcessor {
 
         public int execute() throws Exception {
             if (log.isDebugEnabled()) {
-                log.debug(ResourcesUtils.getLoadMessage(9, this.getName()));
+                log.debug(ResourcesUtils.getMessage("load.standard.output.msg009", this.getName()));
             }
 
             // 创建一个表格型文件对象
@@ -210,7 +210,7 @@ public class OverLengthExceptionProcessor {
                 }
 
                 if (log.isDebugEnabled()) {
-                    log.debug(ResourcesUtils.getLoadMessage(10, this.getName(), in.getLineNumber()));
+                    log.debug(ResourcesUtils.getMessage("load.standard.output.msg010", this.getName(), in.getLineNumber()));
                 }
                 return 0;
             } finally {

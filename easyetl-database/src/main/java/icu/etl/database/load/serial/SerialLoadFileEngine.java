@@ -139,7 +139,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
                     // 需要重新建表
                     if (dao.getDialect().isRebuildTableException(e)) {
                         if (log.isDebugEnabled()) {
-                            log.debug(ResourcesUtils.getLoadMessage(17, table.getFullName()));
+                            log.debug(ResourcesUtils.getMessage("load.standard.output.msg017", table.getFullName()));
                         }
 
                         RebuildTableExceptionProcessor obj = new RebuildTableExceptionProcessor();
@@ -151,7 +151,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
                     // 自动处理文件中字段值超长问题
                     if (dao.getDialect().isOverLengthException(e)) {
                         if (log.isDebugEnabled()) {
-                            log.debug(ResourcesUtils.getLoadMessage(18, table.getFullName()));
+                            log.debug(ResourcesUtils.getMessage("load.standard.output.msg018", table.getFullName()));
                         }
 
                         int thread = StringUtils.parseInt(context.getAttributes().getAttribute("thread"), 2); // 并发任务数
@@ -165,7 +165,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
                     // 自动处理主键冲突错误
                     if (dao.getDialect().isPrimaryRepeatException(e)) {
                         if (log.isDebugEnabled()) {
-                            log.debug(ResourcesUtils.getLoadMessage(19, table.getFullName()));
+                            log.debug(ResourcesUtils.getMessage("load.standard.output.msg019", table.getFullName()));
                         }
 
                         PrimaryRepeatExceptionProcessor obj = new PrimaryRepeatExceptionProcessor(context);
@@ -210,7 +210,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
         ) {
             String fullName = target.getTable().getFullName();
             if (log.isWarnEnabled()) {
-                log.warn(ResourcesUtils.getLoadMessage(20, file.getFile().getAbsolutePath(), fullName));
+                log.warn(ResourcesUtils.getMessage("load.standard.output.msg020", file.getFile().getAbsolutePath(), fullName));
             }
             return;
         } else {
@@ -264,7 +264,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
 
             // 打印结果
             if (log.isInfoEnabled()) {
-                log.info(ResourcesUtils.getLoadMessage(21, file.getAbsolutePath(), String.valueOf(msgfile.getReadRows()), String.valueOf(msgfile.getCommitRows()), watch.useTime()));
+                log.info(ResourcesUtils.getMessage("load.standard.output.msg021", file.getAbsolutePath(), String.valueOf(msgfile.getReadRows()), String.valueOf(msgfile.getCommitRows()), watch.useTime()));
             }
         } finally {
             in.close();

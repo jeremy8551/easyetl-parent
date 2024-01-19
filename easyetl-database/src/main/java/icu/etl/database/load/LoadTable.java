@@ -133,7 +133,7 @@ public class LoadTable {
 
         // 只有 merge 模式才需要索引字段
         if (indexColumn == null || indexColumn.isEmpty()) {
-            throw new SQLException(ResourcesUtils.getLoadMessage(4));
+            throw new SQLException(ResourcesUtils.getMessage("load.standard.output.msg004"));
         } else {
             return indexColumn;
         }
@@ -161,7 +161,7 @@ public class LoadTable {
                 if (StringUtils.isNumber(str) && (position = Integer.parseInt(str)) > 0) {
                     positions[i] = position;
                 } else {
-                    throw new IllegalArgumentException(ResourcesUtils.getLoadMessage(5, str));
+                    throw new IllegalArgumentException(ResourcesUtils.getMessage("load.standard.output.msg005", str));
                 }
             }
             return positions;
@@ -188,14 +188,14 @@ public class LoadTable {
                 if (StringUtils.isNumber(name) && (position = Integer.parseInt(name)) >= 1 && position <= table.columns()) {
                     DatabaseTableColumn col = table.getColumns().getColumn(position);
                     if (col == null) {
-                        throw new IllegalArgumentException(ResourcesUtils.getLoadMessage(6, name));
+                        throw new IllegalArgumentException(ResourcesUtils.getMessage("load.standard.output.msg006", name));
                     }
                     list.add(col);
                 } else {
                     String key = name.toUpperCase();
                     DatabaseTableColumn col = table.getColumns().getColumn(key);
                     if (col == null) {
-                        throw new IllegalArgumentException(ResourcesUtils.getLoadMessage(6, name));
+                        throw new IllegalArgumentException(ResourcesUtils.getMessage("load.standard.output.msg006", name));
                     }
                     list.add(col);
                 }
@@ -231,7 +231,7 @@ public class LoadTable {
             } else if (database.contains(column.getFieldType())) {
                 array[i] = database.get(column.getFieldType());
             } else {
-                throw new IllegalArgumentException(ResourcesUtils.getLoadMessage(7, fieldName, javaClassName));
+                throw new IllegalArgumentException(ResourcesUtils.getMessage("load.standard.output.msg007", fieldName, javaClassName));
             }
         }
         return array;
@@ -269,7 +269,7 @@ public class LoadTable {
         } catch (Throwable e) {
             if (dao.getDialect().isRebuildTableException(e)) {
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getLoadMessage(8, tableName));
+                    log.warn(ResourcesUtils.getMessage("load.standard.output.msg008", tableName));
                 }
 
                 DatabaseTableDDL ddl = this.getTableDDL();

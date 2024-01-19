@@ -61,13 +61,13 @@ public class StatementLogger implements InvocationHandler {
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (log.isInfoEnabled()) {
-            log.info(ResourcesUtils.getDatabaseMessage(35, this.id, this.statement.getClass().getName(), StringUtils.toString(method), Arrays.toString(args)));
+            log.info(ResourcesUtils.getMessage("database.standard.output.msg035", this.id, this.statement.getClass().getName(), StringUtils.toString(method), Arrays.toString(args)));
         }
 
         this.watch.start();
         Object value = method.invoke(this.statement, args);
         if (log.isInfoEnabled()) {
-            log.info(ResourcesUtils.getDatabaseMessage(36, this.id, this.statement.getClass().getName(), StringUtils.toString(method), value, this.watch.useTime()));
+            log.info(ResourcesUtils.getMessage("database.standard.output.msg036", this.id, this.statement.getClass().getName(), StringUtils.toString(method), value, this.watch.useTime()));
         }
         return value;
     }
