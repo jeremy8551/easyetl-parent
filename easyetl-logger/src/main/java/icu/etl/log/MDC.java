@@ -12,7 +12,7 @@ import java.util.Map;
 public class MDC {
 
     /** 本地变量 */
-    private static ThreadLocal<Map<String, String>> local = new ThreadLocal<Map<String, String>>();
+    private static final ThreadLocal<Map<String, String>> local = new ThreadLocal<Map<String, String>>();
 
     /**
      * 返回属性值

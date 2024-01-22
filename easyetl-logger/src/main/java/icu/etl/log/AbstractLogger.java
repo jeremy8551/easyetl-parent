@@ -1,5 +1,7 @@
 package icu.etl.log;
 
+import icu.etl.util.Ensure;
+
 /**
  * 抽象日志
  *
@@ -33,20 +35,10 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
      * @param level   日志级别
      */
     public AbstractLogger(LogContext context, Class<?> type, LogLevel level) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
-        if (type == null) {
-            throw new NullPointerException();
-        }
-        if (level == null) {
-            throw new NullPointerException();
-        }
-
-        this.context = context;
-        this.type = type;
-        this.name = type.getName();
         this.setLevel(level);
+        this.context = Ensure.notNull(context);
+        this.type = Ensure.notNull(type);
+        this.name = type.getName();
     }
 
     public String getName() {
@@ -54,10 +46,6 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
     }
 
     public void setLevel(LogLevel level) {
-        if (level == null) {
-            throw new NullPointerException();
-        }
-
         switch (level) {
             case TRACE:
                 this.trace = true;
@@ -66,7 +54,7 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
                 this.warn = true;
                 this.error = true;
                 this.fatal = true;
-                return;
+                break;
 
             case DEBUG:
                 this.trace = false;
@@ -75,7 +63,7 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
                 this.warn = true;
                 this.error = true;
                 this.fatal = true;
-                return;
+                break;
 
             case INFO:
                 this.trace = false;
@@ -84,7 +72,7 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
                 this.warn = true;
                 this.error = true;
                 this.fatal = true;
-                return;
+                break;
 
             case WARN:
                 this.trace = false;
@@ -93,7 +81,7 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
                 this.warn = true;
                 this.error = true;
                 this.fatal = true;
-                return;
+                break;
 
             case ERROR:
                 this.trace = false;
@@ -102,7 +90,7 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
                 this.warn = false;
                 this.error = true;
                 this.fatal = true;
-                return;
+                break;
 
             case FATAL:
                 this.trace = false;
@@ -111,7 +99,7 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
                 this.warn = false;
                 this.error = false;
                 this.fatal = true;
-                return;
+                break;
 
             case OFF:
                 this.trace = false;
@@ -120,7 +108,10 @@ public abstract class AbstractLogger implements Log, LogLevelAware {
                 this.warn = false;
                 this.error = false;
                 this.fatal = false;
-                return;
+                break;
+
+            default:
+                throw new UnsupportedOperationException(String.valueOf(level));
         }
     }
 
