@@ -1,9 +1,7 @@
 package icu.etl.database.load;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -56,9 +54,6 @@ public class LoadTable {
     /** 文件中字段读取顺序数组 */
     private int[] filePositions;
 
-    /** 插入字段顺序集合对应的类型转换器 */
-//	private JdbcStringConverter[] converters;
-
     /** 插入字段个数 */
     private int column;
 
@@ -85,8 +80,8 @@ public class LoadTable {
     /**
      * 打开数据库连接
      *
-     * @param context
-     * @throws SQLException
+     * @param context 装载引擎上下文信息
+     * @throws SQLException 数据库错误
      */
     public void open(LoadEngineContext context) throws SQLException {
         LoadMode loadMode = context.getLoadMode();
@@ -112,7 +107,7 @@ public class LoadTable {
      * 如果未设置索引字段，则使用数据库表的主键或唯一索引作为索引字段
      *
      * @param indexColumn 索引字段名集合
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     private List<String> toIndexColumns(List<String> indexColumn) throws SQLException {
         if (indexColumn == null || indexColumn.isEmpty()) { // 如果未设置索引字段，则使用
@@ -144,7 +139,7 @@ public class LoadTable {
      *
      * @param column 默认值，如果未指定字段顺序，使用默认字段个数从1开始按顺序保存
      * @param fields 文件中字段顺序
-     * @return
+     * @return 字段顺序数组
      */
     private int[] toFilePositions(int column, List<String> fields) {
         if (fields == null || fields.isEmpty()) { // 未指定时使用默认顺序
@@ -157,7 +152,7 @@ public class LoadTable {
             int[] positions = new int[fields.size()];
             for (int i = 0; i < fields.size(); i++) {
                 String str = fields.get(i);
-                int position = 0;
+                int position;
                 if (StringUtils.isNumber(str) && (position = Integer.parseInt(str)) > 0) {
                     positions[i] = position;
                 } else {
@@ -174,7 +169,7 @@ public class LoadTable {
      *
      * @param table       数据库表信息
      * @param tableColumn 数据库表中字段名的集合 或 字段位置的集合
-     * @return
+     * @return 字段集合
      */
     private List<DatabaseTableColumn> toTableFields(DatabaseTable table, List<String> tableColumn) {
         List<DatabaseTableColumn> list = new ArrayList<DatabaseTableColumn>(20);
@@ -184,7 +179,7 @@ public class LoadTable {
             // 将字段位置信息转为字段名
             for (int i = 0; i < tableColumn.size(); i++) {
                 String name = tableColumn.get(i); //
-                int position = 0;
+                int position;
                 if (StringUtils.isNumber(name) && (position = Integer.parseInt(name)) >= 1 && position <= table.columns()) {
                     DatabaseTableColumn col = table.getColumns().getColumn(position);
                     if (col == null) {
@@ -210,8 +205,8 @@ public class LoadTable {
      * @param dao        数据库操作接口
      * @param columns    数据库表的字段顺序集合
      * @param userDefine 用户自定义的转换器映射关系
-     * @return
-     * @throws SQLException
+     * @return 类型转换器数组
+     * @throws SQLException 数据库错误
      */
     private JdbcStringConverter[] createConverter(JdbcDao dao, List<DatabaseTableColumn> columns, JdbcConverterMapper userDefine) throws SQLException {
         String[] javaClassNames = this.toJavaClassName(dao, columns); // JDBC 驱动提供的字段与JAVA类型的映射关系
@@ -242,8 +237,8 @@ public class LoadTable {
      *
      * @param dao     数据库操作接口
      * @param columns 字段插入顺序集合
-     * @return
-     * @throws SQLException
+     * @return Java类名数组
+     * @throws SQLException 数据库错误
      */
     private String[] toJavaClassName(JdbcDao dao, List<DatabaseTableColumn> columns) throws SQLException {
         if (columns == null || columns.isEmpty()) {
@@ -305,8 +300,8 @@ public class LoadTable {
      * @param columns     字段插入顺序集合
      * @param indexColumn 索引字段名
      * @param mode        数据插入方式
-     * @return
-     * @throws SQLException
+     * @return 批处理接口
+     * @throws SQLException 数据库错误
      */
     private PreparedStatement createStatement(JdbcDao dao, List<DatabaseTableColumn> columns, List<String> indexColumn, LoadMode mode) throws SQLException {
         if (columns == null || columns.isEmpty()) {
@@ -337,10 +332,8 @@ public class LoadTable {
     /**
      * 返回字段分别对应的类型转换器
      *
-     * @return
-     * @throws IOException
-     * @throws SQLException
-     * @throws ParseException
+     * @return 类型转换器数组
+     * @throws Exception 类型转换器初始化发生错误
      */
     public JdbcStringConverter[] getConverters() throws Exception {
         JdbcStringConverter[] converters = this.createConverter(this.dao, this.tableColumns, this.userMapper);
@@ -366,7 +359,7 @@ public class LoadTable {
     /**
      * 返回数据库表信息
      *
-     * @return
+     * @return 数据库表信息
      */
     public DatabaseTable getTable() {
         return table;
@@ -375,8 +368,8 @@ public class LoadTable {
     /**
      * 返回数据库表的 DDL 信息
      *
-     * @return
-     * @throws SQLException
+     * @return 数据库表的 DDL 信息
+     * @throws SQLException 数据库错误
      */
     public DatabaseTableDDL getTableDDL() throws SQLException {
         if (this.ddl == null) {
@@ -388,7 +381,7 @@ public class LoadTable {
     /**
      * 返回数据源中字段顺序
      *
-     * @return
+     * @return 数据源中字段顺序
      */
     public int[] getFilePositions() {
         return this.filePositions;
@@ -397,7 +390,7 @@ public class LoadTable {
     /**
      * 返回 jdbc 插入接口
      *
-     * @return
+     * @return jdbc 插入接口
      */
     public PreparedStatement getStatement() {
         return this.statement;
@@ -406,7 +399,7 @@ public class LoadTable {
     /**
      * 返回数据库表中字段集合，按插入先后顺序排序
      *
-     * @return
+     * @return 数据库表中字段集合
      */
     public List<DatabaseTableColumn> getTableColumns() {
         return Collections.unmodifiableList(this.tableColumns);
@@ -415,7 +408,7 @@ public class LoadTable {
     /**
      * 返回插入字段个数
      *
-     * @return
+     * @return 字段个数
      */
     public int getColumn() {
         return column;
@@ -424,7 +417,7 @@ public class LoadTable {
     /**
      * 释放资源
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void close() throws SQLException {
         if (this.merge != null) {

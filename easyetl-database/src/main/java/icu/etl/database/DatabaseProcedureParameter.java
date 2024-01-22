@@ -8,21 +8,21 @@ public interface DatabaseProcedureParameter extends Cloneable {
     /**
      * 参数值表达式: 'yyyy-MM-dd' 或 ? 等形式
      *
-     * @return
+     * @return 参数表达式
      */
     String getExpression();
 
     /**
      * 参数值表达式: 'yyyy-MM-dd' 或 ? 等形式
      *
-     * @param expression
+     * @param expression 参数表达式
      */
     void setExpression(String expression);
 
     /**
      * 参数值
      *
-     * @return
+     * @return 参数值
      */
     Object getValue();
 
@@ -50,77 +50,77 @@ public interface DatabaseProcedureParameter extends Cloneable {
     /**
      * 输出参数的序号（从1开始）, 0表示非输出参数
      *
-     * @return
+     * @return 序号
      */
     int getOutIndex();
 
     /**
      * 存储过程名
      *
-     * @return
+     * @return 存储过程名
      */
     String getProcedureName();
 
     /**
      * 存储过程归属schema
      *
-     * @return
+     * @return 模式名
      */
     String getProcedureSchema();
 
     /**
      * 参数在数据库存储过程中参数的位置（从1开始）
      *
-     * @return
+     * @return 位置信息
      */
     int getPosition();
 
     /**
      * 参数名
      *
-     * @return
+     * @return 参数名
      */
     String getName();
 
     /**
      * 参数类型 CHARACTER INTEGER
      *
-     * @return
+     * @return 参数类型
      */
     String getFieldType();
 
     /**
      * 参数对应的 java.sql.Types 类型
      *
-     * @return
+     * @return 参数类型
      */
     int getSqlType();
 
     /**
      * true表示参数可以为null
      *
-     * @return
+     * @return 返回true表示参数可能为null false表示参数不可能为null
      */
     boolean isNullEnable();
 
     /**
      * 参数长度
      *
-     * @return
+     * @return 参数长度
      */
     int length();
 
     /**
      * 参数精度
      *
-     * @return
+     * @return 参数精度
      */
     int getScale();
 
     /**
      * 参数模式 IN OUT
      *
-     * @return
+     * @return 参数模式
      */
     int getMode();
 
@@ -129,14 +129,14 @@ public interface DatabaseProcedureParameter extends Cloneable {
      * {@linkplain DatabaseProcedure#PARAM_OUT_MODE} <br>
      * {@linkplain DatabaseProcedure#PARAM_INOUT_MODE} <br>
      *
-     * @return
+     * @return 返回true表示参数是输出 false表示参数是输入
      */
     boolean isOutMode();
 
     /**
      * 判断输入参数str是否为合法数据库存储过程参数名, 即首字母以$开始只有字母、数字、下划线组成。
      *
-     * @return
+     * @return 返回true表示参数名合法 false表示参数名不合法
      */
     boolean isExpression();
 
@@ -144,14 +144,14 @@ public interface DatabaseProcedureParameter extends Cloneable {
      * 设置执行存储过程输入参数
      *
      * @param statement 输入执行存储过程的 CallableStatement 对象
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     void setStatement(CallableStatement statement) throws SQLException;
 
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseProcedureParameter clone();
 

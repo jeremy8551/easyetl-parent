@@ -29,7 +29,7 @@ public class ConnectionLogger implements InvocationHandler {
     /**
      * 产生一个唯一序号（大于0）
      *
-     * @return
+     * @return 序号
      */
     private synchronized static int getSerialNo() {
         return serialNo++;
@@ -98,9 +98,9 @@ public class ConnectionLogger implements InvocationHandler {
     }
 
     /**
-     * 返回 true 表示存在超时警告秒数
+     * 判断是否设置了超时时间
      *
-     * @return
+     * @return 返回 true 表示存在超时警告秒数
      */
     public boolean haveOvertimeWarn() {
         return this.warnTimeout > 0;
@@ -109,7 +109,7 @@ public class ConnectionLogger implements InvocationHandler {
     /**
      * 返回超时警告秒数
      *
-     * @return
+     * @return 超时时间，单位：秒
      */
     public int getOvertimeWarn() {
         return this.warnTimeout;
@@ -118,7 +118,7 @@ public class ConnectionLogger implements InvocationHandler {
     /**
      * 返回数据库连接说明信息
      *
-     * @return
+     * @return 数据库说明信息
      */
     public String getName() {
         return ResourcesUtils.getMessage("database.standard.output.msg037", this.number);

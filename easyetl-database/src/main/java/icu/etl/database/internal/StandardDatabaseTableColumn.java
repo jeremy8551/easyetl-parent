@@ -7,6 +7,7 @@ import icu.etl.database.DatabaseTableColumn;
 import icu.etl.database.DatabaseType;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.Numbers;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -45,7 +46,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 返回字段类型信息
      *
-     * @return
+     * @return 字段类型信息
      */
     public DatabaseType getType() {
         return type;
@@ -54,14 +55,10 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 设置字段类型信息
      *
-     * @param type
+     * @param type 字段类型信息
      */
     public void setType(DatabaseType type) {
-        if (type == null) {
-            throw new NullPointerException();
-        } else {
-            this.type = type;
-        }
+        this.type = Ensure.notNull(type);
 
         // 生成字段类型全名
         String expression = this.type.getExpression();
@@ -104,7 +101,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 表名称
      *
-     * @param tableName
+     * @param tableName 表名称
      */
     public void setTableName(String tableName) {
         this.tableName = tableName;
@@ -117,7 +114,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 表模式（可为 null）
      *
-     * @param tableSchema
+     * @param tableSchema 表模式
      */
     public void setTableSchema(String tableSchema) {
         this.tableSchema = tableSchema;
@@ -128,9 +125,9 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     }
 
     /**
-     * 表类别（可为 null）
+     * 编目（可为 null）
      *
-     * @param tableCatalog
+     * @param tableCatalog 编目
      */
     public void setTableCatalog(String tableCatalog) {
         this.tableCatalog = tableCatalog;
@@ -139,7 +136,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 列名称
      *
-     * @param name
+     * @param name 列名称
      */
     public void setName(String name) {
         this.name = name;
@@ -156,7 +153,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * "NO" 表示明确不允许列使用 NULL 值，"YES" 表示可能允许列使用 NULL 值。空字符串表示没人知道是否允许使用 null 值。
      *
-     * @param str
+     * @param str 字符串
      */
     public void setNullAble(String str) {
         this.isNullAble = str == null ? "" : str.toUpperCase();
@@ -167,9 +164,9 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     }
 
     /**
-     * 来自 java.sql.Types 的 SQL 类型
+     * 来自 {@linkplain java.sql.Types} 的 SQL 类型
      *
-     * @param sqlType
+     * @param sqlType {@linkplain java.sql.Types}
      */
     public void setSqlType(int sqlType) {
         this.sqlType = sqlType;
@@ -186,7 +183,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 数据源依赖的类型名称，对于 UDT，该类型名称是完全限定的
      *
-     * @param typeName
+     * @param typeName 类型名称
      */
     public void setFieldType(String typeName) {
         this.typeName = typeName;
@@ -199,7 +196,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 列的大小。对于 char 或 date 类型，列的大小是最大字符数，对于 numeric 和 decimal 类型，列的大小就是精度。
      *
-     * @param length
+     * @param length 列的大小
      */
     public void setLength(int length) {
         this.length = length;
@@ -249,7 +246,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 描述列的注释（可为 null）
      *
-     * @param remarks
+     * @param remarks 注释
      */
     public void setRemark(String remarks) {
         this.remarks = remarks;
@@ -258,7 +255,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 设置字段的默认值（可为 null）
      *
-     * @param defaultValue
+     * @param defaultValue 字段的默认值
      */
     public void setDefault(String defaultValue) {
         this.defaultValue = defaultValue;
@@ -279,7 +276,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * CHAR_OCTET_LENGTH 对于 char 类型，该长度是列中的最大字节数
      *
-     * @param length
+     * @param length 最大字节数
      */
     public void setMaxLength(int length) {
         this.maxLength = length;
@@ -318,7 +315,7 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
     /**
      * 基数（通常为 10 或 2）
      *
-     * @param n
+     * @param n 基数
      */
     public void setRadix(int n) {
         this.numPrecRadix = n;

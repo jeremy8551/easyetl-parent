@@ -13,14 +13,14 @@ public interface EasyScheduleJob extends EasyJob {
     /**
      * 返回任务超时时间
      *
-     * @return
+     * @return 超时时间
      */
     long getTimeout();
 
     /**
      * 返回启动时间
      *
-     * @return 时间
+     * @return 启动时间
      */
     Date getStartTime();
 

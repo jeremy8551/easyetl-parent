@@ -7,7 +7,7 @@ public interface DatabaseSpaceList extends Cloneable, List<DatabaseSpace> {
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseSpaceList clone();
 

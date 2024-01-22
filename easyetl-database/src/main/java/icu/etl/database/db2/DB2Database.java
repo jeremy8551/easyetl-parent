@@ -30,7 +30,7 @@ public class DB2Database {
     /**
      * 返回数据库名
      *
-     * @return
+     * @return 数据库名
      */
     public String getName() {
         return name;
@@ -43,7 +43,7 @@ public class DB2Database {
     /**
      * 返回数据库别名
      *
-     * @return
+     * @return 数据库别名
      */
     public String getAliasName() {
         return aliasName;
@@ -56,7 +56,7 @@ public class DB2Database {
     /**
      * 返回数据库的根目录
      *
-     * @return
+     * @return 数据库的根目录
      */
     public String getHome() {
         return home;
@@ -69,7 +69,7 @@ public class DB2Database {
     /**
      * 返回数据库说明信息
      *
-     * @return
+     * @return 数据库说明信息
      */
     public String getMemo() {
         return memo;
@@ -82,7 +82,7 @@ public class DB2Database {
     /**
      * 返回数据库服务的端口号
      *
-     * @return
+     * @return 数据库服务的端口号
      */
     public int getPort() {
         return port;
@@ -99,16 +99,16 @@ public class DB2Database {
     /**
      * 返回数据库参数集合，但是参数不可修改
      *
-     * @return
+     * @return 数据库参数集合，但是参数不可修改
      */
     public Properties getProperty() {
         return new UnmodifiableProperties(this.properties);
     }
 
     /**
-     * 返回 true 表示数据库是远程服务器上安装的DB2数据库
+     * 判断数据库是否是远程服务器
      *
-     * @return
+     * @return 返回 true 表示数据库是远程服务器上安装的DB2数据库
      */
     public boolean isRemote() {
         return isRemote;
@@ -121,7 +121,7 @@ public class DB2Database {
     /**
      * 如果数据库是远程服务器上的数据库，则返回远端服务器的 HOST 或 IP地址
      *
-     * @return
+     * @return 远端服务器的 HOST 或 IP地址
      */
     public String getRemoteHost() {
         return remoteHost;
@@ -134,7 +134,7 @@ public class DB2Database {
     /**
      * 返回数据库编目节点名
      *
-     * @return
+     * @return 数据库编目节点名
      */
     public String getNodeName() {
         return nodeName;
@@ -147,7 +147,7 @@ public class DB2Database {
     /**
      * 如果数据库是远程服务器上的数据库，则返回远端服务器上DB2数据库的服务端口号
      *
-     * @return
+     * @return 远端服务器上DB2数据库的服务端口号
      */
     public String getRemotePort() {
         return this.remotePort;
@@ -158,9 +158,9 @@ public class DB2Database {
     }
 
     /**
-     * 返回true表示数据库是本地创建的数据库
+     * 判断数据库是否是本地的数据库
      *
-     * @return
+     * @return 返回true表示数据库是本地创建的数据库
      */
     public boolean isLocal() {
         return isIndirect;

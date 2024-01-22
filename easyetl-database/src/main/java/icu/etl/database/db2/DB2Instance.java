@@ -120,8 +120,8 @@ public class DB2Instance {
     /**
      * 在操作系统上搜索 DB2 数据库实例
      *
-     * @param os
-     * @return
+     * @param os 操作系统接口
+     * @return 数据库实例集合
      */
     public static List<DB2Instance> detect(OS os) {
         return new DB2Instance().detectDB2Instance(os);
@@ -130,8 +130,8 @@ public class DB2Instance {
     /**
      * 在操作系统上搜索 DB2 数据库实例
      *
-     * @param os
-     * @return
+     * @param os 操作系统接口
+     * @return 数据库实例集合
      */
     private List<DB2Instance> detectDB2Instance(OS os) {
         if (os == null) {
@@ -182,7 +182,7 @@ public class DB2Instance {
             }
 
             for (OSUser user : allUsers) {
-                if (user.getName().toLowerCase().indexOf("db2") != -1) {
+                if (user.getName().toLowerCase().contains("db2")) {
                     set.add(StringUtils.replaceVariable(template, "HOME", user.getHome()));
                 }
             }
@@ -369,9 +369,9 @@ public class DB2Instance {
     /**
      * 返回DB2 数据库实例的端口号
      *
-     * @param os
+     * @param os          操作系统接口
      * @param db2instName 实例名
-     * @return
+     * @return 端口号
      */
     private int getDB2Port(OS os, String db2instName) {
         if (StringUtils.isInt(db2instName)) {
@@ -390,9 +390,9 @@ public class DB2Instance {
     /**
      * 保存DB2 数据库实例
      *
-     * @param allUsers
-     * @param instList
-     * @param stdout
+     * @param allUsers 用户集合
+     * @param instList 实例集合
+     * @param stdout   标准信息输出接口
      */
     private void addDB2Instance(List<OSUser> allUsers, List<DB2Instance> instList, String stdout) {
         BufferedLineReader in = new BufferedLineReader(StringUtils.trimBlank(stdout));
@@ -423,7 +423,7 @@ public class DB2Instance {
     /**
      * 返回操作系统对象
      *
-     * @return
+     * @return 操作系统接口
      */
     public OS getOS() {
         return this.os;
@@ -433,20 +433,20 @@ public class DB2Instance {
      * 向制定操作系统用户配置文件中添加 db2profile 信息
      *
      * @param username 操作系统用户名
-     * @return
-     * @throws IOException
+     * @return 返回true表示成功添加用户配置文件 false表示添加用户配置文件失败
+     * @throws IOException 数据库错误
      */
     public boolean addUserDB2Profile(String username) throws IOException {
         return this.addUserDB2Profile(this.getOS(), username);
     }
 
     /**
-     * 向制定操作系统用户配置文件中添加 db2profile 信息
+     * 向指定操作系统用户配置文件中添加 db2profile 信息
      *
      * @param os       操作系统
      * @param username 操作系统用户名
-     * @return
-     * @throws IOException
+     * @return 返回true表示添加用户配置文件成功 false表示添加用户配置文件失败
+     * @throws IOException 执行远程命令错误
      */
     public boolean addUserDB2Profile(OS os, String username) throws IOException {
         OSUser user = os.getUser(username);
@@ -477,7 +477,7 @@ public class DB2Instance {
             env.append("if [ -f " + db2profile + " ]; then").append(lineSeperator);
             env.append(". ").append(db2profile).append(lineSeperator);
             env.append("fi").append(lineSeperator);
-            env.append("").append(lineSeperator);
+            env.append(lineSeperator);
             os.getOSFileCommand().write(filepath, os.getOSFileCommand().getCharsetName(), true, env);
 
             log.info(ResourcesUtils.getMessage("database.standard.output.msg052", username, filepath, db2profile));
@@ -495,7 +495,7 @@ public class DB2Instance {
      * @param userProfiles user profiles
      * @param db2profile   db2profile path
      * @return 返回null表示未配置
-     * @throws IOException
+     * @throws IOException 执行远程命令错误
      */
     private String existsSourceDB2profile(OS os, List<String> userProfiles, String db2profile) throws IOException {
         if (os == null || !os.supportOSFileCommand() || !os.enableOSFileCommand()) {
@@ -529,7 +529,7 @@ public class DB2Instance {
     /**
      * 返回 DB2 数据库实例名
      *
-     * @return
+     * @return 数据库实例名
      */
     public String getName() {
         return name;
@@ -538,7 +538,7 @@ public class DB2Instance {
     /**
      * 保存 DB2 数据库实例
      *
-     * @param name
+     * @param name 数据库实例名
      */
     protected void setName(String name) {
         if (StringUtils.isBlank(name)) {
@@ -551,7 +551,7 @@ public class DB2Instance {
     /**
      * DB2安装目录
      *
-     * @return
+     * @return DB2安装目录
      */
     public String getDB2Dir() {
         return db2dir;
@@ -560,20 +560,16 @@ public class DB2Instance {
     /**
      * 保存 DB2 实例的安装目录
      *
-     * @param db2dir
+     * @param db2dir DB2实例的安装目录
      */
     protected void setDB2Dir(String db2dir) {
-        if (StringUtils.isBlank(db2dir)) {
-            throw new IllegalArgumentException(db2dir);
-        } else {
-            this.db2dir = db2dir;
-        }
+        this.db2dir = Ensure.notBlank(db2dir);
     }
 
     /**
      * 数据库实例用户
      *
-     * @return
+     * @return 数据库实例用户
      */
     public OSUser getUser() {
         return user;
@@ -582,7 +578,7 @@ public class DB2Instance {
     /**
      * 保存 DB2 数据库实例用户
      *
-     * @param user
+     * @param user 数据库实例用户
      */
     protected void setUser(OSUser user) {
         this.user = user;
@@ -591,7 +587,7 @@ public class DB2Instance {
     /**
      * 返回 DB2 数据库实例的配置文件绝对路径
      *
-     * @return
+     * @return 配置文件绝对路径
      */
     public String getDB2profile() {
         return db2profile;
@@ -600,7 +596,7 @@ public class DB2Instance {
     /**
      * 保存 DB2 数据库实例配置文件绝对路径
      *
-     * @param db2profile
+     * @param db2profile 配置文件绝对路径
      */
     protected void setDb2profile(String db2profile) {
         this.db2profile = db2profile;
@@ -609,8 +605,8 @@ public class DB2Instance {
     /**
      * 添加 DB2 数据库实例配置信息
      *
-     * @param key
-     * @param value
+     * @param key   属性名
+     * @param value 属性值
      */
     protected void addConfig(String key, String value) {
         this.config.setProperty(key, value);
@@ -619,8 +615,8 @@ public class DB2Instance {
     /**
      * 返回 DB2 数据库实例配置信息
      *
-     * @param key
-     * @return
+     * @param key 属性名
+     * @return 属性值
      */
     public String getConfig(String key) {
         return this.config.getProperty(key);
@@ -629,7 +625,7 @@ public class DB2Instance {
     /**
      * 保存DB2 数据库实例的数据库
      *
-     * @param database
+     * @param database 数据库信息
      */
     protected void addDatabase(DB2Database database) {
         this.databases.put(database.getName(), database);
@@ -639,7 +635,7 @@ public class DB2Instance {
      * 在 DB2 数据库实例中查找数据库
      *
      * @param name 数据库名
-     * @return
+     * @return 数据库信息
      */
     public DB2Database getDatabase(String name) {
         return this.databases.get(name);
@@ -648,17 +644,18 @@ public class DB2Instance {
     /**
      * 返回 DB2 数据库实例上的所有数据库名
      *
-     * @return
+     * @return 数据库名数组
      */
     public String[] getDatabaseNames() {
         Set<String> names = this.databases.keySet();
-        return names.toArray(new String[names.size()]);
+        String[] array = new String[names.size()];
+        return names.toArray(array);
     }
 
     /**
      * 返回数据库服务端口号
      *
-     * @return
+     * @return 端口号
      */
     public int getPort() {
         return this.port;
@@ -681,7 +678,7 @@ public class DB2Instance {
      *
      * @param conn          被终止的数据库连接
      * @param applicationId 应用连接id
-     * @return
+     * @return 返回true表示成功终止数据库连接 false表示终止数据库连接失败
      */
     public boolean terminateConnection(Connection conn, String applicationId) {
         if (StringUtils.isBlank(applicationId)) {
@@ -722,7 +719,7 @@ public class DB2Instance {
                     log.debug(line);
                 }
 
-                if (line.indexOf(applicationId) != -1) {
+                if (line.contains(applicationId)) {
                     String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(line));
                     if (array.length >= 3 && array[3].equals(applicationId)) {
                         applicationHandle = array[2];

@@ -90,12 +90,13 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
      *
      * @param str       字符串
      * @param keepQuote true表示保留字符串数值二端的双引号
-     * @return
+     * @return 字段数组
      */
     public static String[] splitDB2ExportFileLine(CharSequence str, boolean keepQuote) {
         List<String> list = new ArrayList<String>();
         DB2ExportFile.splitDB2ExportFileLine(str, keepQuote, list);
-        return list.toArray(new String[list.size()]);
+        String[] array = new String[list.size()];
+        return list.toArray(array);
     }
 
     /**
@@ -149,7 +150,7 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
      * @param begin  起始位置
      * @param end    终止位置（不包括）
      * @param buffer 缓冲区
-     * @return
+     * @return 结束位置
      */
     protected static int indexOfDB2StrEndPosition1(CharSequence str, int begin, int end, StringBuilder buffer) {
         buffer.append('"');
@@ -187,7 +188,7 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
      * @param begin  起始位置
      * @param end    终止位置（不包括）
      * @param buffer 缓冲区
-     * @return
+     * @return 位置信息
      */
     protected static int indexOfDB2StrEndPosition2(CharSequence str, int begin, int end, StringBuilder buffer) {
         for (int j = begin, next = 0; j < end; j++) {
@@ -223,7 +224,7 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
      * @param str    字符串
      * @param column 列数,从1开始
      * @param newStr 替换的字符串
-     * @return
+     * @return 替换后的字符串
      */
     public static String replaceDB2FieldValue(CharSequence str, int column, String newStr) {
         if (column <= 0 || newStr == null) {
@@ -292,7 +293,7 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
      * @param str    字符串
      * @param begin  字符串起始位置
      * @param length 最大搜索长度（不包括）
-     * @return
+     * @return 位置信息
      */
     protected static int indexOfDB2StrEndPosition(CharSequence str, int begin, int length) {
         for (int j = begin, next = 0; j < length; j++) {
@@ -411,7 +412,7 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
      * 把 Long 对象转为 DB2 EXPORT导出格式
      *
      * @param value long型数值
-     * @return
+     * @return 字符串
      */
     public static String toDB2ExportString(Long value) {
         return value == null ? "" : value.toString();
@@ -482,8 +483,8 @@ public class DB2ExportFile extends CommonTextTableFile implements TextTableFile 
     /**
      * 按DB2 Export 文件格式拼接字段数组
      *
-     * @param array
-     * @return
+     * @param array 数组
+     * @return 字符串
      */
     public static String joinFields(String... array) {
         int length = array.length + 2; // the length of join field array

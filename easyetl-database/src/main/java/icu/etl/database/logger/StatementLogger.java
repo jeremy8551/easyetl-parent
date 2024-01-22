@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
@@ -35,25 +36,21 @@ public class StatementLogger implements InvocationHandler {
     /**
      * 初始化
      *
-     * @param id
-     * @param statement
-     * @param returnType
+     * @param id         编号
+     * @param statement  处理器
+     * @param returnType 返回类型
      */
     public StatementLogger(String id, Object statement, Class<?> returnType) {
-        if (statement == null) {
-            throw new NullPointerException();
-        }
-
         this.id = id;
         this.watch = new TimeWatch();
-        this.statement = statement;
+        this.statement = Ensure.notNull(statement);
         this.returnType = returnType;
     }
 
     /**
      * 返回 Statement 对象的代理
      *
-     * @return
+     * @return 代理对象
      */
     public Object getProxy() {
         return Proxy.newProxyInstance(this.statement.getClass().getClassLoader(), new Class[]{this.returnType}, this);

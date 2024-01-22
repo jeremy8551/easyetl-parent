@@ -34,7 +34,7 @@ public interface DatabaseDialect {
      * @param catalog   类别名称（非必填）
      * @param schema    模式名（非必填）
      * @param tableName 表名（必填）
-     * @return
+     * @return 表全名
      */
     String toTableName(String catalog, String schema, String tableName);
 
@@ -44,7 +44,7 @@ public interface DatabaseDialect {
      * @param catalog   类别名称（非必填）
      * @param schema    模式名（非必填）
      * @param tableName 表名（必填）
-     * @return
+     * @return 索引名
      */
     String toIndexName(String catalog, String schema, String tableName);
 
@@ -53,8 +53,8 @@ public interface DatabaseDialect {
      *
      * @param connection 数据库连接
      * @param table      数据库表信息
-     * @return
-     * @throws SQLException
+     * @return 数据库DDL语句
+     * @throws SQLException 数据库访问错误
      */
     DatabaseTableDDL toDDL(Connection connection, DatabaseTable table) throws SQLException;
 
@@ -64,8 +64,8 @@ public interface DatabaseDialect {
      * @param connection 数据库连接
      * @param index      索引信息
      * @param primary    true表示主键
-     * @return
-     * @throws SQLException
+     * @return 数据库DDL语句
+     * @throws SQLException 数据库访问错误
      */
     DatabaseDDL toDDL(Connection connection, DatabaseIndex index, boolean primary) throws SQLException;
 
@@ -74,8 +74,8 @@ public interface DatabaseDialect {
      *
      * @param connection 数据库连接
      * @param procedure  存储过程信息
-     * @return
-     * @throws SQLException
+     * @return 返回DDL语句
+     * @throws SQLException 数据库访问错误
      */
     DatabaseDDL toDDL(Connection connection, DatabaseProcedure procedure) throws SQLException;
 
@@ -87,7 +87,7 @@ public interface DatabaseDialect {
      * @param catalog    类别名称（非必填）
      * @param schema     模式名（非必填）
      * @param tableName  表名（必填）
-     * @return
+     * @return SQL语句
      */
     String toDeleteQuicklySQL(Connection connection, String catalog, String schema, String tableName);
 
@@ -96,15 +96,15 @@ public interface DatabaseDialect {
      *
      * @param connection 数据库连接
      * @param index      主键信息
-     * @return
-     * @throws SQLException
+     * @return 删除主键语句
+     * @throws SQLException 数据库访问错误
      */
     String dropPrimaryKey(Connection connection, DatabaseIndex index) throws SQLException;
 
     /**
      * 返回测试数据库连接是否还活着的 SQL 语句
      *
-     * @return
+     * @return SQL语句
      */
     String getKeepAliveSQL();
 
@@ -120,33 +120,33 @@ public interface DatabaseDialect {
      *
      * @param connection 数据库连接
      * @param schema     表模式名
-     * @throws SQLException
+     * @throws SQLException 数据库访问错误
      */
     void setSchema(Connection connection, String schema) throws SQLException;
 
     /**
      * 返回数据库中使用的默认的模式名
      *
-     * @param connection
-     * @return
-     * @throws SQLException
+     * @param connection 数据库连接
+     * @return 表模式
+     * @throws SQLException 数据库访问错误
      */
     String getSchema(Connection connection) throws SQLException;
 
     /**
-     * 返回数据库中使用的默认的类别名称
+     * 返回数据库中使用的默认的编目名称
      *
-     * @param connection
-     * @return
-     * @throws SQLException
+     * @param connection 数据库连接
+     * @return 编目
+     * @throws SQLException 数据库访问错误
      */
     String getCatalog(Connection connection) throws SQLException;
 
     /**
      * 解析数据库 JDBC URL 字符串
      *
-     * @param url
-     * @return
+     * @param url JDBC的URL信息
+     * @return URL集合
      */
     List<DatabaseURL> parseJdbcUrl(String url);
 
@@ -154,7 +154,7 @@ public interface DatabaseDialect {
      * 如果数据系统支持Rownumber分页查询，则查询结果集的第一个记录的编号 <br>
      * 返回查询结果集第一记录的偏移位置 <br>
      *
-     * @return
+     * @return 起始记录编号
      */
     int getRowNumberStarter();
 
@@ -162,8 +162,8 @@ public interface DatabaseDialect {
      * 返回数据库关键字与保留字
      *
      * @param connection 数据库连接
-     * @return
-     * @throws SQLException
+     * @return 关键字集合
+     * @throws SQLException 数据库访问错误
      */
     Set<String> getKeyword(Connection connection) throws SQLException;
 
@@ -175,7 +175,7 @@ public interface DatabaseDialect {
      * @param schema     模式名称，因为存储在此数据库中，所以它必须匹配模式名称。该参数为 "" 则检索那些没有模式的描述，为 null 则表示该模式名称不应用于缩小搜索范围
      * @param tableName  表名（大小写敏感）
      * @return true表示存在表信息
-     * @throws SQLException
+     * @throws SQLException 数据库访问错误
      */
     boolean containsTable(Connection connection, String catalog, String schema, String tableName) throws SQLException;
 
@@ -186,8 +186,8 @@ public interface DatabaseDialect {
      * @param catalog       类别名称，因为存储在此数据库中，所以它必须匹配类别名称。该参数为 "" 则检索没有类别的描述，为 null 则表示该类别名称不应用于缩小搜索范围
      * @param schema        模式名称，因为存储在此数据库中，所以它必须匹配模式名称。该参数为 "" 则检索那些没有模式的描述，为 null 则表示该模式名称不应用于缩小搜索范围
      * @param procedureName 存储过程名
-     * @return
-     * @throws SQLException
+     * @return 存储过程集合
+     * @throws SQLException 数据库访问错误
      */
     List<DatabaseProcedure> getProcedure(Connection connection, String catalog, String schema, String procedureName) throws SQLException;
 
@@ -199,8 +199,8 @@ public interface DatabaseDialect {
      * @param catalog       类别名称，因为存储在此数据库中，所以它必须匹配类别名称。该参数为 "" 则检索没有类别的描述，为 null 则表示该类别名称不应用于缩小搜索范围
      * @param schema        模式名称，因为存储在此数据库中，所以它必须匹配模式名称。该参数为 "" 则检索那些没有模式的描述，为 null 则表示该模式名称不应用于缩小搜索范围
      * @param procedureName 存储过程名
-     * @return
-     * @throws SQLException
+     * @return 存储过程
+     * @throws SQLException 数据库访问错误
      */
     DatabaseProcedure getProcedureForceOne(Connection connection, String catalog, String schema, String procedureName) throws SQLException;
 
@@ -211,54 +211,54 @@ public interface DatabaseDialect {
      * @param catalog    类别名称，因为存储在此数据库中，所以它必须匹配类别名称。该参数为 "" 则检索没有类别的描述，为 null 则表示该类别名称不应用于缩小搜索范围
      * @param schema     模式名称，因为存储在此数据库中，所以它必须匹配模式名称。该参数为 "" 则检索那些没有模式的描述，为 null 则表示该模式名称不应用于缩小搜索范围
      * @param tableName  表名（大小写敏感）, 为null表示搜索schema下所有表信息
-     * @return
-     * @throws SQLException
+     * @return 数据库表集合
+     * @throws SQLException 数据库访问错误
      */
     List<DatabaseTable> getTable(Connection connection, String catalog, String schema, String tableName) throws SQLException;
 
     /**
      * 返回 JDBC 类型与类型转换器（将字段值转为字符串）的映射关系
      *
-     * @return
+     * @return 类型转换器
      */
     JdbcConverterMapper getObjectConverters();
 
     /**
      * 返回 JDBC 类型与类型转换器（将字符串转为 JDBC 类型）的映射关系
      *
-     * @return
+     * @return 类型转换器
      */
     JdbcConverterMapper getStringConverters();
 
     /**
      * 判断异常 e 是否因为插入或更新的变量值超过数据库表字段长度错误
      *
-     * @param e
-     * @return
+     * @param e 异常信息
+     * @return 返回true表示异常是字段超长错误 false表示异常不是字段超长错误
      */
     boolean isOverLengthException(Throwable e);
 
     /**
      * 判断异常 e 是否需要重新建表
      *
-     * @param e
-     * @return
+     * @param e 异常信息
+     * @return 返回true表示异常是需要重建表 false表示异常不是需要重建表错误
      */
     boolean isRebuildTableException(Throwable e);
 
     /**
      * 判断异常 e 是否有主键冲突错误
      *
-     * @param e
-     * @return
+     * @param e 异常信息
+     * @return 返回true表示主键冲突错误 false表示不是主键冲突错误
      */
     boolean isPrimaryRepeatException(Throwable e);
 
     /**
      * 判断异常 e 是因为要创建的索引已经存在导致报错
      *
-     * @param e
-     * @return
+     * @param e 异常信息
+     * @return 返回true表示索引冲突错误 false表示不是索引冲突错误
      */
     boolean isIndexExistsException(Throwable e);
 
@@ -267,7 +267,7 @@ public interface DatabaseDialect {
      *
      * @param connection 数据库连接
      * @param indexs     数据库表索引集合
-     * @throws SQLException
+     * @throws SQLException 数据库访问错误
      */
     void reorgRunstatsIndexs(Connection connection, List<DatabaseIndex> indexs) throws SQLException;
 
@@ -276,8 +276,8 @@ public interface DatabaseDialect {
      *
      * @param connection 将要被关闭的数据库连接
      * @param attributes 数据库厂商定制信息
-     * @return
-     * @throws SQLException
+     * @return 返回true表示已终止数据库连接
+     * @throws SQLException 数据库访问错误
      */
     boolean terminate(Connection connection, Properties attributes) throws SQLException;
 
@@ -285,7 +285,7 @@ public interface DatabaseDialect {
      * 返回数据库连接中的厂商定制信息
      *
      * @param connection 数据库连接
-     * @return
+     * @return 属性集合
      */
     Properties getAttributes(Connection connection);
 
@@ -298,7 +298,7 @@ public interface DatabaseDialect {
      *
      * @param dao      数据库连接
      * @param fullname 数据库表全名
-     * @throws SQLException
+     * @throws SQLException 数据库访问错误
      */
     void openLoadMode(JdbcDao dao, String fullname) throws SQLException;
 
@@ -307,7 +307,7 @@ public interface DatabaseDialect {
      *
      * @param dao      数据库连接
      * @param fullname 数据库表全名
-     * @throws SQLException
+     * @throws SQLException 数据库访问错误
      */
     void closeLoadMode(JdbcDao dao, String fullname) throws SQLException;
 
@@ -316,7 +316,7 @@ public interface DatabaseDialect {
      *
      * @param dao      数据库连接
      * @param fullname 数据库表全名
-     * @throws SQLException
+     * @throws SQLException 数据库访问错误
      */
     void commitLoadData(JdbcDao dao, String fullname) throws SQLException;
 
@@ -327,14 +327,14 @@ public interface DatabaseDialect {
      * @param oldcol     原有字段信息，为 null 时表示新增字段
      * @param newcol     变更后的字段信息，为 null 时表示删除原有字段
      * @return 返回数据库修改字段的ddl语句
-     * @throws SQLException
+     * @throws SQLException 数据库访问错误
      */
     List<String> alterTableColumn(Connection connection, DatabaseTableColumn oldcol, DatabaseTableColumn newcol) throws SQLException;
 
     /**
      * 支持 merge into 语句
      *
-     * @return
+     * @return 返回true表示数据库支持merge语句 false表示不支持
      */
     boolean supportedMergeStatement();
 
@@ -344,7 +344,7 @@ public interface DatabaseDialect {
      * @param tableName   目标表名
      * @param columns     插入字段集合
      * @param mergeColumn 表的主键或唯一索引字段名
-     * @return
+     * @return merge语句
      */
     String toMergeStatement(String tableName, List<DatabaseTableColumn> columns, List<String> mergeColumn);
 

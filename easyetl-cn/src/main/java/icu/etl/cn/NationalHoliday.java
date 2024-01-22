@@ -14,14 +14,14 @@ public interface NationalHoliday {
     /**
      * 返回法定假日集合
      *
-     * @return
+     * @return 日期集合
      */
     Set<Date> getRestDays();
 
     /**
      * 返回法定工作日集合
      *
-     * @return
+     * @return 日期集合
      */
     Set<Date> getWorkDays();
 
@@ -29,7 +29,7 @@ public interface NationalHoliday {
      * 是否为休息日(周末和法定假日, 不包含法定补休日) <br>
      *
      * @param date 日期
-     * @return
+     * @return 返回true表示日期是休息日 false表示日期是工作日
      */
     boolean isRestDay(Date date);
 
@@ -37,7 +37,7 @@ public interface NationalHoliday {
      * 是否为工作日(不包含周末和法定假日, 包含法定补休日)
      *
      * @param date 日期
-     * @return
+     * @return 返回true表示日期是工作日 false表示日期是休息日
      */
     boolean isWorkDay(Date date);
 

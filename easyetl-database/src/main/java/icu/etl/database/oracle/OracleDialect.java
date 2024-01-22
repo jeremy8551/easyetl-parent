@@ -407,7 +407,7 @@ public class OracleDialect extends AbstractDialect {
      *            &nbsp;&nbsp;&nbsp;(SERVER=DEDICATED) <br>
      *            &nbsp;&nbsp;&nbsp;(service_name=orctest) ) <br>
      *            ) <br>
-     * @return
+     * @return 属性集合
      */
     public List<Property> oracleRacUrlResolve(String str) {
         str = str.trim();
@@ -451,9 +451,9 @@ public class OracleDialect extends AbstractDialect {
     /**
      * 返回括号结束位置
      *
-     * @param str
-     * @param begin
-     * @return
+     * @param str   字符串
+     * @param begin 位置信息
+     * @return 返回位置信息
      */
     int getOracleRacUrlResolveEndKH(String str, int begin) {
         for (int i = begin; i < str.length(); i++) {

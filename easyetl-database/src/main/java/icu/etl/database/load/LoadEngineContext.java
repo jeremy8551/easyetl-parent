@@ -1,7 +1,7 @@
 package icu.etl.database.load;
 
-import java.util.List;
 import javax.sql.DataSource;
+import java.util.List;
 
 import icu.etl.database.JdbcConverterMapper;
 import icu.etl.database.load.inernal.DataWriterContext;
@@ -19,59 +19,59 @@ public interface LoadEngineContext extends DataWriterContext {
     /**
      * 返回任务编号
      *
-     * @return
+     * @return 任务编号
      */
     String getId();
 
     /**
      * 设置读取文件时，输入流的缓冲区长度（单位字节）
      *
-     * @param readBuffer
+     * @param readBuffer 缓冲区长度（单位字节）
      */
     void setReadBuffer(int readBuffer);
 
     /**
      * 返回读取文件时输入流的缓冲区长度（单位字节）
      *
-     * @return
+     * @return 缓冲区长度（单位字节）
      */
     int getReadBuffer();
 
     /**
      * 返回数据库连接池
      *
-     * @return
+     * @return 数据库连接池
      */
     DataSource getDataSource();
 
     /**
      * 设置数据库连接池
      *
-     * @param dataSource
+     * @param dataSource 数据库连接池
      */
     void setDataSource(DataSource dataSource);
 
     /**
-     * 返回建立一致点的笔数
+     * 返回建立一致点的记录数
      *
-     * @return
+     * @return 记录数
      */
-    public long getSavecount();
+    long getSavecount();
 
     /**
-     * 建立一致点的笔数
+     * 建立一致点的记录数
      *
-     * @param savecount
+     * @param savecount 记录数
      */
-    public void setSavecount(long savecount);
+    void setSavecount(long savecount);
 
     /**
-     * 返回数据加载模式 <br>
+     * 返回数据装载模式 <br>
      * replace <br>
      * insert <br>
      * merge <br>
      *
-     * @return
+     * @return 数据装载模式
      */
     LoadMode getLoadMode();
 
@@ -87,14 +87,14 @@ public interface LoadEngineContext extends DataWriterContext {
     /**
      * 设置数据源信息
      *
-     * @param filepaths
+     * @param filepaths 数据源集合
      */
     void setFiles(List<String> filepaths);
 
     /**
      * 待装载的数据文件集合
      *
-     * @return
+     * @return 数据源集合
      */
     List<String> getFiles();
 
@@ -106,119 +106,119 @@ public interface LoadEngineContext extends DataWriterContext {
     /**
      * 设置数据格式
      *
-     * @param type
+     * @param type 数据格式
      */
     void setFiletype(String type);
 
     /**
      * 返回数据库表的编目信息
      *
-     * @return
+     * @return 编目信息
      */
     String getTableCatalog();
 
     /**
      * 设置数据库表所在编目信息
      *
-     * @param catalog
+     * @param catalog 编目信息
      */
     void setTableCatalog(String catalog);
 
     /**
      * 返回数据落地的位置信息，可以是数据库表
      *
-     * @return
+     * @return 数据落地的位置信息
      */
     String getTableName();
 
     /**
      * 设置数据落地的位置信息
      *
-     * @param str
+     * @param str 数据落地的位置信息
      */
     void setTableName(String str);
 
     /**
      * 返回表归属的模式名
      *
-     * @return
+     * @return 模式名
      */
     String getTableSchema();
 
     /**
      * 设置表归属的模式名
      *
-     * @param schema
+     * @param schema 模式名
      */
     void setTableSchema(String schema);
 
     /**
      * 设置数据库表中字段与文件中字段映射关系（可以是字段位置或字段名）
      *
-     * @param colomns
+     * @param colomns 字段映射关系
      */
     void setTableColumn(List<String> colomns);
 
     /**
      * 设置 merge 语句关联字段
      *
-     * @param columns
+     * @param columns merge 语句关联字段
      */
     void setIndexColumn(List<String> columns);
 
     /**
      * 返回 merge 语句关联字段
      *
-     * @return
+     * @return merge 语句关联字段
      */
     List<String> getIndexColumn();
 
     /**
      * 返回数据库表中字段与文件中字段映射关系（可以是字段位置或字段名），在语句中的位置: tableName(1,2,3) 或 tableName(name1, name2..)
      *
-     * @return
+     * @return 数据库表中字段名集合
      */
     List<String> getTableColumn();
 
     /**
      * 返回文件中字段与数据库表中字段的映射关系（可以是字段位置）
      *
-     * @return
+     * @return 数据库表中字段名集合
      */
     List<String> getFileColumn();
 
     /**
      * 设置文件中字段与数据库表中字段的映射关系（可以是字段位置）
      *
-     * @param list
+     * @param list 数据库表中字段名集合
      */
     void setFileColumn(List<String> list);
 
     /**
      * 返回数据装入失败时存储的表名（最后二列时发生错误时间和发生错误原因）
      *
-     * @return
+     * @return 数据装入失败时存储的表名
      */
     String getErrorTableName();
 
     /**
      * 设置数据装入失败时存储的表名（最后二列时发生错误时间和发生错误原因）
      *
-     * @param tableName
+     * @param tableName 数据装入失败时存储的表名
      */
     void setErrorTableName(String tableName);
 
     /**
      * 设置数据装入失败时存储的表模式名（最后二列时发生错误时间和发生错误原因）
      *
-     * @param schema
+     * @param schema 表模式名
      */
     void setErrorTableSchema(String schema);
 
     /**
      * 返回数据装入失败时存储的表模式名（最后二列时发生错误时间和发生错误原因）
      *
-     * @return
+     * @return 表模式名
      */
     String getErrorTableSchema();
 
@@ -231,10 +231,9 @@ public interface LoadEngineContext extends DataWriterContext {
     void setStatistics(boolean value);
 
     /**
-     * 返回 true 表示数据装载成功后执行重新生成统计信息 <br>
-     * 返回 false 表示数据装载成功后不执行生成统计信息
+     * 判断数据装载成功后是否执行重新生成统计信息
      *
-     * @return
+     * @return 返回true表示数据装载成功后执行重新生成统计信息 返回false表示数据装载成功后不执行生成统计信息
      */
     boolean isStatistics();
 
@@ -261,56 +260,56 @@ public interface LoadEngineContext extends DataWriterContext {
     /**
      * 返回进度输出组件，用于输出数据文件装载进度
      *
-     * @return
+     * @return 进度输出组件
      */
     Progress getProgress();
 
     /**
      * 设置进度输出组件，用于输出文件装载进度
      *
-     * @param obj
+     * @param obj 进度输出组件
      */
     void setProgress(Progress obj);
 
     /**
      * 返回用户自定义的映射关系
      *
-     * @return
+     * @return 用户自定义的映射关系
      */
     JdbcConverterMapper getConverters();
 
     /**
      * 保存用户自定义的映射关系
      *
-     * @param converters
+     * @param converters 用户自定义的映射关系
      */
     void setConverters(JdbcConverterMapper converters);
 
     /**
-     * 返回 true 表示需要防止重复装载数据文件
+     * 判断是否要防止重复装载数据文件
      *
-     * @return
+     * @return 返回 true 表示需要防止重复装载数据文件
      */
     boolean isNorepeat();
 
     /**
      * 设置 true 表示需要防止重复装载数据文件
      *
-     * @param norepeat
+     * @param norepeat true 表示需要防止重复装载数据文件
      */
     void setNorepeat(boolean norepeat);
 
     /**
      * 返回所有属性
      *
-     * @return
+     * @return 属性集合
      */
     Attribute<String> getAttributes();
 
     /**
      * 设置属性集合
      *
-     * @param obj
+     * @param obj 属性集合
      */
     void setAttributes(Attribute<String> obj);
 

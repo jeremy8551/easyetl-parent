@@ -80,8 +80,7 @@ public class DESEncrypt {
             KeySpec keySpec = new DESKeySpec(key);
             SecretKey secretKey = secretKeyFactory.generateSecret(keySpec);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, new SecureRandom());
-            byte[] enMsgBytes = cipher.doFinal(bytes);
-            return enMsgBytes;
+            return cipher.doFinal(bytes);
         } catch (Exception e) {
             throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg003", StringUtils.toHexString(bytes)), e);
         }
@@ -102,8 +101,7 @@ public class DESEncrypt {
             KeySpec deKeySpec = new DESKeySpec(key);
             SecretKey deSecretKey = deDecretKeyFactory.generateSecret(deKeySpec);
             deCipher.init(Cipher.DECRYPT_MODE, deSecretKey, new SecureRandom());
-            byte[] deMsgBytes = deCipher.doFinal(bytes);
-            return deMsgBytes;
+            return deCipher.doFinal(bytes);
         } catch (Exception e) {
             throw new RuntimeException(ResourcesUtils.getMessage("crypto.standard.output.msg004", StringUtils.toHexString(bytes)), e);
         }

@@ -113,7 +113,7 @@ public class StandardDatabaseTable implements DatabaseTable {
     /**
      * 表空间
      *
-     * @param tableSpace
+     * @param tableSpace 表空间
      */
     public void setTableSpace(List<DatabaseSpace> tableSpace) {
         this.tableSpace.clear();
@@ -125,7 +125,7 @@ public class StandardDatabaseTable implements DatabaseTable {
     /**
      * 增加表空间
      *
-     * @param spaces
+     * @param spaces 表空间数组
      */
     public void addTableSpace(DatabaseSpace... spaces) {
         for (DatabaseSpace space : spaces) {
@@ -149,7 +149,7 @@ public class StandardDatabaseTable implements DatabaseTable {
     /**
      * 索引空间
      *
-     * @param indexSpace
+     * @param indexSpace 索引空间
      */
     public void setIndexSpace(List<DatabaseSpace> indexSpace) {
         this.indexSpace.clear();
@@ -161,7 +161,7 @@ public class StandardDatabaseTable implements DatabaseTable {
     /**
      * 增加索引空间
      *
-     * @param spaces
+     * @param spaces 索引空间
      */
     public void addIndexSpace(DatabaseSpace... spaces) {
         for (DatabaseSpace space : spaces) {
@@ -174,7 +174,7 @@ public class StandardDatabaseTable implements DatabaseTable {
     /**
      * 数据库表名
      *
-     * @param name
+     * @param name 数据库表名
      */
     public void setName(String name) {
         this.name = name;
@@ -187,7 +187,7 @@ public class StandardDatabaseTable implements DatabaseTable {
     /**
      * 数据库名归属的SCHEMA
      *
-     * @param schema
+     * @param schema 数据库表名
      */
     public void setSchema(String schema) {
         this.schema = schema;
@@ -224,7 +224,7 @@ public class StandardDatabaseTable implements DatabaseTable {
     /**
      * 表的列信息
      *
-     * @param list
+     * @param list 列信息集合
      */
     public void setColumns(List<DatabaseTableColumn> list) {
         this.columns.clear();
@@ -248,7 +248,7 @@ public class StandardDatabaseTable implements DatabaseTable {
     /**
      * 数据库表的主键信息
      *
-     * @param list
+     * @param list 主键信息
      */
     public void setPrimaryIndexs(List<DatabaseIndex> list) {
         this.primarys.clear();

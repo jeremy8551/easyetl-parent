@@ -57,7 +57,7 @@ public class DB2FloatFormat {
      * 求整数的位置
      *
      * @param x 整数
-     * @return
+     * @return 位置
      */
     static int stringSize(float x) {
         for (int i = 0; ; i++)
@@ -70,8 +70,8 @@ public class DB2FloatFormat {
      * 0.101f == 1 <br>
      * 0.01 == 2 <br>
      *
-     * @param f
-     * @return
+     * @param f 数值
+     * @return 位置
      */
     static int pointPosition(float f) {
         for (int i = pointSize.length - 1; i >= 0; i--) {
@@ -84,7 +84,7 @@ public class DB2FloatFormat {
 
     public StringBuilder format(Float f) {
         StringBuilder buf = new StringBuilder(13);
-        float val = f.floatValue();
+        float val = f;
         if (val == 0.0F) {
             buf.append("+0.00000E+000");
             return buf;

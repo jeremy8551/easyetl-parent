@@ -1,5 +1,8 @@
 package icu.etl.database;
 
+import javax.sql.DataSource;
+import javax.sql.RowSetInternal;
+import javax.sql.RowSetReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,9 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import javax.sql.DataSource;
-import javax.sql.RowSetInternal;
-import javax.sql.RowSetReader;
 
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.internal.StandardRowSetInternal;
@@ -261,7 +261,7 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 判断数据库连接是否不为null
      *
-     * @return
+     * @return 返回true表示存在数据库连接 false表示不存在数据库连接
      */
     public boolean existsConnection() {
         return this.getConnection() != null;
@@ -270,7 +270,7 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 返回数据库连接
      *
-     * @return
+     * @return 数据库连接
      */
     public Connection getConnection() {
         return this.conn;
@@ -279,8 +279,8 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 返回数据库中使用的默认的 catalog
      *
-     * @return
-     * @throws SQLException
+     * @return 数据库编目
+     * @throws SQLException 数据库错误
      */
     public String getCatalog() throws SQLException {
         return this.getDialect().getCatalog(this.getConnection());
@@ -289,8 +289,8 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 返回数据库连接默认的表模式名
      *
-     * @return
-     * @throws SQLException
+     * @return 模式
+     * @throws SQLException 数据库错误
      */
     public String getSchema() throws SQLException {
         return this.getDialect().getSchema(this.getConnection());
@@ -302,8 +302,8 @@ public class JdbcDao implements OSConnectCommand {
      * @param catalog   类别信息
      * @param schema    表模式名
      * @param tableName 表名
-     * @return
-     * @throws SQLException
+     * @return 返回true表示存在数据库表 false表示数据库表不存在
+     * @throws SQLException 数据库错误
      */
     public boolean containsTable(String catalog, String schema, String tableName) throws SQLException {
         DatabaseDialect dialect = this.getDialect();
@@ -325,8 +325,8 @@ public class JdbcDao implements OSConnectCommand {
      * @param catalog   类别信息
      * @param schema    表模式名
      * @param tableName 表名
-     * @return
-     * @throws SQLException
+     * @return 数据库表信息
+     * @throws SQLException 数据库错误
      */
     public DatabaseTable getTable(String catalog, String schema, String tableName) throws SQLException {
         List<DatabaseTable> list = this.getDialect().getTable(this.getConnection(), catalog, schema, tableName);
@@ -358,8 +358,8 @@ public class JdbcDao implements OSConnectCommand {
      * @param catalog       类别信息
      * @param schema        归属表模式
      * @param procedureName 存储过程名
-     * @return
-     * @throws SQLException
+     * @return 存储过程
+     * @throws SQLException 数据库错误
      */
     public DatabaseProcedure getProcedure(String catalog, String schema, String procedureName) throws SQLException {
         return this.getDialect().getProcedureForceOne(this.getConnection(), catalog, schema, procedureName);
@@ -446,24 +446,36 @@ public class JdbcDao implements OSConnectCommand {
             this.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             return Connection.TRANSACTION_READ_UNCOMMITTED;
         } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             return Connection.TRANSACTION_READ_COMMITTED;
         } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.getConnection().setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
             return Connection.TRANSACTION_REPEATABLE_READ;
         } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         try {
             this.getConnection().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             return Connection.TRANSACTION_SERIALIZABLE;
         } catch (Throwable e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         return -1;
@@ -514,8 +526,8 @@ public class JdbcDao implements OSConnectCommand {
      * 执行查询
      *
      * @param sql SQL语句
-     * @return
-     * @throws SQLException
+     * @return 查询接口
+     * @throws SQLException 数据库错误
      */
     public JdbcQueryStatement query(String sql) throws SQLException {
         return this.query(sql, -1, -1);
@@ -531,8 +543,8 @@ public class JdbcDao implements OSConnectCommand {
      * @param resultSetConcurrency {@linkplain ResultSet#CONCUR_READ_ONLY} <br>
      *                             {@linkplain ResultSet#CONCUR_UPDATABLE} <br>
      * @param array                SQL语句的参数
-     * @return
-     * @throws SQLException
+     * @return 查询接口
+     * @throws SQLException 数据库错误
      */
     public JdbcQueryStatement query(String sql, int resultSetType, int resultSetConcurrency, Object... array) throws SQLException {
         // 设置默认值
@@ -562,8 +574,8 @@ public class JdbcDao implements OSConnectCommand {
      * 执行查询并返回第一行第一列的字段值
      *
      * @param sql SQL语句
-     * @return
-     * @throws SQLException
+     * @return 查询第一行与第一列
+     * @throws SQLException 数据库错误
      */
     @SuppressWarnings("unchecked")
     public <E> E queryFirstRowFirstCol(String sql) throws SQLException {
@@ -580,8 +592,8 @@ public class JdbcDao implements OSConnectCommand {
      * 执行查询并返回第一列的字段值集合
      *
      * @param sql SQL语句
-     * @return
-     * @throws SQLException
+     * @return 查询第一个字段
+     * @throws SQLException 数据库错误
      */
     @SuppressWarnings("unchecked")
     public <E> List<E> queryFirstColumn(String sql) throws SQLException {
@@ -603,8 +615,8 @@ public class JdbcDao implements OSConnectCommand {
      * select count(*) from table
      *
      * @param sql SQL语句
-     * @return
-     * @throws SQLException
+     * @return 统计行数
+     * @throws SQLException 数据库错误
      */
     public Integer queryCount(String sql) throws SQLException {
         ResultSet resultSet = null;
@@ -623,8 +635,8 @@ public class JdbcDao implements OSConnectCommand {
      * Map&lt;f2, f1&gt; = queryMap("select f2, f1, f0 .. from table"); <br>
      *
      * @param sql SQL语句
-     * @return
-     * @throws SQLException
+     * @return 查询结果集
+     * @throws SQLException 数据库错误
      */
     public Map<String, String> queryMap(String sql) throws SQLException {
         return this.queryMap(sql, 1, 2);
@@ -638,8 +650,8 @@ public class JdbcDao implements OSConnectCommand {
      * @param sql           SQL语句
      * @param keyPosition   Key 在查询结果集中的位置, 从1开始
      * @param valuePosition value 在查询结果集中的位置, 从1开始
-     * @return
-     * @throws SQLException
+     * @return 查询结果集
+     * @throws SQLException 数据库错误
      */
     public Map<String, String> queryMap(String sql, int keyPosition, int valuePosition) throws SQLException {
         if (keyPosition <= 0) {
@@ -668,8 +680,8 @@ public class JdbcDao implements OSConnectCommand {
      * @param sql       SQL语句
      * @param keyName   key 在查询结果集中的字段名
      * @param valueName value 在查询结果集中的字段名
-     * @return
-     * @throws SQLException
+     * @return 查询结果集
+     * @throws SQLException 数据库错误
      */
     public Map<String, String> queryMap(String sql, String keyName, String valueName) throws SQLException {
         PreparedStatement statement = null;
@@ -713,8 +725,8 @@ public class JdbcDao implements OSConnectCommand {
      * 使用 {@link JdbcBatchStatement#close()} 提交事务并释放数据库连接
      *
      * @param sql SQL语句
-     * @return
-     * @throws SQLException
+     * @return 批处理接口
+     * @throws SQLException 数据库错误
      */
     public JdbcBatchStatement update(String sql) throws SQLException {
         return this.update(sql, 0);
@@ -729,8 +741,8 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param sql    SQL语句
      * @param commit 设置批量提交的笔数, 小于等于零表示使用默认值
-     * @return
-     * @throws SQLException
+     * @return 批处理接口
+     * @throws SQLException 数据库错误
      */
     public JdbcBatchStatement update(String sql, int commit) throws SQLException {
         if (commit > 0) {
@@ -745,7 +757,7 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param array SQL语句数组
      * @return 返回SQL语句影响的记录数数组
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public int[] executeUpdate(String... array) throws SQLException {
         Statement statement = this.createStatement();
@@ -760,7 +772,7 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param list SQL语句集合
      * @return 返回SQL语句影响的记录数数组
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public int[] executeUpdate(Iterable<String> list) throws SQLException {
         Statement statement = this.createStatement();
@@ -778,7 +790,7 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param sql SQL语句
      * @return 返回SQL语句影响的记录数
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public int executeUpdate(String sql) throws SQLException {
         return this.createStatement().executeUpdate(sql);
@@ -824,8 +836,8 @@ public class JdbcDao implements OSConnectCommand {
      * 执行SQL语句
      *
      * @param sql SQL语句
-     * @return
-     * @throws SQLException
+     * @return 返回true表示SQL语句执行成功 false表示执行失败
+     * @throws SQLException 数据库错误
      */
     public boolean execute(String sql) throws SQLException {
         return this.createStatement().execute(sql);
@@ -835,7 +847,7 @@ public class JdbcDao implements OSConnectCommand {
      * 执行SQL语句
      *
      * @param c SQL语句集合
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void execute(java.util.Collection<String> c) throws SQLException {
         for (String sql : c) {
@@ -849,7 +861,7 @@ public class JdbcDao implements OSConnectCommand {
      * @param sql    SQL语句
      * @param reader JDBC 查询结果集的处理规则
      * @return 返回SQL语句影响的记录数
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public int execute(String sql, RowSetReader reader) throws SQLException {
         Statement statement = this.createStatement();
@@ -876,7 +888,7 @@ public class JdbcDao implements OSConnectCommand {
      * 执行SQL语句, 如果发生错误不会抛出异常, 但会打印异常信息
      *
      * @param sql SQL语句
-     * @return
+     * @return 返回true表示SQL语句执行成功 false表示执行失败
      */
     public boolean executeQuiet(String sql) {
         try {
@@ -893,7 +905,7 @@ public class JdbcDao implements OSConnectCommand {
      * 执行SQL语句, 如果发生错误不会抛出异常且不会打印异常信息
      *
      * @param sql SQL语句
-     * @return
+     * @return 返回true表示SQL语句执行成功 false表示执行失败
      */
     public boolean executeQuietly(String sql) {
         try {
@@ -910,8 +922,8 @@ public class JdbcDao implements OSConnectCommand {
      * 执行查询，并将查询结果集封装到 List 集合中
      *
      * @param sql SQL语句
-     * @return
-     * @throws SQLException
+     * @return 查询结果集
+     * @throws SQLException 数据库错误
      */
     public List<Map<String, String>> queryListMap(String sql) throws SQLException {
         ResultSet resultSet = null;
@@ -928,7 +940,7 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param sql SQL语句, 如: call name(?)
      * @return 数据库存储过程信息
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public DatabaseProcedure callProcedure(String sql) throws SQLException {
         TimeWatch watch = new TimeWatch();
@@ -1000,9 +1012,9 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 删除数据库表上的主键
      *
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param index 索引
+     * @return SQL语句
+     * @throws SQLException 数据库错误
      */
     public String dropPrimaryKey(DatabaseIndex index) throws SQLException {
         if (index == null) {
@@ -1046,7 +1058,7 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param table 数据库表信息
      * @return 执行删除数据库表时使用的SQL语句
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public String dropTable(DatabaseTable table) throws SQLException {
         String sql = "drop table " + table.getFullName();
@@ -1057,9 +1069,9 @@ public class JdbcDao implements OSConnectCommand {
     /**
      * 创建数据库表，主键，索引
      *
-     * @param ddl
+     * @param ddl 语句
      * @return 建表语句集合
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public List<String> createTable(DatabaseTableDDL ddl) throws SQLException {
         this.execute(ddl.getTable());
@@ -1082,7 +1094,7 @@ public class JdbcDao implements OSConnectCommand {
      * @param conn 数据库连接, 不会自动提交连接上的事务且不会自动关闭数据库连接
      * @param sql  SQL语句
      * @return SQL语句影响记录数
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static int executeUpdate(Connection conn, String sql) throws SQLException {
         Statement statement = null;
@@ -1100,7 +1112,7 @@ public class JdbcDao implements OSConnectCommand {
      * @param conn 数据库连接, 不会自动提交连接上的事务且不会自动关闭数据库连接
      * @param sql  SQL语句
      * @return 如果结果是ResultSet对象，则为true；如果是更新计数或没有结果，则为false
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static boolean execute(Connection conn, String sql) throws SQLException {
         Statement statement = null;
@@ -1117,8 +1129,8 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param conn 数据库连接, 不会自动提交连接上的事务且不会自动关闭数据库连接
      * @param sql  SQL语句
-     * @return
-     * @throws SQLException
+     * @return 查询结果集
+     * @throws SQLException 数据库错误
      */
     public static List<Map<String, String>> queryListMaps(Connection conn, String sql) throws SQLException {
         PreparedStatement statement = null;
@@ -1137,8 +1149,8 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param conn 数据库连接, 不会自动提交连接上的事务且不会自动关闭数据库连接
      * @param sql  SQL语句
-     * @return
-     * @throws SQLException
+     * @return 行数
+     * @throws SQLException 数据库错误
      */
     public static Integer queryCount(Connection conn, String sql) throws SQLException {
         Statement statement = null;
@@ -1178,8 +1190,8 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param conn 数据库连接, 不会自动提交连接上的事务且不会自动关闭数据库连接
      * @param sql  SQL语句
-     * @return
-     * @throws SQLException
+     * @return 查询第一行第一列
+     * @throws SQLException 数据库错误
      */
     @SuppressWarnings("unchecked")
     public static <E> E queryFirstRowFirstCol(Connection conn, String sql) throws SQLException {
@@ -1198,8 +1210,8 @@ public class JdbcDao implements OSConnectCommand {
      * 将数据库表转为 DDL 语句
      *
      * @param table 数据库表信息
-     * @return
-     * @throws SQLException
+     * @return 数据库DDL信息
+     * @throws SQLException 数据库错误
      */
     public DatabaseTableDDL toDDL(DatabaseTable table) throws SQLException {
         return this.getDialect().toDDL(this.getConnection(), table);
@@ -1210,8 +1222,8 @@ public class JdbcDao implements OSConnectCommand {
      *
      * @param index   索引信息
      * @param primary true表示主键
-     * @return
-     * @throws SQLException
+     * @return 数据库DDL信息
+     * @throws SQLException 数据库错误
      */
     public DatabaseDDL toDDL(DatabaseIndex index, boolean primary) throws SQLException {
         return this.getDialect().toDDL(this.getConnection(), index, primary);
@@ -1221,8 +1233,8 @@ public class JdbcDao implements OSConnectCommand {
      * 从数据库中查询存储过程的 DDL 语句
      *
      * @param procedure 存储过程
-     * @return
-     * @throws SQLException
+     * @return 数据库DDL信息
+     * @throws SQLException 数据库错误
      */
     public DatabaseDDL toDDL(DatabaseProcedure procedure) throws SQLException {
         return this.getDialect().toDDL(this.getConnection(), procedure);
@@ -1232,7 +1244,7 @@ public class JdbcDao implements OSConnectCommand {
      * 打开数据库表的数据装载模式
      *
      * @param fullname 数据库表全名
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void openLoadMode(String fullname) throws SQLException {
         this.getDialect().openLoadMode(this, fullname);
@@ -1242,7 +1254,7 @@ public class JdbcDao implements OSConnectCommand {
      * 提交数据库表上的数据装载模式
      *
      * @param fullname 数据库表全名
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void commitLoadMode(String fullname) throws SQLException {
         this.getDialect().commitLoadData(this, fullname);
@@ -1252,7 +1264,7 @@ public class JdbcDao implements OSConnectCommand {
      * 关闭数据库表上的数据装载模式
      *
      * @param fullname 数据库表全名
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void closeLoadMode(String fullname) throws SQLException {
         this.getDialect().closeLoadMode(this, fullname);

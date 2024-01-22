@@ -65,11 +65,11 @@ public class LoadMerge {
     /**
      * 初始化
      *
-     * @param dao
-     * @param target
-     * @param indexColumn
-     * @param columns
-     * @throws SQLException
+     * @param dao         数据库操作接口
+     * @param target      目标数据库表信息
+     * @param indexColumn 索引字段集合
+     * @param columns     字段集合
+     * @throws SQLException 数据库错误
      */
     public LoadMerge(JdbcDao dao, LoadTable target, List<String> indexColumn, List<DatabaseTableColumn> columns) throws SQLException {
         this.dao = dao;
@@ -87,7 +87,7 @@ public class LoadMerge {
     /**
      * 返回临时表信息
      *
-     * @return
+     * @return 数据库表信息
      */
     public DatabaseTable getTempTable() {
         return this.tempTable;
@@ -96,7 +96,7 @@ public class LoadMerge {
     /**
      * 删除临时表
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void removeTempTable() throws SQLException {
         DatabaseDialect dialect = this.dao.getDialect();
@@ -119,8 +119,8 @@ public class LoadMerge {
     /**
      * 创建临时表
      *
-     * @return
-     * @throws SQLException
+     * @return 数据库表信息
+     * @throws SQLException 数据库错误
      */
     private StandardDatabaseTable createTemp() throws SQLException {
         String fullname = this.table.getFullName();
@@ -151,7 +151,7 @@ public class LoadMerge {
     /**
      * 生成临时表索引信息
      *
-     * @return
+     * @return 索引信息
      */
     private StandardDatabaseIndex toIndex() {
         DatabaseDialect dialect = this.dao.getDialect();
@@ -185,7 +185,7 @@ public class LoadMerge {
     /**
      * 生成 update 更新语句
      *
-     * @return
+     * @return SQL语句
      */
     private String toUpdateSQL() {
         String tableName = this.table.getFullName();
@@ -232,7 +232,7 @@ public class LoadMerge {
     /**
      * 生成 insert into 语句
      *
-     * @return
+     * @return insert into 语句
      */
     private String toInsertSQL() {
         String tableName = this.table.getFullName();

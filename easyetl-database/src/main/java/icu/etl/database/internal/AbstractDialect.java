@@ -107,8 +107,8 @@ public abstract class AbstractDialect implements DatabaseDialect {
     /**
      * 生成数据库表的 DDL 语句
      *
-     * @param table
-     * @return
+     * @param table 数据库表信息
+     * @return DDL 语句
      */
     protected StringBuilder toDDL(DatabaseTable table) {
         String schema = table.getSchema();
@@ -126,7 +126,6 @@ public abstract class AbstractDialect implements DatabaseDialect {
             buf.append("    ");
             buf.append(col.getName()).append("  ");
             buf.append(col.getFieldType());
-            buf.append("");
 
             // 带一个长度范围的字段类型
             if (col.getSqlType() == Types.CHAR //
@@ -265,8 +264,8 @@ public abstract class AbstractDialect implements DatabaseDialect {
      * @param schema     模式名称，因为存储在此数据库中，所以它必须匹配模式名称。该参数为 "" 则检索那些没有模式的描述，为 null 则表示该模式名称不应用于缩小搜索范围
      * @param tableName  表名（大小写敏感）
      * @param name       索引名
-     * @return
-     * @throws SQLException
+     * @return 索引集合
+     * @throws SQLException 数据库错误
      */
     public List<DatabaseIndex> getIndexs(Connection connection, String catalog, String schema, String tableName, String name) throws SQLException {
         Map<String, StandardDatabaseIndex> map = new HashMap<String, StandardDatabaseIndex>();
@@ -402,7 +401,7 @@ public abstract class AbstractDialect implements DatabaseDialect {
      * @param catalog    类别名称，因为存储在此数据库中，所以它必须匹配类别名称。该参数为 "" 则检索没有类别的描述，为 null 则表示该类别名称不应用于缩小搜索范围
      * @param schema     模式名称，因为存储在此数据库中，所以它必须匹配模式名称。该参数为 "" 则检索那些没有模式的描述，为 null 则表示该模式名称不应用于缩小搜索范围
      * @param tableName  表名（大小写敏感）
-     * @return
+     * @return 索引集合
      */
     public List<DatabaseIndex> getPrimaryIndex(Connection connection, String catalog, String schema, String tableName) {
         Map<String, StandardDatabaseIndex> map = new HashMap<String, StandardDatabaseIndex>();

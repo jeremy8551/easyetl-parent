@@ -20,25 +20,25 @@ public class SQL {
     }
 
     /**
-     * 修改建表语句中的表明
+     * 修改建表语句中的表名
      *
-     * @param createTableDDL
-     * @param tableName
-     * @return
+     * @param ddl       语句
+     * @param tableName 表名
+     * @return 替换后的表名
      */
-    public static String replaceCreateTableName(String createTableDDL, String tableName) {
-        int start = indexOf(createTableDDL, "table", 0, true);
+    public static String replaceCreateTableName(String ddl, String tableName) {
+        int start = indexOf(ddl, "table", 0, true);
         if (start == -1) {
-            throw new IllegalArgumentException(createTableDDL);
+            throw new IllegalArgumentException(ddl);
         }
 
-        int end = indexOf(createTableDDL, "(", start + "table".length(), true);
+        int end = indexOf(ddl, "(", start + "table".length(), true);
         if (end == -1) {
-            throw new IllegalArgumentException(createTableDDL);
+            throw new IllegalArgumentException(ddl);
         } else {
             int length = end - start + 1;
             String str = " " + tableName + " (";
-            return StringUtils.replace(createTableDDL, start, length, str);
+            return StringUtils.replace(ddl, start, length, str);
         }
     }
 
@@ -205,7 +205,8 @@ public class SQL {
     public static String[] split(CharSequence sql, char delimiter) {
         List<String> list = new ArrayList<String>(10);
         SQL.split(sql, delimiter, list);
-        return list.toArray(new String[list.size()]);
+        String[] array = new String[list.size()];
+        return list.toArray(array);
     }
 
     /**
@@ -273,12 +274,13 @@ public class SQL {
      * @param sql        字符串
      * @param delimiter  分隔符集合
      * @param ignoreCase true表示忽略大小写
-     * @return
+     * @return 字段数组
      */
     public static String[] split(CharSequence sql, Collection<String> delimiter, boolean ignoreCase) {
         List<String> list = new ArrayList<String>();
         SQL.split(sql, delimiter, ignoreCase, list);
-        return list.toArray(new String[list.size()]);
+        String[] array = new String[list.size()];
+        return list.toArray(array);
     }
 
     /**
@@ -444,7 +446,7 @@ public class SQL {
      *
      * @param sql       字符串
      * @param delimiter 字段分隔符
-     * @return
+     * @return 字段数组
      */
     public static String[] splitByBlank(CharSequence sql, char... delimiter) {
         if (sql == null) {
@@ -459,7 +461,8 @@ public class SQL {
                 i = SQL.indexOfParenthes(sql, i);
                 if (i == -1) {
                     list.add(sql.subSequence(begin, sql.length()).toString());
-                    return list.toArray(new String[list.size()]);
+                    String[] array = new String[list.size()];
+                    return list.toArray(array);
                 }
                 continue;
             }
@@ -468,7 +471,8 @@ public class SQL {
                 i = StringUtils.indexOfQuotation(sql, i, true);
                 if (i == -1) {
                     list.add(sql.subSequence(begin, sql.length()).toString());
-                    return list.toArray(new String[list.size()]);
+                    String[] array = new String[list.size()];
+                    return list.toArray(array);
                 }
                 continue;
             }
@@ -479,7 +483,8 @@ public class SQL {
                 i = SQL.indexOfAnnotation(sql, i);
                 if (i == -1) {
                     list.add(sql.subSequence(begin, sql.length()).toString());
-                    return list.toArray(new String[list.size()]);
+                    String[] array = new String[list.size()];
+                    return list.toArray(array);
                 }
                 continue;
             }
@@ -504,7 +509,8 @@ public class SQL {
             list.add("");
         }
 
-        return list.toArray(new String[list.size()]);
+        String[] array = new String[list.size()];
+        return list.toArray(array);
     }
 
     /**
@@ -513,7 +519,7 @@ public class SQL {
      * @param sql        sql语句
      * @param mulitiList 多行注释信息集合列表
      * @param singleList 单行注释信息集合列表
-     * @return
+     * @return 字符串
      */
     public static String removeAnnotation(CharSequence sql, List<Property> mulitiList, List<Property> singleList) {
         BufferedLineReader in = new BufferedLineReader(sql);
@@ -585,8 +591,8 @@ public class SQL {
     /**
      * 替换sql注释为空白字符，保留注释中的回车换行符
      *
-     * @param str
-     * @return
+     * @param str 字符序列
+     * @return SQL语句
      */
     private static String replaceMemo(CharSequence str) {
         StringBuilder buf = new StringBuilder(str.length());
@@ -606,8 +612,8 @@ public class SQL {
      *
      * @param str       字符串
      * @param resultSet 查询结果集
-     * @return
-     * @throws SQLException
+     * @return 字符串
+     * @throws SQLException 数据库错误
      */
     public static String replaceVariable(String str, ResultSet resultSet) throws SQLException {
         return str == null || resultSet == null ? str : SQL.replaceVariable(str, resultSet, -1);
@@ -620,8 +626,8 @@ public class SQL {
      * @param str       字符串
      * @param resultSet 查询结果集
      * @param index     占位符 ${ 起始位置
-     * @return
-     * @throws SQLException
+     * @return 字符串
+     * @throws SQLException 数据库错误
      */
     protected static String replaceVariable(String str, ResultSet resultSet, int index) throws SQLException {
         if (index == -1) {
@@ -661,7 +667,7 @@ public class SQL {
      * 把SQL转成 count(*) 模式
      *
      * @param sql SQL语句
-     * @return
+     * @return DDL语句
      */
     public static String toCountSQL(String sql) {
         AnalysisImpl analysis = new AnalysisImpl();
@@ -685,8 +691,8 @@ public class SQL {
     /**
      * 返回sql语句是否有orderby语句，如果有则返回语句的位置
      *
-     * @param sql
-     * @return
+     * @param sql 语句
+     * @return 位置信息
      */
     private static int getOrderbyPosition(AnalysisImpl analysis, String sql) {
         if (sql != null && sql.matches("^.*((?i)order)\\s+((?i)by)\\s+.+")) {
@@ -706,8 +712,8 @@ public class SQL {
     /**
      * 判断字符串是否是合法的字段名
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 返回true表示是字段名 false表示不是字段名
      */
     public static boolean isFieldName(String str) {
         if (str == null) {
@@ -728,9 +734,7 @@ public class SQL {
             return false;
         }
 
-        /**
-         * 遍历字段名中的字符
-         */
+        // 遍历字段名中的字符
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
             if (!StringUtils.isLetter(c) && !StringUtils.isNumber(c) && c != '_') { // 只能是数字英文字母与下划线的组合
@@ -765,7 +769,7 @@ public class SQL {
      * 先删除字符串参数str二端的空白字符, 再删除字符串二端的双引号字符, 强制把所有英文小写转为大写 <br>
      *
      * @param str 字符串
-     * @return
+     * @return 字符串
      */
     public static String toIdentifier(String str) {
         if (str == null) {
@@ -784,7 +788,7 @@ public class SQL {
      * @param name    表名（表名不能为空）
      * @param schema2 schema字符串
      * @param name2   表名（表名不能为空）
-     * @return
+     * @return 返回true表示表名匹配 false表示表名不匹配
      */
     public static boolean matchTables(String schema, String name, String schema2, String name2) {
         if (StringUtils.isBlank(name) || StringUtils.isBlank(name2)) {

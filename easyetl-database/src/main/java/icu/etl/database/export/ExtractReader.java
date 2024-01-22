@@ -7,8 +7,8 @@ public interface ExtractReader extends TableLine {
     /**
      * 将数据保存到缓冲区
      *
-     * @return
-     * @throws Exception
+     * @return 返回true表示成功读取到一行数据 false表示没有数据可以读取
+     * @throws Exception 发生错误
      */
     boolean hasLine() throws Exception;
 

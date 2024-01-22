@@ -1,5 +1,6 @@
 package icu.etl.database.load;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 public enum LoadMode {
@@ -12,20 +13,16 @@ public enum LoadMode {
     /**
      * 初始化
      *
-     * @param str
+     * @param str 字符串
      */
-    private LoadMode(String str) {
-        if (str == null) {
-            throw new NullPointerException();
-        } else {
-            this.name = str.toUpperCase();
-        }
+    LoadMode(String str) {
+        this.name = Ensure.notNull(str).toUpperCase();
     }
 
     /**
      * 返回数据装载模式名
      *
-     * @return
+     * @return 模式名
      */
     public String getName() {
         return this.name;
@@ -34,10 +31,10 @@ public enum LoadMode {
     /**
      * 将字符串转为数据装载模式
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 数据装载模式
      */
-    public final static LoadMode valueof(String str) {
+    public static LoadMode valueof(String str) {
         if ("insert".equalsIgnoreCase(str)) {
             return INSERT;
         } else if ("replace".equalsIgnoreCase(str)) {
@@ -50,20 +47,18 @@ public enum LoadMode {
     }
 
     /**
-     * 返回 true 表示字符串参数 str 是数据装载模式
+     * 判断字符串参数 str 是否是数据装载模式
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 返回 true 表示字符串参数 str 是数据装载模式
      */
-    public final static boolean isMode(String str) {
+    public static boolean isMode(String str) {
         if ("insert".equalsIgnoreCase(str)) {
             return true;
         } else if ("replace".equalsIgnoreCase(str)) {
             return true;
-        } else if ("merge".equalsIgnoreCase(str)) {
-            return true;
         } else {
-            return false;
+            return "merge".equalsIgnoreCase(str);
         }
     }
 }

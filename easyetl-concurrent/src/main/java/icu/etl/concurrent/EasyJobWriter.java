@@ -20,7 +20,7 @@ public interface EasyJobWriter {
     /**
      * 判断是否有错误信息
      *
-     * @return
+     * @return 返回true表示存在错误 false表示没有错误
      */
     boolean hasError();
 

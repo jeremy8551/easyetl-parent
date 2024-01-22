@@ -35,7 +35,7 @@ public class StandardDatabaseIndex implements DatabaseIndex {
     /**
      * 复制一个索引
      *
-     * @param index
+     * @param index 索引信息
      */
     public StandardDatabaseIndex(DatabaseIndex index) {
         this();
@@ -131,7 +131,7 @@ public class StandardDatabaseIndex implements DatabaseIndex {
     /**
      * 设置索引中字段的位置信息（从1开始）
      *
-     * @param list
+     * @param list 位置信息集合
      */
     public void setPositions(List<Integer> list) {
         this.indexPosition.clear();
@@ -141,7 +141,7 @@ public class StandardDatabaseIndex implements DatabaseIndex {
     /**
      * 设置索引中字段名集合
      *
-     * @param list
+     * @param list 字段名集合
      */
     public void setColumnNames(List<String> list) {
         this.indexColumnName.clear();
@@ -151,7 +151,7 @@ public class StandardDatabaseIndex implements DatabaseIndex {
     /**
      * 设置索引中字段排序方式 <br>
      *
-     * @param list
+     * @param list 字段排序方式集合
      */
     public void setSort(List<Integer> list) {
         this.indexColumnSort.clear();
@@ -231,7 +231,7 @@ public class StandardDatabaseIndex implements DatabaseIndex {
      * @param index           索引
      * @param ignoreIndexName true表示忽略字段名大小写不同
      * @param ignoreIndexSort true表示忽略字段排序方式不同
-     * @return
+     * @return 返回true表示索引相等 false表示索引不等
      */
     public boolean equals(DatabaseIndex index, boolean ignoreIndexName, boolean ignoreIndexSort) {
         if (index == null) {

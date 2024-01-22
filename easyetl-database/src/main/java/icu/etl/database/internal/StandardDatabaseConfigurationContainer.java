@@ -92,10 +92,10 @@ public class StandardDatabaseConfigurationContainer implements DatabaseConfigura
     /**
      * 转为数据库配置信息编号
      *
-     * @param hostname
-     * @param port
-     * @param database
-     * @return
+     * @param hostname 数据库服务器host
+     * @param port     端口
+     * @param database 数据库名
+     * @return 编号
      */
     protected String toKey(String hostname, String port, String database) {
         StringBuilder buf = new StringBuilder();

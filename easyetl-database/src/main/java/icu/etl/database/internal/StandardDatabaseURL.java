@@ -7,6 +7,7 @@ import icu.etl.collection.CaseSensitivMap;
 import icu.etl.database.DatabaseURL;
 import icu.etl.database.Jdbc;
 import icu.etl.os.OSConnectCommand;
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 public class StandardDatabaseURL implements DatabaseURL {
@@ -27,17 +28,12 @@ public class StandardDatabaseURL implements DatabaseURL {
     /**
      * 初始化
      *
-     * @param url
+     * @param url URL信息
      */
     public StandardDatabaseURL(String url) {
         super();
-
-        if (url == null) {
-            throw new NullPointerException();
-        }
-
         this.attributes = new CaseSensitivMap<String>();
-        this.url = url;
+        this.url = Ensure.notNull(url);
     }
 
     public String getType() {

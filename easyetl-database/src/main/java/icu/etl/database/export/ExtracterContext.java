@@ -40,7 +40,7 @@ public class ExtracterContext {
     /**
      * 初始化
      *
-     * @param parent
+     * @param parent 卸数引擎
      */
     public ExtracterContext(ExportEngine parent) {
         this.extracter = parent;
@@ -49,7 +49,7 @@ public class ExtracterContext {
     /**
      * 返回当前上下文归属的数据卸载器
      *
-     * @return
+     * @return 卸数引擎
      */
     public ExportEngine getExtracter() {
         return extracter;
@@ -58,7 +58,7 @@ public class ExtracterContext {
     /**
      * 设置当前上下文归属的数据卸载器
      *
-     * @param extracter
+     * @param extracter 卸数引擎
      */
     protected void setExtracter(ExportEngine extracter) {
         this.extracter = extracter;
@@ -67,7 +67,7 @@ public class ExtracterContext {
     /**
      * 设置监听器
      *
-     * @param list
+     * @param list 监听器集合
      */
     public void setListener(List<ExtractUserListener> list) {
         this.listener = list;
@@ -76,7 +76,7 @@ public class ExtracterContext {
     /**
      * 返回监听器
      *
-     * @return
+     * @return 监听器集合
      */
     public List<ExtractUserListener> getListener() {
         return this.listener;
@@ -85,7 +85,7 @@ public class ExtracterContext {
     /**
      * 返回数据源信息
      *
-     * @return
+     * @return 数据源信息
      */
     public String getSource() {
         return this.source;
@@ -94,7 +94,7 @@ public class ExtracterContext {
     /**
      * 设置数据源信息
      *
-     * @param str
+     * @param str 数据源信息
      */
     public void setSource(String str) {
         this.source = str;
@@ -103,7 +103,7 @@ public class ExtracterContext {
     /**
      * 返回数据卸载位置信息
      *
-     * @return
+     * @return 数据卸载位置信息
      */
     public String getTarget() {
         return this.target;
@@ -112,7 +112,7 @@ public class ExtracterContext {
     /**
      * 设置数据卸载位置信息
      *
-     * @param str
+     * @param str 数据卸载位置信息
      */
     public void setTarget(String str) {
         this.target = str;
@@ -121,7 +121,7 @@ public class ExtracterContext {
     /**
      * 设置数据卸载进度信息接口
      *
-     * @param out
+     * @param out 进度信息接口
      */
     public void setProgress(Progress out) {
         this.progress = out;
@@ -130,7 +130,7 @@ public class ExtracterContext {
     /**
      * 返回数据卸载进度信息接口
      *
-     * @return
+     * @return 进度信息接口
      */
     public Progress getProgress() {
         return this.progress;
@@ -139,7 +139,7 @@ public class ExtracterContext {
     /**
      * 返回数据格式
      *
-     * @return
+     * @return 数据格式
      */
     public TextTable getFormat() {
         return this.format;
@@ -148,7 +148,7 @@ public class ExtracterContext {
     /**
      * 设置数据格式
      *
-     * @param format
+     * @param format 数据格式
      */
     public void setFormat(TextTable format) {
         this.format = format;
@@ -157,7 +157,7 @@ public class ExtracterContext {
     /**
      * 返回非法字符，保存字符串时会过滤调非法字符
      *
-     * @return
+     * @return 非法字符集合
      */
     public String getCharFilter() {
         return charFilter;
@@ -166,7 +166,7 @@ public class ExtracterContext {
     /**
      * 设置非法字符，保存字符串时会过滤调非法字符
      *
-     * @param str
+     * @param str 非法字符集合
      */
     public void setCharFilter(String str) {
         this.charFilter = str;
@@ -175,7 +175,7 @@ public class ExtracterContext {
     /**
      * 返回转义字符，保存字符串时会对所有转义字符进行转义
      *
-     * @return
+     * @return 转义字符
      */
     public String getEscapes() {
         return escapes;
@@ -184,7 +184,7 @@ public class ExtracterContext {
     /**
      * 设置转义字符，保存字符串时会对所有转义字符进行转义
      *
-     * @param escapes
+     * @param escapes 转义字符
      */
     public void setEscapes(String escapes) {
         this.escapes = escapes;
@@ -193,7 +193,7 @@ public class ExtracterContext {
     /**
      * 返回日期格式
      *
-     * @return
+     * @return 日期格式
      */
     public String getDateformat() {
         return dateformat;
@@ -202,7 +202,7 @@ public class ExtracterContext {
     /**
      * 设置日期格式
      *
-     * @param dateformat
+     * @param dateformat 日期格式
      */
     public void setDateformat(String dateformat) {
         this.dateformat = dateformat;
@@ -211,7 +211,7 @@ public class ExtracterContext {
     /**
      * 返回时间格式
      *
-     * @return
+     * @return 时间格式
      */
     public String getTimeformat() {
         return timeformat;
@@ -220,7 +220,7 @@ public class ExtracterContext {
     /**
      * 返回时间格式
      *
-     * @param timeformat
+     * @param timeformat 时间格式
      */
     public void setTimeformat(String timeformat) {
         this.timeformat = timeformat;
@@ -229,7 +229,7 @@ public class ExtracterContext {
     /**
      * 返回时间撮格式
      *
-     * @return
+     * @return 时间撮格式
      */
     public String getTimestampformat() {
         return timestampformat;
@@ -238,7 +238,7 @@ public class ExtracterContext {
     /**
      * 返回时间撮格式
      *
-     * @param str
+     * @param str 时间撮格式
      */
     public void setTimestampformat(String str) {
         this.timestampformat = str;
@@ -247,7 +247,7 @@ public class ExtracterContext {
     /**
      * 返回输出流缓存区行数
      *
-     * @return
+     * @return 输出流缓存区行数
      */
     public int getCacheLines() {
         return cacheLines;
@@ -256,7 +256,7 @@ public class ExtracterContext {
     /**
      * 设置输出流缓存区行数
      *
-     * @param n
+     * @param n 输出流缓存区行数
      */
     public void setCacheLines(int n) {
         this.cacheLines = n;
@@ -292,43 +292,43 @@ public class ExtracterContext {
     /**
      * 返回消息信息存储的文件
      *
-     * @return
+     * @return 消息信息存储的文件
      */
     public File getMessagefile() {
         return this.messagefile;
     }
 
     /**
-     * 返回 true 表示追加方式写入数据，false 表示覆盖原有数据
+     * 判断数据写入方式
      *
-     * @return
+     * @return 返回 true 表示追加方式写入数据，false 表示覆盖原有数据
      */
     public boolean isAppend() {
         return append;
     }
 
     /**
-     * 设置 true 表示追加方式写入数据，false 表示覆盖原有数据
+     * 设置数据写入方式
      *
-     * @param b
+     * @param b 设置 true 表示追加方式写入数据，false 表示覆盖原有数据
      */
     public void setAppend(boolean b) {
         this.append = b;
     }
 
     /**
-     * 返回 true 表示将列名写入文件
+     * 判断是否要写入列名
      *
-     * @return
+     * @return 返回 true 表示将列名写入文件
      */
     public boolean isTitle() {
         return this.title;
     }
 
     /**
-     * 设置 true 表示将列名写入文件
+     * 设置是否要写入列名
      *
-     * @param b
+     * @param b true 表示将列名写入文件
      */
     public void setTitle(boolean b) {
         this.title = b;
@@ -337,7 +337,7 @@ public class ExtracterContext {
     /**
      * 返回数据库连接池
      *
-     * @return
+     * @return 数据库连接池
      */
     public DataSource getDataSource() {
         return dataSource;
@@ -346,7 +346,7 @@ public class ExtracterContext {
     /**
      * 保存数据库连接池
      *
-     * @param dataSource
+     * @param dataSource 数据库连接池
      */
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -355,7 +355,7 @@ public class ExtracterContext {
     /**
      * 返回字段转换器映射关系
      *
-     * @return
+     * @return 类型转换器映射
      */
     public JdbcConverterMapper getConverters() {
         return converters;
@@ -364,43 +364,43 @@ public class ExtracterContext {
     /**
      * 设置字段转换器映射关系
      *
-     * @param converts
+     * @param converts 类型转换器映射
      */
     public void setConverters(JdbcConverterMapper converts) {
         this.converters = converts;
     }
 
     /**
-     * 返回 http 请求，用于 http 方式卸载数据
+     * 用于 http 方式卸载数据
      *
-     * @return
+     * @return 返回 http 请求
      */
     public Object getHttpServletRequest() {
         return httpServletRequest;
     }
 
     /**
-     * 设置 http 请求，用于 http 方式卸载数据
+     * 用于 http 方式卸载数据
      *
-     * @param request
+     * @param request 设置 http 请求
      */
     public void setHttpServletRequest(Object request) {
         this.httpServletRequest = request;
     }
 
     /**
-     * 返回 http 响应，用于 http 方式卸载数据
+     * 用于 http 方式卸载数据
      *
-     * @return
+     * @return 返回 http 响应
      */
     public Object getHttpServletResponse() {
         return httpServletResponse;
     }
 
     /**
-     * 设置 http 响应，用于 http 方式卸载数据
+     * 用于 http 方式卸载数据
      *
-     * @param response
+     * @param response 设置 http 响应
      */
     public void setHttpServletResponse(Object response) {
         this.httpServletResponse = response;

@@ -8,7 +8,7 @@ public interface DatabaseTableColumnList extends Cloneable, List<DatabaseTableCo
      * 返回字段信息
      *
      * @param position 从1开始
-     * @return
+     * @return 字段信息
      */
     DatabaseTableColumn getColumn(int position);
 
@@ -16,21 +16,21 @@ public interface DatabaseTableColumnList extends Cloneable, List<DatabaseTableCo
      * 返回字段信息
      *
      * @param name 字段名（大小写敏感）
-     * @return
+     * @return 字段信息
      */
     DatabaseTableColumn getColumn(String name);
 
     /**
      * 返回字段名数组
      *
-     * @return
+     * @return 字段名数组
      */
     String[] getColumnNames();
 
     /**
      * 返回字段索引位置(从1开始)数组
      *
-     * @return
+     * @return 字段名位置数组
      */
     int[] getColumnPositions();
 
@@ -46,7 +46,7 @@ public interface DatabaseTableColumnList extends Cloneable, List<DatabaseTableCo
      * 搜索表列的信息
      *
      * @param names 列名数组
-     * @return
+     * @return 字段集合
      */
     DatabaseTableColumnList indexOfColumns(String... names);
 
@@ -54,7 +54,7 @@ public interface DatabaseTableColumnList extends Cloneable, List<DatabaseTableCo
      * 对比字段
      *
      * @param list 数据库表字段集合
-     * @return
+     * @return 返回0表示相等 小于零表示小于 大于零表示大于
      */
     int compareTo(DatabaseTableColumnList list);
 
@@ -66,7 +66,7 @@ public interface DatabaseTableColumnList extends Cloneable, List<DatabaseTableCo
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseTableColumnList clone();
 

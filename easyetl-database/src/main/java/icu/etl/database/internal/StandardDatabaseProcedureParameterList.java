@@ -21,11 +21,6 @@ public class StandardDatabaseProcedureParameterList extends ArrayList<DatabasePr
         super(initialCapacity);
     }
 
-    /**
-     * 参数集合的副本
-     *
-     * @return
-     */
     public DatabaseProcedureParameterList clone() {
         int size = this.size();
         StandardDatabaseProcedureParameterList list = new StandardDatabaseProcedureParameterList(size);

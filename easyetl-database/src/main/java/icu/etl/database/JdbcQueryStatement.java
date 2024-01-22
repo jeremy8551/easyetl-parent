@@ -58,7 +58,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *                             {@linkplain ResultSet#TYPE_SCROLL_SENSITIVE} <br>
      * @param resultSetConcurrency {@linkplain ResultSet#CONCUR_READ_ONLY} <br>
      *                             {@linkplain ResultSet#CONCUR_UPDATABLE} <br>
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public JdbcQueryStatement(Connection connection, String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
         this();
@@ -85,7 +85,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param connection 数据库连接
      * @param sql        查询语句
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public JdbcQueryStatement(Connection connection, String sql) throws SQLException {
         this(connection, sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -105,7 +105,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置数据库连接
      *
      * @param connection 有效的数据库连接
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void setConnection(Connection connection) throws SQLException {
         if (connection == null || connection.isClosed()) {
@@ -118,7 +118,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
     /**
      * 返回数据库连接
      *
-     * @return
+     * @return 数据库连接
      */
     public Connection getConnection() {
         return this.connection;
@@ -127,7 +127,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
     /**
      * 设置 SQL 语句
      *
-     * @param sql
+     * @param sql 语句
      */
     protected void setSQL(String sql) {
         if (StringUtils.isBlank(sql)) {
@@ -140,7 +140,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
     /**
      * 返回查询sql语句
      *
-     * @return
+     * @return 语句
      */
     public String getSQL() {
         return this.sql;
@@ -149,7 +149,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
     /**
      * 返回数据库处理程序
      *
-     * @return
+     * @return PreparedStatement接口
      */
     public PreparedStatement getStatement() {
         return this.statement;
@@ -159,8 +159,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 执行查询语句
      *
      * @param parameters SQL语句中参数值数组
-     * @return
-     * @throws SQLException
+     * @return ResultSet接口
+     * @throws SQLException 数据库连接
      */
     public ResultSet query(Object... parameters) throws SQLException {
         this.index = 0;
@@ -184,7 +184,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
     /**
      * 返回结果集
      *
-     * @return
+     * @return ResultSet接口
      */
     public ResultSet getResultSet() {
         return resultSet;
@@ -193,8 +193,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
     /**
      * 从结果集中读取一行数据
      *
-     * @return
-     * @throws SQLException
+     * @return 返回true表示读取一行数据 false表示没有数据可以读取
+     * @throws SQLException 数据库连接
      */
     public boolean next() throws SQLException {
         return this.resultSet.next();
@@ -216,7 +216,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param b     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, byte b) throws SQLException {
         this.statement.setByte(index, b);
@@ -227,7 +227,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, String x) throws SQLException {
         this.statement.setString(index, x);
@@ -238,7 +238,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, int x) throws SQLException {
         this.statement.setInt(index, x);
@@ -249,7 +249,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, BigDecimal x) throws SQLException {
         this.statement.setBigDecimal(index, x);
@@ -260,7 +260,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameterString(int index, java.sql.Date x) throws SQLException {
         this.statement.setDate(index, x);
@@ -271,7 +271,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, java.util.Date x) throws SQLException {
         this.statement.setDate(index, x == null ? null : new java.sql.Date(x.getTime()));
@@ -282,7 +282,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, Double x) throws SQLException {
         this.statement.setDouble(index, x);
@@ -293,7 +293,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, Long x) throws SQLException {
         this.statement.setLong(index, x);
@@ -304,7 +304,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, Object x) throws SQLException {
         this.statement.setObject(index, x);
@@ -315,7 +315,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      *
      * @param index 参数位置
      * @param x     参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int index, Object x, int sqltype) throws SQLException {
         this.statement.setObject(index, x, sqltype);
@@ -325,7 +325,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(byte x) throws SQLException {
         this.statement.setByte(++this.index, x);
@@ -335,7 +335,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(String x) throws SQLException {
         this.statement.setString(++this.index, x);
@@ -345,7 +345,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(int x) throws SQLException {
         this.statement.setInt(++this.index, x);
@@ -355,7 +355,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(BigDecimal x) throws SQLException {
         this.statement.setBigDecimal(++this.index, x);
@@ -365,7 +365,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameterString(java.sql.Date x) throws SQLException {
         this.statement.setDate(++this.index, x);
@@ -375,7 +375,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(java.sql.Date x) throws SQLException {
         this.statement.setDate(++this.index, x);
@@ -385,7 +385,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(java.util.Date x) throws SQLException {
         this.statement.setDate(++this.index, x == null ? null : new java.sql.Date(x.getTime()));
@@ -395,7 +395,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(Double x) throws SQLException {
         this.statement.setDouble(++this.index, x);
@@ -405,7 +405,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(Long x) throws SQLException {
         this.statement.setLong(++this.index, x);
@@ -415,7 +415,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(Object x) throws SQLException {
         this.statement.setObject(++this.index, x);
@@ -425,7 +425,7 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 设置参数值
      *
      * @param x 参数
-     * @throws SQLException
+     * @throws SQLException 数据库连接
      */
     public void setParameter(Object x, int sqlType) throws SQLException {
         this.statement.setObject(++this.index, x, sqlType);
@@ -435,8 +435,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值（自动删除右空格）
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public String getString(String name) throws SQLException {
         return StringUtils.rtrim(this.resultSet.getString(name));
@@ -446,8 +446,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public byte[] getBytes(String name) throws SQLException {
         return this.resultSet.getBytes(name);
@@ -457,8 +457,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public java.sql.Date getDate(String name) throws SQLException {
         return this.resultSet.getDate(name);
@@ -468,8 +468,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public java.sql.Time getTime(String name) throws SQLException {
         return this.resultSet.getTime(name);
@@ -479,8 +479,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public java.sql.Timestamp getTimestamp(String name) throws SQLException {
         return this.resultSet.getTimestamp(name);
@@ -490,8 +490,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public boolean getBoolean(String name) throws SQLException {
         return this.resultSet.getBoolean(name);
@@ -501,8 +501,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public byte getByte(String name) throws SQLException {
         return this.resultSet.getByte(name);
@@ -512,8 +512,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public short getShort(String name) throws SQLException {
         return this.resultSet.getShort(name);
@@ -523,8 +523,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public int getInt(String name) throws SQLException {
         return this.resultSet.getInt(name);
@@ -534,8 +534,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public long getLong(String name) throws SQLException {
         return this.resultSet.getLong(name);
@@ -545,8 +545,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public float getFloat(String name) throws SQLException {
         return this.resultSet.getFloat(name);
@@ -556,8 +556,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public double getDouble(String name) throws SQLException {
         return this.resultSet.getDouble(name);
@@ -567,8 +567,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public BigDecimal getBigDecimal(String name) throws SQLException {
         return this.resultSet.getBigDecimal(name);
@@ -578,8 +578,8 @@ public class JdbcQueryStatement implements java.io.Closeable {
      * 返回字段值
      *
      * @param name 列名
-     * @return
-     * @throws SQLException
+     * @return 字段值
+     * @throws SQLException 数据库连接
      */
     public Object getObject(String name) throws SQLException {
         return this.resultSet.getObject(name);

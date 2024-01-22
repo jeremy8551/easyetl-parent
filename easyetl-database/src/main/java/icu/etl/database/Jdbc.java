@@ -1,5 +1,6 @@
 package icu.etl.database;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import javax.sql.DataSource;
+import java.util.Set;
 
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.collection.CaseSensitivSet;
@@ -115,11 +116,11 @@ public class Jdbc {
     /**
      * 判断表名是否相等
      *
-     * @param schema1
-     * @param tableName1
-     * @param schema2
-     * @param tableName2
-     * @return
+     * @param schema1    模式
+     * @param tableName1 表名
+     * @param schema2    模式
+     * @param tableName2 表名
+     * @return 返回true表示表名相等 false表示表名不等
      */
     public static boolean equals(String schema1, String tableName1, String schema2, String tableName2) {
         schema1 = StringUtils.toCase(schema1, false, null);
@@ -206,9 +207,9 @@ public class Jdbc {
     /**
      * 返回 insert into 语句
      *
-     * @param tableName
-     * @param columns
-     * @return
+     * @param tableName 表名
+     * @param columns   字段集合
+     * @return 返回 insert into 语句
      */
     public static String toInsertStatement(String tableName, List<DatabaseTableColumn> columns) {
         String sql = "insert into " + tableName + " (";
@@ -233,9 +234,9 @@ public class Jdbc {
     /**
      * 将结果集中数据转为表格
      *
-     * @param result
-     * @return
-     * @throws SQLException
+     * @param result 结果集
+     * @return 图形表格
+     * @throws SQLException 数据库错误
      */
     public static String toString(ResultSet result) throws SQLException {
         String[] names = Jdbc.getColumnName(result);
@@ -268,7 +269,7 @@ public class Jdbc {
      * 如果数据库连接已经关闭，返回 false <br>
      *
      * @param conn 数据库连接
-     * @return
+     * @return 返回true表示数据库连接可用 false表示数据库连接不可用
      */
     public static boolean canUse(Connection conn) {
         try {
@@ -284,7 +285,7 @@ public class Jdbc {
      * 如果数据库连接已经关闭，返回 false <br>
      *
      * @param conn 数据库连接
-     * @return
+     * @return 返回true表示数据库连接可用 false表示数据库连接不可用
      */
     public static boolean canUseQuietly(Connection conn) {
         try {
@@ -1124,18 +1125,13 @@ public class Jdbc {
      */
     public static Properties removeJdbcFromKey(Properties p) {
         Properties obj = new Properties();
-        Iterator<Entry<Object, Object>> it = p.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<Object, Object> entry = it.next();
+        Set<Entry<Object, Object>> entrySet = p.entrySet();
+        for (Entry<Object, Object> entry : entrySet) {
             String key = entry.getKey().toString();
             String val = entry.getValue().toString();
 
             if (key.startsWith("jdbc.")) {
-                if (key.length() >= 5) {
-                    obj.put(key.substring(5), val);
-                } else {
-                    obj.put("", val);
-                }
+                obj.put(key.substring(5), val);
             } else {
                 obj.put(key, val);
             }

@@ -30,7 +30,7 @@ public class StandardDatabaseType implements DatabaseType {
     /**
      * 初始化
      *
-     * @param obj
+     * @param obj 类型
      */
     public StandardDatabaseType(StandardDatabaseType obj) {
         this.name = obj.name;
@@ -56,8 +56,8 @@ public class StandardDatabaseType implements DatabaseType {
     /**
      * 初始化
      *
-     * @param resultSet
-     * @throws SQLException
+     * @param resultSet 查询结果集
+     * @throws SQLException 数据库错误
      */
     public StandardDatabaseType(ResultSet resultSet) throws SQLException {
         this.name = resultSet.getString("TYPE_NAME");

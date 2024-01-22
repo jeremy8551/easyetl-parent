@@ -27,7 +27,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
      *
      * @param dao JDBCDao
      * @param sql call PROCEDURE(...) 语句 或 create PROCEDURE {...}
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public static DatabaseProcedure toProcedure(JdbcDao dao, String sql) throws SQLException {
         String[] names = null;
@@ -94,7 +94,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
     /**
      * 存储过程id
      *
-     * @return
+     * @return 存储过程id
      */
     public String getId() {
         return id;
@@ -143,7 +143,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
     /**
      * 存储过程id
      *
-     * @param id
+     * @param id 存储过程id
      */
     public void setId(String id) {
         this.id = id;
@@ -152,7 +152,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
     /**
      * 存储过程名
      *
-     * @param name
+     * @param name 存储过程名
      */
     public void setName(String name) {
         this.name = name;
@@ -161,7 +161,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
     /**
      * 存储过程归属schema
      *
-     * @param schema
+     * @param schema 存储过程归属schema
      */
     public void setSchema(String schema) {
         this.schema = schema;
@@ -170,7 +170,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
     /**
      * 存储过程语言
      *
-     * @param language
+     * @param language 存储过程语言
      */
     public void setLanguage(String language) {
         this.language = language;
@@ -179,7 +179,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
     /**
      * 存储过程创建用户名
      *
-     * @param creator
+     * @param creator 存储过程创建用户名
      */
     public void setCreator(String creator) {
         this.creator = creator;
@@ -188,7 +188,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
     /**
      * 存储过程创建时间
      *
-     * @param creatTime
+     * @param creatTime 存储过程创建时间
      */
     public void setCreatTime(Date creatTime) {
         this.creatTime = creatTime;
@@ -197,7 +197,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
     /**
      * 存储过程参数, 按参数顺序排序
      *
-     * @param list
+     * @param list 存储过程参数, 按参数顺序排序
      */
     public void setParameters(List<DatabaseProcedureParameter> list) {
         this.parameters.addAll(list);

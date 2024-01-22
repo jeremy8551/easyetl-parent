@@ -33,7 +33,7 @@ public class StandardDatabaseSpace implements DatabaseSpace {
     /**
      * 表空间名
      *
-     * @return
+     * @return 表空间名
      */
     public String getName() {
         return name;
@@ -42,7 +42,7 @@ public class StandardDatabaseSpace implements DatabaseSpace {
     /**
      * 表空间名
      *
-     * @param name
+     * @param name 表空间名
      */
     public void setName(String name) {
         this.name = name;

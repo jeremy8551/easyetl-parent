@@ -11,60 +11,60 @@ import java.util.List;
 public interface DatabaseIndex extends Cloneable, Comparable<DatabaseIndex> {
 
     /** 正序排序 */
-    public final static int INDEX_ASC = 0;
+    int INDEX_ASC = 0;
 
     /** 倒序排序 */
-    public final static int INDEX_DESC = 1;
+    int INDEX_DESC = 1;
 
     /** 未明确排序 */
-    public final static int INDEX_UNKNOWN = 2;
+    int INDEX_UNKNOWN = 2;
 
     /**
      * 索引名字
      *
-     * @return
+     * @return 索引名
      */
     String getName();
 
     /**
      * 返回索引全名
      *
-     * @return
+     * @return 索引名
      */
     String getFullName();
 
     /**
      * 归属表名
      *
-     * @return
+     * @return 表名
      */
     String getTableName();
 
     /**
-     * 返回类型信息
+     * 返回编目信息
      *
-     * @return
+     * @return 编目信息
      */
     String getTableCatalog();
 
     /**
      * 表模式（可为 null）
      *
-     * @return
+     * @return 表模式
      */
     String getTableSchema();
 
     /**
      * 返回表全名
      *
-     * @return
+     * @return 表全名
      */
     String getTableFullName();
 
     /**
      * 索引schema
      *
-     * @return
+     * @return 索引的模式名
      */
     String getSchema();
 
@@ -78,14 +78,14 @@ public interface DatabaseIndex extends Cloneable, Comparable<DatabaseIndex> {
     /**
      * 索引中列名
      *
-     * @return
+     * @return 列名
      */
     List<String> getColumnNames();
 
     /**
      * 返回索引中字段的位置信息（位置信息从 1 开始）
      *
-     * @return
+     * @return 位置信息集合
      */
     List<Integer> getPositions();
 
@@ -101,7 +101,7 @@ public interface DatabaseIndex extends Cloneable, Comparable<DatabaseIndex> {
     /**
      * 生成一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseIndex clone();
 
@@ -111,7 +111,7 @@ public interface DatabaseIndex extends Cloneable, Comparable<DatabaseIndex> {
      * @param index           索引
      * @param ignoreIndexName true表示忽略字段名大小写不同
      * @param ignoreIndexSort true表示忽略字段排序方式不同
-     * @return
+     * @return 返回true表示相等 false表示不等
      */
     boolean equals(DatabaseIndex index, boolean ignoreIndexName, boolean ignoreIndexSort);
 

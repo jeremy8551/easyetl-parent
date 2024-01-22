@@ -27,7 +27,7 @@ public class SimpleDatasource implements DataSource, java.io.Closeable {
      * 判断参数 dataSource 是否是 {@linkplain SimpleDatasource} 类的实例对象
      *
      * @param dataSource 数据库连接池
-     * @return
+     * @return 返回true表示参数是 {@linkplain SimpleDatasource} 类的实例对象 false表示不是 {@linkplain SimpleDatasource} 类的实例对象
      */
     public static boolean instanceOf(DataSource dataSource) {
         if (dataSource instanceof SimpleDatasource) {
@@ -70,23 +70,23 @@ public class SimpleDatasource implements DataSource, java.io.Closeable {
         return this.pool.getConnection(username, password);
     }
 
-    public PrintWriter getLogWriter() throws SQLException {
+    public PrintWriter getLogWriter() {
         return this.pool.getLogWriter();
     }
 
-    public void setLogWriter(PrintWriter out) throws SQLException {
+    public void setLogWriter(PrintWriter out) {
         this.pool.setLogWriter(out);
     }
 
-    public int getLoginTimeout() throws SQLException {
+    public int getLoginTimeout() {
         return this.pool.getTimeout();
     }
 
-    public void setLoginTimeout(int seconds) throws SQLException {
+    public void setLoginTimeout(int seconds) {
         this.pool.setTimeout(seconds);
     }
 
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) {
         return iface != null && iface.isAssignableFrom(ConnectionProxy.class);
     }
 

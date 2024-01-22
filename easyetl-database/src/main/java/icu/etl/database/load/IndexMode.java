@@ -1,5 +1,6 @@
 package icu.etl.database.load;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 public enum IndexMode {
@@ -22,18 +23,14 @@ public enum IndexMode {
     /** 模式名 */
     private String name;
 
-    private IndexMode(String str) {
-        if (str == null) {
-            throw new NullPointerException();
-        } else {
-            this.name = str.toUpperCase();
-        }
+    IndexMode(String str) {
+        this.name = Ensure.notNull(str).toUpperCase();
     }
 
     /**
      * 返回数据装载模式名
      *
-     * @return
+     * @return 数据装载模式名
      */
     public String getName() {
         return name;
@@ -42,8 +39,8 @@ public enum IndexMode {
     /**
      * 将字符串转为索引处理模式
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 数据装载模式
      */
     public static IndexMode valueof(String str) {
         if ("rebuild".equalsIgnoreCase(str)) {
@@ -60,8 +57,8 @@ public enum IndexMode {
     /**
      * 返回 true 表示字符串参数 str 是索引处理模式
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 返回 true 表示字符串参数 str 是索引处理模式
      */
     public static boolean isMode(String str) {
         if ("rebuild".equalsIgnoreCase(str)) {

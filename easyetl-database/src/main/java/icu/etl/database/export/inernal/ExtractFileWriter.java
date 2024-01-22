@@ -2,7 +2,6 @@ package icu.etl.database.export.inernal;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.database.SQL;
@@ -14,6 +13,7 @@ import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.StringUtils;
 
@@ -62,20 +62,13 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
     /**
      * 初始化
      *
-     * @param context
-     * @param message
-     * @throws Exception
+     * @param context 卸数引擎上下文信息
+     * @param message 消息信息
+     * @throws Exception 卸载数据发生错误
      */
     public ExtractFileWriter(ExtracterContext context, ExtractMessage message) throws Exception {
-        if (context == null) {
-            throw new NullPointerException();
-        }
-        if (message == null) {
-            throw new NullPointerException();
-        }
-
-        this.context = context;
-        this.message = message;
+        this.context = Ensure.notNull(context);
+        this.message = Ensure.notNull(message);
         this.filepath = context.getTarget();
         this.maximum = context.getMaximum();
         this.rewrite = this.maximum > 0;
@@ -88,7 +81,7 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
     /**
      * 打开文件输出流
      *
-     * @throws Exception
+     * @throws Exception 卸载数据发生错误
      */
     protected void open() throws Exception {
         this.closeWriter();
@@ -120,7 +113,7 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
     /**
      * 创建文件
      *
-     * @return
+     * @return 文件
      */
     protected File createNewfile() {
         this.fileNumber++;
@@ -172,7 +165,7 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
     /**
      * 关闭文件输出流
      *
-     * @throws IOException
+     * @throws IOException 卸载数据发生错误
      */
     protected void closeWriter() throws IOException {
         if (this.writer != null) {

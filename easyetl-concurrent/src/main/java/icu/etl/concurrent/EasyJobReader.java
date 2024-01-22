@@ -10,16 +10,16 @@ import java.io.Closeable;
 public interface EasyJobReader extends Closeable, Terminate {
 
     /**
-     * 返回 true 表示 {@linkplain #next()} 方法可以返回一个可用的任务对象
+     * 判断是否可以读取下一个任务
      *
-     * @return
+     * @return 返回 true 表示 {@linkplain #next()} 方法可以返回一个可用的任务对象
      */
     boolean hasNext() throws Exception;
 
     /**
      * 返回一个新的任务
      *
-     * @return
+     * @return 任务
      */
     EasyJob next() throws Exception;
 

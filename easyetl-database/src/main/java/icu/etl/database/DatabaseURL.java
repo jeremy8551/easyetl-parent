@@ -7,70 +7,70 @@ public interface DatabaseURL extends Cloneable {
     /**
      * 数据库厂家类型, 如: db2 oracle mysql
      *
-     * @return
+     * @return 数据库厂家类型
      */
     String getType();
 
     /**
      * 返回数据库名
      *
-     * @return
+     * @return 返回数据库名
      */
     String getDatabaseName();
 
     /**
      * 用户名
      *
-     * @return
+     * @return 用户名
      */
     String getUsername();
 
     /**
      * 用户密码
      *
-     * @return
+     * @return 用户密码
      */
     String getPassword();
 
     /**
      * 数据库当前schema
      *
-     * @return
+     * @return 表模式
      */
     String getSchema();
 
     /**
      * 数据库host
      *
-     * @return
+     * @return 数据库host
      */
     String getHostname();
 
     /**
      * 数据库访问端口
      *
-     * @return
+     * @return 数据库访问端口
      */
     String getPort();
 
     /**
      * 数据库服务名
      *
-     * @return
+     * @return 数据库服务名
      */
     String getServerName();
 
     /**
-     * Oracle数据库的 sid
+     * Oracle数据库的sid
      *
-     * @return
+     * @return Oracle数据库的sid
      */
     String getSID();
 
     /**
-     * oracle数据库驱动类型 thin
+     * oracle数据库驱动类型thin
      *
-     * @return
+     * @return oracle数据库驱动类型thin
      */
     String getDriverType();
 
@@ -78,7 +78,7 @@ public interface DatabaseURL extends Cloneable {
      * 返回属性值
      *
      * @param name 属性名
-     * @return
+     * @return 返回属性值
      */
     String getAttribute(String name);
 
@@ -91,23 +91,23 @@ public interface DatabaseURL extends Cloneable {
     void setAttribute(String name, String value);
 
     /**
-     * JDBC URL 值
+     * JDBC的URL值
      *
-     * @return
+     * @return JDBC的URL值
      */
     String toString();
 
     /**
      * 转为属性集合
      *
-     * @return
+     * @return 属性集合
      */
     Properties toProperties();
 
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseURL clone();
 

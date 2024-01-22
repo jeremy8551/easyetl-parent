@@ -1,9 +1,7 @@
 package icu.etl.database.load;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -72,8 +70,8 @@ public class LoadErrorTable {
     /**
      * 打开数据库连接
      *
-     * @param context
-     * @throws SQLException
+     * @param context 装载引擎上下文信息
+     * @throws SQLException 数据库错误
      */
     public void open(LoadEngineContext context) throws SQLException {
         List<String> fileColumn = context.getFileColumn();
@@ -93,7 +91,7 @@ public class LoadErrorTable {
      *
      * @param column 默认值，如果未指定字段顺序，使用默认字段个数从1开始按顺序保存
      * @param fields 文件中字段顺序
-     * @return
+     * @return 字段顺序数组
      */
     private int[] toFilePositions(int column, List<String> fields) {
         if (fields == null || fields.isEmpty()) { // 未指定时使用默认顺序
@@ -106,7 +104,7 @@ public class LoadErrorTable {
             int[] positions = new int[fields.size()];
             for (int i = 0; i < fields.size(); i++) {
                 String str = fields.get(i);
-                int position = 0;
+                int position;
                 if (StringUtils.isNumber(str) && (position = Integer.parseInt(str)) > 0) {
                     positions[i] = position;
                 } else {
@@ -123,7 +121,7 @@ public class LoadErrorTable {
      *
      * @param table       数据库表信息
      * @param tableColumn 数据库表中字段名的集合 或 字段位置的集合
-     * @return
+     * @return 字段集合
      */
     private List<DatabaseTableColumn> toTableFields(DatabaseTable table, List<String> tableColumn) {
         List<DatabaseTableColumn> list = new ArrayList<DatabaseTableColumn>(20);
@@ -133,7 +131,7 @@ public class LoadErrorTable {
             // 将字段位置信息转为字段名
             for (int i = 0; i < tableColumn.size(); i++) {
                 String name = tableColumn.get(i); //
-                int position = 0;
+                int position;
                 if (StringUtils.isNumber(name) && (position = Integer.parseInt(name)) >= 1 && position <= table.columns()) {
                     DatabaseTableColumn col = table.getColumns().getColumn(position);
                     if (col == null) {
@@ -161,8 +159,8 @@ public class LoadErrorTable {
      * @param dao        数据库操作接口
      * @param columns    数据库表的字段顺序集合
      * @param userDefine 用户自定义的转换器映射关系
-     * @return
-     * @throws SQLException
+     * @return 类型转换数组
+     * @throws SQLException 数据库错误
      */
     private JdbcStringConverter[] createConverter(JdbcDao dao, List<DatabaseTableColumn> columns, JdbcConverterMapper userDefine) throws SQLException {
         String[] javaClassNames = this.toJavaClassName(dao, columns); // JDBC 驱动提供的字段与JAVA类型的映射关系
@@ -193,8 +191,8 @@ public class LoadErrorTable {
      *
      * @param dao     数据库操作接口
      * @param columns 字段插入顺序集合
-     * @return
-     * @throws SQLException
+     * @return Java类名数组
+     * @throws SQLException 数据库错误
      */
     private String[] toJavaClassName(JdbcDao dao, List<DatabaseTableColumn> columns) throws SQLException {
         if (columns == null || columns.isEmpty()) {
@@ -256,8 +254,8 @@ public class LoadErrorTable {
      *
      * @param dao     数据库操作接口
      * @param columns 字段插入顺序集合
-     * @return
-     * @throws SQLException
+     * @return 预处理接口
+     * @throws SQLException 数据库错误
      */
     private PreparedStatement createStatement(JdbcDao dao, List<DatabaseTableColumn> columns) throws SQLException {
         if (columns == null || columns.isEmpty()) {
@@ -291,10 +289,8 @@ public class LoadErrorTable {
     /**
      * 返回字段分别对应的类型转换器
      *
-     * @return
-     * @throws IOException
-     * @throws SQLException
-     * @throws ParseException
+     * @return 类型转换器数组
+     * @throws Exception 类型转换器初始化失败
      */
     public JdbcStringConverter[] getConverters() throws Exception {
         for (int i = 0; i < this.converters.length; i++) { // 计算字段的类型转换器并执行初始化
@@ -318,7 +314,7 @@ public class LoadErrorTable {
     /**
      * 返回数据库表信息
      *
-     * @return
+     * @return 数据库表信息
      */
     public DatabaseTable getTable() {
         return this.table;
@@ -327,8 +323,8 @@ public class LoadErrorTable {
     /**
      * 返回数据库表的 DDL 信息
      *
-     * @return
-     * @throws SQLException
+     * @return 数据库表DDL语句
+     * @throws SQLException 数据库错误
      */
     public DatabaseTableDDL getTableDDL() throws SQLException {
         if (this.ddl == null) {
@@ -340,7 +336,7 @@ public class LoadErrorTable {
     /**
      * 返回数据源中字段顺序
      *
-     * @return
+     * @return 位置信息数组
      */
     public int[] getFilePositions() {
         return this.filePositions;
@@ -349,7 +345,7 @@ public class LoadErrorTable {
     /**
      * 返回 jdbc 插入接口
      *
-     * @return
+     * @return 预处理接口
      */
     public PreparedStatement getStatement() {
         return this.statement;
@@ -358,7 +354,7 @@ public class LoadErrorTable {
     /**
      * 返回数据库表中字段集合，按插入先后顺序排序
      *
-     * @return
+     * @return 数据库表的字段集合
      */
     public List<DatabaseTableColumn> getTableColumns() {
         return Collections.unmodifiableList(this.tableColumns);
@@ -367,7 +363,7 @@ public class LoadErrorTable {
     /**
      * 返回插入字段个数
      *
-     * @return
+     * @return 字段个数
      */
     public int getColumn() {
         return this.column;

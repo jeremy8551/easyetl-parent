@@ -1,10 +1,10 @@
 package icu.etl.database.export.inernal;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.ExtractMessage;
@@ -35,8 +35,8 @@ public class HttpRequestWriter implements ExtractWriter {
      * @param response HttpServletResponse 响应
      * @param filename 下载后的文件名
      * @param table    文本表格
-     * @param message
-     * @throws IOException
+     * @param message  消息信息
+     * @throws IOException 卸载数据发生错误
      */
     public HttpRequestWriter(Object request, Object response, String filename, TextTable table, ExtractMessage message) throws IOException {
         if (request == null) {

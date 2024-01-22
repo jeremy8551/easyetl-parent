@@ -9,6 +9,7 @@ import icu.etl.database.DatabaseTable;
 import icu.etl.database.JdbcDao;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -30,19 +31,15 @@ public class LoadIndex {
      * 初始化
      */
     public LoadIndex(DatabaseTable table) {
-        if (table == null) {
-            throw new NullPointerException();
-        } else {
-            this.table = table;
-        }
+        this.table = Ensure.notNull(table);
     }
 
     /**
      * 删除索引与主键
      *
-     * @param context
-     * @param dao
-     * @throws SQLException
+     * @param context 装数引擎上下文信息
+     * @param dao     数据库操作接口
+     * @throws SQLException 数据库错误
      */
     public void before(LoadEngineContext context, JdbcDao dao) throws SQLException {
         this.rebuild = false;
@@ -67,17 +64,15 @@ public class LoadIndex {
                     log.debug(ResourcesUtils.getMessage("load.standard.output.msg013", context.getId(), sql));
                 }
             }
-        } else {
-//			System.out.println("不需要建索引 ");
         }
     }
 
     /**
      * 重建索引与主键，生成统计信息
      *
-     * @param context
-     * @param dao
-     * @throws SQLException
+     * @param context 装数引擎上下文信息
+     * @param dao     数据库操作接口
+     * @throws SQLException 数据库错误
      */
     public void after(LoadEngineContext context, JdbcDao dao) throws SQLException {
         if (this.rebuild) {

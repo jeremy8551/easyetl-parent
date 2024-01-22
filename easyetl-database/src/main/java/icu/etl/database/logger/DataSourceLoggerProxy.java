@@ -12,7 +12,7 @@ public interface DataSourceLoggerProxy extends DataSource {
     /**
      * 返回被代理的数据库连接池对象
      *
-     * @return
+     * @return 数据库连接池
      */
     DataSource getOrignalDataSource();
 

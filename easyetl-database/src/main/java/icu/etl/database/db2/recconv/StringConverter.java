@@ -30,7 +30,7 @@ public class StringConverter extends AbstractConverter {
      *
      * @param str   字符串
      * @param start 删除空白字符的起始位置
-     * @return
+     * @return 字符串
      */
     public String rtrim(String str, int start) {
         while (start >= 0) {

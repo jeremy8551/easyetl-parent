@@ -25,14 +25,14 @@ public interface DatabaseType {
     /**
      * 返回字段类型名, 如: char 或 varchar 或 date 或 time 或 timestamp
      *
-     * @return
+     * @return 字段类型名
      */
     String getName();
 
     /**
      * 返回字段类型对应的 {@link java.sql.Types} 值
      *
-     * @return
+     * @return {@link java.sql.Types}
      */
     Integer getSqlType();
 
@@ -40,7 +40,7 @@ public interface DatabaseType {
      * 返回整型数的支持的最大数字位数<br>
      * PRECISION <br>
      *
-     * @return
+     * @return 整型数的支持的最大数字位数
      */
     Integer getPrecision();
 
@@ -48,7 +48,7 @@ public interface DatabaseType {
      * 返回引用文字的前缀，如: G' 或 null <br>
      * LITERAL_PREFIX <br>
      *
-     * @return
+     * @return 引用文字的前缀，如: G' 或 null
      */
     String getTextPrefix();
 
@@ -56,7 +56,7 @@ public interface DatabaseType {
      * 返回引用文字的后缀, 如: ' 或 null <br>
      * LITERAL_SUFFIX <br>
      *
-     * @return
+     * @return 引用文字的后缀, 如: ' 或 null
      */
     String getTextSuffix();
 
@@ -64,7 +64,7 @@ public interface DatabaseType {
      * 返回引用文字信息
      *
      * @param value 文字信息
-     * @return
+     * @return 引用文字信息
      */
     String toText(CharSequence value);
 
@@ -72,7 +72,7 @@ public interface DatabaseType {
      * 返回字段参数类型: LENGTH 或 PRECISION,SCALE 或 PRECISION 或 null <br>
      * CREATE_PARAMS <br>
      *
-     * @return
+     * @return 返回字段参数类型: LENGTH 或 PRECISION,SCALE 或 PRECISION 或 null
      */
     String getExpression();
 
@@ -83,7 +83,7 @@ public interface DatabaseType {
      * {@linkplain DatabaseMetaData#typeNullable} 可以为空 <br>
      * {@linkplain DatabaseMetaData#typeNullableUnknown} 不知为是否可以为空 <br>
      *
-     * @return
+     * @return 返回 true 表示字段可以是null
      */
     Integer getNullAble();
 
@@ -91,7 +91,7 @@ public interface DatabaseType {
      * 返回 1 表示字段类型区分大小写，返回 0 或 null 表示字段类型不区分大小写 <br>
      * CASE_SENSITIVE <br>
      *
-     * @return
+     * @return 返回 1 表示字段类型区分大小写，返回 0 或 null 表示字段类型不区分大小写
      */
     Integer getCaseSesitive();
 
@@ -99,7 +99,7 @@ public interface DatabaseType {
      * 返回字段类型支持支持的最大小数位 <br>
      * MAXIMUM_SCALE <br>
      *
-     * @return
+     * @return 返回字段类型支持支持的最大小数位
      */
     Integer getMaxScale();
 
@@ -107,7 +107,7 @@ public interface DatabaseType {
      * 返回字段类型支持支持的最小小数位 <br>
      * MINIMUM_SCALE <br>
      *
-     * @return
+     * @return 返回字段类型支持支持的最小小数位
      */
     Integer getMinScale();
 
@@ -123,7 +123,7 @@ public interface DatabaseType {
      * 返回 1 表示有固定小数位，返回 0 或 null 表示小数位不是固定的 <br>
      * FIXED_PREC_SCALE <br>
      *
-     * @return
+     * @return 返回 1 表示有固定小数位，返回 0 或 null 表示小数位不是固定的
      */
     Integer getScale();
 
@@ -136,7 +136,7 @@ public interface DatabaseType {
      * {@linkplain DatabaseMetaData#typePredBasic} 除了 where … like 语句外所有where语句都可以使用这种数据类型 <br>
      * {@linkplain DatabaseMetaData#typePredNone} 不可以用在where中<br>
      *
-     * @return
+     * @return 是否可以在where语句中使用字段类型
      */
     Integer getSearchable();
 
@@ -144,7 +144,7 @@ public interface DatabaseType {
      * 返回 1 表示数据类型可以自动增加值，返回 0 或 null 表示数据类型不可以自动增加值 <br>
      * AUTO_INCREMENT
      *
-     * @return
+     * @return 返回 1 表示数据类型可以自动增加值，返回 0 或 null 表示数据类型不可以自动增加值
      */
     Integer getAutoIncrement();
 
@@ -152,7 +152,7 @@ public interface DatabaseType {
      * 返回 0 表示数据类型是有符号的，返回 1 或 null 表示数据类型是无符号的 <br>
      * UNSIGNED_ATTRIBUTE
      *
-     * @return
+     * @return 返回 0 表示数据类型是有符号的，返回 1 或 null 表示数据类型是无符号的
      */
     Integer getUnsigned();
 
@@ -160,7 +160,7 @@ public interface DatabaseType {
      * 被本地化了的数据类型名，可能返回 null 值 <br>
      * LOCAL_TYPE_NAME
      *
-     * @return
+     * @return 数据类型名
      */
     String getLocalName();
 
@@ -173,7 +173,7 @@ public interface DatabaseType {
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseType clone();
 

@@ -81,9 +81,9 @@ public class LoadFileRange {
     /**
      * 将字节出解析为范围集合
      *
-     * @param str
-     * @return
-     * @throws IOException
+     * @param str 表达式
+     * @return 范围集合
+     * @throws IOException 解析字符串表达式错误
      */
     public static List<LoadFileRange> parseString(String str) throws IOException {
         List<LoadFileRange> list = new ArrayList<LoadFileRange>();

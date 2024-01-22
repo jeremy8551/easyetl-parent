@@ -7,7 +7,7 @@ public interface DatabaseProcedureParameterList extends Cloneable, List<Database
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseProcedureParameterList clone();
 

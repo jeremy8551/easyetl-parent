@@ -210,11 +210,11 @@ public class DatabaseReader implements ExtractReader {
     /**
      * 返回详细错误信息
      *
-     * @param context
-     * @param resultSet
-     * @param processors
-     * @return
-     * @throws SQLException
+     * @param context    卸数引擎上下文信息
+     * @param resultSet  查询结果集
+     * @param processors 类型转换器数组
+     * @return 字符串
+     * @throws SQLException 数据库错误
      */
     protected String toDetailMessage(ExtracterContext context, ResultSet resultSet, JdbcObjectConverter[] processors) throws SQLException {
         String source = context.getSource();

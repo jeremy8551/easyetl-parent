@@ -161,15 +161,11 @@ public class RSAEncrypt {
      * @param keyMap 密钥map
      * @return byte[] 公钥
      */
-    public static byte[] getPublicKey(Map<String, Object> keyMap) throws Exception {
+    public static byte[] getPublicKey(Map<String, Object> keyMap) {
         Key key = (Key) keyMap.get(PUBLIC_KEY);
         return key.getEncoded();
     }
 
-    /**
-     * @param args
-     * @throws Exception
-     */
     public static void main(String[] args) throws Exception {
         Map<String, Object> keyMap = RSAEncrypt.initKey();
 

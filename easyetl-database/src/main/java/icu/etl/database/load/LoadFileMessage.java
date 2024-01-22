@@ -28,7 +28,7 @@ public class LoadFileMessage extends EasyJobMessage {
      *
      * @param context 装数引擎上下文信息
      * @param file    表格型数据文件
-     * @throws IOException
+     * @throws IOException 解析消息文件发生错误
      */
     public LoadFileMessage(LoadEngineContext context, TextTableFile file) throws IOException {
         super(tofile(context, file), file.getCharsetName());
@@ -39,7 +39,7 @@ public class LoadFileMessage extends EasyJobMessage {
      *
      * @param context 装数引擎的上下文信息
      * @param file    待加载数据文件
-     * @return
+     * @return 消息文件
      */
     private static File tofile(LoadEngineContext context, TextTableFile file) {
         File parent = file.getFile().getParentFile(); // 消息文件默认与数据文件在相同目录
@@ -73,7 +73,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回启动时间
      *
-     * @return
+     * @return 启动时间
      */
     public Date getStartTime() {
         String date = this.getAttribute("startTime");
@@ -83,7 +83,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 设置数据库表归属的编目信息
      *
-     * @param catalog
+     * @param catalog 编目
      */
     public void setTableCatalog(String catalog) {
         this.setAttribute("tableCatalog", catalog);
@@ -99,7 +99,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 设置数据库表的模式名
      *
-     * @param schema
+     * @param schema 模式
      */
     public void setTableSchema(String schema) {
         this.setAttribute("tableSchema", schema);
@@ -108,7 +108,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回数据库表的模式名
      *
-     * @return
+     * @return 模式
      */
     public String getTableSchema() {
         return this.getAttribute("tableSchema");
@@ -117,7 +117,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 设置数据库表的名
      *
-     * @param name
+     * @param name 表名
      */
     public void setTableName(String name) {
         this.setAttribute("tableName", name);
@@ -126,7 +126,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回数据库表名
      *
-     * @return
+     * @return 表名
      */
     public String getTableName() {
         return this.getAttribute("tableName");
@@ -135,7 +135,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 设置数据库装载模式
      *
-     * @param mode
+     * @param mode 装载模式
      */
     public void setLoadMode(LoadMode mode) {
         this.setAttribute("loadMode", mode == null ? "" : mode.getName());
@@ -144,7 +144,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回数据装载模式
      *
-     * @return
+     * @return 装载模式
      */
     public LoadMode getLoadMode() {
         String str = this.getAttribute("loadMode");
@@ -152,9 +152,9 @@ public class LoadFileMessage extends EasyJobMessage {
     }
 
     /**
-     * 设置数据库表的名
+     * 设置数据库表的字段集合
      *
-     * @param columns
+     * @param columns 表字段集合
      */
     public void setTableColumns(List<DatabaseTableColumn> columns) {
         StringBuilder buf = new StringBuilder();
@@ -171,7 +171,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 设置数据文件的字符集
      *
-     * @param charsetName
+     * @param charsetName 字符集
      */
     public void setCharsetName(String charsetName) {
         this.setAttribute("charset", StringUtils.toCase(charsetName, false, null));
@@ -180,7 +180,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回数据文件的字符集
      *
-     * @return
+     * @return 字符集
      */
     public String getCharsetName() {
         return this.getAttribute("charset");
@@ -198,7 +198,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回文件中字段个数
      *
-     * @return
+     * @return 字段个数
      */
     public String getColumn() {
         return this.getAttribute("column");
@@ -216,7 +216,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回数据文件的绝对路径
      *
-     * @return
+     * @return 文件绝对路径
      */
     public String getFile() {
         return this.getAttribute("filePath");
@@ -225,7 +225,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 设置数据文件最近修改时间
      *
-     * @param time
+     * @param time 修改时间
      */
     public void setFileModified(long time) {
         String date = Dates.format21(new Date(time));
@@ -235,7 +235,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回数据文件最近修改时间
      *
-     * @return
+     * @return 修改时间
      */
     public Date getFileModified() {
         String str = this.getAttribute("fileModified");
@@ -254,7 +254,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回文件类型
      *
-     * @return
+     * @return 文件类型
      */
     public String getFileType() {
         String str = this.getAttribute("fileType");
@@ -281,8 +281,8 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回文件中装载数据的范围集合
      *
-     * @return
-     * @throws IOException
+     * @return 装载数据的范围集合
+     * @throws IOException 解析表达式错误
      */
     public List<LoadFileRange> getFileFailRanage() throws IOException {
         String str = this.getAttribute("fileRange");
@@ -300,7 +300,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 设置未装载数据范围
      *
-     * @param ranges
+     * @param ranges 未装载数据范围
      */
     public void setFileRange(List<LoadFileRange> ranges) {
         String str = LoadFileRange.toString(ranges);
@@ -310,7 +310,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回已读取行数
      *
-     * @return
+     * @return 已读取行数
      */
     public long getReadRows() {
         String str = this.getAttribute("readRow");
@@ -320,7 +320,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 保存已读取行数
      *
-     * @param line
+     * @param line 已读取行数
      */
     public void setReadRows(long line) {
         this.setAttribute("readRow", String.valueOf(line));
@@ -329,7 +329,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回已提交到数据库表的行数
      *
-     * @return
+     * @return 已提交到数据库表的行数
      */
     public long getCommitRows() {
         String str = this.getAttribute("commitRow");
@@ -339,7 +339,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 保存已提交到数据库表的行数
      *
-     * @param line
+     * @param line 已提交到数据库表的行数
      */
     public void setCommitRows(long line) {
         this.setAttribute("commitRow", String.valueOf(line));
@@ -348,7 +348,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回装载数据错误行数
      *
-     * @return
+     * @return 装载数据错误行数
      */
     public long getErrorRows() {
         String str = this.getAttribute("errorRow");
@@ -358,7 +358,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 保存装载数据错误行数
      *
-     * @param line
+     * @param line 装载数据错误行数
      */
     public void setErrorRows(long line) {
         this.setAttribute("errorRow", String.valueOf(line));
@@ -367,7 +367,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回已忽略数据行数
      *
-     * @return
+     * @return 已忽略数据行数
      */
     public long getSkipRows() {
         String str = this.getAttribute("skipRow");
@@ -377,7 +377,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 保存已忽略数据行数
      *
-     * @param line
+     * @param line 已忽略数据行数
      */
     public void setSkipRows(long line) {
         this.setAttribute("skipRow", String.valueOf(line));
@@ -386,7 +386,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回已删除数据行数
      *
-     * @return
+     * @return 已删除数据行数
      */
     public long getDeleteRows() {
         String str = this.getAttribute("deleteRow");
@@ -396,7 +396,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 保存已删除数据行数
      *
-     * @param line
+     * @param line 已删除数据行数
      */
     public void setDeleteRows(long line) {
         this.setAttribute("deleteRow", String.valueOf(line));
@@ -416,7 +416,7 @@ public class LoadFileMessage extends EasyJobMessage {
     /**
      * 返回终止时间
      *
-     * @return
+     * @return 终止时间
      */
     public Date getEndTime() {
         String date = this.getAttribute("endTime");

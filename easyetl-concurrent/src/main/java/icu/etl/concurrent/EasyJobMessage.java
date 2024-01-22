@@ -40,7 +40,7 @@ public class EasyJobMessage {
      *
      * @param file        消息文件
      * @param charsetName 消息文件字符集
-     * @throws IOException IO错误
+     * @throws IOException 解析消息文件发生错误
      */
     public EasyJobMessage(File file, String charsetName) throws IOException {
         this.charsetName = Ensure.notBlank(charsetName);

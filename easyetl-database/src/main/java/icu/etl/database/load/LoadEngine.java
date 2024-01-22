@@ -48,9 +48,9 @@ public class LoadEngine extends AbstractJob implements EasyContextAware {
     }
 
     /**
-     * 返回数据加载任务的上下文信息
+     * 返回数据装载任务的上下文信息
      *
-     * @return
+     * @return 数据装载任务的上下文信息
      */
     public LoadEngineContext getContext() {
         return this.context;

@@ -28,14 +28,10 @@ public class NationalHolidayBuilder implements EasyBeanBuilder<NationalHoliday>,
 
     private Map<String, NationalHolidaySet> map;
 
-    /** 容器上下文信息 */
-    private EasyContext context;
-
     /**
      * 初始化
      */
     public NationalHolidayBuilder(EasyContext context) {
-        this.context = context;
         this.map = new CaseSensitivMap<NationalHolidaySet>();
         this.addAll(context);
     }

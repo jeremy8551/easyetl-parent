@@ -44,9 +44,9 @@ public class ExtractListener {
     }
 
     /**
-     * 返回 true 表示任务已准备就绪可以执行，false 表示任务还未准备就绪不能执行
+     * 判断任务已准备就绪可以执行
      *
-     * @return
+     * @return 返回 true 表示任务已准备就绪可以执行，false 表示任务还未准备就绪不能执行
      */
     public boolean ready() {
         for (ExtractUserListener l : this.list) {

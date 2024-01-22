@@ -31,7 +31,7 @@ public class StandardDatabaseTypes implements DatabaseTypeSet {
         Set<Entry<String, DatabaseType>> set = this.map.entrySet();
         for (Entry<String, DatabaseType> entry : set) {
             DatabaseType type = entry.getValue();
-            if (type.getSqlType().intValue() == sqltype) {
+            if (type.getSqlType() == sqltype) {
                 return type;
             }
         }
@@ -50,7 +50,7 @@ public class StandardDatabaseTypes implements DatabaseTypeSet {
         for (String key : keySet) {
             DatabaseType type = this.map.get(key);
             cb.addCell(type.getName());
-            cb.addCell(new StringBuilder().append(type.getTextPrefix()).append("").append(type.getTextSuffix()));
+            cb.addCell(new StringBuilder().append(type.getTextPrefix()).append(type.getTextSuffix()));
             cb.addCell(type.getExpression());
             cb.addCell(type.getScale());
             cb.addCell(type.getMaxScale());

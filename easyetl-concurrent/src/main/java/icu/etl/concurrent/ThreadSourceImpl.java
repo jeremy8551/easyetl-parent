@@ -9,8 +9,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import icu.etl.log.Log;
-import icu.etl.log.LogFactory;
 import icu.etl.util.Ensure;
 
 /**
@@ -20,7 +18,6 @@ import icu.etl.util.Ensure;
  * @createtime 2023/11/28
  */
 public class ThreadSourceImpl implements ThreadSource, Closeable {
-    private final static Log log = LogFactory.getLog(ThreadSourceImpl.class);
 
     /** 线程池 */
     private ExecutorService service;

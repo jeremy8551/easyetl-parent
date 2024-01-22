@@ -1,14 +1,15 @@
 package icu.etl.database.logger;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
-import javax.sql.DataSource;
 
 import icu.etl.database.pool.SimpleDatasource;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.Ensure;
 
 public class DataSourceLogger implements InvocationHandler {
 
@@ -25,14 +26,8 @@ public class DataSourceLogger implements InvocationHandler {
      * @param dataSource 数据源
      */
     public DataSourceLogger(EasyContext context, SimpleDatasource dataSource) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
-        if (dataSource == null) {
-            throw new NullPointerException();
-        }
-        this.dataSource = dataSource;
-        this.context = context;
+        this.context = Ensure.notNull(context);
+        this.dataSource = Ensure.notNull(dataSource);
     }
 
     /**

@@ -11,16 +11,16 @@ import icu.etl.os.OSConfiguration;
 public interface DatabaseConfiguration extends Cloneable, OSConfiguration {
 
     /**
-     * 驱动类名
+     * 数据库驱动类名
      *
-     * @return
+     * @return 驱动类名
      */
     String getDriverClass();
 
     /**
-     * 数据库地址信息
+     * 数据库URL信息
      *
-     * @return
+     * @return URL信息
      */
     String getUrl();
 

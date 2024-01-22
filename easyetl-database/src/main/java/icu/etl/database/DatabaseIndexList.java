@@ -10,14 +10,14 @@ public interface DatabaseIndexList extends Cloneable, List<DatabaseIndex> {
      * @param index           数据库索引信息
      * @param ignoreIndexName true表示忽略字段名大小写不同
      * @param ignoreIndexSort true表示忽略字段排序方式不同
-     * @return
+     * @return 返回true表示存在索引 false表示不存在索引
      */
     boolean contains(DatabaseIndex index, boolean ignoreIndexName, boolean ignoreIndexSort);
 
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseIndexList clone();
 

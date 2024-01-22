@@ -111,7 +111,7 @@ public class StandardJdbcConverterMapper implements JdbcConverterMapper {
     /**
      * 类型转换器配置信息
      */
-    private class Configuration<E> {
+    private static class Configuration<E> {
 
         /** 类信息 */
         private Class<E> cls;
@@ -122,7 +122,7 @@ public class StandardJdbcConverterMapper implements JdbcConverterMapper {
         /**
          * 创建类型转换器配置信息
          *
-         * @param cls
+         * @param cls 类信息
          */
         public Configuration(Class<E> cls) {
             this.parameters = new HashMap<String, String>();
@@ -130,15 +130,14 @@ public class StandardJdbcConverterMapper implements JdbcConverterMapper {
         }
 
         /**
-         * 将字符串转为字段处理逻辑类
+         * 初始化
          *
          * @param expression 类型转换器表达式，格式: className?key=val&key1=val1
-         * @return
          */
         public Configuration(String expression) {
             this.parameters = new HashMap<String, String>();
 
-            int index = -1;
+            int index;
             if ((index = expression.indexOf('?')) != -1) {
                 this.cls = ClassUtils.loadClass(StringUtils.trimBlank(expression.substring(0, index)));
 
@@ -160,7 +159,7 @@ public class StandardJdbcConverterMapper implements JdbcConverterMapper {
         /**
          * 类型转换器的类信息
          *
-         * @return
+         * @return 类信息
          */
         public Class<E> getConverter() {
             return this.cls;
@@ -169,8 +168,8 @@ public class StandardJdbcConverterMapper implements JdbcConverterMapper {
         /**
          * 返回参数值
          *
-         * @param key
-         * @return
+         * @param key 参数名
+         * @return 参数值
          */
         public String getParameter(String key) {
             return this.parameters.get(key);
@@ -179,8 +178,8 @@ public class StandardJdbcConverterMapper implements JdbcConverterMapper {
         /**
          * 保存参数
          *
-         * @param key
-         * @param value
+         * @param key   参数名
+         * @param value 参数值
          */
         public void setParameter(String key, String value) {
             this.parameters.put(key, value);
@@ -189,7 +188,7 @@ public class StandardJdbcConverterMapper implements JdbcConverterMapper {
         /**
          * 类型转换器的参数
          *
-         * @return
+         * @return 参数名集合
          */
         public Set<String> getParameterNames() {
             return this.parameters.keySet();

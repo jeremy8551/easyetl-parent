@@ -43,14 +43,14 @@ public class SftpFileWriter implements ExtractWriter, EasyContextAware {
     /**
      * 初始化
      *
-     * @param context
-     * @param message
-     * @param host
-     * @param port
-     * @param username
-     * @param password
-     * @param remotepath
-     * @throws IOException
+     * @param context    卸数引擎上下文信息
+     * @param message    消息信息
+     * @param host       远程服务器地址
+     * @param port       远程服务器端口
+     * @param username   远程服务器用户名
+     * @param password   远程服务器密码
+     * @param remotepath 远程服务器目录
+     * @throws IOException 卸载数据发生错误
      */
     public SftpFileWriter(ExtracterContext context, ExtractMessage message, String host, String port, String username, String password, String remotepath) throws IOException {
         this.message = message;
@@ -69,15 +69,6 @@ public class SftpFileWriter implements ExtractWriter, EasyContextAware {
         this.ftp.upload(in, this.remotepath);
     }
 
-    /**
-     * 打开一个文件输入流接口
-     *
-     * @param host
-     * @param port
-     * @param username
-     * @param password
-     * @param remotepath
-     */
     protected void open(String host, String port, String username, String password, String remotepath) {
         this.ftp = this.context.getBean(OSFtpCommand.class, "sftp");
         Ensure.isTrue(this.ftp.connect(host, Integer.parseInt(port), username, password), host, port, username, password);
@@ -107,7 +98,7 @@ public class SftpFileWriter implements ExtractWriter, EasyContextAware {
         this.message.setTarget(this.target);
     }
 
-    class InputStreamImpl extends InputStream {
+    private static class InputStreamImpl extends InputStream {
 
         private byte[] bytes;
 
@@ -146,13 +137,13 @@ public class SftpFileWriter implements ExtractWriter, EasyContextAware {
                 } while (read <= 0 && !this.out.isClose());
                 return this.out.isClose() ? -1 : read;
             } catch (InterruptedException e) {
-                throw new IOException(off + ", " + len, e);
+                throw new RuntimeException(e.getLocalizedMessage(), e);
             } finally {
                 this.lock.unlock();
             }
         }
 
-        public synchronized int read() throws IOException {
+        public synchronized int read() {
             return this.bytes[this.index++];
         }
 
@@ -167,7 +158,7 @@ public class SftpFileWriter implements ExtractWriter, EasyContextAware {
 
     }
 
-    class WriterImpl extends Writer {
+    private static class WriterImpl extends Writer {
 
         private InputStreamImpl in;
 
@@ -198,10 +189,10 @@ public class SftpFileWriter implements ExtractWriter, EasyContextAware {
             }
         }
 
-        public void flush() throws IOException {
+        public void flush() {
         }
 
-        public void close() throws IOException {
+        public void close() {
             this.close = true;
         }
 

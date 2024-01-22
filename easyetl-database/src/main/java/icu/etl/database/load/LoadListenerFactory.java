@@ -15,8 +15,8 @@ public class LoadListenerFactory {
     /**
      * 生成文件输入流监听器
      *
-     * @param context
-     * @return
+     * @param context 数据装载引擎上下文信息
+     * @return 输入流监听器
      */
     public static TextTableFileReaderListener create(LoadEngineContext context) {
         CommonTextTableFileReaderListener listener = null;

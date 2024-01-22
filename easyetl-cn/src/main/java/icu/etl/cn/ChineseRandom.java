@@ -226,7 +226,7 @@ public class ChineseRandom {
     /**
      * 设置单字的姓氏
      *
-     * @param surname
+     * @param surname 姓氏数组
      */
     public void setSurname(String[] surname) {
         if (surname == null || surname.length == 0) {
@@ -239,7 +239,7 @@ public class ChineseRandom {
     /**
      * 设置双字的复姓
      *
-     * @param doubleSurname
+     * @param doubleSurname 复数姓氏数组
      */
     public void setDoubleSurname(String[] doubleSurname) {
         if (doubleSurname == null || doubleSurname.length == 0) {
@@ -252,7 +252,7 @@ public class ChineseRandom {
     /**
      * 设置姓名中的字
      *
-     * @param words
+     * @param words 姓名中字的数组
      */
     public void setNameWords(String[] words) {
         if (words == null || words.length == 0) {
@@ -265,7 +265,7 @@ public class ChineseRandom {
     /**
      * 设置行政区划代码
      *
-     * @param list
+     * @param list 行政区划代码集合
      */
     public void setAreas(List<String> list) {
         if (list != null) {
@@ -280,7 +280,7 @@ public class ChineseRandom {
     /**
      * 生成一个随机的中文名
      *
-     * @return
+     * @return 随机的中文名
      */
     public String nextName() {
         StringBuilder name = new StringBuilder(4);
@@ -332,7 +332,7 @@ public class ChineseRandom {
     /**
      * 生成一个随机18位身份证号
      *
-     * @return
+     * @return 身份证号
      */
     public String nextIdCard() {
         Date start = Dates.calcYear(new Date(), -60); // 出生日期最早只能是60年前
@@ -345,7 +345,7 @@ public class ChineseRandom {
      *
      * @param start 出生日期的最小值
      * @param end   出生日期的最大值
-     * @return
+     * @return 身份证号
      */
     public String nextIdCard(Date start, Date end) {
         if (this.areacodes.isEmpty()) {
@@ -370,7 +370,7 @@ public class ChineseRandom {
      *
      * @param start 出生日期的最小值
      * @param end   出生日期的最大值
-     * @return
+     * @return 出生日期
      */
     public Date nextBirthday(Date start, Date end) {
         if (start == null || end == null) {
@@ -385,7 +385,7 @@ public class ChineseRandom {
     /**
      * 生成第18位身份证号
      *
-     * @param str
+     * @param str 身份证号
      * @return 身份证校验码的计算方法 将前面的身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7－9－10－5－8－4－2－1－6－3－7－9－10－5－8－4－2。 将这17位数字和系数相乘的结果相加。 用加出来和除以11，看余数是多少？ 余数只可能有0－1－2－3－4－5－6－7－8－9－10这11个数字。 其分别对应的最后一位身份证的号码为1－0－X －9－8－7－6－5－4－3－2。
      */
     private char toValidCode(CharSequence str) {
@@ -400,7 +400,7 @@ public class ChineseRandom {
     /**
      * 返回随机数生成因子
      *
-     * @return
+     * @return 随机
      */
     public Random get() {
         return this.random;

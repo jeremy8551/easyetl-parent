@@ -5,14 +5,14 @@ public interface DatabaseSpace extends Cloneable {
     /**
      * 表空间名
      *
-     * @return
+     * @return 表空间名
      */
     String getName();
 
     /**
-     * 复制一个表空间
+     * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     DatabaseSpace clone();
 

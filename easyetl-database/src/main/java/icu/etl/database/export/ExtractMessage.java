@@ -32,7 +32,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 设置数据保存位置信息
      *
-     * @param filepath
+     * @param filepath 位置信息
      */
     public void setTarget(String filepath) {
         this.setAttribute("target", filepath);
@@ -41,7 +41,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回数据保存位置信息
      *
-     * @return
+     * @return 位置信息
      */
     public String getTarget() {
         return this.getAttribute("target");
@@ -50,7 +50,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 保存数据的字符集
      *
-     * @param charsetName
+     * @param charsetName 字符集
      */
     public void setEncoding(String charsetName) {
         this.setAttribute("codepage", charsetName);
@@ -59,7 +59,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回文件字符集
      *
-     * @return
+     * @return 字符集
      */
     public String getEncoding() {
         return this.getAttribute("codepage");
@@ -68,7 +68,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 字段个数
      *
-     * @param column
+     * @param column 字段个数
      */
     public void setColumn(int column) {
         this.setAttribute("column", String.valueOf(column));
@@ -77,7 +77,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回字段个数
      *
-     * @return
+     * @return 字段个数
      */
     public String getColumn() {
         return this.getAttribute("column");
@@ -86,7 +86,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 行间分隔符
      *
-     * @param str
+     * @param str 行间分隔符
      */
     public void setLineSeparator(String str) {
         this.setAttribute("rowdel", StringUtils.escapeLineSeparator(str));
@@ -95,7 +95,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回行间分隔符
      *
-     * @return
+     * @return 行间分隔符
      */
     public String getLineSeparator() {
         return this.getAttribute("rowdel");
@@ -104,7 +104,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 设置数据源信息
      *
-     * @param str
+     * @param str 数据源信息
      */
     public void setSource(String str) {
         this.setAttribute("source", SQL.removeAnnotation(str, null, null));
@@ -113,7 +113,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回数据源信息
      *
-     * @return
+     * @return 数据源信息
      */
     public String getSource() {
         return this.getAttribute("source");
@@ -122,7 +122,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 保存字符串限定符
      *
-     * @param str
+     * @param str 字符串限定符
      */
     public void setCharDelimiter(String str) {
         this.setAttribute("chardel", String.valueOf(str));
@@ -131,7 +131,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回字符串限定符
      *
-     * @return
+     * @return 字符串限定符
      */
     public String getCharDelimiter() {
         return this.getAttribute("chardel");
@@ -140,7 +140,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 保存字段分隔符
      *
-     * @param str
+     * @param str 字段分隔符
      */
     public void setDelimiter(String str) {
         this.setAttribute("coldel", str);
@@ -149,7 +149,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回字段分隔符
      *
-     * @return
+     * @return 字段分隔符
      */
     public String getDelimiter() {
         return this.getAttribute("coldel");
@@ -158,7 +158,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回数据文件的字节数
      *
-     * @return
+     * @return 数据文件的字节数
      */
     public String getBytes() {
         return this.getAttribute("bytes");
@@ -167,7 +167,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 保存数据文件的字节数
      *
-     * @param length
+     * @param length 数据文件的字节数
      */
     public void setBytes(long length) {
         this.setAttribute("bytes", String.valueOf(length));
@@ -176,7 +176,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回数据文件的行数
      *
-     * @return
+     * @return 数据文件的行数
      */
     public String getRows() {
         return this.getAttribute("rows");
@@ -185,7 +185,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 保存数据文件的行数
      *
-     * @param line
+     * @param line 数据文件的行数
      */
     public void setRows(long line) {
         this.setAttribute("rows", String.valueOf(line));
@@ -194,7 +194,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 保存卸数用时时间
      *
-     * @param time
+     * @param time 卸数用时时间
      */
     public void setTime(String time) {
         this.setAttribute("usetime", time);
@@ -203,7 +203,7 @@ public class ExtractMessage extends EasyJobMessage {
     /**
      * 返回卸数用时时间
      *
-     * @return
+     * @return 卸数用时时间
      */
     public String getTime() {
         return this.getAttribute("usetime");

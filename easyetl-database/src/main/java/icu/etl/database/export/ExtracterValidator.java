@@ -10,7 +10,7 @@ public class ExtracterValidator {
     /**
      * 检查参数信息是否正确
      *
-     * @param context
+     * @param context 卸数引擎上下文信息
      */
     public void check(ExtracterContext context) {
         if (context.getCharFilter() == null) {

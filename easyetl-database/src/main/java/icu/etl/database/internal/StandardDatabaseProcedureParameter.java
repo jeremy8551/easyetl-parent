@@ -72,65 +72,30 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
         super();
     }
 
-    /**
-     * 参数值表达式: 'yyyy-MM-dd' 或 ? 等形式
-     *
-     * @return
-     */
     public String getExpression() {
         return expression;
     }
 
-    /**
-     * 参数值表达式: 'yyyy-MM-dd' 或 ? 等形式
-     *
-     * @param expression
-     */
     public void setExpression(String expression) {
         this.expression = expression;
     }
 
-    /**
-     * 参数值
-     *
-     * @return
-     */
     public Object getValue() {
         return value;
     }
 
-    /**
-     * 参数值
-     *
-     * @param value 参数值
-     */
     public void setValue(Object value) {
         this.value = value;
     }
 
-    /**
-     * 占位符参数的位置（从1开始）
-     *
-     * @return 占位符的序号, 0表示参数没有设置占位符?
-     */
     public int getPlaceholder() {
         return placeholder;
     }
 
-    /**
-     * 当前参数位是占位符?, 则需要设置占位符的序号（从1开始）
-     *
-     * @param pos 占位符的序号（从1开始）0表示参数没有设置占位符?
-     */
     public void setPlaceholder(int pos) {
         this.placeholder = pos;
     }
 
-    /**
-     * 输出参数的序号（从1开始）, 0表示非输出参数
-     *
-     * @return
-     */
     public int getOutIndex() {
         return outIndex;
     }
@@ -138,109 +103,52 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 输出参数的序号（从1开始）, 0表示非输出参数
      *
-     * @param outIndex
+     * @param outIndex 参数的序号（从1开始）
      */
     public void setOutIndex(int outIndex) {
         this.outIndex = outIndex;
     }
 
-    /**
-     * 存储过程名
-     *
-     * @return
-     */
     public String getProcedureName() {
         return procedureName;
     }
 
-    /**
-     * 存储过程归属schema
-     *
-     * @return
-     */
     public String getProcedureSchema() {
         return procedureSchema;
     }
 
-    /**
-     * 参数在数据库存储过程中参数的位置（从1开始）
-     *
-     * @return
-     */
     public int getPosition() {
         return orderid;
     }
 
-    /**
-     * 参数名
-     *
-     * @return
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * 参数类型 CHARACTER INTEGER
-     *
-     * @return
-     */
     public String getFieldType() {
         return type;
     }
 
-    /**
-     * 参数对应的 java.sql.Types 类型
-     *
-     * @return
-     */
     public int getSqlType() {
         return typeId;
     }
 
-    /**
-     * true表示参数可以为null
-     *
-     * @return
-     */
     public boolean isNullEnable() {
         return nullEnable;
     }
 
-    /**
-     * 参数长度
-     *
-     * @return
-     */
     public int length() {
         return length;
     }
 
-    /**
-     * 参数精度
-     *
-     * @return
-     */
     public int getScale() {
         return scale;
     }
 
-    /**
-     * 参数模式 IN OUT
-     *
-     * @return
-     */
     public int getMode() {
         return mode;
     }
 
-    /**
-     * 判断数值是否为数据库存储过程输出型参数 <br>
-     * DatabaseProcedure.PARAM_OUT_MODE <br>
-     * DatabaseProcedure.PARAM_IN_OUT_MODE <br>
-     *
-     * @return
-     */
     public boolean isOutMode() {
         return mode == DatabaseProcedure.PARAM_OUT_MODE || mode == DatabaseProcedure.PARAM_INOUT_MODE;
     }
@@ -248,7 +156,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 存储过程名
      *
-     * @param procedureName
+     * @param procedureName 存储过程名
      */
     public void setProcedureName(String procedureName) {
         this.procedureName = procedureName;
@@ -257,7 +165,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 存储过程归属schema
      *
-     * @param procedureSchema
+     * @param procedureSchema 存储过程归属schema
      */
     public void setProcedureSchema(String procedureSchema) {
         this.procedureSchema = procedureSchema;
@@ -266,7 +174,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 参数在数据库存储过程中参数的位置（从1开始）
      *
-     * @param orderid
+     * @param orderid 参数的位置（从1开始）
      */
     public void setPosition(int orderid) {
         this.orderid = orderid;
@@ -275,7 +183,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 参数名
      *
-     * @param name
+     * @param name 参数名
      */
     public void setName(String name) {
         this.name = name;
@@ -284,16 +192,16 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 参数类型 CHARACTER INTEGER
      *
-     * @param type
+     * @param type 参数类型
      */
     public void setFieldType(String type) {
         this.type = type;
     }
 
     /**
-     * 参数对应的 java.sql.Types 类型
+     * 参数对应的 {@linkplain java.sql.Types} 类型
      *
-     * @param typeId
+     * @param typeId {@linkplain java.sql.Types}
      */
     public void setSqlType(int typeId) {
         this.typeId = typeId;
@@ -302,7 +210,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * true表示参数可以为null
      *
-     * @param isCanNull
+     * @param isCanNull true表示参数可以为null
      */
     public void setCanNull(boolean isCanNull) {
         this.nullEnable = isCanNull;
@@ -311,7 +219,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 参数长度
      *
-     * @param length
+     * @param length 参数长度
      */
     public void setLength(int length) {
         this.length = length;
@@ -320,7 +228,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 参数精度
      *
-     * @param scale
+     * @param scale 参数精度
      */
     public void setScale(int scale) {
         this.scale = scale;
@@ -329,17 +237,12 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     /**
      * 参数模式 IN OUT
      *
-     * @param mode
+     * @param mode 参数模式 IN OUT
      */
     public void setMode(int mode) {
         this.mode = mode;
     }
 
-    /**
-     * 判断输入参数str是否为合法数据库存储过程参数名, 即首字母以$开始只有字母、数字、下划线组成。
-     *
-     * @return
-     */
     public boolean isExpression() {
         String str = this.getExpression();
         if (StringUtils.isBlank(str)) {
@@ -351,9 +254,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
             return false;
         }
 
-        /**
-         * 只能是字母数字下划线的组合，不能包含空格
-         */
+        // 只能是字母数字下划线的组合，不能包含空格
         for (int i = 1; i < str.length(); i++) {
             char c = str.charAt(i);
             if (StringUtils.isNumber(c) || StringUtils.isLetter(c) || c == '_') { // 变量名只能由罗马字母，数字 下划线组成
@@ -366,12 +267,6 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
         return true;
     }
 
-    /**
-     * 设置执行存储过程输入参数
-     *
-     * @param statement 输入执行存储过程的 CallableStatement 对象
-     * @throws SQLException
-     */
     public void setStatement(CallableStatement statement) throws SQLException {
         if (statement == null) {
             throw new NullPointerException();

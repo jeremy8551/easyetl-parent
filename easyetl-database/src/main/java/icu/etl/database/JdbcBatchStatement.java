@@ -47,7 +47,7 @@ public class JdbcBatchStatement {
      *
      * @param connection 数据库连接
      * @param sql        SQL语句
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public JdbcBatchStatement(Connection connection, String sql) throws SQLException {
         this();
@@ -60,7 +60,7 @@ public class JdbcBatchStatement {
      * @param connection 数据库连接
      * @param sql        SQL语句
      * @param commit     缓冲记录数
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public JdbcBatchStatement(Connection connection, String sql, int commit) throws SQLException {
         this();
@@ -73,7 +73,7 @@ public class JdbcBatchStatement {
      *
      * @param connection 数据库连接
      * @param sql        SQL 语句
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     protected void init(Connection connection, String sql) throws SQLException {
         if (connection == null || connection.isClosed()) {
@@ -90,9 +90,9 @@ public class JdbcBatchStatement {
     }
 
     /**
-     * 设置最大缓存笔数
+     * 设置最大缓存记录数
      *
-     * @param n
+     * @param n 缓存记录数
      */
     public void setCommitNumber(int n) {
         if (n <= 0) {
@@ -112,7 +112,7 @@ public class JdbcBatchStatement {
     /**
      * 返回 JDBC PreparedStatement
      *
-     * @return
+     * @return PreparedStatement接口
      */
     public PreparedStatement getPreparedStatement() {
         return this.statement;
@@ -121,8 +121,8 @@ public class JdbcBatchStatement {
     /**
      * 在当前行插入字段
      *
-     * @param x
-     * @throws SQLException
+     * @param x 字段值
+     * @throws SQLException 数据库错误
      */
     public void setParameter(byte x) throws SQLException {
         this.statement.setByte(++this.index, x);
@@ -131,8 +131,8 @@ public class JdbcBatchStatement {
     /**
      * 在当前行插入字段
      *
-     * @param x
-     * @throws SQLException
+     * @param x 字段值
+     * @throws SQLException 数据库错误
      */
     public void setParameter(String x) throws SQLException {
         this.statement.setString(++this.index, x);
@@ -141,8 +141,8 @@ public class JdbcBatchStatement {
     /**
      * 在当前行插入字段
      *
-     * @param x
-     * @throws SQLException
+     * @param x 字段值
+     * @throws SQLException 数据库错误
      */
     public void setParameter(int x) throws SQLException {
         this.statement.setInt(++this.index, x);
@@ -151,8 +151,8 @@ public class JdbcBatchStatement {
     /**
      * 在当前行插入字段
      *
-     * @param x
-     * @throws SQLException
+     * @param x 字段值
+     * @throws SQLException 数据库错误
      */
     public void setParameter(BigDecimal x) throws SQLException {
         this.statement.setBigDecimal(++this.index, x);
@@ -161,8 +161,8 @@ public class JdbcBatchStatement {
     /**
      * 在当前行插入字段
      *
-     * @param x
-     * @throws SQLException
+     * @param x 字段值
+     * @throws SQLException 数据库错误
      */
     public void setParameter(java.util.Date x) throws SQLException {
         this.statement.setDate(++this.index, (x == null ? null : new java.sql.Date(x.getTime())));
@@ -171,8 +171,8 @@ public class JdbcBatchStatement {
     /**
      * 在当前行插入字段
      *
-     * @param x
-     * @throws SQLException
+     * @param x 字段值
+     * @throws SQLException 数据库错误
      */
     public void setParameter(Double x) throws SQLException {
         this.statement.setDouble(++this.index, x);
@@ -181,8 +181,8 @@ public class JdbcBatchStatement {
     /**
      * 在当前行插入字段
      *
-     * @param x
-     * @throws SQLException
+     * @param x 字段值
+     * @throws SQLException 数据库错误
      */
     public void setParameter(Long x) throws SQLException {
         this.statement.setLong(++this.index, x);
@@ -191,8 +191,8 @@ public class JdbcBatchStatement {
     /**
      * 在当前行插入字段
      *
-     * @param x
-     * @throws SQLException
+     * @param x 字段值
+     * @throws SQLException 数据库错误
      */
     public void setParameter(Object x) throws SQLException {
         this.statement.setObject(++this.index, x);
@@ -201,7 +201,7 @@ public class JdbcBatchStatement {
     /**
      * 执行 {@linkplain Statement#addBatch(String)}
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void addBatch() throws SQLException {
         this.statement.addBatch();
@@ -211,7 +211,7 @@ public class JdbcBatchStatement {
      * 提交事务
      *
      * @return 批处理语句对应的结果
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public int[] executeBatch() throws SQLException {
         if (this.statement != null) {
@@ -231,7 +231,7 @@ public class JdbcBatchStatement {
      * 强制提交所有缓冲和事务
      *
      * @return 批处理语句对应的执行结果
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public int[] forceExecuteBatch() throws SQLException {
         int orignal = this.count;
@@ -246,7 +246,7 @@ public class JdbcBatchStatement {
     /**
      * 将缓存数据提交到数据库，但不会关闭数据库连接
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void close() throws SQLException {
         try {
@@ -263,7 +263,7 @@ public class JdbcBatchStatement {
     /**
      * 返回数据库连接
      *
-     * @return
+     * @return 数据库连接
      */
     public Connection getConnection() {
         return this.connection;
