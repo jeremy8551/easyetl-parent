@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -43,7 +44,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
     /**
      * 打开输入流
      *
-     * @param str
+     * @param str 字符序列
      */
     public CacheLineReader(CharSequence str) {
         this();
@@ -80,7 +81,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
      * @param file        文件
      * @param charsetName 文件的字符集
      * @param size        缓冲区长度，单位：字符
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     public CacheLineReader(File file, String charsetName, int size) throws IOException {
         this(new InputStreamReader(new FileInputStream(file), charsetName), size);
@@ -92,7 +93,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
      * @param chars 字符个数
      * @param rows  跳转后的行号,从 1 开始
      * @return 返回null表示跳转成功 第一位表示实际跳转的行数，第二位表示实际跳转的字节数
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     public synchronized long[] skip(long chars, long rows) throws IOException {
         long real = this.cacher.skip(chars);
@@ -110,7 +111,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
     /**
      * 设置起始行号
      *
-     * @param n
+     * @param n 行号
      */
     public void setLineNumber(long n) {
         this.cacher.setLineNumber(n);
@@ -132,7 +133,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
      * 缓存 {@code n} 行数据
      *
      * @param n 缓存行数（从 1 开始）
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     public synchronized int cacheLine(int n) throws IOException {
         if (this.open) {
@@ -166,7 +167,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
      * 将字符串参数 {@code line} 作为当前行内容保存
      *
      * @param line 字符串
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     public synchronized void setCurrentLine(String line) throws IOException {
         if (this.open) {
@@ -183,8 +184,8 @@ public class CacheLineReader extends Reader implements TextFileReader {
     /**
      * 返回缓存区中的行，按行号从小到大排序
      *
-     * @return
-     * @throws IOException
+     * @return 返回缓冲行内容
+     * @throws IOException 访问输入流错误
      */
     public synchronized ArrayList<TextFileLine> getCacheLines() throws IOException {
         if (this.open) {
@@ -205,7 +206,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
     /**
      * 返回标准输入流接口
      *
-     * @return
+     * @return 标准输入流
      */
     protected TextFileReader getReader() {
         return this.in;
@@ -214,7 +215,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
     /**
      * 设置标准输入流接口
      *
-     * @param reader
+     * @param reader 标准输入流
      */
     protected void setReader(TextFileReader reader) {
         this.in = reader;
@@ -225,7 +226,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
      * 如果还未执行 {@link #readLine()} 方法，则返回字符序列中第一行最后的行间分隔符<br>
      * 如果文本（为空 即长度为零）无行间分隔符，返回空字符
      *
-     * @return
+     * @return 行分隔符
      */
     public String getLineSeparator() {
         return this.in.getLineSeparator();
@@ -242,7 +243,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
         }
     }
 
-    class CacheLine implements TextFileReader {
+    private static class CacheLine implements TextFileReader {
 
         /** 父对象 */
         private CacheLineReader main;
@@ -265,14 +266,10 @@ public class CacheLineReader extends Reader implements TextFileReader {
         /**
          * 初始化
          *
-         * @param main
+         * @param in 输入流
          */
-        public CacheLine(CacheLineReader main) {
-            if (main == null) {
-                throw new NullPointerException();
-            }
-
-            this.main = main;
+        public CacheLine(CacheLineReader in) {
+            this.main = Ensure.notNull(in);
             this.lineReader = null;
             this.lineNumber = 0;
             this.lines = new ArrayList<TextFileLine>();
@@ -317,20 +314,16 @@ public class CacheLineReader extends Reader implements TextFileReader {
         /**
          * 设置行号
          *
-         * @param n
+         * @param n 行号
          */
         public void setLineNumber(long n) {
-            if (n < 0) {
-                throw new IllegalArgumentException(String.valueOf(n));
-            } else {
-                this.lineNumber = n;
-            }
+            this.lineNumber = Ensure.isFromZero(n);
         }
 
         /**
          * 查询换行符
          *
-         * @return
+         * @return 换行符
          */
         public String findLineSeparator() {
             for (int i = this.index; i >= 0 && i < this.lines.size(); i++) {
@@ -357,9 +350,9 @@ public class CacheLineReader extends Reader implements TextFileReader {
         /**
          * 添加缓存行
          *
-         * @param line
-         * @param lineSeparator
-         * @throws IOException
+         * @param line          行内容
+         * @param lineSeparator 行分隔符
+         * @throws IOException 访问输入流错误
          */
         public void setCurrentLine(String line, String lineSeparator) throws IOException {
             if (this.main.getReader() == null && this.lineReader == null) {
@@ -396,7 +389,7 @@ public class CacheLineReader extends Reader implements TextFileReader {
          *
          * @param n 缓存行数, 从1开始（小于等于零时默认只缓存1行）
          * @return 返回实际缓存行数
-         * @throws IOException
+         * @throws IOException 访问输入流错误
          */
         public int cacheLine(int n) throws IOException {
             if (this.main.getReader() == null && this.lineReader == null) {
@@ -520,10 +513,9 @@ public class CacheLineReader extends Reader implements TextFileReader {
             this.lines.clear();
             this.index = -1;
         }
-
     }
 
-    private class Line implements TextFileLine {
+    private static class Line implements TextFileLine {
 
         private String lineSeparator;
 
@@ -545,7 +537,6 @@ public class CacheLineReader extends Reader implements TextFileReader {
         public void setContext(String line) {
             this.line = line;
         }
-
     }
 
 }

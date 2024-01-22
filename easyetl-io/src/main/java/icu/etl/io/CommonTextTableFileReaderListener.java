@@ -21,7 +21,7 @@ public class CommonTextTableFileReaderListener implements TextTableFileReaderLis
     /**
      * 创建一个带文件读取进度输出的监听器
      *
-     * @param progress
+     * @param progress 进度输出接口
      */
     public CommonTextTableFileReaderListener(Progress progress) {
         this();
@@ -31,7 +31,7 @@ public class CommonTextTableFileReaderListener implements TextTableFileReaderLis
     /**
      * 设置进度输出接口
      *
-     * @param progress
+     * @param progress 进度输出接口
      */
     public void setProgress(Progress progress) {
         this.progress = progress;
@@ -64,14 +64,14 @@ public class CommonTextTableFileReaderListener implements TextTableFileReaderLis
         }
     }
 
-    public boolean processLine(TextTableFile file, TextTableLine line, long lineNumber) throws IOException {
+    public boolean processLine(TextTableFile file, TextTableLine line, long lineNumber) {
         if (this.progress != null) {
             this.progress.print();
         }
         return false;
     }
 
-    public boolean processColumnException(TextTableFileReader in, String line, long lineNumber) throws IOException {
+    public boolean processColumnException(TextTableFileReader in, String line, long lineNumber) {
         return true;
     }
 

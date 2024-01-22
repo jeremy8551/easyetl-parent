@@ -6,6 +6,7 @@ import java.util.Set;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -25,7 +26,7 @@ public class BeanBuilderManager {
 
     public BeanBuilderManager(EasyContext context) {
         this.map = new HashMap<Class<?>, EasyBeanBuilder<?>>();
-        this.context = context;
+        this.context = Ensure.notNull(context);
     }
 
     /**

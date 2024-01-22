@@ -27,6 +27,7 @@ import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
@@ -55,16 +56,11 @@ public class TableFileSorter implements Terminate {
     /**
      * 初始化
      *
-     * @param context
+     * @param context 排序上下文信息
      */
     public TableFileSorter(TableFileSortContext context) {
         super();
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
-
-        this.context = context;
+        this.context = Ensure.notNull(context);
         this.terminate = false;
         this.observers = new Terminates();
         this.recordComparator = new RecordComparator();
@@ -73,7 +69,7 @@ public class TableFileSorter implements Terminate {
     /**
      * 返回排序配置信息
      *
-     * @return
+     * @return 排序上下文信息
      */
     public TableFileSortContext getContext() {
         return context;
@@ -310,9 +306,9 @@ public class TableFileSorter implements Terminate {
     /**
      * 生成临时文件
      *
-     * @param filepath
-     * @return
-     * @throws IOException
+     * @param filepath 文件绝对路径
+     * @return 文件
+     * @throws IOException 访问文件错误
      */
     private static synchronized File toTempFile(String filepath) throws IOException {
         String newfilename = FileUtils.getFilenameNoSuffix(filepath) + ".temp" + Dates.format17() + StringUtils.toRandomUUID();

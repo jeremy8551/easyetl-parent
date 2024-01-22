@@ -34,7 +34,7 @@ public class DataUnitExpression {
      * <p>
      * 将容量字节转为可读性字符串详见 {@linkplain #toString(BigDecimal)} 方法
      *
-     * @param str
+     * @param str 字符串
      * @return 总字节数
      */
     public static BigDecimal parse(CharSequence str) {
@@ -64,8 +64,8 @@ public class DataUnitExpression {
      * <p>
      * 将可读性字符串转为容量详见 {@linkplain #parse(CharSequence)} 方法
      *
-     * @param value
-     * @return
+     * @param value 数值
+     * @return 字符串
      */
     public static String toString(BigDecimal value) {
         if (value == null) {

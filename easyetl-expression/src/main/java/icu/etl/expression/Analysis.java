@@ -52,7 +52,7 @@ public interface Analysis {
      *
      * @param key   字符串
      * @param array 字符串数组
-     * @return
+     * @return 返回true表示存在 false表示不存在
      */
     boolean exists(String key, String... array);
 
@@ -62,7 +62,7 @@ public interface Analysis {
      * @param str       脚本语句
      * @param index     位置信息
      * @param condition 0-表示指定位置上的字符必须是空白字符（含-1和最右侧） 1-表示指定位置上的字符必须是空白字符与控制字符 2-表示指定位置上的字符可以是任意字符
-     * @return
+     * @return 返回true表示满足 false表示不满足
      */
     boolean charAt(CharSequence str, int index, int condition);
 
@@ -118,28 +118,28 @@ public interface Analysis {
     /**
      * 对字符串参数 str 进行转义
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 转义后的字符串
      */
     String unescapeString(CharSequence str);
 
     /**
-     * 将脚本语句使用空白字符与字符数组参数 delimiter 分割成多个字符串
+     * 将字符串使用空白字符与字符数组参数 delimiter 分割成多个字符串
      *
-     * @param str       脚本语句
+     * @param str       字符串
      * @param delimiter 字段分隔符数组
-     * @return
+     * @return 字段集合
      */
     List<String> split(CharSequence str, char... delimiter);
 
     /**
      * 判断字符串参数 str 是否以 prefix 开头
      *
-     * @param str
-     * @param prefix
-     * @param from
-     * @param ignoreBlank
-     * @return
+     * @param str         字符串
+     * @param prefix      前缀
+     * @param from        起始位置，从0开始
+     * @param ignoreBlank 是否忽略空白字符
+     * @return 返回true表示匹配前缀 false表示不匹配前缀
      */
     boolean startsWith(CharSequence str, CharSequence prefix, int from, boolean ignoreBlank);
 
@@ -205,7 +205,7 @@ public interface Analysis {
      *
      * @param str  字符串
      * @param from 搜索起始位置
-     * @return
+     * @return 位置信息，从0开始
      */
     int indexOfHex(CharSequence str, int from);
 
@@ -214,7 +214,7 @@ public interface Analysis {
      *
      * @param str  字符串
      * @param from 搜索起始位置
-     * @return
+     * @return 位置信息，从0开始
      */
     int indexOfOctal(CharSequence str, int from);
 
@@ -223,7 +223,7 @@ public interface Analysis {
      *
      * @param str  字符串
      * @param from 搜索起始位置
-     * @return
+     * @return 位置信息，从0开始
      */
     int indexOfWhitespace(CharSequence str, int from);
 
@@ -231,7 +231,7 @@ public interface Analysis {
      * 判断字符串二端是否有对称的单引号或双引号，自动忽略字符串二端的空白字符
      *
      * @param str 字符串
-     * @return
+     * @return 返回true表示字符串两端有单引号或双引号
      */
     boolean containsQuotation(CharSequence str);
 
@@ -240,7 +240,7 @@ public interface Analysis {
      * 且自动删除字符串二端的空白字符
      *
      * @param str 字符串
-     * @return
+     * @return 删除两端引号后的字符串
      */
     String unQuotation(CharSequence str);
 

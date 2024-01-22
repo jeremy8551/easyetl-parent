@@ -61,7 +61,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      *
      * @param file       表格数据文件
      * @param bufferSize 缓冲区长度，单位：字符
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     public CommonTextTableFileReader(TextTableFile file, int bufferSize) throws IOException {
         super();
@@ -76,7 +76,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      * @param start      输入流的起始位置，从0开始
      * @param length     输入流读取的最大字节总数
      * @param readBuffer 输入流缓冲区长度，单位：字符
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     public CommonTextTableFileReader(TextTableFile file, long start, long length, int readBuffer) throws IOException {
         super();
@@ -107,7 +107,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      * 打开输入流
      *
      * @param file 文件
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     protected void open(TextTableFile file) throws IOException {
         this.ensureClose();
@@ -120,7 +120,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      * 打开输入流
      *
      * @param in 输入流
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     protected void open(Reader in) throws IOException {
         this.ensureClose();
@@ -131,7 +131,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
     /**
      * 创建一个字段集合
      *
-     * @throws IOException
+     * @throws IOException 打开输入流错误
      */
     protected void createFieldList() throws IOException {
         this.column = this.file.getColumn();
@@ -151,7 +151,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
     /**
      * 判断输入流是否已关闭
      *
-     * @throws IOException
+     * @throws IOException 输入流已关闭
      */
     protected void ensureClose() throws IOException {
         if (this.in != null) {
@@ -162,7 +162,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
     /**
      * 判断输入流是否已打开
      *
-     * @throws IOException
+     * @throws IOException 输入流已关闭
      */
     protected void ensureOpen() throws IOException {
         if (this.in == null) {
@@ -195,8 +195,8 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
     /**
      * 计算当前行的字段个数
      *
-     * @return
-     * @throws IOException
+     * @return 字段个数
+     * @throws IOException 数据输入流错误
      */
     protected synchronized int calcColumn() throws IOException {
         this.ensureOpen();
@@ -292,7 +292,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      * 提取字符串参数 line 中的字段信息
      *
      * @param line 记录内容，不能为null
-     * @throws IOException
+     * @throws IOException 数据输入流错误
      */
     protected void splitLine(String line) throws IOException {
         this.fields.clear();
@@ -313,7 +313,7 @@ public class CommonTextTableFileReader implements TextTableFileReader, TextTable
      *
      * @param line 当前行内容
      * @return 返回 true 表示合并成功 返回 false 表示失败
-     * @throws IOException
+     * @throws IOException 数据输入流错误
      */
     protected boolean mergeNextLine(String line) throws IOException {
         int count = 0;

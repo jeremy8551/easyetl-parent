@@ -36,8 +36,8 @@ public class CommandName {
     /**
      * 判断字符串参数是否复合命令名的规则
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 返回true表示匹配 false表示不匹配
      */
     public boolean match(String str) {
         return str != null && str.length() > 0 && (str.charAt(0) == '!' || StringUtils.isLetter(str.charAt(0)));
@@ -64,7 +64,7 @@ public class CommandName {
     /**
      * 返回实际命令名
      *
-     * @return
+     * @return 命令名
      */
     public String getValue() {
         return this.value;
@@ -73,7 +73,7 @@ public class CommandName {
     /**
      * 校验名字是否在范围内
      *
-     * @param name
+     * @param name 命令名
      */
     public void setValue(String name) {
         this.reverse = name.startsWith("!");
@@ -95,18 +95,18 @@ public class CommandName {
     }
 
     /**
-     * 返回 true 表示命令支持反转
+     * 判断命令是否支持反转操作
      *
-     * @return
+     * @return 返回true表示命令支持反转
      */
     public boolean isReverse() {
         return this.reverse;
     }
 
     /**
-     * 返回true 表示命令名支持使用 ! 符号
+     * 判断命令是否支持取反操作
      *
-     * @return
+     * @return 返回true 表示命令名支持使用 ! 符号
      */
     public boolean supportReverse() {
         return supportReverse;

@@ -72,7 +72,7 @@ public class ClobWriter {
         FileUtils.assertCreateFile(file);
         OutputStreamWriter out = IO.getFileWriter(file, charsetName, append);
         try {
-            this.toWriter(this.clob, out, buffer);
+            this.write(this.clob, out, buffer);
 
             if (StringUtils.isNotBlank(endStr)) {
                 out.write(endStr);
@@ -112,10 +112,9 @@ public class ClobWriter {
      * @param clob Clob对象
      * @param out  输出流
      * @param size 缓存大小
-     * @throws IOException  输入输出流错误
-     * @throws SQLException 数据库错误
+     * @throws Exception 错误
      */
-    public void toWriter(Clob clob, Writer out, int size) throws Exception {
+    public void write(Clob clob, Writer out, int size) throws Exception {
         if (clob != null) {
             Reader in = clob.getCharacterStream();
             if (in != null) {

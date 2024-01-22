@@ -25,7 +25,7 @@ public class IncrementReplaceListener implements IncrementListener {
     /**
      * 新增数据的字段替换逻辑
      *
-     * @return
+     * @return 替换逻辑的集合
      */
     public List<IncrementReplace> getNewChgs() {
         return creates;
@@ -34,7 +34,7 @@ public class IncrementReplaceListener implements IncrementListener {
     /**
      * 变化数据的字段替换逻辑
      *
-     * @return
+     * @return 替换逻辑的集合
      */
     public List<IncrementReplace> getUpdChgs() {
         return updates;
@@ -43,7 +43,7 @@ public class IncrementReplaceListener implements IncrementListener {
     /**
      * 删除数据的字段替换逻辑
      *
-     * @return
+     * @return 替换逻辑的集合
      */
     public List<IncrementReplace> getDelChgs() {
         return deletes;

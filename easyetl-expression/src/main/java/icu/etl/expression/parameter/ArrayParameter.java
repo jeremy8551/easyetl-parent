@@ -22,7 +22,7 @@ public class ArrayParameter extends ExpressionParameter {
     /**
      * 向数组中添加元素
      *
-     * @param parameter
+     * @param parameter 元素
      */
     @SuppressWarnings("unchecked")
     public void add(Parameter parameter) {
@@ -33,8 +33,8 @@ public class ArrayParameter extends ExpressionParameter {
     /**
      * 判断参数是否在数组中
      *
-     * @param parameter
-     * @return
+     * @param parameter 元素
+     * @return 返回true表示存在参数 false表示不存在参数
      */
     @SuppressWarnings("unchecked")
     public boolean exists(Parameter parameter) {

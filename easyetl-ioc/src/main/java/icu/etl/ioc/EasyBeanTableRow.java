@@ -3,7 +3,6 @@ package icu.etl.ioc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import icu.etl.annotation.EasyBean;
@@ -86,16 +85,14 @@ public class EasyBeanTableRow extends ArrayList<EasyBeanInfoValue> {
      * @param type 组件的类信息
      * @return 返回true表示移除成功 false表示不存在组件信息
      */
-    public boolean remove(Class<?> type) {
-        boolean success = false;
-        for (Iterator<EasyBeanInfoValue> it = this.iterator(); it.hasNext(); ) {
-            EasyBeanInfoValue beanInfo = it.next();
+    public List<EasyBeanInfoValue> remove(Class<?> type) {
+        List<EasyBeanInfoValue> list = new ArrayList<EasyBeanInfoValue>();
+        for (EasyBeanInfoValue beanInfo : this) {
             if (beanInfo.equals(type)) {
-                it.remove();
-                success = true;
+                list.add(beanInfo);
             }
         }
-        return success;
+        return list;
     }
 
     /**

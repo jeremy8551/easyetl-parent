@@ -13,47 +13,47 @@ public interface Parameter {
     /**
      * 未设置参数
      */
-    public final static int UNKNOWN = -1;
+    int UNKNOWN = -1;
 
     /**
      * 运算参数类型： 布尔类型数值
      */
-    public final static int BOOLEAN = 1;
+    int BOOLEAN = 1;
 
     /**
      * 运算参数类型： long 类型数值
      */
-    public final static int LONG = 2;
+    int LONG = 2;
 
     /**
      * 运算参数类型： double 类型数值
      */
-    public final static int DOUBLE = 3;
+    int DOUBLE = 3;
 
     /**
      * 运算参数类型： String 类型数值
      */
-    public final static int STRING = 4;
+    int STRING = 4;
 
     /**
      * 运算参数类型： Date 类型数值
      */
-    public final static int DATE = 5;
+    int DATE = 5;
 
     /**
      * 运算参数类型： 日期单位类型
      */
-    public final static int DATEUNIT = 6;
+    int DATEUNIT = 6;
 
     /**
      * 运算参数类型： 数组类型
      */
-    public final static int ARRAY = 7;
+    int ARRAY = 7;
 
     /**
      * 运算参数类型： 表达式类型
      */
-    public final static int EXPRESS = 9;
+    int EXPRESS = 9;
 
     /**
      * 运算参数类型
@@ -88,14 +88,14 @@ public interface Parameter {
     /**
      * 设置参数值
      *
-     * @param obj
+     * @param obj 参数值
      */
     void setValue(Object obj);
 
     /**
      * 返回参数值
      *
-     * @return
+     * @return 参数值
      */
     Object value();
 
@@ -105,44 +105,44 @@ public interface Parameter {
     void execute();
 
     /**
-     * 把执行结果转换为 Double( 对象
+     * 把执行结果转换为 Double 对象
      *
-     * @return
+     * @return 执行结果
      */
     Double doubleValue();
 
     /**
      * 把执行结果转换为 Long 对象
      *
-     * @return
+     * @return 执行结果
      */
     Long longValue();
 
     /**
      * 把执行结果转换为 String 对象
      *
-     * @return
+     * @return 执行结果
      */
     String stringValue();
 
     /**
      * 把执行结果转换为 Boolean 对象
      *
-     * @return
+     * @return 执行结果
      */
     Boolean booleanValue();
 
     /**
      * 把执行结果转换为 Date 对象
      *
-     * @return
+     * @return 执行结果
      */
     Date dateValue();
 
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     Parameter copy();
 

@@ -45,7 +45,7 @@ public class LogContextImpl implements LogContext {
      * 日志模块的上下文信息
      */
     public LogContextImpl() {
-        this.startTimeMillis = System.currentTimeMillis();
+        this.setStartMillis(System.currentTimeMillis());
         this.alives = new LogPool();
         this.levelManager = new LogLevelManager();
         this.appenders = new ArrayList<Appender>();

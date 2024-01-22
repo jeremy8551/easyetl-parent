@@ -258,10 +258,8 @@ public class RandomAccessStream extends InputStream {
 
     /**
      * 标记起始位置信息
-     *
-     * @throws IOException
      */
-    protected synchronized void mark() throws IOException {
+    protected synchronized void mark() {
         this.mark(0);
         this.startPointer = this.markedPointer;
     }
@@ -270,7 +268,7 @@ public class RandomAccessStream extends InputStream {
         try {
             this.markedPointer = this.in.getFilePointer();
         } catch (Exception e) {
-            throw new RuntimeException("mark stream error!", e);
+            throw new RuntimeException(e.getLocalizedMessage(), e);
         }
 
         this.markedSize = this.size;
@@ -311,7 +309,7 @@ public class RandomAccessStream extends InputStream {
     /**
      * 返回输入流实际开始读取字节的位置，从 0 开始
      *
-     * @return
+     * @return 起始位置，从0开始
      */
     public long getStartPointer() {
         return startPointer;

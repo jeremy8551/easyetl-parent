@@ -15,7 +15,7 @@ public interface Table extends Cloneable {
      * 返回列名
      *
      * @param position 列的位置信息，从 1 开始
-     * @return
+     * @return 列名
      */
     String getColumnName(int position);
 
@@ -39,14 +39,14 @@ public interface Table extends Cloneable {
      * 文件每行的字段个数 <br>
      * 即使数据文件关闭后, 可返回最后设置值
      *
-     * @return
+     * @return 字段个数
      */
     int getColumn();
 
     /**
      * 返回一个副本
      *
-     * @return
+     * @return 副本
      */
     Table clone();
 
@@ -55,8 +55,8 @@ public interface Table extends Cloneable {
      *
      * @param writer 输出流
      * @param cache  缓存行数
-     * @return
-     * @throws IOException
+     * @return 输出流
+     * @throws IOException 打开输出流错误
      */
     TableWriter getWriter(Writer writer, int cache) throws IOException;
 

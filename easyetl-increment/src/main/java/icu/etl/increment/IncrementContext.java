@@ -52,7 +52,7 @@ public class IncrementContext {
     /**
      * 返回任务名
      *
-     * @return
+     * @return 任务名
      */
     public String getName() {
         return name;
@@ -61,7 +61,7 @@ public class IncrementContext {
     /**
      * 设置任务名
      *
-     * @param name
+     * @param name 任务名
      */
     public void setName(String name) {
         this.name = name;
@@ -70,16 +70,16 @@ public class IncrementContext {
     /**
      * 返回新文件
      *
-     * @param newFile
+     * @param file 文件
      */
-    public void setNewFile(TextTableFile newFile) {
-        this.newFile = newFile;
+    public void setNewFile(TextTableFile file) {
+        this.newFile = file;
     }
 
     /**
      * 设置新文件
      *
-     * @return
+     * @return 文件
      */
     public TextTableFile getNewFile() {
         return newFile;
@@ -88,16 +88,16 @@ public class IncrementContext {
     /**
      * 设置旧文件
      *
-     * @param oldFile
+     * @param file 文件
      */
-    public void setOldFile(TextTableFile oldFile) {
-        this.oldFile = oldFile;
+    public void setOldFile(TextTableFile file) {
+        this.oldFile = file;
     }
 
     /**
      * 返回旧文件
      *
-     * @return
+     * @return 文件
      */
     public TextTableFile getOldFile() {
         return oldFile;
@@ -106,7 +106,7 @@ public class IncrementContext {
     /**
      * 增量剥离监听器
      *
-     * @return
+     * @return 监听器集合
      */
     public List<IncrementListener> getListeners() {
         return listeners;
@@ -115,7 +115,7 @@ public class IncrementContext {
     /**
      * 增量剥离监听器
      *
-     * @param listeners
+     * @param listeners 监听器集合
      */
     public void setListeners(List<IncrementListener> listeners) {
         this.listeners = listeners;
@@ -124,7 +124,7 @@ public class IncrementContext {
     /**
      * 返回剥离增量算法
      *
-     * @return
+     * @return 算法实现对象
      */
     public IncrementArith getArith() {
         return arith;
@@ -133,7 +133,7 @@ public class IncrementContext {
     /**
      * 剥离增量算法
      *
-     * @param arith
+     * @param arith 算法实现对象
      */
     public void setArith(IncrementArith arith) {
         this.arith = Ensure.notNull(arith);
@@ -142,7 +142,7 @@ public class IncrementContext {
     /**
      * 返回新增数据的输出流
      *
-     * @return
+     * @return 返回输出流
      */
     public TextTableFileWriter getNewWriter() {
         return newOuter;
@@ -151,16 +151,16 @@ public class IncrementContext {
     /**
      * 设置新增数据的输出流
      *
-     * @param newOuter
+     * @param out 输出流
      */
-    public void setNewWriter(TextTableFileWriter newOuter) {
-        this.newOuter = newOuter;
+    public void setNewWriter(TextTableFileWriter out) {
+        this.newOuter = out;
     }
 
     /**
      * 返回变更数据的输出流
      *
-     * @return
+     * @return 输出流
      */
     public TextTableFileWriter getUpdWriter() {
         return updOuter;
@@ -169,16 +169,16 @@ public class IncrementContext {
     /**
      * 设置变更数据的输出流
      *
-     * @param updOuter
+     * @param out 输出流
      */
-    public void setUpdWriter(TextTableFileWriter updOuter) {
-        this.updOuter = updOuter;
+    public void setUpdWriter(TextTableFileWriter out) {
+        this.updOuter = out;
     }
 
     /**
      * 返回删除数据的输出流
      *
-     * @return
+     * @return 输出流
      */
     public TextTableFileWriter getDelWriter() {
         return delOuter;
@@ -187,25 +187,25 @@ public class IncrementContext {
     /**
      * 设置删除数据的输出流
      *
-     * @param delOuter
+     * @param out 输出流
      */
-    public void setDelWriter(TextTableFileWriter delOuter) {
-        this.delOuter = delOuter;
+    public void setDelWriter(TextTableFileWriter out) {
+        this.delOuter = out;
     }
 
     /**
      * 返回位置信息
      *
-     * @return
+     * @return 位置信息
      */
     public IncrementPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     /**
      * 设置位置信息
      *
-     * @param position
+     * @param position 位置信息
      */
     public void setPosition(IncrementPosition position) {
         this.position = position;
@@ -217,7 +217,7 @@ public class IncrementContext {
      * @return 排序规则
      */
     public Comparator<String> getComparator() {
-        return comparator;
+        return this.comparator;
     }
 
     /**
@@ -232,16 +232,16 @@ public class IncrementContext {
     /**
      * 返回日志输出接口
      *
-     * @return
+     * @return 监听器
      */
     public IncrementListenerImpl getLogger() {
-        return logger;
+        return this.logger;
     }
 
     /**
      * 设置日志输出接口
      *
-     * @param logger
+     * @param logger 监听器
      */
     public void setLogger(IncrementListenerImpl logger) {
         this.logger = logger;
@@ -250,61 +250,61 @@ public class IncrementContext {
     /**
      * 返回替换字段的处理器集合
      *
-     * @return
+     * @return 监听器
      */
     public IncrementReplaceListener getReplaceList() {
-        return replaceList;
+        return this.replaceList;
     }
 
     /**
      * 设置替换字符的处理器集合
      *
-     * @param replaceList
+     * @param listener 监听器
      */
-    public void setReplaceList(IncrementReplaceListener replaceList) {
-        this.replaceList = replaceList;
+    public void setReplaceList(IncrementReplaceListener listener) {
+        this.replaceList = listener;
     }
 
     /**
      * 设置新数据读取进度接口
      *
-     * @return
+     * @return 进度输出接口
      */
     public Progress getNewfileProgress() {
-        return newfileProgress;
+        return this.newfileProgress;
     }
 
     /**
      * 返回新数据读取进度接口
      *
-     * @param newfileProgress
+     * @param progress 进度输出接口
      */
-    public void setNewfileProgress(Progress newfileProgress) {
-        this.newfileProgress = newfileProgress;
+    public void setNewfileProgress(Progress progress) {
+        this.newfileProgress = progress;
     }
 
     /**
      * 返回旧数据读取进度接口
      *
-     * @return
+     * @return 进度输出接口
      */
     public Progress getOldfileProgress() {
-        return oldfileProgress;
+        return this.oldfileProgress;
     }
 
     /**
      * 设置旧数据读取进度接口
      *
-     * @param oldfileProgress
+     * @param progress 进度输出接口
      */
-    public void setOldfileProgress(Progress oldfileProgress) {
-        this.oldfileProgress = oldfileProgress;
+    public void setOldfileProgress(Progress progress) {
+        this.oldfileProgress = progress;
     }
 
     /**
-     * 返回旧数据排序配置信息
+     * 返回旧数据的排序上下文信息
      *
-     * @return
+     * @return 排序上下文信息
      */
     public TableFileSortContext getOldfileSortContext() {
         return oldfileSortContext;
@@ -313,64 +313,64 @@ public class IncrementContext {
     /**
      * 设置旧数据排序配置信息
      *
-     * @param oldfileSortContext
+     * @param context 排序上下文信息
      */
-    public void setSortOldContext(TableFileSortContext oldfileSortContext) {
-        this.oldfileSortContext = oldfileSortContext;
+    public void setSortOldContext(TableFileSortContext context) {
+        this.oldfileSortContext = context;
     }
 
     /**
      * 返回新数据排序配置信息
      *
-     * @return
+     * @return 排序上下文信息
      */
     public TableFileSortContext getNewfileSortContext() {
-        return newfileSortContext;
+        return this.newfileSortContext;
     }
 
     /**
      * 设置新数据排序配置信息
      *
-     * @param newfileSortContext
+     * @param context 排序上下文信息
      */
-    public void setSortNewContext(TableFileSortContext newfileSortContext) {
-        this.newfileSortContext = newfileSortContext;
+    public void setSortNewContext(TableFileSortContext context) {
+        this.newfileSortContext = context;
     }
 
     /**
-     * 返回 true 表示排序新数据文件
+     * 判断是否排序新文件
      *
-     * @return
+     * @return 返回true表示排序新文件 false表示排序新文件
      */
-    public boolean sortNewFile() {
+    public boolean isSortNewfile() {
         return sortNewFile;
     }
 
     /**
-     * 设置 true 表示排序新数据文件
+     * 设置是否排序新文件
      *
-     * @param sortNewFile
+     * @param b 设置true表示排序新文件 false表示不排序新文件
      */
-    public void setSortNew(boolean sortNewFile) {
-        this.sortNewFile = sortNewFile;
+    public void setSortNewfile(boolean b) {
+        this.sortNewFile = b;
     }
 
     /**
-     * 返回 true 表示排序旧数据文件
+     * 判断是否排序旧文件
      *
-     * @return
+     * @return 返回true表示排序旧文件 false表示不排序旧文件
      */
-    public boolean sortOldFile() {
-        return sortOldFile;
+    public boolean isSortOldfile() {
+        return this.sortOldFile;
     }
 
     /**
-     * 设置 true 表示排序旧数据文件
+     * 设置是否排序旧文件
      *
-     * @param sortOldFile
+     * @param b true表示排序旧文件 false表示不排序旧文件
      */
-    public void setSortOld(boolean sortOldFile) {
-        this.sortOldFile = sortOldFile;
+    public void setSortOldfile(boolean b) {
+        this.sortOldFile = b;
     }
 
     /**

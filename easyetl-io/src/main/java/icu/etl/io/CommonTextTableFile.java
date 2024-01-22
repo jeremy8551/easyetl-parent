@@ -240,28 +240,28 @@ public class CommonTextTableFile implements TextTableFile, EasyContextAware {
                 ;
     }
 
-    public boolean equalsStyle(TextTable obj) {
-        if (!this.getLineSeparator().equals(obj.getLineSeparator())) {
+    public boolean equalsStyle(TextTable table) {
+        if (!this.getLineSeparator().equals(table.getLineSeparator())) {
             return false;
         }
 
-        if (!this.getCharDelimiter().equals(obj.getCharDelimiter())) {
+        if (!this.getCharDelimiter().equals(table.getCharDelimiter())) {
             return false;
         }
 
-        if (!this.getCharsetName().equals(obj.getCharsetName())) {
+        if (!this.getCharsetName().equals(table.getCharsetName())) {
             return false;
         }
 
-        if (this.getColumn() != obj.getColumn()) {
+        if (this.getColumn() != table.getColumn()) {
             return false;
         }
 
-        if (!this.getDelimiter().equals(obj.getDelimiter())) {
+        if (!this.getDelimiter().equals(table.getDelimiter())) {
             return false;
         }
 
-        if (this.getEscape() != obj.getEscape()) {
+        if (this.getEscape() != table.getEscape()) {
             return false;
         }
 

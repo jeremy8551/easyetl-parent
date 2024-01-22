@@ -28,7 +28,7 @@ public class MillisExpression {
     /**
      * 返回表达式所表示的毫秒值
      *
-     * @return
+     * @return 毫秒值
      */
     public long value() {
         return value;

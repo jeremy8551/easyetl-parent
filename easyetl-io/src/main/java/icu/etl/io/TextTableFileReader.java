@@ -17,28 +17,28 @@ public interface TextTableFileReader extends TableReader, java.io.Closeable, Lin
      * @param rows  越过的总行数（用于跨过行数的检查）
      * @return 返回 true 表示输入流已成功跳转到指定字符处 <br>
      * 返回 false 表示输入流实际越过的总行数与参数 rows 不符 <br>
-     * @throws IOException
+     * @throws IOException 输入流发生错误
      */
     boolean skip(long chars, long rows) throws IOException;
 
     /**
      * 返回输入流起始位置信息
      *
-     * @return
+     * @return 位置信息，从0开始
      */
     long getStartPointer();
 
     /**
      * 返回监听器
      *
-     * @return
+     * @return 监听器
      */
     TextTableFileReaderListener getListener();
 
     /**
      * 设置监听器
      *
-     * @param listener
+     * @param listener 监听器
      */
     void setListener(TextTableFileReaderListener listener);
 

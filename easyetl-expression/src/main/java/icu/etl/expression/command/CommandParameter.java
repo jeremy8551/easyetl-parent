@@ -29,10 +29,10 @@ public class CommandParameter {
     }
 
     /**
-     * 判断字符串参数是否复合命令参数的规则
+     * 判断字符串参数是否匹配命令参数的规则
      *
-     * @param pattern
-     * @return
+     * @param pattern 表达式
+     * @return 返回true表示匹配 false表示不匹配
      */
     public boolean match(String pattern) {
         return pattern != null && pattern.startsWith("{") && pattern.endsWith("}");
@@ -71,7 +71,7 @@ public class CommandParameter {
                 int i2 = Integer.parseInt(range[1]);
 
                 for (int start = Math.min(i1, i2), max = Math.max(i1, i2); start <= max; start++) {
-                    this.ranges.add(new Integer(start));
+                    this.ranges.add(start);
                 }
             } else {
                 if (!StringUtils.isInt(number)) {
@@ -85,7 +85,7 @@ public class CommandParameter {
     /**
      * 添加参数
      *
-     * @param parameter
+     * @param parameter 参数
      */
     public void add(String parameter) {
         this.values.add(parameter);
@@ -104,7 +104,7 @@ public class CommandParameter {
     /**
      * 返回参数个数
      *
-     * @return
+     * @return 参数个数
      */
     public int size() {
         return this.values.size();
@@ -122,7 +122,7 @@ public class CommandParameter {
     /**
      * 返回参数集合
      *
-     * @return
+     * @return 参数集合
      */
     public List<String> getValues() {
         return values;

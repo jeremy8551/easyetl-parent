@@ -16,7 +16,7 @@ public interface TextTableFileReaderListener {
      * @param file       文件信息
      * @param line       存在回车或换行符的行信息
      * @param lineNumber 数据文件中的行号
-     * @throws IOException
+     * @throws IOException 访问数据发生错误
      */
     void processLineSeparator(TextTableFile file, TextTableLine line, long lineNumber) throws IOException;
 
@@ -27,7 +27,7 @@ public interface TextTableFileReaderListener {
      * @param line       读取的行内容
      * @param lineNumber 数据文件中的行号
      * @return 返回 true 表示跳过当前行内容直接读取下一行内容，返回 false 表示 {@linkplain TextTableFileReader#readLine()} 方法返回当前行内容
-     * @throws IOException
+     * @throws IOException 访问数据发生错误
      */
     boolean processLine(TextTableFile file, TextTableLine line, long lineNumber) throws IOException;
 
@@ -38,7 +38,7 @@ public interface TextTableFileReaderListener {
      * @param line       字段个数与预期不符的行内容
      * @param lineNumber 数据文件中的行号
      * @return 返回 true 表示未能处理错误需要抛出异常，返回 false 表示错误处理完毕可以通过 {@linkplain TextTableFileReader#readLine()} 方法返回当前行内容
-     * @throws IOException
+     * @throws IOException 访问数据发生错误
      */
     boolean processColumnException(TextTableFileReader in, String line, long lineNumber) throws IOException;
 

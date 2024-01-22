@@ -35,6 +35,12 @@ public class StandardPrinter implements Printer, java.io.Closeable {
     /** 类型转换器（负责将 Object 对象转为字符串） */
     protected Format converter;
 
+    /** 输出锁 */
+    private final Object printLock = new Object();
+
+    /** 输出锁 */
+    private final Object multyLock = new Object();
+
     /**
      * 初始化
      */
@@ -74,18 +80,18 @@ public class StandardPrinter implements Printer, java.io.Closeable {
         this.writer = writer;
     }
 
-    public void print(CharSequence cs) {
-        synchronized (this.buffer) {
-            this.buffer.append(cs);
-        }
-    }
-
     public void print(Object object) {
         this.print(this.converter == null ? String.valueOf(object) : this.converter.format(object));
     }
 
+    public void print(CharSequence cs) {
+        synchronized (this.printLock) {
+            this.buffer.append(cs);
+        }
+    }
+
     public void println(CharSequence msg) {
-        synchronized (this.buffer) {
+        synchronized (this.printLock) {
             this.buffer.append(msg);
 
             if (this.writer != null) {
@@ -111,7 +117,7 @@ public class StandardPrinter implements Printer, java.io.Closeable {
     }
 
     public void println(String id, CharSequence msg) {
-        synchronized (this.mulityTask) {
+        synchronized (this.multyLock) {
             this.mulityTask.put(id, msg); // 保存某个任务信息
         }
 

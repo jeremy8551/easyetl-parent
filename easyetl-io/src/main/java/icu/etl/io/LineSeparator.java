@@ -11,7 +11,7 @@ public interface LineSeparator {
     /**
      * 返回文本输入流当前行的行末分隔符或文件默认的行间分隔符
      *
-     * @return
+     * @return 行间分隔符
      */
     String getLineSeparator();
 

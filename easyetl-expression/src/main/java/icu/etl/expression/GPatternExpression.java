@@ -81,8 +81,8 @@ public class GPatternExpression {
     /**
      * 判断字符串参数是否与通配符匹配
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 返回true表示匹配 false表示不匹配
      */
     public boolean match(String str) {
         for (String regex : this.javaRegexs) {
@@ -180,7 +180,7 @@ public class GPatternExpression {
      * 将linux通配符转为JAVA 正则表达式
      *
      * @param pattern 通配符表达式
-     * @return
+     * @return 正则表达式
      */
     protected String toJavaRegex(String pattern) {
         StringBuilder buf = new StringBuilder(pattern.length() + 12);
@@ -266,7 +266,7 @@ public class GPatternExpression {
      * 将字符串中关键字字符转义为普通字符
      *
      * @param str 字符串
-     * @return
+     * @return 转义后的字符串
      */
     protected String escape(String str) {
         StringBuilder buf = new StringBuilder(str.length() + 10);
@@ -283,7 +283,7 @@ public class GPatternExpression {
     /**
      * 返回通配符对应的所有匹配模式集合
      *
-     * @return
+     * @return 正则表达式集合
      */
     public List<String> getPatterns() {
         return this.patterns;

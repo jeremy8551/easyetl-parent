@@ -161,8 +161,8 @@ public class ExpressionParameter implements Parameter {
     /**
      * 把数值类型转换为字符串
      *
-     * @param type
-     * @return
+     * @param type 数值类型
+     * @return 类型名
      */
     public static String getTypeName(int type) {
         switch (type) {

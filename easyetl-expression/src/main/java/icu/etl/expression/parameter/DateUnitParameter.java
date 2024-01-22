@@ -21,7 +21,7 @@ public class DateUnitParameter extends ExpressionParameter {
     /**
      * 初始化
      *
-     * @param parameter
+     * @param parameter 参数
      * @param unit      {@linkplain Calendar#HOUR} <br>
      *                  {@linkplain Calendar#MINUTE} <br>
      *                  {@linkplain Calendar#SECOND} <br>
@@ -63,7 +63,7 @@ public class DateUnitParameter extends ExpressionParameter {
      * {@linkplain Calendar#MONTH} <br>
      * {@linkplain Calendar#YEAR} <br>
      *
-     * @return
+     * @return 单位
      */
     public int getUnit() {
         return unit;
@@ -106,7 +106,7 @@ public class DateUnitParameter extends ExpressionParameter {
                 str.append("millisecond");
                 break;
             default:
-                str.append("unknown" + this.unit);
+                str.append("unknown").append(this.unit);
                 break;
         }
         str.append("]");

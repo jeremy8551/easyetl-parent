@@ -8,16 +8,16 @@ package icu.etl.script;
 public interface UniversalScriptCommand {
 
     /** 脚本返回值：语句执行错误 */
-    public final static int ERROR = -1;
+    int ERROR = -1;
 
     /** 脚本返回值：执行脚本命令发生错误 */
-    public final static int COMMAND_ERROR = -2;
+    int COMMAND_ERROR = -2;
 
     /** 脚本返回值：被强制终止并退出 */
-    public final static int TERMINATE = -3;
+    int TERMINATE = -3;
 
     /** 脚本返回值：变量方法错误 */
-    public final static int VARIABLE_METHOD_ERROR = -4;
+    int VARIABLE_METHOD_ERROR = -4;
 
     /**
      * 返回脚本命令对应的编译器

@@ -11,7 +11,7 @@ public interface TextFileLine extends LineSeparator {
     /**
      * 记录内容
      *
-     * @return
+     * @return 记录内容
      */
     String getContent();
 

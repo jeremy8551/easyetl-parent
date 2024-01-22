@@ -79,7 +79,7 @@ public class Progress {
     public Progress(ProgressPrinter out, String message, long total) {
         this(out, message, total, new Format() {
             private final static long serialVersionUID = 1L;
-            private DecimalFormat decimalFormat = new DecimalFormat("#,###.##"); // 设置千位分隔符
+            private final DecimalFormat decimalFormat = new DecimalFormat("#,###.##"); // 设置千位分隔符
 
             public StringBuffer format(Object obj, StringBuffer buffer, FieldPosition position) {
                 BigDecimal value = new BigDecimal((Long) obj);
@@ -245,9 +245,9 @@ public class Progress {
                 }
             }
             this.last = process;
-        } else if (process < this.last) {
-            // 31 上一次输出的进度比例大于当前计算的比例
         }
+
+        // 31 如果上一次输出的进度比例大于当前计算的比例，则不需要输出任何信息
     }
 
     /**

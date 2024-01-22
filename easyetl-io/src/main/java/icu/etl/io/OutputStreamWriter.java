@@ -30,7 +30,7 @@ public class OutputStreamWriter extends java.io.OutputStream {
     }
 
     public void write(byte[] b) throws IOException {
-        String str = new String(b, 0, b.length, this.charsetName);
+        String str = new String(b, this.charsetName);
         this.out.write(str);
     }
 

@@ -6,5 +6,4 @@ package icu.etl.script;
  * @author jeremy8551@qq.com
  */
 public interface UniversalScriptStderr extends UniversalScriptStdout {
-
 }

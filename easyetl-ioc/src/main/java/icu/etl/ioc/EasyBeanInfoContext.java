@@ -66,7 +66,7 @@ public interface EasyBeanInfoContext {
      * @param cls  需要删除的实现类
      * @return 返回true表示删除成功 false表示实现类不存在
      */
-    boolean removeBeanInfo(Class<?> type, Class<?> cls);
+    List<EasyBeanInfoValue> removeBeanInfo(Class<?> type, Class<?> cls);
 
     /**
      * 删除接口信息对应的实现类集合

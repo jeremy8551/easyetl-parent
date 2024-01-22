@@ -59,7 +59,7 @@ public class LoginExpression extends CommandExpression {
     /**
      * 查询登录参数位置
      *
-     * @return
+     * @return 位置信息
      */
     protected int indexOfLogin() {
         for (int i = 0; i < this.parameter.size(); i++) {
@@ -147,7 +147,7 @@ public class LoginExpression extends CommandExpression {
     /**
      * 返回服务器host
      *
-     * @return
+     * @return 服务器host
      */
     public String getLoginHost() {
         return this.host;
@@ -156,7 +156,7 @@ public class LoginExpression extends CommandExpression {
     /**
      * 返回登录服务器的端口
      *
-     * @return
+     * @return 登陆端口
      */
     public String getLoginPort() {
         return this.port;
@@ -165,7 +165,7 @@ public class LoginExpression extends CommandExpression {
     /**
      * 返回登录用户名
      *
-     * @return
+     * @return 登陆用户名
      */
     public String getLoginUsername() {
         return this.username;
@@ -174,7 +174,7 @@ public class LoginExpression extends CommandExpression {
     /**
      * 返回登录密码
      *
-     * @return
+     * @return 登陆密码
      */
     public String getLoginPassword() {
         return this.password;
@@ -184,7 +184,7 @@ public class LoginExpression extends CommandExpression {
      * 返回属性值
      *
      * @param name 属性名
-     * @return
+     * @return 属性值
      */
     public String getAttribute(String name) {
         return this.attributes.get(name);

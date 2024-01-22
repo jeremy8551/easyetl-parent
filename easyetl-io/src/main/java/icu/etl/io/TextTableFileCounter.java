@@ -20,7 +20,6 @@ import icu.etl.util.IO;
 import icu.etl.util.Numbers;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
-import icu.etl.util.TimeWatch;
 
 public class TextTableFileCounter {
     private final static Log log = LogFactory.getLog(TextTableFileCounter.class);
@@ -29,10 +28,10 @@ public class TextTableFileCounter {
     public static long UNIT = 1024 * 1024 * 1024; // 1GB
 
     /** 线程池 */
-    private ThreadSource threadSource;
+    private final ThreadSource threadSource;
 
     /** 任务最大并发数 */
-    private int concurrernt;
+    private final int concurrernt;
 
     public TextTableFileCounter(ThreadSource threadSource, int concurrernt) {
         this.threadSource = Ensure.notNull(threadSource);
@@ -174,7 +173,6 @@ public class TextTableFileCounter {
         }
 
         public int execute() throws IOException {
-            TimeWatch watch = new TimeWatch();
             RandomAccessFile in = new RandomAccessFile(this.file, "r");
             try {
                 if (this.filePointer > 0) {
@@ -251,15 +249,6 @@ public class TextTableFileCounter {
             } finally {
                 in.close();
             }
-        }
-
-        /**
-         * 返回文件
-         *
-         * @return 文件
-         */
-        public File getFile() {
-            return file;
         }
 
         /**

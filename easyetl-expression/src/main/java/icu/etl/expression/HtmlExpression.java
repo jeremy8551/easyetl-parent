@@ -41,7 +41,7 @@ public class HtmlExpression implements Attribute<String> {
     /**
      * 解析 XML 标签
      *
-     * @param xml
+     * @param xml 标签
      */
     private void parse(String xml) {
         String str = StringUtils.trimBlank(xml);
@@ -108,9 +108,9 @@ public class HtmlExpression implements Attribute<String> {
     /**
      * 从指定位置开始搜索字符串中标记名结束的位置
      *
-     * @param str
-     * @param from
-     * @return
+     * @param str  字符串
+     * @param from 搜索起始位置
+     * @return 位置
      */
     protected int indexOfNameEnd(String str, int from) {
         for (int i = from; i < str.length(); i++) {
@@ -125,7 +125,7 @@ public class HtmlExpression implements Attribute<String> {
     /**
      * 返回命名空间
      *
-     * @return
+     * @return 命名空间
      */
     public String getNamespace() {
         return this.namespace;
@@ -134,7 +134,7 @@ public class HtmlExpression implements Attribute<String> {
     /**
      * 返回标签名
      *
-     * @return
+     * @return 标签名
      */
     public String getTagName() {
         return this.name;
@@ -144,7 +144,7 @@ public class HtmlExpression implements Attribute<String> {
      * 返回属性值
      *
      * @param name 属性名（忽略大小写）
-     * @return
+     * @return 属性值
      */
     public String getAttribute(String name) {
         return this.attributes.get(name);
@@ -154,7 +154,7 @@ public class HtmlExpression implements Attribute<String> {
      * 判断是否存在属性名
      *
      * @param name 属性名（忽略大小写）
-     * @return
+     * @return 返回true表示存在属性名 false表示不存在属性名
      */
     public boolean contains(String name) {
         return this.attributes.containsKey(name);
@@ -170,7 +170,7 @@ public class HtmlExpression implements Attribute<String> {
     /**
      * 返回属性集合
      *
-     * @return
+     * @return 属性名与属性值的映射集合
      */
     public Map<String, String> getAttributes() {
         return Collections.unmodifiableMap(this.attributes);
@@ -179,7 +179,7 @@ public class HtmlExpression implements Attribute<String> {
     /**
      * 返回标记的文本内容
      *
-     * @return
+     * @return 文本内容
      */
     public String getText() {
         return this.text;

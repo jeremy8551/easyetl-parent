@@ -12,7 +12,7 @@ public interface TableLine {
      * 判断指定位置上的字符串是否为空字符串
      *
      * @param position 字段位置, 从1开始
-     * @return
+     * @return 返回true表示字段值为空白 false表示字段值不是空白
      */
     boolean isColumnBlank(int position);
 
@@ -37,7 +37,7 @@ public interface TableLine {
     /**
      * 返回字段的个数
      *
-     * @return
+     * @return 字段个数
      */
     int getColumn();
 

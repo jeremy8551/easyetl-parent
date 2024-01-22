@@ -1,9 +1,9 @@
 package icu.etl.io;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.BeanEventListener;
@@ -45,8 +45,8 @@ public class CodepageBuilder implements Codepage, EasyBeanBuilder<Codepage>, Bea
         if (StringUtils.isNumber(key)) {
             return this.map.get(key);
         } else {
-            for (Iterator<Entry<String, String>> it = this.map.entrySet().iterator(); it.hasNext(); ) {
-                Entry<String, String> next = it.next();
+            Set<Entry<String, String>> entries = this.map.entrySet();
+            for (Entry<String, String> next : entries) {
                 if (key.equalsIgnoreCase(next.getValue())) {
                     return next.getKey();
                 }

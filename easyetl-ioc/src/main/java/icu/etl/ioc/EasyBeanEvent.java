@@ -18,9 +18,8 @@ public interface EasyBeanEvent {
     /**
      * 此时事件相关的实现类信息
      *
-     * @param <E> 组件实现类
      * @return 组件实现类
      */
-    <E> EasyBeanInfoValue getBeanInfo();
+    EasyBeanInfoValue getBeanInfo();
 
 }

@@ -10,20 +10,16 @@ import icu.etl.util.StringUtils;
  */
 public enum LogLevel {
 
-    TRACE(300), //
-    DEBUG(700), //
-    INFO(800), //
-    WARN(900), //
-    ERROR(1000), //
-    FATAL(2000), //
-    OFF(Integer.MAX_VALUE) //
+    TRACE(), //
+    DEBUG(), //
+    INFO(), //
+    WARN(), //
+    ERROR(), //
+    FATAL(), //
+    OFF() //
     ;
 
-    /** 数值越高表示越大 */
-    private int value;
-
-    LogLevel(int value) {
-        this.value = value;
+    LogLevel() {
     }
 
     /**
@@ -101,11 +97,7 @@ public enum LogLevel {
             return true;
         }
 
-        if ("off".equalsIgnoreCase(level)) {
-            return true;
-        }
-
-        return false;
+        return "off".equalsIgnoreCase(level);
     }
 
 }

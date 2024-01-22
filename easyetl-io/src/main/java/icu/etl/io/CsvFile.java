@@ -145,7 +145,7 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
      * @param begin  起始位置
      * @param end    终止位置（不包括）
      * @param buffer 缓冲区
-     * @return
+     * @return 结束位置
      */
     protected static int indexOfCsvStrEndPosition(String str, int begin, int end, StringBuilder buffer) {
         for (int j = begin, next = 0; j < end; j++) {
@@ -215,7 +215,7 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
      * @param str    字符串
      * @param column 列数,从1开始
      * @param newStr 替换的字符串
-     * @return
+     * @return 替换后的字符串
      */
     public static String replaceFieldValue(CharSequence str, int column, String newStr) {
         if (newStr == null) {

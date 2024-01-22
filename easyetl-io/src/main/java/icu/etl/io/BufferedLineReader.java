@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Iterator;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
 
@@ -127,8 +128,8 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
     /**
      * 初始化
      *
-     * @param str
-     * @param size
+     * @param str  字符序列
+     * @param size 缓冲区长度
      */
     public BufferedLineReader(CharSequence str, int size) {
         this(str, size, 0);
@@ -137,7 +138,7 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
     /**
      * 初始化
      *
-     * @param str
+     * @param str 字符序列
      */
     public BufferedLineReader(CharSequence str) {
         this(str, 0, 0);
@@ -194,11 +195,7 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
      * @param expectedLength 每行字符串的初始容量长度（单位：字符），小于等于零时会使用默认值
      */
     protected void open(Reader in, int size, int expectedLength) {
-        if (in == null) {
-            throw new NullPointerException();
-        }
-
-        this.in = in;
+        this.in = Ensure.notNull(in);
         this.buffer = new char[size <= 0 ? defaultCharBufferSize : size];
         this.nextChar = this.count = 0;
         this.expectedLineLength = (expectedLength <= 0) ? defaultExpectedLineCapacity : expectedLength;
@@ -206,20 +203,6 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
         this.skipLF = false;
         this.lineSeparator = "";
         this.nextline = null;
-    }
-
-    /**
-     * 设置每行字符串的初始容量
-     *
-     * @param length 初始容量（单位: 字符, 如果初始容量过小则每次执行 {@linkplain #readLine()} 方法时自动扩容会消耗大量资源）
-     * @throws IllegalArgumentException 如果 {@code length} {@literal < } 0
-     */
-    public void setReadLineCapacity(int length) {
-        if (length < 0) {
-            throw new IllegalArgumentException(String.valueOf(length));
-        } else {
-            this.expectedLineLength = length;
-        }
     }
 
     /**
@@ -387,8 +370,8 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
      * @param array 字符数组
      * @param off   起始位置
      * @param len   字符长度
-     * @return
-     * @throws IOException
+     * @return 读取长度
+     * @throws IOException 异常
      */
     protected int readBuffer(char[] array, int off, int len) throws IOException {
         if (this.nextChar >= this.count) {
@@ -477,13 +460,13 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
     /**
      * 读取下一行内容, 不需要显示的抛出异常信息
      *
-     * @return
+     * @return 下一行内容
      */
     public String readLineEasy() {
         try {
             return this.readLine();
         } catch (IOException e) {
-            throw new RuntimeException("readLine()", e);
+            throw new RuntimeException(e.getLocalizedMessage(), e);
         }
     }
 
@@ -714,9 +697,9 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
     }
 
     /**
-     * 返回 true 表示输入流已关闭， 即已执行 {@linkplain #close()} 方法
+     * 判断是否已执行 {@linkplain #close()} 方法
      *
-     * @return
+     * @return 返回 true 表示输入流已关闭
      */
     public boolean isClosed() {
         return this.in == null;
@@ -725,14 +708,10 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
     /**
      * 设置当前行号
      *
-     * @param n
+     * @param n 行号
      */
     public void setLineNumber(long n) {
-        if (n < 0) {
-            throw new IllegalArgumentException(String.valueOf(n));
-        } else {
-            this.lineNumber = n;
-        }
+        this.lineNumber = Ensure.isFromZero(n);
     }
 
     public long getLineNumber() {

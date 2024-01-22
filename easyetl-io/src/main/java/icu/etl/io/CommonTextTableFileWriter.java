@@ -27,7 +27,7 @@ public class CommonTextTableFileWriter implements TextTableFileWriter {
      * @param file   表格型文件
      * @param append true表示追加写入方式
      * @param cache  缓存行数
-     * @throws IOException
+     * @throws IOException 打开输出流错误
      */
     public CommonTextTableFileWriter(TextTableFile file, boolean append, int cache) throws IOException {
         this(file, new OutputStreamWriter(new FileOutputStream(file.getAbsolutePath(), append), file.getCharsetName()), cache);
@@ -36,10 +36,10 @@ public class CommonTextTableFileWriter implements TextTableFileWriter {
     /**
      * 创建一个表格型的输出流
      *
-     * @param file
-     * @param out
-     * @param cache
-     * @throws IOException
+     * @param file  表格型文件
+     * @param out   输出流
+     * @param cache 缓存行数
+     * @throws IOException 打开输出流错误
      */
     public CommonTextTableFileWriter(TextTableFile file, Writer out, int cache) throws IOException {
         super();

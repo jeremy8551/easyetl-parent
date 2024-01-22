@@ -15,8 +15,8 @@ public class CommandOptionValue {
      * 初始化
      *
      * @param name   选项名（无-）
-     * @param value
-     * @param islong
+     * @param value  选项值
+     * @param islong 是否是长选项
      */
     public CommandOptionValue(String name, String value, boolean islong) {
         this.name = name;
@@ -27,7 +27,7 @@ public class CommandOptionValue {
     /**
      * 返回选项名
      *
-     * @return
+     * @return 选项名
      */
     public String getName() {
         return name;
@@ -36,16 +36,16 @@ public class CommandOptionValue {
     /**
      * 返回选项值
      *
-     * @return
+     * @return 选项值
      */
     public String getValue() {
         return value;
     }
 
     /**
-     * 返回 true 表示长选项
+     * 判断命令是否支持长选项
      *
-     * @return
+     * @return 返回 true 表示长选项
      */
     public boolean islong() {
         return islong;

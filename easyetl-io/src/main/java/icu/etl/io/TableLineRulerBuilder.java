@@ -35,13 +35,13 @@ public class TableLineRulerBuilder implements EasyBeanBuilder<TableLineRuler> {
     /**
      * 字符分隔符长度大于1，有转义字符
      */
-    static class S0 implements TableLineRuler {
+    private static class S0 implements TableLineRuler {
 
-        private String delimiter;
+        private final String delimiter;
 
-        private char escape;
+        private final char escape;
 
-        private StringBuilder buf = new StringBuilder();
+        private final StringBuilder buf = new StringBuilder();
 
         public S0(String delimiter, char escape) {
             this.delimiter = delimiter;
@@ -86,11 +86,11 @@ public class TableLineRulerBuilder implements EasyBeanBuilder<TableLineRuler> {
     /**
      * 字符分隔符长度大于1，没有转义字符
      */
-    static class S1 implements TableLineRuler {
+    private static class S1 implements TableLineRuler {
 
-        private String delimiter;
+        private final String delimiter;
 
-        private StringBuilder buf = new StringBuilder();
+        private final StringBuilder buf = new StringBuilder();
 
         public S1(String delimiter) {
             this.delimiter = delimiter;
@@ -133,13 +133,13 @@ public class TableLineRulerBuilder implements EasyBeanBuilder<TableLineRuler> {
     /**
      * 单字符分隔符，且有转义字符
      */
-    static class S2 implements TableLineRuler {
+    private static class S2 implements TableLineRuler {
 
-        private char delimiter;
+        private final char delimiter;
 
-        private char escape;
+        private final char escape;
 
-        private StringBuilder buf = new StringBuilder();
+        private final StringBuilder buf = new StringBuilder();
 
         public S2(char delimiter, char escape) {
             this.delimiter = delimiter;
@@ -183,11 +183,11 @@ public class TableLineRulerBuilder implements EasyBeanBuilder<TableLineRuler> {
     /**
      * 单字符分隔符，且没有转义字符
      */
-    static class S3 implements TableLineRuler {
+    private static class S3 implements TableLineRuler {
 
-        private char delimiter;
+        private final char delimiter;
 
-        private StringBuilder buf = new StringBuilder();
+        private final StringBuilder buf = new StringBuilder();
 
         public S3(char delimiter) {
             this.delimiter = delimiter;

@@ -19,7 +19,7 @@ public class ComplexParameter extends ExpressionParameter {
     /**
      * 初始化
      *
-     * @param str
+     * @param str 字符串
      */
     public ComplexParameter(String str) {
         this.type = Parameter.EXPRESS;

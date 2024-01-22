@@ -215,8 +215,8 @@ public class IncrementCommand extends AbstractTraceCommand implements UniversalS
             inccxt.setNewWriter(newout);
             inccxt.setUpdWriter(updout);
             inccxt.setDelWriter(delout);
-            inccxt.setSortNew(!this.newfileExpr.contains("nosort"));
-            inccxt.setSortOld(!this.oldfileExpr.contains("nosort"));
+            inccxt.setSortNewfile(!this.newfileExpr.contains("nosort"));
+            inccxt.setSortOldfile(!this.oldfileExpr.contains("nosort"));
             inccxt.setSortNewContext(this.newfileExpr.createSortContext());
             inccxt.setSortOldContext(this.oldfileExpr.createSortContext());
             inccxt.setReplaceList(replaceList);

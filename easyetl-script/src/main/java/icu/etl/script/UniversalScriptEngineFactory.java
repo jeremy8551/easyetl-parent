@@ -30,6 +30,7 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
     /** 容器的上下文信息 */
     protected EasyContext context;
 
+    /** 脚本引擎序号 */
     private static volatile int serialNumber = 0;
 
     /**

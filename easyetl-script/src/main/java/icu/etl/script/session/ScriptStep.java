@@ -15,7 +15,7 @@ public class ScriptStep {
     public final static String key = "ScriptStep";
 
     public static ScriptStep get(UniversalScriptContext context, boolean... array) {
-        ScriptStep list = context.getProgram(key, array.length == 0 ? false : array[0]);
+        ScriptStep list = context.getProgram(key, array.length != 0 && array[0]);
         if (list == null) {
             list = new ScriptStep();
             if (array.length == 0) {

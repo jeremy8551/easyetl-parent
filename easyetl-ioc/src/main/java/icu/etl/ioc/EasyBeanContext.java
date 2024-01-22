@@ -200,8 +200,12 @@ public class EasyBeanContext implements EasyContext {
         return this.table.get(type).contains(cls);
     }
 
-    public boolean removeBeanInfo(Class<?> type, Class<?> cls) {
-        return this.table.get(type).remove(cls);
+    public List<EasyBeanInfoValue> removeBeanInfo(Class<?> type, Class<?> cls) {
+        List<EasyBeanInfoValue> list = this.table.get(type).remove(cls);
+        for (EasyBeanInfoValue beanInfo : list) {
+            this.eventManager.removeBeanEvent(beanInfo);
+        }
+        return list;
     }
 
     public List<EasyBeanInfo> getBeanInfoList(Class<?> type) {

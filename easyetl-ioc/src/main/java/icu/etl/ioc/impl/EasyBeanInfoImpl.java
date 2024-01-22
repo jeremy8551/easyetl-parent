@@ -43,37 +43,21 @@ public class EasyBeanInfoImpl implements EasyBeanInfoValue {
      */
     public EasyBeanInfoImpl(Class<?> type) {
         this.type = Ensure.notNull(type);
-        this.instance = null;
         EasyBean annotation = type.getAnnotation(EasyBean.class); // 取得类上配置的注解
         if (annotation != null) {
-            this.name = StringUtils.trimBlank(annotation.name());
-            this.singleton = annotation.singleton();
-            this.priority = annotation.priority();
-            this.lazy = annotation.lazy();
-            this.description = annotation.description();
+            this.setName(StringUtils.trimBlank(annotation.name()));
+            this.setSingleton(annotation.singleton());
+            this.setPriority(annotation.priority());
+            this.setLazy(annotation.lazy());
+            this.setDescription(annotation.description());
         } else {
-            this.name = "";
-            this.singleton = false;
-            this.priority = 0;
-            this.lazy = true;
-            this.description = "";
+            this.setName("");
+            this.setSingleton(false);
+            this.setPriority(0);
+            this.setLazy(true);
+            this.setDescription("");
         }
-    }
-
-    /**
-     * 初始化
-     *
-     * @param beanInfo 组件信息
-     */
-    public EasyBeanInfoImpl(EasyBeanInfo beanInfo) {
-        Ensure.notNull(beanInfo);
-        this.type = beanInfo.getType();
-        this.name = beanInfo.getName();
-        this.singleton = beanInfo.singleton();
-        this.priority = beanInfo.getPriority();
-        this.lazy = beanInfo.isLazy();
-        this.description = beanInfo.getDescription();
-        this.instance = null;
+        this.setBean(null);
     }
 
     @SuppressWarnings("unchecked")

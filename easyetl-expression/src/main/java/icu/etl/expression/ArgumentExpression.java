@@ -247,7 +247,9 @@ public class ArgumentExpression implements Serializable, Cloneable {
      * @return 选项名副本
      */
     public String[] getOptionNames() {
-        return this.values.keySet().toArray(new String[this.values.size()]);
+        String[] array = new String[this.values.size()];
+        this.values.keySet().toArray(array);
+        return array;
     }
 
     /**

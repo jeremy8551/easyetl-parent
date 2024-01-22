@@ -52,8 +52,8 @@ public class IncrementJob extends AbstractJob {
         TextTableFileWriter newOuter = this.context.getNewWriter();
         TextTableFileWriter updOuter = this.context.getUpdWriter();
         TextTableFileWriter delOuter = this.context.getDelWriter();
-        boolean sortNewFile = this.context.sortNewFile();
-        boolean sortOldFile = this.context.sortOldFile();
+        boolean sortNewFile = this.context.isSortNewfile();
+        boolean sortOldFile = this.context.isSortOldfile();
         IncrementPosition position = this.context.getPosition();
         List<IncrementListener> listeners = this.context.getListeners();
         IncrementReplaceListener replaceList = this.context.getReplaceList();

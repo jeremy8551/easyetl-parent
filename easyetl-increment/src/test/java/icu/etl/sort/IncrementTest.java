@@ -198,8 +198,8 @@ public class IncrementTest {
         context.setNewWriter(newout);
         context.setUpdWriter(updout);
         context.setDelWriter(delout);
-        context.setSortNew(true);
-        context.setSortOld(true);
+        context.setSortNewfile(true);
+        context.setSortOldfile(true);
         context.setSortNewContext(new TableFileSortContext(ioc, null));
         context.setSortOldContext(new TableFileSortContext(ioc, null));
         context.setReplaceList(null);
