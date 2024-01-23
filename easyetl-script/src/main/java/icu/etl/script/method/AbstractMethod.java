@@ -37,8 +37,8 @@ public abstract class AbstractMethod implements UniversalScriptVariableMethod {
      * @param method   方法名: .trim()
      * @param value    上一个变量方法的返回值
      * @param next     下一个变量方法的起始位置
-     * @return
-     * @throws Exception
+     * @return 返回值，0表示变量方法执行正确 非0表示发生错误
+     * @throws Exception 执行变量方法发生错误
      */
     protected int executeNextMethod(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, UniversalScriptAnalysis analysis, String name, String method, Object value, int next) throws Exception {
         if (next < method.length() && !analysis.isBlankline(method.substring(next))) {
@@ -83,7 +83,7 @@ public abstract class AbstractMethod implements UniversalScriptVariableMethod {
     /**
      * 打印使用说明
      *
-     * @param out
+     * @param out 标准信息输出流
      */
     public void usage(UniversalScriptStdout out) {
         Class<? extends UniversalScriptVariableMethod> cls = this.getClass();
@@ -95,11 +95,11 @@ public abstract class AbstractMethod implements UniversalScriptVariableMethod {
     /**
      * 打印使用说明
      *
-     * @param out
-     * @param name
+     * @param out  标准信息输出流
+     * @param name 命令名
      */
     protected void usage(UniversalScriptStdout out, String name) {
-        String msg = this.usage(2, //
+        String msg = this.usage( //
                 ResourcesUtils.getMessage("script.variable.method." + name + ".synopsis"), //
                 ResourcesUtils.getMessage("script.variable.method." + name + ".descriptions"), //
                 ResourcesUtils.getMessage("script.variable.method." + name + ".parameters"), //
@@ -111,14 +111,13 @@ public abstract class AbstractMethod implements UniversalScriptVariableMethod {
     /**
      * 打印变量方法的使用说明
      *
-     * @param tabsize
-     * @param synopsis
-     * @param descriptions
-     * @param parameters
-     * @param returnHandle
-     * @return
+     * @param synopsis     命令该要
+     * @param descriptions 命令说明
+     * @param parameters   命令参数
+     * @param returnHandle 命令的返回值说明
+     * @return 使用说明
      */
-    private String usage(int tabsize, String synopsis, String descriptions, String parameters, String returnHandle) {
+    private String usage(String synopsis, String descriptions, String parameters, String returnHandle) {
         String titles[] = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg003"), ',');
         String tab = StringUtils.left('\t', 3, '\t');
         StringBuilder msg = new StringBuilder();

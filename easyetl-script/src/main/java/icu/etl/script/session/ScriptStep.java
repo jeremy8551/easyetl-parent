@@ -84,9 +84,9 @@ public class ScriptStep {
     }
 
     /**
-     * 返回 true 表示还未运行到目标位置
+     * 判断命令是否运行到目标位置
      *
-     * @return
+     * @return 返回 true 表示还未运行到目标位置
      */
     public boolean containsTarget() {
         return jumping;
@@ -109,7 +109,7 @@ public class ScriptStep {
     /**
      * 返回目标位置信息
      *
-     * @return
+     * @return 目标位置信息
      */
     public String getTarget() {
         return target;

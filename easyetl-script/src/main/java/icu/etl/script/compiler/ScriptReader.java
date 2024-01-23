@@ -130,10 +130,10 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
     /**
      * 读取一行信息
      *
-     * @param in
-     * @param currentLine
-     * @return
-     * @throws IOException
+     * @param in          输入流
+     * @param currentLine 当前行内容
+     * @return 一个命令语句
+     * @throws IOException 读取命令发生错误
      */
     private String readline(CacheLineReader in, String currentLine) throws IOException {
         int index = this.analysis.indexOf(currentLine, new char[]{'\n', '\r'}, 0);
@@ -159,10 +159,10 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
     /**
      * 读取当前行内容直到语句分隔符或回车符或换行符或脚本注释符
      *
-     * @param in
-     * @param currentLine
-     * @return
-     * @throws IOException
+     * @param in          输入流
+     * @param currentLine 当前行内容
+     * @return 一个命令语句
+     * @throws IOException 读取命令发生错误
      */
     private StringBuilder readSinglelineScript(CacheLineReader in, String currentLine) throws IOException {
         int index = this.analysis.indexOf(currentLine, new char[]{this.comment, this.token, '\n', '\r'}, 0);
@@ -184,10 +184,10 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
     /**
      * 如果行末是转义字符，则读取下一行合并到当前行
      *
-     * @param in
-     * @param currentLine
-     * @return
-     * @throws IOException
+     * @param in          输入流
+     * @param currentLine 当前行内容
+     * @return 一个命令语句
+     * @throws IOException 读取命令发生错误
      */
     private StringBuilder mergeNextLine(CacheLineReader in, String currentLine) throws IOException {
         StringBuilder buf = new StringBuilder(currentLine);
@@ -216,10 +216,10 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
     /**
      * 读取一个 SQL 语句
      *
-     * @param in
-     * @param currentLine
-     * @return
-     * @throws IOException
+     * @param in          输入流
+     * @param currentLine 当前行内容
+     * @return 一个命令语句
+     * @throws IOException 读取命令发生错误
      */
     private StringBuilder readMultilineScript(CacheLineReader in, String currentLine) throws IOException {
         StringBuilder buf = new StringBuilder();
@@ -368,7 +368,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
      *
      * @param sql  SQL语句
      * @param from 搜索起始位置
-     * @return
+     * @return 结束位置
      */
     private int indexOfSQLQuotation(String sql, int from) {
         if (from < 0) {
@@ -395,7 +395,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
      *
      * @param sql  SQL语句
      * @param from 搜索起始位置
-     * @return
+     * @return 结束位置
      */
     private int indexOfSQLComment(String sql, int from) {
         if (from < 0) {
@@ -585,10 +585,10 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
     /**
      * 从字符串参数 currentLine 中读取第一个单词, 如果单词右侧存在语句分隔符
      *
-     * @param in
-     * @param currentLine
-     * @return
-     * @throws IOException
+     * @param in          输入流
+     * @param currentLine 当前行内容
+     * @return 一个命令语句
+     * @throws IOException 读取命令发生错误
      */
     private StringBuilder readSingleWord(CacheLineReader in, String currentLine) throws IOException {
         int index = -1;

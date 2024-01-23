@@ -2,6 +2,7 @@ package icu.etl.database.load.serial;
 
 import icu.etl.database.load.LoadFileRange;
 import icu.etl.io.TextTableFile;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 
 /**
@@ -34,7 +35,7 @@ public class LoadFileExecutorContext {
     /**
      * 返回表格型文件
      *
-     * @return
+     * @return 表格型文件
      */
     public TextTableFile getFile() {
         return file;
@@ -43,20 +44,16 @@ public class LoadFileExecutorContext {
     /**
      * 设置表格型文件
      *
-     * @param file
+     * @param file 表格型文件
      */
     public void setFile(TextTableFile file) {
-        if (file == null) {
-            throw new NullPointerException();
-        } else {
-            this.file = file;
-        }
+        this.file = Ensure.notNull(file);
     }
 
     /**
      * 返回从输入流开始读取字节的位置
      *
-     * @return
+     * @return 位置信息，从0开始
      */
     public long getStartPointer() {
         return pointer;
@@ -65,21 +62,18 @@ public class LoadFileExecutorContext {
     /**
      * 设置文件扫描范围
      *
-     * @param range
+     * @param range 范围信息
      */
     public void setRange(LoadFileRange range) {
-        if (range == null) {
-            throw new NullPointerException();
-        } else {
-            this.pointer = range.getStart();
-            this.length = range.getEnd() - range.getStart();
-        }
+        Ensure.notNull(range);
+        this.pointer = range.getStart();
+        this.length = range.getEnd() - range.getStart();
     }
 
     /**
      * 返回输入流读取的最大字节总数
      *
-     * @return
+     * @return 最多字节总数
      */
     public long length() {
         return length;
@@ -88,7 +82,7 @@ public class LoadFileExecutorContext {
     /**
      * 返回输入流中缓冲区长度，单位：字符
      *
-     * @return
+     * @return 缓冲区长度，单位：字符
      */
     public int getReadBuffer() {
         return readBuffer;
@@ -97,14 +91,10 @@ public class LoadFileExecutorContext {
     /**
      * 设置输入流的缓冲区长度，单位：字符
      *
-     * @param size
+     * @param size 缓冲区长度，单位：字符
      */
     public void setReadBuffer(int size) {
-        if (size <= 0) {
-            throw new IllegalArgumentException(String.valueOf(size));
-        } else {
-            this.readBuffer = size;
-        }
+        this.readBuffer = Ensure.isFromOne(size);
     }
 
 }

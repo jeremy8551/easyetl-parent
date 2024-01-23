@@ -11,9 +11,9 @@ import icu.etl.util.CharsetName;
 public interface OSShellCommand extends OSConnectCommand, OSCommand, CharsetName {
 
     /** Shell配置 */
-    public final static String profiles = "profiles";
-    public final static String sshPort = "ssh";
-    public final static String sshUser = "sshuser";
-    public final static String sshUserPw = "sshUserPw";
+    String profiles = "profiles";
+    String sshPort = "ssh";
+    String sshUser = "sshuser";
+    String sshUserPw = "sshUserPw";
 
 }

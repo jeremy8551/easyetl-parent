@@ -23,7 +23,7 @@ public interface Operator {
      *
      * @param d1 操作数1
      * @param d2 操作数2
-     * @return
+     * @return 运算结果
      */
     Parameter execute(Parameter d1, Parameter d2);
 

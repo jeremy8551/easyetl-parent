@@ -1,8 +1,5 @@
 package icu.etl.database.load.converter;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 public class StringConverter extends AbstractConverter {
 
     /** true表示保留字符串右端的空白字符 */
@@ -27,7 +24,7 @@ public class StringConverter extends AbstractConverter {
      * rtrimBlank(null) == null <br>
      *
      * @param str 字符串
-     * @return
+     * @return 字符串
      */
     public String rtrim(String str) {
         int index = str.length() - 1;

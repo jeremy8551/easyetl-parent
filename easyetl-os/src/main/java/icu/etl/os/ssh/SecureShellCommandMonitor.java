@@ -1,6 +1,5 @@
 package icu.etl.os.ssh;
 
-import java.io.IOException;
 import java.util.Date;
 
 import icu.etl.io.BufferedLineReader;
@@ -110,8 +109,8 @@ public class SecureShellCommandMonitor extends TimerTask {
      *
      * @param client ssh终端
      * @param pid    命令的进程编号
-     * @return
-     * @throws OSCommandException
+     * @return 返回true表示正在运行命令
+     * @throws OSCommandException 运行命令发生错误
      */
     public boolean isRunning(SecureShellCommand client, String pid) throws OSCommandException {
         String shell = "ps -p " + pid + " -o comm=";
@@ -144,8 +143,8 @@ public class SecureShellCommandMonitor extends TimerTask {
     /**
      * 通知 SSH 服务器保持连接
      *
-     * @param client
-     * @return
+     * @param client shell接口
+     * @return 返回true表示发送存活信号成功
      */
     public boolean sendKeepAliveMsg(SecureShellCommand client) {
         try {
@@ -169,11 +168,10 @@ public class SecureShellCommandMonitor extends TimerTask {
      * @param client         ssh终端
      * @param pid            进程编号
      * @param lastActiveTime 进程最后活动时间(用于缩小在查找历史记录的时间范围)
-     * @return
-     * @throws OSCommandException
-     * @throws IOException
+     * @return 返回true表示命令已被终止
+     * @throws OSCommandException 运行命令发生错误
      */
-    private boolean isKilled(SecureShellCommand client, String pid, Date lastActiveTime) throws OSCommandException, IOException {
+    private boolean isKilled(SecureShellCommand client, String pid, Date lastActiveTime) throws OSCommandException {
         client.execute("export HISTTIMEFORMAT=\"%F %T \" && history", 0, null, null);
         String historyLog = client.getStdout();
         int dateStartPos = -1;

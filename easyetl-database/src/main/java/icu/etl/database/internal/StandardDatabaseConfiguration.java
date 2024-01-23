@@ -42,7 +42,7 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration, Eas
     /**
      * 初始化
      *
-     * @param context
+     * @param context         容器上下文信息
      * @param ipAddress       数据库服务器IP地址
      * @param driverClassName JDBC驱动类名（不能是空白或null）
      * @param url             JDBC驱动路径（不能是空白或null）
@@ -123,9 +123,9 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration, Eas
     /**
      * 添加账号
      *
-     * @param key
-     * @param account
-     * @return
+     * @param key     用户名
+     * @param account 账号信息
+     * @return 账号信息
      */
     private OSAccount addAccount(String key, OSAccount account) {
         if (account == null) {
@@ -200,7 +200,7 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration, Eas
         return list;
     }
 
-    private class ComparatorImpl implements Comparator<OSAccount> {
+    private static class ComparatorImpl implements Comparator<OSAccount> {
         private boolean ascOrdesc;
 
         public ComparatorImpl(boolean ascOrdesc) {
@@ -220,7 +220,7 @@ public class StandardDatabaseConfiguration implements DatabaseConfiguration, Eas
     /**
      * 返回一个 JDBC 配置信息副本
      *
-     * @return
+     * @return JDBC 配置信息
      */
     public synchronized DatabaseConfiguration clone() {
         StandardDatabaseConfiguration config = new StandardDatabaseConfiguration();

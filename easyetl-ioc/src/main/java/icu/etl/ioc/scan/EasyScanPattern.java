@@ -10,7 +10,7 @@ import icu.etl.util.StringUtils;
  */
 public class EasyScanPattern {
 
-    public static final char[] EXCLUDE_CHARS = {'^', '!', '！', StringUtils.toFullWidthChar('^')};
+    public final static char[] EXCLUDE_CHARS = {'^', '!', '！', StringUtils.toFullWidthChar('^')};
 
     /** 源名: !org.spring.* */
     private String value;
@@ -69,9 +69,9 @@ public class EasyScanPattern {
     }
 
     /**
-     * 包名前缀，如：org.spring
+     * 包名前缀
      *
-     * @return
+     * @return 包名前缀，如：org.spring
      */
     public String getPrefix() {
         return prefix;

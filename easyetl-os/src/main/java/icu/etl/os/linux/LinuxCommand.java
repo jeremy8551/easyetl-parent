@@ -1,6 +1,5 @@
 package icu.etl.os.linux;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ public class LinuxCommand implements OSCommand {
      *
      * @param commands 命令数组
      * @return 返回命令对应的标准输出信息集合
-     * @throws OSCommandException
+     * @throws OSCommandException 运行命令发生错误
      */
     public OSCommandStdouts execute(String... commands) throws OSCommandException {
         List<String> list = ArrayUtils.asList(commands);
@@ -67,7 +66,7 @@ public class LinuxCommand implements OSCommand {
      *
      * @param commands 命令集合
      * @return 返回命令对应的标准输出信息集合
-     * @throws OSCommandException
+     * @throws OSCommandException 运行命令发生错误
      */
     public OSCommandStdouts execute(List<String> commands) throws OSCommandException {
         OSCommandStdoutsImpl map = new OSCommandStdoutsImpl();
@@ -256,7 +255,7 @@ public class LinuxCommand implements OSCommand {
      *
      * @param array  字节数组
      * @param length 数组长度
-     * @return
+     * @return 进程编号的长度
      */
     protected int extractPid(byte[] array, int length) {
         if (StringUtils.isNotBlank(this.config.getProperty("pid"))) {
@@ -294,7 +293,7 @@ public class LinuxCommand implements OSCommand {
     /**
      * 保存命令的进程编号
      *
-     * @param pid
+     * @param pid 进程编号
      */
     protected void setPid(String pid) {
         this.config.setProperty("pid", pid);
@@ -303,7 +302,7 @@ public class LinuxCommand implements OSCommand {
     /**
      * 返回命令的进程编号
      *
-     * @return
+     * @return 进程编号
      */
     public String getPid() {
         return this.config.getProperty("pid");
@@ -312,8 +311,8 @@ public class LinuxCommand implements OSCommand {
     /**
      * 在shell 命令中添加前缀和后缀信息
      *
-     * @param command
-     * @return
+     * @param command 命令
+     * @return 命令
      */
     private String toShellCommand(String command) {
         StringBuilder buf = new StringBuilder(command.length() + 50);
@@ -337,10 +336,9 @@ public class LinuxCommand implements OSCommand {
     /**
      * 加载用户配置文件，当前所在目录，默认的字符集编码
      *
-     * @throws OSCommandException
-     * @throws IOException
+     * @throws OSCommandException 运行命令发生错误
      */
-    protected synchronized void prepared() throws OSCommandException, IOException {
+    protected synchronized void prepared() throws OSCommandException {
         String[] command = new String[]{"source profiles", ". /etc/profile; . .profile; . .bash_profile; . .bash_login; . .bashrc;", //
                 "echo ls", "ls /etc/profile; ls -a | grep profile; ls -a | grep bash_login; ls -a | grep bashrc;", //
                 "echo pwd", "pwd", //

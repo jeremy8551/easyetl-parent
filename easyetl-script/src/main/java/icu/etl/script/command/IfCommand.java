@@ -104,7 +104,7 @@ public class IfCommand extends AbstractCommand implements LoopCommandKind, WithB
     /**
      * 返回 else ... fi 语句的逻辑代码块
      *
-     * @param list
+     * @param list 逻辑代码块
      */
     public void setElse(List<UniversalScriptCommand> list) {
         this.hasElseCmds = true;
@@ -233,7 +233,7 @@ public class IfCommand extends AbstractCommand implements LoopCommandKind, WithB
      * 返回 if 语句表达式
      *
      * @param level 指定语句块中代码锁进宽度
-     * @return
+     * @return 语句
      */
     public String toString(int level) {
         String tab = StringUtils.left("", level * 2, ' '); // tab 字符的长度

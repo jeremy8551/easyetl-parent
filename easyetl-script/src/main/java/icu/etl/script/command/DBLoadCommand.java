@@ -122,7 +122,7 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
     /**
      * 用于判断是否可以执行装载数据任务
      *
-     * @param obj
+     * @param obj 判断条件
      */
     public void setRule(LoadEngineLaunch obj) {
         this.launch = obj;
@@ -131,7 +131,7 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
     /**
      * 脚本语句，用于判断是否可以执行装载任务
      *
-     * @param str
+     * @param str 脚本语句
      */
     public void setRule(String str) {
         this.script = str;
@@ -140,7 +140,7 @@ public class DBLoadCommand extends AbstractTraceCommand implements UniversalScri
     /**
      * 返回装数引擎上下文信息
      *
-     * @return
+     * @return 装数引擎上下文信息
      */
     public LoadEngineContext getContext() {
         if (this.engine == null) {

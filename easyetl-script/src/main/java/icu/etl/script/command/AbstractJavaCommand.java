@@ -35,28 +35,28 @@ public abstract class AbstractJavaCommand {
      * @param stderr  错误信息输出流
      * @param args    外部输入参数
      * @return 返回0表示正确 返回非0表示错误
-     * @throws Exception
+     * @throws Exception 执行自定义逻辑发生错误
      */
     public abstract int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, String[] args) throws Exception;
 
     /**
-     * 返回 true 表示在 jump 命令过程中不会执行 {@linkplain #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, String[])} 方法
+     * 判断在 jump 命令过程中会不会执行 {@linkplain #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, String[])} 方法
      *
-     * @return
+     * @return 返回 true 表示在 jump 命令过程中不会执行 {@linkplain #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, String[])} 方法
      */
     public abstract boolean enableJump();
 
     /**
-     * 返回 true 表示在支持在后台运行命令
+     * 判断是否支持在后台运行命令
      *
-     * @return
+     * @return 返回 true 表示在支持在后台运行命令
      */
     public abstract boolean enableNohup();
 
     /**
-     * 返回 true 表示命令可以向管道中输出信息
+     * 判断是否支持向管道中输出信息
      *
-     * @return
+     * @return 返回 true 表示命令可以向管道中输出信息
      */
     public abstract boolean enablePipe();
 

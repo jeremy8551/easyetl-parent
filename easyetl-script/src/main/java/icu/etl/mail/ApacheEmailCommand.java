@@ -153,8 +153,8 @@ public class ApacheEmailCommand implements MailCommand {
      * <br>
      * The first place in the array is the name, the second place is the email address
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 数组
      */
     public static String[] toAddress(String str) {
         str = StringUtils.trimBlank(str);
@@ -208,8 +208,8 @@ public class ApacheEmailCommand implements MailCommand {
      */
     public void drafts(String protocol, int port, boolean ssl, String sender, List<String> receivers, String title, CharSequence content, MailFile... attachments) {
         if (StringUtils.isBlank(protocol)) {
+            protocol = "imap";
         }
-        protocol = "imap";
 
         Store store = null;
         try {
@@ -449,7 +449,7 @@ public class ApacheEmailCommand implements MailCommand {
                 }
             } catch (Exception e) {
                 String msg = StringUtils.toString(e);
-                if (msg.indexOf("not a directory") == -1) {
+                if (!msg.contains("not a directory")) {
                     throw new MessagingException(folder.getFullName(), e);
                 }
             }
@@ -466,7 +466,7 @@ public class ApacheEmailCommand implements MailCommand {
 
         String[] from = toString(msg.getFrom());
         if (!ArrayUtils.isEmpty(from)) {
-            String[] address = toAddress(from[0].toString());
+            String[] address = toAddress(from[0]);
             mail.setSenderName(address[0]);
             mail.setSenderAddress(address[1]);
         }
@@ -475,7 +475,7 @@ public class ApacheEmailCommand implements MailCommand {
         List<String> receiverAddress = new ArrayList<String>();
         String[] allRecipients = toString(msg.getAllRecipients());
         for (String add : allRecipients) {
-            String[] address = toAddress(add.toString());
+            String[] address = toAddress(add);
             receiverNames.add(address[0]);
             receiverAddress.add(address[1]);
         }
@@ -633,7 +633,7 @@ public class ApacheEmailCommand implements MailCommand {
                         filename = MimeUtility.decodeText(filename);
                     }
 
-                    if (filename != null && (filename.equalsIgnoreCase(downfilename) || GPatternExpression.match(filename, downfilename))) {
+                    if (filename.equalsIgnoreCase(downfilename) || GPatternExpression.match(filename, downfilename)) {
                         return this.saveFile(parent, filename, part.getInputStream());
                     }
                 }

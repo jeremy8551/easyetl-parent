@@ -19,7 +19,7 @@ public abstract class AbstractSlaveCommand extends AbstractTraceCommand {
     /**
      * 设置归属的对象
      *
-     * @param object
+     * @param object 归属对象
      */
     public void setOwner(Object object) {
         this.owner = object;
@@ -28,7 +28,7 @@ public abstract class AbstractSlaveCommand extends AbstractTraceCommand {
     /**
      * 判断是否存在拥有者
      *
-     * @return
+     * @return 返回true表示存在拥有者
      */
     public boolean existsOwner() {
         return this.owner != null;

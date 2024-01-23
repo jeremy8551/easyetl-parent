@@ -3,7 +3,6 @@ package icu.etl.script.internal;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -59,7 +58,7 @@ public class ErrorHandlerMap implements UniversalScriptProgram {
      * 添加异常错误处理逻辑
      *
      * @param handler 异常错误处理逻辑
-     * @return
+     * @return 处理逻辑
      */
     public ScriptHandler add(ScriptHandler handler) {
         if (handler == null) {
@@ -73,7 +72,7 @@ public class ErrorHandlerMap implements UniversalScriptProgram {
      * 删除异常错误处理逻辑
      *
      * @param condition 异常错误处理逻辑的执行条件, 如: exception
-     * @return
+     * @return 处理逻辑
      */
     public ScriptHandler remove(String condition) {
         if (StringUtils.isBlank(condition)) {
@@ -86,7 +85,7 @@ public class ErrorHandlerMap implements UniversalScriptProgram {
     /**
      * 返回异常处理逻辑个数
      *
-     * @return
+     * @return 处理逻辑个数
      */
     public int size() {
         return this.map.size();
@@ -95,16 +94,16 @@ public class ErrorHandlerMap implements UniversalScriptProgram {
     /**
      * 返回所有异常处理逻辑
      *
-     * @return
+     * @return 处理逻辑集合
      */
     public Collection<ScriptHandler> values() {
         return Collections.unmodifiableCollection(this.map.values());
     }
 
     /**
-     * 返回 true 表示 {@linkplain #catchEvalError(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, String, Throwable)} 方法已被执行过
+     * 判断是否已执行过 {@linkplain #catchEvalError(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, String, Throwable)} 方法
      *
-     * @return
+     * @return 返回 true 表示 {@linkplain #catchEvalError(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, String, Throwable)} 方法已被执行过
      */
     public boolean alreadyCatchEvalError() {
         return this.hasHandle;
@@ -193,9 +192,8 @@ public class ErrorHandlerMap implements UniversalScriptProgram {
     }
 
     public void close() throws IOException {
-        Iterator<ScriptHandler> it = this.map.values().iterator();
-        while (it.hasNext()) {
-            ScriptHandler handler = it.next();
+        Collection<ScriptHandler> values = this.map.values();
+        for (ScriptHandler handler : values) {
             if (handler != null) {
                 handler.clear();
             }

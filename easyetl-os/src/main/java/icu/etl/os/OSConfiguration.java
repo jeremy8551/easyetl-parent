@@ -4,24 +4,25 @@ import java.util.Collection;
 import java.util.List;
 
 public interface OSConfiguration {
+
     /**
-     * 设置 IP 地址
+     * 设置 IP或Host地址
      *
      * @param str IP或Host地址
      */
     void setHostname(String str);
 
     /**
-     * 返回 IP 地址
+     * 返回 IP或Host地址
      *
-     * @return
+     * @return IP或Host地址
      */
     String getHostname();
 
     /**
      * 返回 SSH 协议的端口号
      *
-     * @return
+     * @return 端口号
      */
     int getSSHPort();
 
@@ -31,7 +32,7 @@ public interface OSConfiguration {
      * @param username 用户名
      * @param password 登录密码
      * @param isAdmin  true表示管理员帐号
-     * @return
+     * @return 返回true表示添加用户成功 false表示添加失败
      */
     boolean addAccount(String username, String password, boolean isAdmin);
 
@@ -40,21 +41,21 @@ public interface OSConfiguration {
      *
      * @param username 用户名
      * @param password 登录密码
-     * @return
+     * @return 返回true表示添加用户成功 false表示添加失败
      */
     boolean addSSHAccount(String username, String password);
 
     /**
      * 返回默认的SSH账户
      *
-     * @return
+     * @return SSH账户
      */
     OSAccount getSSHAccount();
 
     /**
      * 返回账户信息集合
      *
-     * @return
+     * @return 账户信息集合
      */
     Collection<String> getAccountNames();
 
@@ -62,7 +63,7 @@ public interface OSConfiguration {
      * 返回账号信息
      *
      * @param name 账号名
-     * @return
+     * @return 账号信息
      */
     OSAccount getAccount(String name);
 
@@ -76,7 +77,7 @@ public interface OSConfiguration {
     /**
      * 返回第一个添加的账号信息
      *
-     * @return
+     * @return 账号信息
      */
     OSAccount getAccount();
 

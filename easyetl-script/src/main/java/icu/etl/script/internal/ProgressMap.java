@@ -16,7 +16,7 @@ public class ProgressMap implements UniversalScriptProgram {
     public final static String key = "ProgressMap";
 
     public static ProgressMap get(UniversalScriptContext context, boolean... array) {
-        boolean global = array.length == 0 ? false : array[0];
+        boolean global = array.length != 0 && array[0];
         ProgressMap obj = context.getProgram(key, global);
         if (obj == null) {
             obj = new ProgressMap();
@@ -58,8 +58,8 @@ public class ProgressMap implements UniversalScriptProgram {
     /**
      * 返回 true 表示存在进度输出组件
      *
-     * @param taskId
-     * @return
+     * @param taskId 任务ID
+     * @return 返回true表示存在进度输出组件
      */
     public boolean contains(String taskId) {
         return taskId != null && this.map.containsKey(taskId.toUpperCase());
@@ -68,7 +68,7 @@ public class ProgressMap implements UniversalScriptProgram {
     /**
      * 添加一个进度输出组件
      *
-     * @param progress
+     * @param progress 进度输出组件
      */
     public void add(ScriptProgress progress) {
         if (StringUtils.isBlank(progress.getTaskId())) {
@@ -81,7 +81,7 @@ public class ProgressMap implements UniversalScriptProgram {
     /**
      * 返回默认的进度输出组件
      *
-     * @return
+     * @return 进度输出组件
      */
     public ScriptProgress get() {
         return this.progress;
@@ -90,8 +90,8 @@ public class ProgressMap implements UniversalScriptProgram {
     /**
      * 返回进度输出组件
      *
-     * @param taskId
-     * @return
+     * @param taskId 任务ID
+     * @return 进度输出组件
      */
     public ScriptProgress get(String taskId) {
         if (StringUtils.isBlank(taskId)) {
@@ -104,8 +104,8 @@ public class ProgressMap implements UniversalScriptProgram {
     /**
      * 删除进度输出组件
      *
-     * @param taskId
-     * @return
+     * @param taskId 任务ID
+     * @return 进度输出组件
      */
     public ScriptProgress remove(String taskId) {
         if (StringUtils.isBlank(taskId)) {

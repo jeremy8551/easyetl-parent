@@ -25,7 +25,7 @@ public class ScriptStdbuf implements UniversalScriptStdout {
     /**
      * 初始化
      *
-     * @param stdout
+     * @param stdout 标准输出接口
      */
     public ScriptStdbuf(UniversalScriptStdout stdout) {
         this.proxy = stdout;
@@ -83,7 +83,7 @@ public class ScriptStdbuf implements UniversalScriptStdout {
     /**
      * 转为字符流
      *
-     * @return
+     * @return 字符输入流
      */
     public Reader toReader() {
         char[] array = new char[this.buf.length()];

@@ -24,9 +24,9 @@ public class DataWriterFactory {
     /**
      * 初始化
      *
-     * @param dao
-     * @param context
-     * @param target
+     * @param dao     数据库接口
+     * @param context 装载引擎上下文信息
+     * @param target  数据库表
      */
     public DataWriterFactory(JdbcDao dao, LoadEngineContext context, LoadTable target) {
         super();
@@ -39,8 +39,8 @@ public class DataWriterFactory {
     /**
      * 返回一个空闲数据库输出流
      *
-     * @return
-     * @throws Exception
+     * @return 输出流
+     * @throws Exception 发生错误
      */
     public synchronized DataWriter create() throws Exception {
         for (DataWriter writer : this.list) {
@@ -59,7 +59,7 @@ public class DataWriterFactory {
     /**
      * 关闭数据库输出流
      *
-     * @throws SQLException
+     * @throws SQLException 关闭输出流发生错误
      */
     public synchronized void close() throws SQLException {
         for (DataWriter out : this.list) {

@@ -13,7 +13,7 @@ public interface CallbackCommandSupported {
     /**
      * 返回脚本命令的输入参数
      *
-     * @return
+     * @return 输入参数
      */
     String[] getArguments();
 

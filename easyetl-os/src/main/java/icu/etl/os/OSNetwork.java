@@ -13,7 +13,7 @@ public interface OSNetwork {
     /**
      * 返回操作系统上网卡集合
      *
-     * @return
+     * @return 上网卡集合
      */
     List<OSNetworkCard> getOSNetworkCards();
 

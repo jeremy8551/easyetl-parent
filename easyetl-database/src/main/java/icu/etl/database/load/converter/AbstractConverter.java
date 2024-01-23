@@ -129,8 +129,8 @@ public abstract class AbstractConverter implements JdbcStringConverter {
     /**
      * 判断字符串是否为空白字符串
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 返回true表示字符串参数是空白或null
      */
     protected boolean isBlank(String str) {
         for (int i = 0, length = str.length(); i < length; i++) {

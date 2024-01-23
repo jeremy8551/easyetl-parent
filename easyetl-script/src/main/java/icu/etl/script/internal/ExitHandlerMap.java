@@ -1,9 +1,7 @@
 package icu.etl.script.internal;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -24,7 +22,7 @@ public class ExitHandlerMap implements UniversalScriptProgram {
     public final static String key = "ExitHandlerMap";
 
     public static ExitHandlerMap get(UniversalScriptContext context, boolean... array) {
-        boolean global = array.length == 0 ? false : array[0];
+        boolean global = array.length != 0 && array[0];
         ExitHandlerMap obj = context.getProgram(key, global);
         if (obj == null) {
             obj = new ExitHandlerMap();
@@ -36,7 +34,7 @@ public class ExitHandlerMap implements UniversalScriptProgram {
     /** 执行条件与异常错误处理逻辑映射关系 */
     private LinkedHashMap<String, ScriptHandler> map;
 
-    /** true 表示 {@link ExitHandlerMap#execute(String, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, Integer)} 方法已被执行过 */
+    /** true 表示 {@link ExitHandlerMap#execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, Integer)} 方法已被执行过 */
     private boolean hasHandle;
 
     /**
@@ -50,7 +48,7 @@ public class ExitHandlerMap implements UniversalScriptProgram {
      * 添加异常错误处理逻辑
      *
      * @param handler 异常错误处理逻辑
-     * @return
+     * @return 处理逻辑
      */
     public ScriptHandler add(ScriptHandler handler) {
         if (handler == null) {
@@ -64,7 +62,7 @@ public class ExitHandlerMap implements UniversalScriptProgram {
      * 删除异常错误处理逻辑
      *
      * @param condition 异常处理逻辑执行条件，如：exitcode != 0
-     * @return
+     * @return 处理逻辑
      */
     public ScriptHandler remove(String condition) {
         if (StringUtils.isBlank(condition)) {
@@ -77,7 +75,7 @@ public class ExitHandlerMap implements UniversalScriptProgram {
     /**
      * 返回所有异常处理逻辑
      *
-     * @return
+     * @return 处理逻辑集合
      */
     public Collection<ScriptHandler> values() {
         return Collections.unmodifiableCollection(this.map.values());
@@ -86,16 +84,16 @@ public class ExitHandlerMap implements UniversalScriptProgram {
     /**
      * 返回异常处理逻辑个数
      *
-     * @return
+     * @return 处理逻辑个数
      */
     public int size() {
         return this.map.size();
     }
 
     /**
-     * true 表示 {@link #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, Integer)} 方法已被执行过
+     * 判断是否执行过 {@link #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, Integer)} 方法
      *
-     * @return
+     * @return 返回true表示 {@link #execute(UniversalScriptSession, UniversalScriptContext, UniversalScriptStdout, UniversalScriptStderr, boolean, Integer)} 方法已被执行过
      */
     public boolean alreadyExecuted() {
         return this.hasHandle;
@@ -141,10 +139,9 @@ public class ExitHandlerMap implements UniversalScriptProgram {
         return new ScriptProgramClone(key, obj);
     }
 
-    public void close() throws IOException {
-        Iterator<ScriptHandler> it = this.map.values().iterator();
-        while (it.hasNext()) {
-            ScriptHandler handler = it.next();
+    public void close() {
+        Collection<ScriptHandler> values = this.map.values();
+        for (ScriptHandler handler : values) {
             if (handler != null) {
                 handler.clear();
             }

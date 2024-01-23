@@ -1,12 +1,12 @@
 package icu.etl.script;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 import java.util.Properties;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
 
 import icu.etl.io.AliveReader;
 import icu.etl.ioc.EasyContext;
@@ -415,7 +415,7 @@ public class UniversalScriptContext implements ScriptContext {
      * 判断是否存在局部变量
      *
      * @param name 变量名
-     * @return
+     * @return 返回true表示存在变量
      */
     public boolean containsLocalVariable(String name) {
         return this.localVariable.containsKey(name);
@@ -435,7 +435,7 @@ public class UniversalScriptContext implements ScriptContext {
      * 返回局部变量值
      *
      * @param name 变量名
-     * @return
+     * @return 变量值
      */
     public Object getLocalVariable(String name) {
         return this.localVariable.get(name);
@@ -444,7 +444,7 @@ public class UniversalScriptContext implements ScriptContext {
     /**
      * 返回全局变量集合
      *
-     * @return
+     * @return 变量集合
      */
     public UniversalScriptVariable getGlobalVariable() {
         return this.globalVariable;
@@ -454,7 +454,7 @@ public class UniversalScriptContext implements ScriptContext {
      * 判断是否存在全局变量
      *
      * @param name 变量名
-     * @return
+     * @return 返回true表示存在变量
      */
     public boolean containsGlobalVariable(String name) {
         return this.globalVariable.containsKey(name);
@@ -464,7 +464,7 @@ public class UniversalScriptContext implements ScriptContext {
      * 添加全局变量
      *
      * @param name  变量名
-     * @param value variable value
+     * @param value 变量值
      */
     public void addGlobalVariable(String name, Object value) {
         if (value == null) {
@@ -481,7 +481,7 @@ public class UniversalScriptContext implements ScriptContext {
      * 返回全局变量值
      *
      * @param name 变量名
-     * @return
+     * @return 变量值
      */
     public Object getGlobalVariable(String name) {
         return this.globalVariable.get(name);
@@ -554,7 +554,7 @@ public class UniversalScriptContext implements ScriptContext {
      * 判断是否存在变量
      *
      * @param name 变量名
-     * @return
+     * @return 返回true表示存在变量
      */
     public boolean containsAttribute(String name) {
         return this.globalVariable.containsKey(name) || this.localVariable.containsKey(name) || this.environmentVariable.containsKey(name);

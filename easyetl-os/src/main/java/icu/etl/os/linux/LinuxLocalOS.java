@@ -73,7 +73,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     /**
      * 初始化
      *
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     public LinuxLocalOS() throws IOException {
         this.cmd = new LinuxCommand();
@@ -84,7 +84,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     /**
      * 读取操作系统的版本信息
      *
-     * @throws IOException
+     * @throws IOException 访问文件发生错误
      */
     protected void init() throws IOException {
         File file = new File("/proc/version");
@@ -101,7 +101,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
      * 执行操作系统上的命令语句
      *
      * @param command 命令语句
-     * @return
+     * @return 命令返回值
      */
     protected int executeCommand(CharSequence command) {
         try {
@@ -225,7 +225,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
      * 读取用户配置文件集合
      *
      * @param userhome 用户根目录绝对路径
-     * @return
+     * @return 文件路径集合
      */
     protected List<String> getUserProfile(String userhome) {
         List<String> list = new ArrayList<String>();
@@ -288,7 +288,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
         List<OSService> list = new ArrayList<OSService>();
         List<OSService> services = this.getOSServices();
         for (OSService obj : services) {
-            if (obj.getName().indexOf(name) != -1) {
+            if (obj.getName().contains(name)) {
                 list.add(obj);
             }
         }

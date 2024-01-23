@@ -6,8 +6,8 @@ import java.util.Iterator;
 import icu.etl.os.OSSecureShellCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptProgram;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
-import icu.etl.util.StringUtils;
 
 /**
  * SSH 协议端口转发客户端集合
@@ -19,7 +19,7 @@ public class SSHTunnelMap implements UniversalScriptProgram {
     public final static String key = "SSHTunnelMap";
 
     public static SSHTunnelMap get(UniversalScriptContext context, boolean... array) {
-        boolean global = array.length == 0 ? false : array[0];
+        boolean global = array.length != 0 && array[0];
         SSHTunnelMap obj = context.getProgram(key, global);
         if (obj == null) {
             obj = new SSHTunnelMap();
@@ -44,13 +44,8 @@ public class SSHTunnelMap implements UniversalScriptProgram {
      * @param client SSH 端口转发协议
      */
     public void add(String name, OSSecureShellCommand client) {
-        if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(name);
-        }
-        if (client == null) {
-            throw new NullPointerException();
-        }
-
+        Ensure.notBlank(name);
+        Ensure.notNull(client);
         String key = name.toUpperCase();
         this.close(key);
         this.map.put(key, client);
@@ -59,14 +54,10 @@ public class SSHTunnelMap implements UniversalScriptProgram {
     /**
      * 关闭客户端并从集合中删除
      *
-     * @param name
+     * @param name 名字
      */
     public void close(String name) {
-        if (name == null) {
-            throw new NullPointerException();
-        }
-
-        String key = name.toUpperCase();
+        String key = Ensure.notNull(name).toUpperCase();
         OSSecureShellCommand ssh = this.map.get(key);
         if (ssh != null) {
             IO.close(ssh);

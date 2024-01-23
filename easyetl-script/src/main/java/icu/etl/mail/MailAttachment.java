@@ -11,7 +11,7 @@ public interface MailAttachment {
     /**
      * 返回附件归属的邮件对象
      *
-     * @return
+     * @return 邮件
      */
     Mail getMail();
 

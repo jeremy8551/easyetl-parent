@@ -15,18 +15,18 @@ public abstract class AbstractGlobalCommand extends AbstractCommand {
     }
 
     /**
-     * 设置 true 表示变量或配置是全局状态
+     * 判断变量或配置是否是全局状态
      *
-     * @param value
+     * @param value 设置 true 表示变量或配置是全局状态
      */
     public void setGlobal(boolean value) {
         this.global = value;
     }
 
     /**
-     * 返回 true 表示变量或配置是全局状态
+     * 判断变量或配置是否是全局状态
      *
-     * @return
+     * @return 返回 true 表示变量或配置是全局状态
      */
     public boolean isGlobal() {
         return this.global;

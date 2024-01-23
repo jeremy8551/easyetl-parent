@@ -42,8 +42,9 @@ public class TimerTaskThread extends Thread implements UncaughtExceptionHandler 
     /**
      * 生成任务运行时线程名
      *
-     * @param taskId
-     * @return
+     * @param taskId 任务编号
+     * @param clazz  类信息
+     * @return 线程名
      */
     protected String getTaskThreadName(String taskId, Class<?> clazz) {
         return taskId + "@" + clazz.getSimpleName().toUpperCase();
@@ -117,16 +118,16 @@ public class TimerTaskThread extends Thread implements UncaughtExceptionHandler 
     /**
      * 定时任务
      *
-     * @return
+     * @return 定时任务
      */
     public TimerTask getTask() {
         return task;
     }
 
     /**
-     * true表示正在执行 run 函数
+     * 判断任务是否正在运行
      *
-     * @return
+     * @return 返回true表示正在执行 run 函数
      */
     public boolean isRunning() {
         return isRunning;

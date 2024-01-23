@@ -14,15 +14,15 @@ public interface OSCommandStdouts {
     /**
      * 返回命令对应的标准输出信息
      *
-     * @param commandId
-     * @return
+     * @param commandId 命令
+     * @return 标准输出信息集合
      */
     List<String> get(String commandId);
 
     /**
      * 返回命令编号集合
      *
-     * @return
+     * @return 编号集合
      */
     Set<String> keys();
 

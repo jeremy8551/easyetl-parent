@@ -55,25 +55,25 @@ public class SecureShellForwardCommand implements OSConnectCommand {
     /**
      * 设置错误信息输出接口
      *
-     * @param output
+     * @param out 错误信息输出接口
      */
-    public void setStderr(OutputStream output) {
-        this.stderr = output;
+    public void setStderr(OutputStream out) {
+        this.stderr = out;
     }
 
     /**
      * 设置标准信息输出接口
      *
-     * @param output
+     * @param out 标准信息输出接口
      */
-    public void setStdout(OutputStream output) {
-        this.stdout = output;
+    public void setStdout(OutputStream out) {
+        this.stdout = out;
     }
 
     /**
      * 设置输出字符串的字符集编码
      *
-     * @param charsetName
+     * @param charsetName 字符集编码
      */
     public void setCharsetName(String charsetName) {
         this.charsetName = charsetName;
@@ -82,8 +82,8 @@ public class SecureShellForwardCommand implements OSConnectCommand {
     /**
      * 输出标准信息
      *
-     * @param str
-     * @throws IOException
+     * @param str 字符串
+     * @throws IOException 向输出流写入数据发生错误
      */
     public void stdout(String str) throws IOException {
         if (this.stdout == null) {
@@ -97,8 +97,8 @@ public class SecureShellForwardCommand implements OSConnectCommand {
     /**
      * 输出错误信息
      *
-     * @param str
-     * @param o
+     * @param str 字符串
+     * @param o   异常信息
      */
     public void stderr(String str, Throwable o) {
         if (this.stderr == null) {
@@ -154,7 +154,7 @@ public class SecureShellForwardCommand implements OSConnectCommand {
      * @param localPort  本地端口
      * @param remoteHost 目标服务器
      * @param remotePort 目标服务器的SSH端口
-     * @return
+     * @return 端口号
      */
     public int localPortForward(int localPort, String remoteHost, int remotePort) {
         if (StringUtils.isBlank(remoteHost)) {

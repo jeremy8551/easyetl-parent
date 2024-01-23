@@ -18,6 +18,7 @@ import icu.etl.database.load.inernal.ErrorDataWriter;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileReader;
 import icu.etl.io.TextTableLine;
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 /**
@@ -35,12 +36,7 @@ public class PrimaryRepeatExceptionProcessor {
 
     public PrimaryRepeatExceptionProcessor(LoadEngineContext context) {
         super();
-
-        if (context == null) {
-            throw new NullPointerException();
-        } else {
-            this.context = context;
-        }
+        this.context = Ensure.notNull(context);
     }
 
     /**
@@ -50,7 +46,7 @@ public class PrimaryRepeatExceptionProcessor {
      * @param target 目标表
      * @param file   数据文件
      * @return 返回已修改字段个数
-     * @throws Exception
+     * @throws Exception 处理重复数据发生错误
      */
     public boolean execute(JdbcDao dao, LoadEngineContext context, DatabaseTable target, TextTableFile file, DataWriter out) throws Exception {
         String catalog = this.context.getTableCatalog();
@@ -69,13 +65,13 @@ public class PrimaryRepeatExceptionProcessor {
     /**
      * 创建一个错误信息表
      *
-     * @param dao
-     * @param target
-     * @param catalog
-     * @param schema
-     * @param tableName
-     * @return
-     * @throws SQLException
+     * @param dao       数据库操作接口
+     * @param target    目标表
+     * @param catalog   编目
+     * @param schema    模式
+     * @param tableName 数据库表名
+     * @return 数据库表
+     * @throws SQLException 建错误信息表发生错误
      */
     private StandardDatabaseTable createErrorTable(JdbcDao dao, DatabaseTable target, String catalog, String schema, String tableName) throws SQLException {
         StandardDatabaseTable table = new StandardDatabaseTable(target);
@@ -147,12 +143,12 @@ public class PrimaryRepeatExceptionProcessor {
     /**
      * 将主键冲突的表保存到错误信息表中
      *
-     * @param dao
-     * @param file
-     * @param out
-     * @param target
-     * @return
-     * @throws Exception
+     * @param dao    数据库操作接口
+     * @param file   表格文件
+     * @param out    输出流
+     * @param target 目标表
+     * @return 返回true表示处理成功
+     * @throws Exception 处理主键冲突发生错误
      */
     private boolean execute(JdbcDao dao, TextTableFile file, DataWriter out, LoadErrorTable target) throws Exception {
         long commit = out.getCommitRecords(); // 未发生主键冲突错误的起始位置

@@ -32,6 +32,7 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
     /** true 表示压缩文件, false 表示解压文件 */
     private boolean compress;
 
+    /** 压缩接口 */
     private Compress c;
 
     public TarCommand(UniversalCommandCompiler compiler, String command, String filepath, boolean compress) {
@@ -65,13 +66,13 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
     /**
      * 压缩文件
      *
-     * @param session
-     * @param context
-     * @param stdout
-     * @param stderr
-     * @param forceStdout
-     * @return
-     * @throws IOException
+     * @param session     用户会话信息
+     * @param context     脚本引擎上下文信息
+     * @param stdout      标准信息输出接口
+     * @param stderr      错误信息输出接口
+     * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
+     * @return 返回0表示正确, 返回非0表示不正确
+     * @throws IOException 执行命令发生错误
      */
     public int compressFile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException {
         File file = new ScriptFile(session, context, this.filepath);
@@ -98,13 +99,13 @@ public class TarCommand extends AbstractFileCommand implements UniversalScriptIn
     /**
      * 解压文件
      *
-     * @param session
-     * @param context
-     * @param stdout
-     * @param stderr
-     * @param forceStdout
-     * @return
-     * @throws IOException
+     * @param session     用户会话信息
+     * @param context     脚本引擎上下文信息
+     * @param stdout      标准信息输出接口
+     * @param stderr      错误信息输出接口
+     * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
+     * @return 返回0表示正确, 返回非0表示不正确
+     * @throws IOException 执行命令发生错误
      */
     public int decompressFile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout) throws IOException {
         File tarfile = new ScriptFile(session, context, this.filepath);

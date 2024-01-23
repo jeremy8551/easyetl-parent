@@ -8,9 +8,9 @@ package icu.etl.script.command.feature;
 public interface LoopCommandSupported {
 
     /**
-     * 返回 true 表示不可以在循环体语句中使用
+     * 判断是否可以在循环体语句中使用
      *
-     * @return
+     * @return 返回 true 表示不可以在循环体语句中使用
      */
     boolean enableLoop();
 

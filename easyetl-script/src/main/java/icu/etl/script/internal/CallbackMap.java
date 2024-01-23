@@ -53,8 +53,8 @@ public class CallbackMap implements UniversalScriptProgram {
      * @param forceStdout true表示可以输出信息
      * @param cls         脚本命令
      * @param args        脚本命令对应的参数
-     * @return
-     * @throws Exception
+     * @return 命令返回值
+     * @throws Exception 发生错误
      */
     public int executeCallback(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, Class<?> cls, String[] args) throws Exception {
         Callback obj = this.get(cls);
@@ -90,7 +90,7 @@ public class CallbackMap implements UniversalScriptProgram {
     /**
      * 删除一个脚本命令的回调函数
      *
-     * @param cls
+     * @param cls 命令的编译器
      */
     public void remove(Class<? extends UniversalCommandCompiler> cls) {
         this.map.remove(cls);

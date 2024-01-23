@@ -79,7 +79,7 @@ public class VariableMethodCommandCompiler extends AbstractTraceCommandCompiler 
     /**
      * 返回变量方法的仓库
      *
-     * @return
+     * @return 变量方法的仓库
      */
     public VariableMethodRepository getRepository() {
         return this.methods;
@@ -90,7 +90,7 @@ public class VariableMethodCommandCompiler extends AbstractTraceCommandCompiler 
      *
      * @param str   字符串
      * @param start 截取字符串左侧开始位置，从0开始
-     * @return
+     * @return 方法名
      */
     private String readMethodName(String str, int start) {
         int sp = start, len = str.length(), ep = len - 1;

@@ -432,7 +432,7 @@ public class TableFileSorter implements Terminate {
          * @param cxt              待排序文件
          * @param listfile         清单文件
          * @param recordComparator 记录排序规则
-         * @throws IOException
+         * @throws IOException 访问文件发生错误
          */
         public MergeExecutorReader(TableFileSortContext cxt, File listfile, RecordComparator recordComparator) throws IOException {
             if (listfile == null || !listfile.exists()) {
@@ -488,7 +488,7 @@ public class TableFileSorter implements Terminate {
         /**
          * 返回合并记录总数
          *
-         * @return
+         * @return 记录数
          */
         public long getLineNumber() {
             return lineNumber;
@@ -497,7 +497,7 @@ public class TableFileSorter implements Terminate {
         /**
          * 合并文件产生的清单文件
          *
-         * @return
+         * @return 清单文件
          */
         public File getListfile() {
             return this.newListfile;
@@ -540,9 +540,9 @@ public class TableFileSorter implements Terminate {
         /**
          * 初始化
          *
-         * @param context
-         * @param recordComparator
-         * @throws IOException
+         * @param context          排序规则上下文信息
+         * @param recordComparator 排序规则
+         * @throws IOException 访问文件发生错误
          */
         public TempFileWriter(TableFileSortContext context, RecordComparator recordComparator) throws IOException {
             this.context = context;
@@ -557,7 +557,7 @@ public class TableFileSorter implements Terminate {
         /**
          * 清单文件
          *
-         * @return
+         * @return 清单文件
          */
         public File getListfile() {
             return this.listfile;
@@ -590,7 +590,7 @@ public class TableFileSorter implements Terminate {
          * 把缓存记录写入到临时文件中
          *
          * @param file 临时文件
-         * @throws IOException
+         * @throws IOException 访问文件发生错误
          */
         protected void writeFile(File file) throws IOException {
             String charsetName = this.listfileout.getCharsetName();
@@ -687,7 +687,7 @@ public class TableFileSorter implements Terminate {
          *
          * @param files 数据文件
          * @return 返回合并后文件
-         * @throws IOException
+         * @throws IOException 访问文件发生错误
          */
         public TextTableFile merge(List<TextTableFile> files) throws IOException {
             if (files == null || files.size() == 0) {
@@ -718,7 +718,7 @@ public class TableFileSorter implements Terminate {
          *
          * @param file1 文件1
          * @param file2 文件2
-         * @throws IOException
+         * @throws IOException 访问文件发生错误
          */
         public TextTableFile merge(TextTableFile file1, TextTableFile file2) throws IOException {
             TextTableFile newfile = file1.clone();
@@ -791,7 +791,7 @@ public class TableFileSorter implements Terminate {
         /**
          * 返回记录总和
          *
-         * @return
+         * @return 记录数
          */
         public long getLineNumber() {
             return mergeLines;
@@ -800,7 +800,7 @@ public class TableFileSorter implements Terminate {
         /**
          * 添加待合并数据文件
          *
-         * @param files
+         * @param files 文件集合
          */
         public synchronized void setFiles(List<TextTableFile> files) {
             this.files.clear();

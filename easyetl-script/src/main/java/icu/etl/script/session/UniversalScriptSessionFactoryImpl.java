@@ -71,7 +71,7 @@ public class UniversalScriptSessionFactoryImpl implements UniversalScriptSession
      * 将用户会话信息注册到会话池
      *
      * @param session 用户会话
-     * @return
+     * @return 用户会话
      */
     public UniversalScriptSession add(UniversalScriptSession session) {
         if (session == null) {

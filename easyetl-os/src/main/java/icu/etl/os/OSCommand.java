@@ -22,7 +22,7 @@ public interface OSCommand extends Terminate {
      *
      * @param command 命令语句，比如 Linux 系统的 shell 语句或windows系统的批处理语句
      * @return 返回0表示正确，返回非0表示错误
-     * @throws OSCommandException
+     * @throws OSCommandException 执行命令发生错误
      */
     int execute(String command) throws OSCommandException;
 
@@ -32,7 +32,7 @@ public interface OSCommand extends Terminate {
      * @param command 命令语句，比如 Linux 系统的 shell 语句或windows系统的批处理语句
      * @param timeout 命令的超时时间 (单位毫秒)，0 表示未设置超时时间
      * @return 返回0表示正确，返回非0表示错误
-     * @throws OSCommandException
+     * @throws OSCommandException 执行命令发生错误
      */
     int execute(String command, long timeout) throws OSCommandException;
 
@@ -44,7 +44,7 @@ public interface OSCommand extends Terminate {
      * @param stdout  用于输出命令标准信息的输出流
      * @param stderr  用于输出命令错误信息的输出流
      * @return 返回0表示正确，返回非0表示错误
-     * @throws OSCommandException
+     * @throws OSCommandException 执行命令发生错误
      */
     int execute(String command, long timeout, OutputStream stdout, OutputStream stderr) throws OSCommandException;
 
@@ -53,7 +53,7 @@ public interface OSCommand extends Terminate {
      *
      * @param commands 命令数组
      * @return 返回命令对应的标准输出信息集合
-     * @throws OSCommandException
+     * @throws OSCommandException 执行命令发生错误
      */
     OSCommandStdouts execute(String... commands) throws OSCommandException;
 
@@ -62,21 +62,21 @@ public interface OSCommand extends Terminate {
      *
      * @param commands 命令集合
      * @return 返回命令对应的标准输出信息集合
-     * @throws OSCommandException
+     * @throws OSCommandException 执行命令发生错误
      */
     OSCommandStdouts execute(List<String> commands) throws OSCommandException;
 
     /**
      * 判断操作系统是否支持使用标准信息输出流
      *
-     * @return
+     * @return 返回true表示支持标准信息输出 false表示不支持标准信息输出
      */
     boolean supportStdout();
 
     /**
      * 判断操作系统是否支持使用错误信息输出流
      *
-     * @return
+     * @return 返回true表示支持错误信息输出 false表示不支持错误信息输出
      */
     boolean supportStderr();
 
@@ -90,21 +90,21 @@ public interface OSCommand extends Terminate {
     /**
      * 设置执行命令使用的错误信息输出流
      *
-     * @param os
+     * @param out 输出流
      */
-    void setStderr(OutputStream os);
+    void setStderr(OutputStream out);
 
     /**
      * 返回命令输出的标准信息
      *
-     * @return
+     * @return 标准信息
      */
     String getStdout();
 
     /**
      * 返回命令输出的错误信息
      *
-     * @return
+     * @return 错误信息
      */
     String getStderr();
 
@@ -112,7 +112,7 @@ public interface OSCommand extends Terminate {
      * 返回命令输出的标准信息
      *
      * @param charsetName 标准信息的字符集编码
-     * @return
+     * @return 标准信息
      */
     String getStdout(String charsetName);
 
@@ -120,14 +120,14 @@ public interface OSCommand extends Terminate {
      * 返回命令输出的错误信息
      *
      * @param charsetName 错误信息的字符集编码
-     * @return
+     * @return 错误信息
      */
     String getStderr(String charsetName);
 
     /**
      * 返回命令输出信息的默认字符集编码
      *
-     * @return
+     * @return 字符集编码
      */
     String getCharsetName();
 
@@ -135,7 +135,7 @@ public interface OSCommand extends Terminate {
      * 返回执行属性值
      *
      * @param key 属性名
-     * @return
+     * @return 属性值
      */
     Object getAttribute(String key);
 

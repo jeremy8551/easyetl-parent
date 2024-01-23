@@ -41,7 +41,7 @@ public class VariableMethodRepository {
      * 判断变量方法是否存在
      *
      * @param cls 变量方法的类信息
-     * @return
+     * @return 返回true表示存在
      */
     public boolean contains(Class<?> cls) {
         for (Iterator<UniversalScriptVariableMethod> it = this.map.values().iterator(); it.hasNext(); ) {
@@ -67,7 +67,7 @@ public class VariableMethodRepository {
      * 返回脚本变量方法
      *
      * @param name 变量方法名
-     * @return
+     * @return 变量方法
      */
     public UniversalScriptVariableMethod get(String name) {
         UniversalScriptVariableMethod method = this.map.get(name.toUpperCase());
@@ -89,7 +89,7 @@ public class VariableMethodRepository {
      * 返回所有脚本变量方法的使用说明
      *
      * @param charsetName 字符集
-     * @return
+     * @return 使用说明
      */
     public String toString(String charsetName) {
         String[] titles = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg004"), ',');
@@ -127,7 +127,7 @@ public class VariableMethodRepository {
         return ct.toString(CharTable.Style.standard);
     }
 
-    private class ComparatorImpl implements Comparator<String> {
+    private static class ComparatorImpl implements Comparator<String> {
 
         private List<String> usage;
 
@@ -152,9 +152,9 @@ public class VariableMethodRepository {
     }
 
     /**
-     * 返回 true 表示未加载任何脚本引擎变量方法
+     * 判断是否已加载脚本引擎变量方法
      *
-     * @return
+     * @return 返回 true 表示未加载任何脚本引擎变量方法
      */
     public boolean isEmpty() {
         return this.map.isEmpty();

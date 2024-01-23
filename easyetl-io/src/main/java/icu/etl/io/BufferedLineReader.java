@@ -474,8 +474,8 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
      * 从输入流当前位置开始读取一行字符串
      *
      * @param ignoreLF true表示忽略 \r 字符后面的 \n 字符
-     * @return
-     * @throws IOException
+     * @return 文件中的一行内容
+     * @throws IOException 访问文件发生错误
      */
     protected String readLine(boolean ignoreLF) throws IOException {
         StringBuilder line = null;
@@ -652,13 +652,9 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
      *              因此，应小心使用大值。
      */
     public void mark(int limit) throws IOException {
-        if (limit < 0) {
-            throw new IllegalArgumentException(String.valueOf(limit));
-        }
-
         synchronized (this.lock) {
             this.ensureOpen();
-            this.readAheadLimit = limit;
+            this.readAheadLimit = Ensure.isFromZero(limit);
             this.markedChar = this.nextChar;
             this.markedSkipLF = this.skipLF;
             this.markedLineNumber = this.lineNumber;

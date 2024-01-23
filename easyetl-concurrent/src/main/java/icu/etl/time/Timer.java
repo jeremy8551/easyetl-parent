@@ -258,7 +258,7 @@ public class Timer {
     /**
      * 检查定时任务模式是否正确
      *
-     * @param schedule
+     * @param schedule 定时任务模式
      * @return true表示正确 false表示错误
      */
     protected static boolean checkSchedule(int schedule) {
@@ -334,7 +334,7 @@ public class Timer {
     /**
      * 返回所有任务
      *
-     * @return
+     * @return 任务集合
      */
     public synchronized List<TimerTask> getTasks() {
         if (this.isStop()) {
@@ -369,18 +369,18 @@ public class Timer {
     }
 
     /**
-     * true表示定时器已启动
+     * 判断定时任务是否已启动
      *
-     * @return
+     * @return 返回true表示定时器已启动
      */
     public boolean isStart() {
         return this.start;
     }
 
     /**
-     * true表示定时器已停止
+     * 判断定时任务是否已停止
      *
-     * @return
+     * @return 返回true表示定时器已停止
      */
     public boolean isStop() {
         return !this.start;
@@ -389,7 +389,7 @@ public class Timer {
     /**
      * true表示定时器已启动 false表示定时器已关闭
      *
-     * @param start
+     * @param start true表示启动
      */
     protected void setStartOrStop(boolean start) {
         this.start = start;

@@ -14,7 +14,6 @@ import icu.etl.os.OSFile;
 import icu.etl.os.OSFileCommand;
 import icu.etl.os.OSFileFilter;
 import icu.etl.os.internal.OSFileImpl;
-import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.NetUtils;
@@ -103,9 +102,6 @@ public class LinuxFileCommand implements OSFileCommand {
         File remotefile = new File(FileUtils.replaceFolderSeparator(filepath));
         if (remotefile.isDirectory()) {
             File[] files = FileUtils.array(remotefile.listFiles());
-            if (files == null) {
-                files = new File[0];
-            }
             for (File file : files) {
                 if (LinuxLocalOS.KEY_FILENAMES.contains(file.getName())) {
                     continue;

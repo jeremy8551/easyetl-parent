@@ -8,7 +8,7 @@ public interface OSFileFilter {
     /**
      * 判断是否应该过滤文件
      *
-     * @param file
+     * @param file 文件
      * @return 返回 <code>true</code> 表示不应该过滤文件 <code>false</code> 表示应该过滤文件.
      */
     boolean accept(OSFile file);

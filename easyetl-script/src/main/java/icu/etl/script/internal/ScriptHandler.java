@@ -56,7 +56,7 @@ public class ScriptHandler {
     /**
      * 返回处理逻辑中的命令集合
      *
-     * @return
+     * @return 处理逻辑体
      */
     public CommandList getList() {
         return body;
@@ -72,7 +72,7 @@ public class ScriptHandler {
      * 删除异常处理逻辑执行条件中的空白字符
      *
      * @param condition 异常处理逻辑执行条件
-     * @return
+     * @return 字符串
      */
     public static String toKey(String condition) {
         return StringUtils.removeBlank(condition).toLowerCase();
@@ -81,7 +81,7 @@ public class ScriptHandler {
     /**
      * 返回 error 或 step 或 echo 或 handle
      *
-     * @return
+     * @return 处理逻辑名
      */
     public String getName() {
         return this.body.getName();
@@ -90,7 +90,7 @@ public class ScriptHandler {
     /**
      * 返回异常处理逻辑的执行条件
      *
-     * @return
+     * @return 执行条件
      */
     public String getCondition() {
         return condition;
@@ -99,7 +99,7 @@ public class ScriptHandler {
     /**
      * 异常处理逻辑的匹配规则（无空白字符）
      *
-     * @return
+     * @return 匹配规则
      */
     public String getKey() {
         return key;
@@ -109,16 +109,16 @@ public class ScriptHandler {
      * true表示执行逻辑命令集合后退出脚本<br>
      * false意味着继续执行
      *
-     * @return
+     * @return 返回true表示执行逻辑命令集合后退出脚本
      */
     public boolean isReturnExit() {
         return exit;
     }
 
     /**
-     * 返回 true 表示异常处理逻辑是JAVA异常处理
+     * 判断异常处理逻辑是JAVA异常处理
      *
-     * @return
+     * @return 返回 true 表示异常处理逻辑是JAVA异常处理
      */
     public boolean isExceptionHandler() {
         if (this.condition == null) {

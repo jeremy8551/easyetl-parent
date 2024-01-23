@@ -11,21 +11,21 @@ public interface OSCpu {
     /**
      * 所属物理CPU的编号
      *
-     * @return
+     * @return CPU的编号
      */
     String getId();
 
     /**
      * 返回 CPU 型号信息
      *
-     * @return
+     * @return CPU 型号信息
      */
     String getModelName();
 
     /**
      * 返回所属CPU的核数
      *
-     * @return
+     * @return CPU的核数
      */
     int getCores();
 

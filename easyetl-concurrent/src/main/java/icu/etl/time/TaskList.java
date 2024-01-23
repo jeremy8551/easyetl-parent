@@ -99,7 +99,7 @@ public class TaskList {
     /**
      * 定时任务数
      *
-     * @return
+     * @return 定时任务数
      */
     public synchronized int size() {
         return list.size();
@@ -160,7 +160,7 @@ public class TaskList {
      * 本函数不能保证任务真正立刻终止,只负责调用 TimerTask.terminate() 函数. <br>
      * 如果任务的 TimerTask.terminate() 函数没有实现终止操作任务还会继续运行知道运行完毕
      *
-     * @param task
+     * @param task 定时任务
      */
     public synchronized void kill(TimerTask task) {
         if (task == null) {

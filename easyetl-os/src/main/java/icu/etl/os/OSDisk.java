@@ -13,42 +13,42 @@ public interface OSDisk {
     /**
      * 分区编号 /dev/mapper/VolGroup00-LogVol00
      *
-     * @return
+     * @return 分区编号
      */
     String getId();
 
     /**
-     * 挂在位置 /boot
+     * 挂载位置 /boot
      *
-     * @return
+     * @return 挂载位置
      */
     String getAmount();
 
     /**
      * 分区格式信息：ext3, tmpfs, iso9660
      *
-     * @return
+     * @return 分区格式信息
      */
     String getType();
 
     /**
      * 硬盘或分区的总容量
      *
-     * @return
+     * @return 硬盘或分区的总容量
      */
     BigDecimal total();
 
     /**
      * 硬盘或分区的可用容量
      *
-     * @return
+     * @return 硬盘或分区的可用容量
      */
     BigDecimal free();
 
     /**
      * 硬盘或分区的已用容量
      *
-     * @return
+     * @return 硬盘或分区的已用容量
      */
     BigDecimal used();
 

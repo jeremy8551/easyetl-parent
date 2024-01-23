@@ -14,21 +14,21 @@ public interface OSUserGroup {
     /**
      * 操作系统用户组名
      *
-     * @return
+     * @return 用户组名
      */
     String getName();
 
     /**
      * 返回组编号
      *
-     * @return
+     * @return 组编号
      */
     String getGid();
 
     /**
      * 返回归属组的所有用户名集合
      *
-     * @return
+     * @return 用户名
      */
     List<String> getUsers();
 

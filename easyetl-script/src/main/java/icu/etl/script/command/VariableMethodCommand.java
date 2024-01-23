@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalScriptAnalysis;
@@ -109,7 +107,7 @@ public class VariableMethodCommand extends AbstractTraceCommand implements Nohup
     /**
      * 变量方法的返回值
      *
-     * @return
+     * @return 变量方法的返回值
      */
     public Object getValue() {
         return this.value;
@@ -122,7 +120,7 @@ public class VariableMethodCommand extends AbstractTraceCommand implements Nohup
      *               [index] <br>
      *               .trim() <Br>
      *               substr()
-     * @return
+     * @return 变量方法名
      */
     public static String parseName(String method) {
         if (method.startsWith("[")) {

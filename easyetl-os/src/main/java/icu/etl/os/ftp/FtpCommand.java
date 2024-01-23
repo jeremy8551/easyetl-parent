@@ -72,7 +72,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
             this.setPreParams();
             this.client.connect(host, port);
             if (this.client.login(username, password)) {
-                this.folderSeperator = this.client.getSystemType().toLowerCase().indexOf("windows") == -1 ? '/' : '\\';
+                this.folderSeperator = !this.client.getSystemType().toLowerCase().contains("windows") ? '/' : '\\';
                 this.remoteServerName = username + "@" + host + ":" + port;
                 this.setLstParams();
                 return true;
@@ -103,7 +103,7 @@ public class FtpCommand implements OSFtpCommand, EasyContextAware {
     protected synchronized void setPreParams() {
         this.client.setControlEncoding(this.params.containsKey("ControlEncoding") ? this.params.get("ControlEncoding") : StringUtils.CHARSET);
         this.client.setBufferSize(this.params.containsKey("BufferSize") ? Integer.parseInt(this.params.get("BufferSize")) : 1024);
-        this.client.setRemoteVerificationEnabled(this.params.containsKey("RemoteVerificationEnabled") ? Boolean.parseBoolean(this.params.get("RemoteVerificationEnabled")) : false);
+        this.client.setRemoteVerificationEnabled(this.params.containsKey("RemoteVerificationEnabled") && Boolean.parseBoolean(this.params.get("RemoteVerificationEnabled")));
 
         if (this.params.containsKey("DataTimeout")) {
             this.client.setDataTimeout(Integer.parseInt(this.params.get("DataTimeout")));

@@ -29,8 +29,8 @@ public class Linuxs {
     /**
      * 将日期转为linux 上文件的日期格式
      *
-     * @param date
-     * @return
+     * @param date 日期
+     * @return 字符串
      */
     public static StringBuilder toFileDateFormat(Date date) {
         int month = Dates.getMonth(date);
@@ -87,8 +87,8 @@ public class Linuxs {
      * 第三个字段是最后修改时间 <br>
      * 第四个字段是文件名
      *
-     * @param file
-     * @return
+     * @param file 文件
+     * @return 字符串
      */
     public static StringBuilder toLongname(File file) {
         Ensure.isTrue(file != null && file.exists(), file);
@@ -156,8 +156,8 @@ public class Linuxs {
     /**
      * 解析 /etc/sysconfig/network-scripts/ifcfg-* 文件内容
      *
-     * @param stdout
-     * @return
+     * @param stdout 标准输出信息
+     * @return 网卡信息
      */
     public static OSNetworkCardImpl parseEtcNetwork(String stdout) {
         Map<String, String> map = new CaseSensitivMap<String>();
@@ -233,7 +233,7 @@ public class Linuxs {
     /**
      * 解析 cat /etc/passwd 命令输出信息
      *
-     * @param stdouts
+     * @param stdouts 标准输出信息集合
      * @return 用户信息集合
      */
     public static List<LinuxUser> parseEtcPasswd(List<String> stdouts) {
@@ -262,7 +262,7 @@ public class Linuxs {
     /**
      * 返回 Linux 内置账户数组（当远程登陆 linux 系统执行命令时，会自动过滤这些内置账户信息）
      *
-     * @return
+     * @return 用户名数组
      */
     public static String[] getLinuxBuiltinAccount() {
         if (System.getProperties().containsKey(PROPERTY_LINUX_BUILTIN_ACCT)) { // 如果设置类参数
@@ -284,7 +284,7 @@ public class Linuxs {
     /**
      * 解析 cat /etc/group 命令输出信息
      *
-     * @param stdouts
+     * @param stdouts 标准输出信息集合
      * @return 用户组信息集合
      */
     public static List<OSUserGroup> parseEtcGroup(List<String> stdouts) {
@@ -311,7 +311,7 @@ public class Linuxs {
     /**
      * 解析 cat /etc/*-release 命令输出信息
      *
-     * @param stdouts
+     * @param stdouts 标准输出信息集合
      * @return Linux 发行版本号
      */
     public static String parseEtcRelease(List<String> stdouts) {
@@ -344,14 +344,14 @@ public class Linuxs {
     /**
      * 解析 cat /etc/resolv.conf 命令输出信息
      *
-     * @param stdouts
+     * @param stdouts 标准输出信息集合
      * @return 数组第一位表示首选DNS，数组第二位表示备选DNS
      */
     public static String[] parseEtcResolv(List<String> stdouts) {
         String dns1 = "", dns2 = "";
         for (String line : stdouts) {
             String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(Linuxs.removeShellNote(line, null)));
-            if (array != null && array.length == 2) {
+            if (array.length == 2) {
                 if (StringUtils.isBlank(dns1)) {
                     dns1 = array[1];
                 } else {
@@ -365,7 +365,7 @@ public class Linuxs {
     /**
      * 解析 ip route show 命令的输出信息
      *
-     * @param stdouts
+     * @param stdouts 标准输出信息集合
      * @return 返回网关信息
      */
     public static String parseIpRouteShow(List<String> stdouts) {

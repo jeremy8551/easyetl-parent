@@ -13,6 +13,7 @@ import icu.etl.database.JdbcStringConverter;
 import icu.etl.database.load.LoadErrorTable;
 import icu.etl.io.TableLine;
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -76,28 +77,18 @@ public class ErrorDataWriter {
     /**
      * 初始化
      *
-     * @param dao
-     * @param target
-     * @param saveCount
-     * @throws Exception
+     * @param dao       数据库接口
+     * @param target    错误信息表
+     * @param saveCount 记录数
+     * @throws Exception 类型转换器发生错误
      */
     public ErrorDataWriter(JdbcDao dao, LoadErrorTable target, long saveCount) throws Exception {
         super();
-
-        if (dao == null) {
-            throw new NullPointerException();
-        }
-        if (target == null) {
-            throw new NullPointerException();
-        }
-        if (saveCount <= 0) {
-            throw new IllegalArgumentException(String.valueOf(saveCount));
-        }
-
-        this.dao = dao;
+        Ensure.notNull(target);
+        this.dao = Ensure.notNull(dao);
         this.id = IDFACTORY.addAndGet(1);
         this.alive = new AtomicBoolean(false);
-        this.saveCount = saveCount;
+        this.saveCount = Ensure.isFromOne(saveCount);
         this.table = target.getTable();
         this.statement = target.getStatement();
         this.positions = target.getFilePositions();
@@ -110,7 +101,7 @@ public class ErrorDataWriter {
     /**
      * 打开输入流
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public synchronized void open() throws SQLException {
         if (this.alive.compareAndSet(false, true)) {
@@ -131,7 +122,7 @@ public class ErrorDataWriter {
      * @param line 文件记录信息
      * @param e    异常信息
      * @return 返回 true 表示已提交数据库事物, 返回 false 表示已提交数据但未提交事物
-     * @throws Exception
+     * @throws Exception 数据库错误
      */
     public boolean write(TableLine line, Throwable e) throws Exception {
         for (int i = 0; i < this.column; i++) {
@@ -155,7 +146,7 @@ public class ErrorDataWriter {
     /**
      * 提交数据库批量接口中缓存的数据
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void commit() throws SQLException {
         if (this.count > 0) {
@@ -167,9 +158,9 @@ public class ErrorDataWriter {
     }
 
     /**
-     * 返回 true 表示数据输出流为有效状态
+     * 判断数据输出流是否为有效状态
      *
-     * @return
+     * @return 返回 true 表示数据输出流为有效状态
      */
     public boolean isAlive() {
         return this.alive.get();
@@ -178,7 +169,7 @@ public class ErrorDataWriter {
     /**
      * 标记数据输出流为失效状态
      *
-     * @throws SQLException
+     * @throws SQLException 数据库错误
      */
     public void close() throws SQLException {
         if (this.alive.compareAndSet(true, false)) {
@@ -190,7 +181,7 @@ public class ErrorDataWriter {
     /**
      * 返回已提交事物的数据记录数
      *
-     * @return
+     * @return 记录数
      */
     public long getCommitRecords() {
         return this.commit;
@@ -199,7 +190,7 @@ public class ErrorDataWriter {
     /**
      * 返回越过的数据记录数
      *
-     * @return
+     * @return 记录数
      */
     public long getSkipRecords() {
         return this.skip;
@@ -208,7 +199,7 @@ public class ErrorDataWriter {
     /**
      * 返回因主键冲突导致未能加载的数据记录数
      *
-     * @return
+     * @return 记录数
      */
     public long getRejectedRecords() {
         return this.reject;
@@ -217,7 +208,7 @@ public class ErrorDataWriter {
     /**
      * 返回因不符合设置规则导致未能加载的数据记录数
      *
-     * @return
+     * @return 记录数
      */
     public long getDeleteRecords() {
         return this.delete;

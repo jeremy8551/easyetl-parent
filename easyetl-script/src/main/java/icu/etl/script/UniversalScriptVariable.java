@@ -69,7 +69,7 @@ public interface UniversalScriptVariable extends Bindings {
     /**
      * 添加变量集合
      *
-     * @param bindings
+     * @param bindings 变量集合
      */
     void addAll(Bindings bindings);
 

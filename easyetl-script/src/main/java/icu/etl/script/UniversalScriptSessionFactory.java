@@ -15,7 +15,7 @@ public interface UniversalScriptSessionFactory {
     /**
      * 返回所有用户会话编号
      *
-     * @return
+     * @return 所有用户会话编号
      */
     Set<String> getSessionIDs();
 
@@ -23,7 +23,7 @@ public interface UniversalScriptSessionFactory {
      * 返回用户会话信息
      *
      * @param sessionid 用户会话编号
-     * @return
+     * @return 用户会话信息
      */
     UniversalScriptSession get(String sessionid);
 
@@ -31,21 +31,21 @@ public interface UniversalScriptSessionFactory {
      * 删除用户会话信息
      *
      * @param sessionid 用户会话编号
-     * @return
+     * @return 被删除的用户会话信息
      */
     UniversalScriptSession remove(String sessionid);
 
     /**
      * 判断是否还有活动的用户会话信息
      *
-     * @return
+     * @return 返回true表示有活动的用户会话信息
      */
     boolean isAlive();
 
     /**
      * 终止所有会话信息
      *
-     * @throws Exception
+     * @throws Exception 终止会话发生错误
      */
     void terminate() throws Exception;
 
@@ -53,7 +53,7 @@ public interface UniversalScriptSessionFactory {
      * 终止会话信息
      *
      * @param id 会话编号
-     * @throws Exception
+     * @throws Exception 终止会话发生错误
      */
     void terminate(String id) throws Exception;
 

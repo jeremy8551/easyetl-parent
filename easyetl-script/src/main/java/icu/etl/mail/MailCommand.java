@@ -17,15 +17,15 @@ public interface MailCommand extends CharsetName {
     /**
      * 设置邮件服务器地址
      *
-     * @param host
+     * @param host 地址
      */
     void setHost(String host);
 
     /**
      * 设置登录邮件服务器认证用户和密码
      *
-     * @param username
-     * @param password
+     * @param username 用户名
+     * @param password 密码
      */
     void setUser(String username, String password);
 
@@ -53,7 +53,7 @@ public interface MailCommand extends CharsetName {
      * @param folderName 搜索的文件夹
      * @param condition  搜索条件 <br>
      *                   如果为null时，默认返回前10个邮件
-     * @return
+     * @return 邮件集合
      */
     List<Mail> search(String protocol, int port, boolean ssl, String folderName, SearchTerm condition);
 
@@ -63,7 +63,7 @@ public interface MailCommand extends CharsetName {
      * @param attachment 邮件附件
      * @param parent     附件存储目录 <br>
      *                   如果为null时默认使用操作系统的临时目录存放附件
-     * @return
+     * @return 附件文件
      */
     File download(MailAttachment attachment, File parent);
 

@@ -11,6 +11,7 @@ import icu.etl.database.pool.SimpleDatasource;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptException;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -26,7 +27,7 @@ public class ScriptDataSource {
      * 返回可用的数据库连接
      *
      * @param context 脚本引擎上下文信息
-     * @return
+     * @return 脚本引擎数据库操作类
      */
     public static ScriptDataSource get(UniversalScriptContext context) {
         boolean global = false;
@@ -64,7 +65,7 @@ public class ScriptDataSource {
     /**
      * 返回当前数据库连接的DAO对象
      *
-     * @return
+     * @return 数据库操作接口
      */
     public JdbcDao getDao() {
         return this.dao;
@@ -75,7 +76,8 @@ public class ScriptDataSource {
      */
     public void close() {
         this.release();
-        Jdbc.closeDataSource(this.map.values().toArray(new DataSource[this.map.size()])); // 按顺序关闭数据库连接池
+        DataSource[] array = new DataSource[this.map.size()];
+        Jdbc.closeDataSource(this.map.values().toArray(array)); // 按顺序关闭数据库连接池
         this.map.clear();
     }
 
@@ -130,7 +132,7 @@ public class ScriptDataSource {
     /**
      * 返回当前使用的数据库连接所在的数据库连接池
      *
-     * @return
+     * @return 数据库连接池
      */
     public DataSource getPool() {
         return this.getPool(this.catalog);
@@ -148,14 +150,10 @@ public class ScriptDataSource {
     /**
      * 设置数据库编目
      *
-     * @param name
+     * @param name 数据库编目名
      */
     public void setCatalog(String name) {
-        if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(name);
-        } else {
-            this.catalog = name.toUpperCase();
-        }
+        this.catalog = Ensure.notBlank(name).toUpperCase();
     }
 
 }

@@ -71,7 +71,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
      *
      * @param dao     数据库操作接口
      * @param context 装数引擎上下文信息
-     * @throws Exception
+     * @throws Exception 装载数据发生错误
      */
     protected void execute(JdbcDao dao, LoadEngineContext context) throws Exception {
         String tableCatalog = StringUtils.toCase(context.getTableCatalog(), false, null);
@@ -107,7 +107,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
      * @param dao     数据库操作接口
      * @param context 数据装载上下文信息
      * @param target  目标表信息
-     * @throws Exception
+     * @throws Exception 装载数据发生错误
      */
     protected void execute(JdbcDao dao, LoadEngineContext context, LoadTable target) throws Exception {
         DataWriterFactory factory = new DataWriterFactory(dao, context, target);
@@ -143,7 +143,7 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
                         }
 
                         RebuildTableExceptionProcessor obj = new RebuildTableExceptionProcessor();
-                        obj.execute(dao, file, target);
+                        obj.execute(dao, target);
                         this.execute(context, target, file, null, out);
                         continue;
                     }
@@ -186,12 +186,12 @@ public class SerialLoadFileEngine implements Loader, EasyContextAware {
     /**
      * 装载数据文件
      *
-     * @param context
-     * @param target
-     * @param file
-     * @param reader
-     * @param out
-     * @throws Exception
+     * @param context 装载引擎上下文信息
+     * @param target  数据库表
+     * @param file    文件
+     * @param reader  输入流
+     * @param out     输出流
+     * @throws Exception 装载数据发生错误
      */
     protected synchronized void execute(LoadEngineContext context, LoadTable target, TextTableFile file, TextTableFileReader reader, DataWriter out) throws Exception {
         TimeWatch watch = new TimeWatch();

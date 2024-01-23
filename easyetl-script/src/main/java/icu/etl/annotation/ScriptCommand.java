@@ -17,9 +17,9 @@ import java.lang.annotation.Target;
 public @interface ScriptCommand {
 
     /**
-     * 脚本命令前缀，如: echo
+     * 脚本命令前缀
      *
-     * @return
+     * @return 命令前缀，如: echo
      */
     String[] name();
 
@@ -27,7 +27,7 @@ public @interface ScriptCommand {
      * 关键字 <br>
      * 被定义为关键字后不能在变量名中使用
      *
-     * @return
+     * @return 关键字集合
      */
     String[] keywords() default {};
 

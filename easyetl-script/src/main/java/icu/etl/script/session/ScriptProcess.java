@@ -14,12 +14,12 @@ import icu.etl.util.Ensure;
 public class ScriptProcess {
 
     /** 序号 */
-    private static int number = 20;
+    private static volatile int number = 20;
 
     /**
      * 返回进程编号
      *
-     * @return
+     * @return 编号
      */
     private static synchronized int getId() {
         return ++number;
@@ -49,8 +49,8 @@ public class ScriptProcess {
     /**
      * 初始化
      *
-     * @param environment
-     * @param scriptJob
+     * @param environment 运行环境
+     * @param scriptJob   脚本任务
      */
     public ScriptProcess(ScriptProcessEnvironment environment, ScriptProcessJob scriptJob) {
         this.pid = String.valueOf(ScriptProcess.getId());
@@ -71,7 +71,7 @@ public class ScriptProcess {
     /**
      * 通知进程停止运行并保存返回值
      *
-     * @param exitcode
+     * @param exitcode 退出值
      */
     public void notifyStop(Integer exitcode) {
         this.exitcode = exitcode;
@@ -91,27 +91,27 @@ public class ScriptProcess {
     }
 
     /**
-     * 返回 true 表示进程已被终止
+     * 判断进程是否已被终止
      *
-     * @return
+     * @return 返回 true 表示进程已被终止
      */
     public boolean isTerminate() {
         return this.scriptJob.isTerminate();
     }
 
     /**
-     * 返回 true 表示进程正在运行
+     * 判断进程是否正在运行
      *
-     * @return
+     * @return 返回 true 表示进程正在运行
      */
     public boolean isAlive() {
         return this.scriptJob.isAlive() || this.scriptJob.isRunning();
     }
 
     /**
-     * 返回 true 表示进程还未开始执行, 返回 false 表示进程已终止或已开始执行
+     * 判断进程是否还未开始执行
      *
-     * @return
+     * @return 返回 true 表示进程还未开始执行, 返回 false 表示进程已终止或已开始执行
      */
     public boolean waitFor() {
         return !this.scriptJob.alreadyRun();
@@ -120,7 +120,7 @@ public class ScriptProcess {
     /**
      * 进程编号
      *
-     * @return
+     * @return 进程编号
      */
     public String getPid() {
         return pid;
@@ -138,7 +138,7 @@ public class ScriptProcess {
     /**
      * 进程执行的命令
      *
-     * @return
+     * @return 正在运行的命令
      */
     public UniversalScriptCommand getCommand() {
         return this.environment.getCommand();
@@ -147,7 +147,7 @@ public class ScriptProcess {
     /**
      * 进程的返回值
      *
-     * @return
+     * @return 进程的返回值
      */
     public Integer getExitcode() {
         return exitcode;
@@ -156,7 +156,7 @@ public class ScriptProcess {
     /**
      * 进程起始时间
      *
-     * @return
+     * @return 进程起始时间
      */
     public Date getStartTime() {
         return startTime;
@@ -165,7 +165,7 @@ public class ScriptProcess {
     /**
      * 进程结束时间
      *
-     * @return
+     * @return 进程结束时间
      */
     public Date getEndTime() {
         return endTime;
@@ -174,7 +174,7 @@ public class ScriptProcess {
     /**
      * 返回行号
      *
-     * @return
+     * @return 行号
      */
     public long getLineNumber() {
         return this.lineNumber;

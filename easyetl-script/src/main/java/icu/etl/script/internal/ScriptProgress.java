@@ -10,25 +10,10 @@ import icu.etl.printer.Progress;
  */
 public class ScriptProgress extends Progress {
 
-    /**
-     * 初始化
-     *
-     * @param out
-     * @param message
-     * @param total
-     */
     public ScriptProgress(Printer out, String message, int total) {
         super(out, message, total);
     }
 
-    /**
-     * 初始化
-     *
-     * @param taskId
-     * @param out
-     * @param message
-     * @param total
-     */
     public ScriptProgress(String taskId, Printer out, String message, int total) {
         super(taskId, out, message, total);
     }

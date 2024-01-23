@@ -92,8 +92,8 @@ public class ReadCommand extends AbstractCommand implements WithBodyCommandSuppo
      * @param stderr      错误信息输出接口
      * @param in          脚本语句输入流
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
-     * @return
-     * @throws Exception
+     * @return 返回0表示执行成功
+     * @throws Exception 执行命令发生错误
      */
     protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, BufferedReader in, boolean forceStdout, CommandList body) throws Exception {
         try {

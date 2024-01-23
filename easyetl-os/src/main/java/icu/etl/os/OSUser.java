@@ -14,14 +14,14 @@ public interface OSUser {
     /**
      * 操作系统用户名
      *
-     * @return
+     * @return 用户名
      */
     String getName();
 
     /**
      * 操作系统用户登录密码
      *
-     * @return
+     * @return 密码
      */
     String getPassword();
 
@@ -35,49 +35,49 @@ public interface OSUser {
     /**
      * 返回操作系统用户的编号
      *
-     * @return
+     * @return 用户的编号
      */
     String getId();
 
     /**
      * 返回操作系统归属组的编号
      *
-     * @return
+     * @return 归属组的编号
      */
     String getGroup();
 
     /**
      * 返回操作系统用户的说明信息
      *
-     * @return
+     * @return 说明信息
      */
     String getMemo();
 
     /**
      * 返回操作系统用户的根目录的绝对路径
      *
-     * @return
+     * @return 根目录的绝对路径
      */
     String getHome();
 
     /**
      * 返回操作系统用户使用的命令类型
      *
-     * @return
+     * @return 命令类型
      */
     String getShell();
 
     /**
      * 判断当前操作系统用户是否是 root 用户
      *
-     * @return
+     * @return 返回true表示是 root 用户
      */
     boolean isRoot();
 
     /**
      * 返回操作系统用户的配置文件集合
      *
-     * @return
+     * @return 配置文件集合
      */
     List<String> getProfiles();
 

@@ -213,9 +213,9 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
     }
 
     /**
-     * 返回 true 表示需要关闭命令接口
+     * 判断是否需要关闭命令接口
      *
-     * @return
+     * @return 返回 true 表示需要关闭命令接口
      */
     public boolean needDisableOSCommand() {
         if (this.cmd == null) {
@@ -463,9 +463,9 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
     }
 
     /**
-     * 返回 true 表示关闭文件操作接口
+     * 判断是否需要关闭文件操作接口
      *
-     * @return
+     * @return 返回 true 表示关闭文件操作接口
      */
     protected boolean needDisableOSFileCommand() {
         if (this.sftp == null) {

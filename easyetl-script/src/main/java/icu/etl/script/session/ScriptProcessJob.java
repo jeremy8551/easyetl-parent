@@ -23,7 +23,6 @@ import icu.etl.util.IO;
  * @author jeremy8551@qq.com
  */
 public class ScriptProcessJob implements Runnable {
-//    private final static Log log = LogFactory.getLog(ScriptProcessJob.class);
 
     /** true表示线程正在执行或已执行过 {@linkplain ScriptProcessJob#run()} 方法 */
     private volatile boolean alreadyRun;
@@ -31,6 +30,7 @@ public class ScriptProcessJob implements Runnable {
     /** true表示正在执行 {@linkplain ScriptProcessJob#run()} 方法 */
     private volatile boolean running;
 
+    /** true表示任务已进入执行阶段（等待调度执行或正在运行） */
     private volatile boolean alive;
 
     /** 进程运行环境 */
@@ -105,7 +105,7 @@ public class ScriptProcessJob implements Runnable {
         try {
             this.running = true;
 
-            int exitcode = UniversalScriptCommand.COMMAND_ERROR;
+            int exitcode;
             if (this.terminate) {
                 exitcode = UniversalScriptCommand.TERMINATE;
             } else {

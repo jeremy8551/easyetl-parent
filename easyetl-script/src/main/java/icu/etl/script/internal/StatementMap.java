@@ -13,7 +13,7 @@ public class StatementMap extends MapTemplate<ScriptStatement> implements Univer
     public final static String key = "StatementMap";
 
     public static StatementMap get(UniversalScriptContext context, boolean... array) {
-        boolean global = array.length == 0 ? false : array[0];
+        boolean global = array.length != 0 && array[0];
         StatementMap obj = context.getProgram(key, global);
         if (obj == null) {
             obj = new StatementMap();

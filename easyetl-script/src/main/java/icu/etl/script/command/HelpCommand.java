@@ -216,7 +216,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
     /**
      * 返回脚本当前支持的所有JDK版本信息
      *
-     * @return
+     * @return 所有JDK版本信息
      */
     private String toJavaVersionTable(UniversalScriptContext context) {
         StringBuilder buf = new StringBuilder();
@@ -315,7 +315,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
      * 查询当前支持的数据库
      *
      * @param context 脚本引擎上下文信息
-     * @return
+     * @return 当前支持的数据库
      */
     public String supportedDatabase(UniversalScriptContext context) {
         List<EasyBeanInfo> list = context.getContainer().getBeanInfoList(DatabaseDialect.class);
@@ -361,8 +361,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
     /**
      * 输出脚本引擎属性信息
      *
-     * @param context
-     * @return
+     * @param context 脚本引擎上下文信息
+     * @return 字符图形表格
      */
     protected CharTable getScriptAttributes(UniversalScriptContext context) {
         String[] array = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg006"), ',');

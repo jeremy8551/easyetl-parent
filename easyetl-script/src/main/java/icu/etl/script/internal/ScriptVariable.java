@@ -1,8 +1,8 @@
 package icu.etl.script.internal;
 
-import java.util.Map;
 import javax.script.Bindings;
 import javax.script.SimpleBindings;
+import java.util.Map;
 
 import icu.etl.script.UniversalScriptVariable;
 
@@ -21,14 +21,14 @@ public class ScriptVariable extends SimpleBindings implements UniversalScriptVar
     /**
      * 初始化
      *
-     * @param map
+     * @param map 参数集合
      */
     public ScriptVariable(Map<String, Object> map) {
         super(map);
     }
 
     public boolean containsKey(Object key) {
-        return "".equals(key) ? false : super.containsKey(key);
+        return !"".equals(key) && super.containsKey(key);
     }
 
     /**

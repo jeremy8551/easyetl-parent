@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ import icu.etl.util.StringUtils;
 @EasyBean(name = "telnet", description = "apache-net")
 public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShellCommand {
     private final static Log log = LogFactory.getLog(TelnetCommand.class);
-    
+
     private TelnetClient client;
     private String host;
     private int port;
@@ -99,7 +98,7 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
         }
     }
 
-    private String connect(long wait) throws SocketException, IOException {
+    private String connect(long wait) throws IOException {
         this.client.connect(this.host, this.port);
         this.client.registerNotifHandler(this);
         Thread thread = new Thread(this);
@@ -127,11 +126,6 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
         this.stdoutLog.setCharsetName(charsetName);
     }
 
-    /**
-     * 发送命令,返回结果请调用 getResponse(long waitTime)
-     *
-     * @param command
-     */
     public int execute(String command) {
         try {
             this.stdoutLog.clear();
@@ -146,13 +140,6 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
         }
     }
 
-    /**
-     * 发送命令
-     *
-     * @param command  命令
-     * @param waitTime 获取返回结果时等待时间，在等待的时间内若返回的结果不是想要的结果，可以调用 getResponse(long waitTime)继续获取
-     * @return 执行结果
-     */
     public int execute(String command, long waitTime) throws OSCommandException {
         try {
             this.stdoutLog.clear();
@@ -186,7 +173,7 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
         InputStream in = this.client.getInputStream();
         try {
             byte[] buffer = new byte[1024];
-            int length = 0;
+            int length;
             do {
                 length = in.read(buffer);
                 if (length > 0) {
@@ -205,7 +192,7 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
      * 获取命令返回去
      *
      * @param waitTime 等待时间
-     * @return
+     * @return 标准输出信息
      */
     public String getResponse(long waitTime) {
         Dates.sleep(waitTime);
@@ -274,7 +261,7 @@ public class TelnetCommand implements Runnable, TelnetNotificationHandler, OSShe
         this.stdout = os;
     }
 
-    public void setStderr(OutputStream os) {
+    public void setStderr(OutputStream out) {
     }
 
     public String getStdout() {

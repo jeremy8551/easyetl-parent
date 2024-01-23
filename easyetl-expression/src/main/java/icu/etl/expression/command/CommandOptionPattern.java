@@ -56,25 +56,25 @@ public class CommandOptionPattern {
     /**
      * 返回选项名
      *
-     * @return
+     * @return 选项名
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 返回 true 表示选项有选项值
+     * 判断选项是否有选项值
      *
-     * @return
+     * @return 返回 true 表示选项有选项值
      */
     public boolean containsValue() {
         return containsValue;
     }
 
     /**
-     * 返回 true 表示是长选项
+     * 判断是否是长选项
      *
-     * @return
+     * @return 返回 true 表示是长选项
      */
     public boolean islong() {
         return islong;
@@ -83,7 +83,7 @@ public class CommandOptionPattern {
     /**
      * 返回选项值的格式
      *
-     * @return
+     * @return 选项值格式
      */
     public String getFormat() {
         return format;

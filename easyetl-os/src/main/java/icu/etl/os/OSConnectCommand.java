@@ -9,10 +9,10 @@ package icu.etl.os;
  */
 public interface OSConnectCommand {
 
-    public final static String host = "host";
-    public final static String port = "port";
-    public final static String username = "username";
-    public final static String password = "password";
+    String host = "host";
+    String port = "port";
+    String username = "username";
+    String password = "password";
 
     /**
      * 执行登录认证

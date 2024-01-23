@@ -42,10 +42,10 @@ public class CommandOptionList {
     }
 
     /**
-     * 判断字符串参数是否复合选项的规则
+     * 判断字符串参数是否匹配选项的规则
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 返回true表示匹配
      */
     public boolean match(String str) {
         return this.isOption(str) //
@@ -58,7 +58,7 @@ public class CommandOptionList {
      * 判断字符串参数 str 是否是合法选项名
      *
      * @param str 字符串(-d -xvf --prefix)
-     * @return
+     * @return 返回true表示字符串是合法选项名
      */
     public boolean isOption(String str) {
         return (str.startsWith("-") && str.length() >= 2 && str.charAt(1) != '-' && !Character.isWhitespace(str.charAt(1))) //
@@ -134,20 +134,20 @@ public class CommandOptionList {
     }
 
     /**
-     * 返回 true 表示支持选项名
+     * 判断是否支持选项名
      *
      * @param name 选项名
-     * @return
+     * @return 返回 true 表示支持选项名
      */
     public boolean supportName(String name) {
         return this.patterns.containsKey(name);
     }
 
     /**
-     * 返回 true 表示选项名支持选项值
+     * 判断选项名是否支持选项值
      *
      * @param name 选项名
-     * @return
+     * @return 返回 true 表示选项名支持选项值
      */
     public boolean supportValue(String name) {
         CommandOptionPattern pattern = this.patterns.get(name);
@@ -157,7 +157,7 @@ public class CommandOptionList {
     /**
      * 添加命令的选项信息
      *
-     * @param value
+     * @param value 选项值
      */
     public void addOption(CommandOptionValue value) {
         this.values.put(value.getName(), value);
@@ -167,7 +167,7 @@ public class CommandOptionList {
      * 判断是否存在指定选项名
      *
      * @param name 选项名
-     * @return
+     * @return 返回true表示存在选项
      */
     public boolean containsOption(String name) {
         return this.values.containsKey(name);
@@ -177,7 +177,7 @@ public class CommandOptionList {
      * 返回选项的值
      *
      * @param name 选项名
-     * @return
+     * @return 选项值
      */
     public String getOption(String name) {
         CommandOptionValue option = this.values.get(name);
@@ -187,10 +187,11 @@ public class CommandOptionList {
     /**
      * 返回所有选项名
      *
-     * @return
+     * @return 选项名
      */
     public String[] getOptionNames() {
-        return this.values.keySet().toArray(new String[this.values.size()]);
+        String[] array = new String[this.values.size()];
+        return this.values.keySet().toArray(array);
     }
 
     /**

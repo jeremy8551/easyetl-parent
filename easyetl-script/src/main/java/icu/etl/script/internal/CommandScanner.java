@@ -15,6 +15,7 @@ import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptContextAware;
 import icu.etl.script.UniversalScriptEngineFactory;
 import icu.etl.script.UniversalScriptException;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -44,16 +45,9 @@ public class CommandScanner {
      * @param repository 命令仓库
      */
     public CommandScanner(UniversalScriptContext context, UniversalCommandRepository repository) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
-        if (repository == null) {
-            throw new NullPointerException();
-        }
-
-        this.context = context;
+        this.context = Ensure.notNull(context);
+        this.repository = Ensure.notNull(repository);
         this.factory = context.getFactory();
-        this.repository = repository;
 
         // 显示所有已加载的脚本引擎命令
         EasyContext cxt = context.getContainer();

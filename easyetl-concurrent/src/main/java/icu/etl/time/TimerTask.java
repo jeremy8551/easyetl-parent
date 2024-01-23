@@ -165,7 +165,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 创建任务执行线程
      *
-     * @return
+     * @return 线程
      */
     protected Thread createRunThread() {
         return new TimerTaskThread(this);
@@ -174,7 +174,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 返回任务执行线程
      *
-     * @return
+     * @return 线程
      */
     protected Thread getRunThread() {
         return runThread;
@@ -260,9 +260,9 @@ public abstract class TimerTask implements Runnable {
     public abstract void terminate() throws TimerException;
 
     /**
-     * true 表示正在终止任务
+     * 判断是否已终止任务
      *
-     * @return
+     * @return 返回true表示正在终止任务
      */
     public boolean isTerminate() {
         return terminate;
@@ -405,9 +405,9 @@ public abstract class TimerTask implements Runnable {
     }
 
     /**
-     * true表示存在超时设置
+     * 判断是否已设置超时时间
      *
-     * @return
+     * @return 返回true表示存在超时设置
      */
     public boolean existsTimeout() {
         return timeout != 0;
@@ -416,34 +416,34 @@ public abstract class TimerTask implements Runnable {
     /**
      * 定时任务编号（必须唯一,大小写不敏感）
      *
-     * @return
+     * @return 任务编号
      */
     public String getTaskId() {
         return taskId;
     }
 
     /**
-     * true表示任务正在运行
+     * 判断任务是否正在运行
      *
-     * @return
+     * @return 返回true表示任务正在运行
      */
     public boolean isRunning() {
         return isRunning;
     }
 
     /**
-     * true表示任务已取消，不再执行
+     * 判断任务是否已取消
      *
-     * @return
+     * @return true表示任务已取消，不再执行
      */
     public boolean isCancel() {
         return isCancel;
     }
 
     /**
-     * true表示已添加到队列
+     * 判断任务是否已添加到队列
      *
-     * @return
+     * @return 返回true表示任务已添加到队列
      */
     public boolean existsQueue() {
         return this.queue != null;
@@ -452,7 +452,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 返回定时器参数 time
      *
-     * @return
+     * @return 定时器参数
      */
     public long getScheduleTime() {
         return startTime;
@@ -468,18 +468,18 @@ public abstract class TimerTask implements Runnable {
     }
 
     /**
-     * true表示存在循环周期
+     * 判断是否已设置循环周期
      *
-     * @return
+     * @return 返回true表示存在循环周期
      */
     public boolean existsPeriod() {
         return this.period != -1;
     }
 
     /**
-     * 返回定时器参数 delay （单位是毫秒）
+     * 返回延迟执行时间
      *
-     * @return
+     * @return 延迟执行时间，单位：毫秒
      */
     public long getDelay() {
         return delay;
@@ -488,7 +488,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 任务队列
      *
-     * @return
+     * @return 任务队列
      */
     public TimerTaskQueue getQueue() {
         return queue;
@@ -562,7 +562,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 设置定时任务执行时间
      *
-     * @param time
+     * @param time 任务执行时间
      */
     public void setScheduleTime(long time) {
         if (existsQueue()) {
@@ -612,7 +612,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 设置定时任务所在的定时器
      *
-     * @param queue
+     * @param queue 任务队列
      */
     void setQueue(TimerTaskQueue queue) {
         this.queue = queue;
@@ -669,7 +669,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 返回任务下次执行时间
      *
-     * @return
+     * @return 下次执行的时间
      */
     public long getNextRunMillis() {
         return nextRunMillis;
@@ -678,7 +678,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 设置任务下次执行时间
      *
-     * @param nextRunMillis
+     * @param nextRunMillis 下次执行时间
      */
     void setNextRunMillis(long nextRunMillis) {
         this.nextRunMillis = nextRunMillis;
@@ -713,7 +713,7 @@ public abstract class TimerTask implements Runnable {
     /**
      * 任务执行次数（execute函数执行的次数）
      *
-     * @return
+     * @return 任务执行次数
      */
     public int getRunTimes() {
         return runTimes;
@@ -723,7 +723,7 @@ public abstract class TimerTask implements Runnable {
      * true表示两个定时任务是同一个任务
      */
     public boolean equals(Object obj) {
-        if (obj != null && (obj instanceof TimerTask)) {
+        if ((obj instanceof TimerTask)) {
             TimerTask task = (TimerTask) obj;
             if (this.getTaskId().equalsIgnoreCase(task.getTaskId())) {
                 return true;

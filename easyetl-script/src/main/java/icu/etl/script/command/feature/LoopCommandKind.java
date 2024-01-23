@@ -10,7 +10,7 @@ public interface LoopCommandKind {
     /**
      * 返回控制类型
      *
-     * @return
+     * @return 控制类型
      */
     int kind();
 

@@ -32,27 +32,27 @@ public class LoadFileRange {
     }
 
     /**
-     * 返回起始位置，从1开始
+     * 返回起始位置
      *
-     * @return
+     * @return 起始位置，从1开始
      */
     public long getStart() {
         return start;
     }
 
     /**
-     * 返回终止位置，从1开始
+     * 返回终止位置
      *
-     * @return
+     * @return 终止位置，从1开始
      */
     public long getEnd() {
         return end;
     }
 
     /**
-     * 返回状态， -1表示还未开始装载数据 0表示正在装载数据 1表示发生错误 2表示装载完毕
+     * 返回数据装载状态
      *
-     * @return
+     * @return -1表示还未开始装载数据 0表示正在装载数据 1表示发生错误 2表示装载完毕
      */
     public int getStatus() {
         return status;
@@ -61,8 +61,8 @@ public class LoadFileRange {
     /**
      * 将范围集合专为字符串
      *
-     * @param list
-     * @return
+     * @param list 范围集合
+     * @return 字符串
      */
     public static String toString(List<LoadFileRange> list) {
         if (list == null) {
@@ -118,10 +118,10 @@ public class LoadFileRange {
     /**
      * 返回数据文件中未装载数据的范围集合
      *
-     * @param file
-     * @param expression
-     * @param thread
-     * @throws IOException
+     * @param file       表格文件
+     * @param expression 表达式
+     * @param thread     线程数
+     * @throws IOException 解析表达式发生错误
      */
     public static List<LoadFileRange> parseList(TextTableFile file, String expression, int thread) throws IOException {
         List<LoadFileRange> result = new ArrayList<LoadFileRange>();

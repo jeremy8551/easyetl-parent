@@ -31,11 +31,6 @@ import icu.etl.util.StringUtils;
  */
 public class ScriptExpressionParser extends Parser {
 
-    /**
-     * 运算参数类型： 常量字符串
-     */
-    public final static int STDOUT = 100;
-
     private UniversalScriptSession session;
     private UniversalScriptContext context;
     private UniversalScriptStdout stdout;
@@ -247,7 +242,7 @@ public class ScriptExpressionParser extends Parser {
      * 判断是否存在变量
      *
      * @param name 变量名
-     * @return
+     * @return 返回true表示存在变量
      */
     public boolean containsVariable(String name) {
         return this.context.containsAttribute(name) || this.session.containsVariable(name);
@@ -257,7 +252,7 @@ public class ScriptExpressionParser extends Parser {
      * 返回变量值
      *
      * @param name 变量名
-     * @return
+     * @return 变量值6
      */
     public Object getVariable(String name) {
         if (this.context.containsAttribute(name)) {

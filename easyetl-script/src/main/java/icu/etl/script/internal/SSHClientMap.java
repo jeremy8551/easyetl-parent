@@ -7,6 +7,7 @@ import icu.etl.os.OSSecureShellCommand;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptProgram;
 import icu.etl.util.CollectionUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 
 /**
@@ -19,7 +20,7 @@ public class SSHClientMap implements UniversalScriptProgram {
     public final static String key = "SSHClientMap";
 
     public static SSHClientMap get(UniversalScriptContext context, boolean... array) {
-        boolean global = array.length == 0 ? false : array[0];
+        boolean global = array.length != 0 && array[0];
         SSHClientMap obj = context.getProgram(key, global);
         if (obj == null) {
             obj = new SSHClientMap();
@@ -52,21 +53,17 @@ public class SSHClientMap implements UniversalScriptProgram {
     /**
      * 返回 SSH 客户端
      *
-     * @param name
-     * @return
+     * @param name 名字
+     * @return SSH 客户端
      */
     public OSSecureShellCommand get(String name) {
-        if (name == null) {
-            throw new NullPointerException();
-        } else {
-            return this.map.get(name.toUpperCase());
-        }
+        return this.map.get(Ensure.notNull(name).toUpperCase());
     }
 
     /**
      * 返回最近一次添加的 SSH 客户端
      *
-     * @return
+     * @return SSH 客户端
      */
     public OSSecureShellCommand last() {
         Set<String> set = this.map.keySet();
@@ -80,16 +77,16 @@ public class SSHClientMap implements UniversalScriptProgram {
     /**
      * 返回客户端数量
      *
-     * @return
+     * @return 客户端数量
      */
     public int size() {
         return this.map.size();
     }
 
     /**
-     * 返回 true 表示还未添加客户端
+     * 判断是否添加过客户端
      *
-     * @return
+     * @return 返回true表示还未添加客户端
      */
     public boolean isEmpty() {
         return this.map.isEmpty();
@@ -98,7 +95,7 @@ public class SSHClientMap implements UniversalScriptProgram {
     /**
      * 判断是否存在未关闭的 SSH 客户端
      *
-     * @return
+     * @return 返回true表示还有未关闭的 SSH 客户端
      */
     public boolean isAlive() {
         Set<String> names = this.map.keySet();
@@ -114,7 +111,7 @@ public class SSHClientMap implements UniversalScriptProgram {
     /**
      * 关闭客户端并从集合中删除
      *
-     * @param name
+     * @param name 名字
      */
     public void close(String name) {
         String key = name.toUpperCase();

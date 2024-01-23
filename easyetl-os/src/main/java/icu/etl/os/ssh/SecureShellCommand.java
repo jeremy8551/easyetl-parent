@@ -1,6 +1,5 @@
 package icu.etl.os.ssh;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -14,8 +13,6 @@ import com.jcraft.jsch.UserInfo;
 import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.io.BufferedLineReader;
-import icu.etl.ioc.EasyContext;
-import icu.etl.ioc.EasyContextAware;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.os.OSCommandException;
@@ -41,7 +38,7 @@ import icu.etl.util.TimeWatch;
  * SSH 协议的终端实现类
  */
 @EasyBean(name = "linux", description = "jsch")
-public class SecureShellCommand implements OSSecureShellCommand, EasyContextAware {
+public class SecureShellCommand implements OSSecureShellCommand {
     private final static Log log = LogFactory.getLog(SecureShellCommand.class);
 
     public final static String charset = "charset";
@@ -94,9 +91,6 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
     /** 环境文件集合 */
     private List<String> envfiles;
 
-    /** 容器上下文信息 */
-    private EasyContext context;
-
     /**
      * 初始化
      */
@@ -113,14 +107,10 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
         this.monitor = new SecureShellCommandMonitor();
     }
 
-    public void setContext(EasyContext context) {
-        this.context = context;
-    }
-
     /**
      * 返回属性信息
      *
-     * @return
+     * @return 属性集合
      */
     public Properties getConfig() {
         return config;
@@ -129,7 +119,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
     /**
      * 返回会话信息
      *
-     * @return
+     * @return 会话信息
      */
     protected Session getSession() {
         return session;
@@ -139,7 +129,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
      * 返回属性值
      *
      * @param key 属性名
-     * @return
+     * @return 属性值
      */
     public String getProperty(String key) {
         return this.config.getProperty(key);
@@ -148,7 +138,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
     /**
      * 返回命令的进程编号
      *
-     * @return
+     * @return 进程编号
      */
     public String getPid() {
         return this.config.getProperty("pid");
@@ -157,7 +147,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
     /**
      * 保存命令的进程编号
      *
-     * @param pid
+     * @param pid 进程编号
      */
     protected void setPid(String pid) {
         this.config.setProperty("pid", pid);
@@ -310,7 +300,8 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
                 log.error(ResourcesUtils.getMessage("ssh2.jsch.standard.output.msg009"), e1);
             }
         } finally {
-            Object[] array = this.forwards.toArray(new SecureShellForwardCommand[this.forwards.size()]);
+            SecureShellForwardCommand[] resultArray = new SecureShellForwardCommand[this.forwards.size()];
+            Object[] array = this.forwards.toArray(resultArray);
             IO.close(array);
             this.forwards.clear();
         }
@@ -327,9 +318,9 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
     /**
      * 返回用户信息
      *
-     * @param username
-     * @param password
-     * @return
+     * @param username 用户名
+     * @param password 密码
+     * @return 用户信息
      */
     public UserInfo getUserInfo(String username, String password) {
         DefaultUserInfo user = new DefaultUserInfo(log);
@@ -353,12 +344,12 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
     /**
      * 执行命令
      *
-     * @param command
-     * @param timeout
-     * @param outSideStdout
-     * @param outSideStderr
-     * @return
-     * @throws OSCommandException
+     * @param command       命令
+     * @param timeout       超时时间
+     * @param outSideStdout 标准输出接口
+     * @param outSideStderr 错误输出接口
+     * @return 返回值
+     * @throws OSCommandException 执行命令发生错误
      */
     protected int run(String command, long timeout, OutputStream outSideStdout, OutputStream outSideStderr) throws OSCommandException {
         this.ensureConnected();
@@ -542,7 +533,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
      *
      * @param array  字节数组
      * @param length 字节数组的长度
-     * @return
+     * @return 返回值
      */
     protected int extractPid(byte[] array, int length) {
         if (StringUtils.isNotBlank(this.config.getProperty("pid"))) {
@@ -552,7 +543,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
         String logstr = new String(array, 0, length);
         String flagStr = "[ system shell pid is ";
 
-        int begin = 0, end = 0;
+        int begin, end;
         if ((begin = logstr.indexOf(flagStr)) != -1 && (end = StringUtils.indexOfBlank(logstr, begin + flagStr.length(), -1)) != -1) {
             int searchPos = begin + flagStr.length();
             String pid = logstr.substring(searchPos, end);
@@ -584,8 +575,8 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
     /**
      * 在命令前面添加加载环境文件与输出进程编号等语句
      *
-     * @param command
-     * @return
+     * @param command 命令
+     * @return 命令
      */
     public String toShellCommand(String command) {
         StringBuilder buf = new StringBuilder(command.length() + 50);
@@ -614,8 +605,8 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
         return true;
     }
 
-    public void setStderr(OutputStream output) {
-        this.stderr = output;
+    public void setStderr(OutputStream out) {
+        this.stderr = out;
     }
 
     public void setStdout(OutputStream output) {
@@ -646,10 +637,9 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
     /**
      * 加载用户配置文件，读取默认字符集，读取当前路径
      *
-     * @throws OSCommandException
-     * @throws IOException
+     * @throws OSCommandException 运行命令发生错误
      */
-    protected synchronized void init() throws OSCommandException, IOException {
+    protected synchronized void init() throws OSCommandException {
         // 打印shell命令提示符
         this.execute("echo ''");
         String str = this.stdoutLog.toString(CharsetName.ISO_8859_1);
@@ -830,7 +820,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
      *
      * @param commands 命令数组
      * @return 返回命令对应的标准输出信息集合
-     * @throws OSCommandException
+     * @throws OSCommandException 运行命令发生错误
      */
     public OSCommandStdouts execute(String... commands) throws OSCommandException {
         List<String> list = ArrayUtils.asList(commands);
@@ -842,7 +832,7 @@ public class SecureShellCommand implements OSSecureShellCommand, EasyContextAwar
      *
      * @param commands 命令集合
      * @return 返回命令对应的标准输出信息集合
-     * @throws OSCommandException
+     * @throws OSCommandException 运行命令发生错误
      */
     public OSCommandStdouts execute(List<String> commands) throws OSCommandException {
         OSCommandStdoutsImpl map = new OSCommandStdoutsImpl();

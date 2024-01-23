@@ -7,5 +7,4 @@ package icu.etl.script.command.feature;
  * @createtime 2022-01-20
  */
 public interface WithBodyCommandSupported {
-
 }

@@ -78,12 +78,12 @@ public class SetCommand extends AbstractGlobalCommand {
     /**
      * 为变量赋值
      *
-     * @param session
-     * @param context
-     * @param stdout
-     * @param stderr
-     * @param value
-     * @return
+     * @param session 用户会话信息
+     * @param context 脚本引擎上下文信息
+     * @param stdout  标准信息输出接口
+     * @param stderr  错误信息输出接口
+     * @param value   变量值
+     * @return 命令返回值
      */
     protected int setVariable(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, String value) {
         Object object = value;
@@ -102,11 +102,11 @@ public class SetCommand extends AbstractGlobalCommand {
     /**
      * 删除变量
      *
-     * @param session
-     * @param context
-     * @param stdout
-     * @param stderr
-     * @return
+     * @param session 用户会话信息
+     * @param context 脚本引擎上下文信息
+     * @param stdout  标准信息输出接口
+     * @param stderr  错误信息输出接口
+     * @return 命令返回值
      */
     protected int removeVariable(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr) {
         context.removeAttribute(this.name, UniversalScriptContext.ENGINE_SCOPE);
@@ -117,13 +117,13 @@ public class SetCommand extends AbstractGlobalCommand {
     /**
      * 将SQL查询结果为变量赋值
      *
-     * @param session
-     * @param context
-     * @param stdout
-     * @param stderr
-     * @param sql
-     * @return
-     * @throws Exception
+     * @param session 用户会话信息
+     * @param context 脚本引擎上下文信息
+     * @param stdout  标准信息输出接口
+     * @param stderr  错误信息输出接口
+     * @param sql     SQL语句
+     * @return 命令返回值
+     * @throws Exception 发生错误
      */
     protected int querySQL(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, String sql) throws Exception {
         ScriptDataSource dataSource = ScriptDataSource.get(context);
@@ -148,11 +148,11 @@ public class SetCommand extends AbstractGlobalCommand {
     /**
      * 打印所有变量
      *
-     * @param session
-     * @param context
-     * @param stdout
-     * @param stderr
-     * @return
+     * @param session 用户会话信息
+     * @param context 脚本引擎上下文信息
+     * @param stdout  标准信息输出接口
+     * @param stderr  错误信息输出接口
+     * @return 命令返回值
      */
     protected int printVariable(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr) {
         Set<String> gks = context.getGlobalVariable().keySet(); // 全局变量名

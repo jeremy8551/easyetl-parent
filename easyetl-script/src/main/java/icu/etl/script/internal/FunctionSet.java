@@ -6,6 +6,7 @@ import java.util.Set;
 
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptProgram;
+import icu.etl.util.Ensure;
 
 /**
  * 用户自定义方法集合
@@ -17,7 +18,7 @@ public class FunctionSet implements UniversalScriptProgram {
     public final static String key = "FunctionSet";
 
     public static FunctionSet get(UniversalScriptContext context, boolean... array) {
-        boolean global = array.length == 0 ? false : array[0];
+        boolean global = array.length != 0 && array[0];
         FunctionSet obj = context.getProgram(key, global);
         if (obj == null) {
             obj = new FunctionSet();
@@ -40,7 +41,7 @@ public class FunctionSet implements UniversalScriptProgram {
      * 判断用户自定义方法是否存在
      *
      * @param name 自定义方法名
-     * @return
+     * @return 返回true表示用户自定义方法存在
      */
     public boolean contains(String name) {
         return this.map.containsKey(name.toUpperCase());
@@ -50,21 +51,18 @@ public class FunctionSet implements UniversalScriptProgram {
      * 添加自定义方法
      *
      * @param cmdlist 自定义方法
-     * @return
+     * @return 原来的自定义方法体
      */
     public CommandList add(CommandList cmdlist) {
-        if (cmdlist == null) {
-            throw new NullPointerException();
-        } else {
-            return this.map.put(cmdlist.getName().toUpperCase(), cmdlist);
-        }
+        Ensure.notNull(cmdlist);
+        return this.map.put(cmdlist.getName().toUpperCase(), cmdlist);
     }
 
     /**
      * 返回自定义方法
      *
      * @param name 自定义方法名
-     * @return
+     * @return 自定义方法体
      */
     public CommandList get(String name) {
         return this.map.get(name.toUpperCase());
@@ -74,7 +72,7 @@ public class FunctionSet implements UniversalScriptProgram {
      * 删除自定义方法
      *
      * @param name 自定义方法名
-     * @return
+     * @return 自定义方法体
      */
     public CommandList remove(String name) {
         return this.map.remove(name.toUpperCase());

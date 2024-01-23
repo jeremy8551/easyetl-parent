@@ -47,21 +47,21 @@ public interface UniversalScriptSession {
     /**
      * 返回用户会话编号
      *
-     * @return
+     * @return 用户会话编号
      */
     String getId();
 
     /**
      * 返回父会话编号
      *
-     * @return
+     * @return 父会话编号
      */
     String getParentID();
 
     /**
      * 返回脚本引擎名称
      *
-     * @return
+     * @return 脚本引擎名称
      */
     String getScriptName();
 
@@ -74,30 +74,30 @@ public interface UniversalScriptSession {
     void setScriptFile(ScriptFileExpression file) throws IOException;
 
     /**
-     * 判断 true 表示是脚本文件
+     * 判断是不是脚本文件
      *
-     * @return
+     * @return 判断 true 表示是脚本文件
      */
     boolean isScriptFile();
 
     /**
      * 返回主线程
      *
-     * @return
+     * @return 主线程
      */
     ScriptMainProcess getMainProcess();
 
     /**
      * 返回后台运行的进程
      *
-     * @return
+     * @return 后台运行的进程
      */
     ScriptSubProcess getSubProcess();
 
     /**
      * 返回用户会话的工厂
      *
-     * @return
+     * @return 用户会话的工厂
      */
     UniversalScriptSessionFactory getSessionFactory();
 
@@ -113,7 +113,7 @@ public interface UniversalScriptSession {
      * 返回变量方法的临时变量值
      *
      * @param name 变量名
-     * @return
+     * @return 临时变量值
      */
     Object getMethodVariable(String name);
 
@@ -121,21 +121,21 @@ public interface UniversalScriptSession {
      * 删除变量方法的临时变量
      *
      * @param name 变量名
-     * @return
+     * @return 被删除的临时变量
      */
     Object removeMethodVariable(String name);
 
     /**
      * 保存自定义方法的参数值数组
      *
-     * @param parameter
+     * @param parameter 参数数组
      */
     void setFunctionParameter(String[] parameter);
 
     /**
      * 返回自定义方法的参数值数组
      *
-     * @return
+     * @return 参数数组
      */
     String[] getFunctionParameter();
 
@@ -147,7 +147,7 @@ public interface UniversalScriptSession {
     /**
      * 判断当前会话信息是否关闭
      *
-     * @return
+     * @return 返回true表示会话未关闭
      */
     boolean isAlive();
 
@@ -182,21 +182,21 @@ public interface UniversalScriptSession {
     /**
      * 返回当前用户会话使用的编译器
      *
-     * @return
+     * @return 编译器
      */
     UniversalScriptCompiler getCompiler();
 
     /**
      * 返回语句分析器
      *
-     * @return
+     * @return 语句分析器
      */
     UniversalScriptAnalysis getAnalysis();
 
     /**
      * 返回变量值
      *
-     * @return
+     * @return 变量值
      */
     <E> E getVariable(String key);
 
@@ -211,7 +211,7 @@ public interface UniversalScriptSession {
     /**
      * 返回变量集合
      *
-     * @return
+     * @return 变量集合
      */
     Map<String, Object> getVariables();
 
@@ -219,7 +219,7 @@ public interface UniversalScriptSession {
      * 判断是否存在变量
      *
      * @param name 变量名
-     * @return
+     * @return 返回true表示存在变量
      */
     boolean containsVariable(String name);
 
@@ -234,14 +234,14 @@ public interface UniversalScriptSession {
     /**
      * 设置脚本引擎默认的目录
      *
-     * @param dir
+     * @param dir 目录
      */
     void setDirectory(File dir);
 
     /**
      * 返回脚本引擎默认的目录
      *
-     * @return
+     * @return 目录
      */
     String getDirectory();
 
@@ -262,21 +262,21 @@ public interface UniversalScriptSession {
     /**
      * 创建一个子会话
      *
-     * @return
+     * @return 子会话
      */
     UniversalScriptSession subsession();
 
     /**
      * 判断当前用户会话是否被终止
      *
-     * @return
+     * @return 返回true表示当前用户会话是否被终止
      */
     boolean isTerminate();
 
     /**
      * 终止用户会话
      *
-     * @throws Exception
+     * @throws Exception 终止会话发生错误
      */
     void terminate() throws Exception;
 
@@ -288,14 +288,14 @@ public interface UniversalScriptSession {
     /**
      * 返回用户会话创建时间
      *
-     * @return
+     * @return 创建时间
      */
     Date getCreateTime();
 
     /**
      * 返回用户会话结束时间
      *
-     * @return
+     * @return 结束时间
      */
     Date getEndTime();
 

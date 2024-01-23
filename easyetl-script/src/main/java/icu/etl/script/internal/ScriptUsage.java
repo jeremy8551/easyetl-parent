@@ -35,10 +35,10 @@ public class ScriptUsage {
      * 输出命令的使用说明
      *
      * @param tabsize      伸缩空白字符的个数
-     * @param name
-     * @param synopsis
-     * @param descriptions
-     * @return
+     * @param name         命令名
+     * @param synopsis     命令该要
+     * @param descriptions 命令说明
+     * @return 使用说明
      */
     private String parse(int tabsize, String name, String synopsis, String... descriptions) {
         String[] titles = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg002"), ',');
@@ -72,8 +72,8 @@ public class ScriptUsage {
     /**
      * 返回命令说明编号的后缀
      *
-     * @param cls
-     * @return
+     * @param cls 类信息
+     * @return 后缀
      */
     public static String getUsageSuffix(Class<? extends UniversalCommandCompiler> cls) {
         String className = cls.getSimpleName().toLowerCase();

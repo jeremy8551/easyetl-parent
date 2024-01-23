@@ -57,9 +57,9 @@ public class TimerTaskQueue {
     }
 
     /**
-     * true表示队列中存在定时器
+     * 判断是否存在定时器
      *
-     * @return
+     * @return 返回true表示队列中存在定时器
      */
     public boolean existsTimer() {
         return timer != null;
@@ -162,7 +162,7 @@ public class TimerTaskQueue {
     /**
      * 终止任务
      *
-     * @param taskId
+     * @param taskId 任务编号
      */
     public synchronized void killTask(String taskId) {
         TimerTask task = this.all.get(taskId);
@@ -186,7 +186,7 @@ public class TimerTaskQueue {
     /**
      * 正在运行任务数
      *
-     * @return
+     * @return 任务数
      */
     public synchronized int getRunningTaskSize() {
         return this.running.size();
@@ -195,7 +195,7 @@ public class TimerTaskQueue {
     /**
      * 已取消运行任务数
      *
-     * @return
+     * @return 任务数
      */
     public synchronized int getCancelTaskSize() {
         return this.cancel.size();
@@ -204,7 +204,7 @@ public class TimerTaskQueue {
     /**
      * 未取消运行任务数
      *
-     * @return
+     * @return 任务数
      */
     public synchronized int getIdleTaskSize() {
         return this.idle.size();
@@ -213,7 +213,7 @@ public class TimerTaskQueue {
     /**
      * 返回任务数
      *
-     * @return
+     * @return 任务数
      */
     public synchronized int getTaskSize() {
         return this.idle.size();

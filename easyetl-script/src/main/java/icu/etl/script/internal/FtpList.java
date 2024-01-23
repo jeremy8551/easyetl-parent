@@ -9,7 +9,7 @@ public class FtpList implements UniversalScriptProgram {
     public final static String key = "FtpList";
 
     public static FtpList get(UniversalScriptContext context, boolean... array) {
-        boolean global = array.length == 0 ? false : array[0];
+        boolean global = array.length != 0 && array[0];
         FtpList obj = context.getProgram(key, global);
         if (obj == null) {
             obj = new FtpList();
@@ -42,7 +42,7 @@ public class FtpList implements UniversalScriptProgram {
     /**
      * 返回 FTP 客户端
      *
-     * @return
+     * @return FTP客户端
      */
     public OSFtpCommand getFTPClient() {
         return ftp;

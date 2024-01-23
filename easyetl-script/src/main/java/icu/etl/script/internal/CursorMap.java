@@ -14,7 +14,7 @@ public class CursorMap extends MapTemplate<JdbcQueryStatement> implements Univer
     public final static String key = "CursorMap";
 
     public static CursorMap get(UniversalScriptContext context, boolean... array) {
-        boolean global = array.length == 0 ? false : array[0];
+        boolean global = array.length != 0 && array[0];
         CursorMap obj = context.getProgram(key, global);
         if (obj == null) {
             obj = new CursorMap();

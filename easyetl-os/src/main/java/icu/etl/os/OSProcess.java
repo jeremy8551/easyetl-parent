@@ -14,42 +14,42 @@ public interface OSProcess {
     /**
      * 进程号
      *
-     * @return
+     * @return 进程号
      */
     String getPid();
 
     /**
      * 父进程号
      *
-     * @return
+     * @return 父进程号
      */
     String getPPid();
 
     /**
      * 占用cpu百分比
      *
-     * @return
+     * @return cpu百分比
      */
     BigDecimal getCpu();
 
     /**
      * 占用内存大小, 单位是pages，1个内存页是4096Bytes
      *
-     * @return
+     * @return 占用内存大小
      */
     long getMemory();
 
     /**
      * 进程名
      *
-     * @return
+     * @return 进程名
      */
     String getName();
 
     /**
      * 返回进程运行的指令
      *
-     * @return
+     * @return 进程运行的指令
      */
     String getCmd();
 

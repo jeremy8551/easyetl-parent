@@ -14,21 +14,21 @@ public interface OSFile {
     /**
      * 返回文件在操作系统上的绝对路径
      *
-     * @return
+     * @return 文件绝对路径
      */
     String getAbsolutePath();
 
     /**
      * 返回文件在操作系统上的名字
      *
-     * @return
+     * @return 文件名
      */
     String getName();
 
     /**
-     * 返回文件在操作系统上父目录的绝对路径
+     * 返回文件的上级目录在操作系统上父目录的绝对路径
      *
-     * @return
+     * @return 文件绝对路径
      */
     String getParent();
 
@@ -36,7 +36,7 @@ public interface OSFile {
      * 返回文件在操作系统上详细信息 <br>
      * 如: -rw-r--r--@ 1 root root 111000 4 2 14:56 filename.txt
      *
-     * @return
+     * @return 文件详细信息
      */
     String getLongname();
 
@@ -57,7 +57,7 @@ public interface OSFile {
     /**
      * 返回文件在操作系统上最后一次修改时间
      *
-     * @return
+     * @return 最后一次修改时间
      */
     Date getModifyDate();
 
@@ -71,70 +71,70 @@ public interface OSFile {
     /**
      * 判断文件在操作系统上是否是一个有效文件
      *
-     * @return
+     * @return 返回true表示文件是一个有效文件
      */
     boolean isFile();
 
     /**
      * 判断文件在操作系统上是否是一个链接文件
      *
-     * @return
+     * @return 返回true表示文件是一个链接
      */
     boolean isLink();
 
     /**
      * 如果文件在操作系统上是一个链接文件，则返回链接文件的地址
      *
-     * @return
+     * @return 文件链接
      */
     String getLink();
 
     /**
      * 判断文件在操作系统上是否是一个块设备
      *
-     * @return
+     * @return 返回true表示文件是一个块设备
      */
     boolean isBlockDevice();
 
     /**
      * 判断文件在操作系统上是否是一个管道文件
      *
-     * @return
+     * @return 返回true表示文件是一个管道文件
      */
     boolean isPipe();
 
     /**
      * 判断文件在操作系统上是否是一个 socket 文件
      *
-     * @return
+     * @return 返回true表示文件是一个 socket 文件
      */
     boolean isSock();
 
     /**
      * 判断文件在操作系统上是否是一个字符设备
      *
-     * @return
+     * @return 返回true表示文件是一个字符设备
      */
     boolean isCharDevice();
 
     /**
      * 判断文件在操作系统上是否是有读权限
      *
-     * @return
+     * @return 返回true表示有读文件的权限
      */
     boolean canRead();
 
     /**
      * 判断文件在操作系统上是否是有写权限
      *
-     * @return
+     * @return 返回true表示有写文件的权限
      */
     boolean canWrite();
 
     /**
      * 判断文件在操作系统上是否是有执行权限
      *
-     * @return
+     * @return 返回true表示有执行文件的权限
      */
     boolean canExecute();
 

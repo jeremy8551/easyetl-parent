@@ -21,8 +21,8 @@ public class OSCommandUtils {
     /**
      * 将多命令输出解析为一行
      *
-     * @param list
-     * @return
+     * @param list 命令集合
+     * @return 字符串
      */
     public static String join(List<String> list) {
         return list == null ? "" : StringUtils.trimBlank(StringUtils.join(list, ""));
@@ -31,8 +31,8 @@ public class OSCommandUtils {
     /**
      * 与 {@link #splitMultiCommandStdout(CharSequence)} 配套使用
      *
-     * @param commands
-     * @return
+     * @param commands 命令集合
+     * @return 字符串
      */
     public static String toMultiCommand(List<String> commands) {
         return toMultiCommand(OSCommandUtils.START_PREFIX, commands.toArray(new String[commands.size()]));
@@ -41,19 +41,19 @@ public class OSCommandUtils {
     /**
      * 与 {@link #splitMultiCommandStdout(String, CharSequence)} 配套使用
      *
-     * @param prefix
-     * @param cmds
-     * @return
+     * @param prefix 前缀
+     * @param cmds   命令数组
+     * @return 命令
      */
     private static String toMultiCommand(String prefix, CharSequence... cmds) {
         Ensure.isTrue(cmds.length % 2 == 0, StringUtils.toString(cmds));
-        Ensure.isTrue(StringUtils.isNotBlank(prefix) && prefix.indexOf(';') == -1 && prefix.indexOf("\"") == -1, prefix, cmds);
+        Ensure.isTrue(StringUtils.isNotBlank(prefix) && prefix.indexOf(';') == -1 && !prefix.contains("\""), prefix, cmds);
 
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < cmds.length; i++) {
             String key = cmds[i].toString();
             String value = cmds[++i].toString();
-            Ensure.isTrue(key.indexOf(';') == -1 && key.indexOf("\"") == -1, key, value);
+            Ensure.isTrue(key.indexOf(';') == -1 && !key.contains("\""), key, value);
 
             buf.append("echo \"");
             buf.append(prefix);
@@ -71,7 +71,7 @@ public class OSCommandUtils {
      *
      * @param stdout 标准输出信息
      * @param titles 输出信息标题, 为空时自动使用stdout第一行作为标题行解析
-     * @return
+     * @return 标准输出信息集合
      */
     public static List<Map<String, String>> splitPSCmdStdout(CharSequence stdout, String... titles) {
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
@@ -112,7 +112,7 @@ public class OSCommandUtils {
      * 与 {@linkplain #toMultiCommand(List)} 配套使用
      *
      * @param stdout 命令信息
-     * @return
+     * @return 命令输出信息
      */
     public static OSCommandStdouts splitMultiCommandStdout(CharSequence stdout) {
         return splitMultiCommandStdout(OSCommandUtils.START_PREFIX, stdout);
@@ -122,8 +122,8 @@ public class OSCommandUtils {
      * 分隔多命令输出信息
      *
      * @param prefix 每个命令输出的前缀, 后面是命令结果标志
-     * @param stdout
-     * @return
+     * @param stdout 标准输出信息
+     * @return 命令输出信息
      */
     private static OSCommandStdouts splitMultiCommandStdout(String prefix, CharSequence stdout) {
         if (StringUtils.isBlank(stdout)) {

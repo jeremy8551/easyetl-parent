@@ -5,6 +5,7 @@ import java.util.List;
 
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.command.AbstractSlaveCommand;
+import icu.etl.util.Ensure;
 
 /**
  * 脚本命令集合
@@ -30,17 +31,14 @@ public class CommandList extends ArrayList<UniversalScriptCommand> implements Cl
     /**
      * 脚本命令集合归属的命令
      *
-     * @param owner
+     * @param scriptCommand 脚本命令
      */
-    public void setOwner(UniversalScriptCommand owner) {
-        if (owner == null) {
-            throw new NullPointerException();
-        }
-
+    public void setOwner(UniversalScriptCommand scriptCommand) {
+        Ensure.notNull(scriptCommand);
         for (int i = 0; i < this.size(); i++) {
             UniversalScriptCommand command = this.get(i);
             if (command instanceof AbstractSlaveCommand) {
-                ((AbstractSlaveCommand) command).setOwner(owner);
+                ((AbstractSlaveCommand) command).setOwner(scriptCommand);
             }
         }
     }
@@ -48,7 +46,7 @@ public class CommandList extends ArrayList<UniversalScriptCommand> implements Cl
     /**
      * 返回脚本命令集合名字
      *
-     * @return
+     * @return 命令集合的名字
      */
     public String getName() {
         return name;
@@ -62,9 +60,6 @@ public class CommandList extends ArrayList<UniversalScriptCommand> implements Cl
         this.name = null;
     }
 
-    /**
-     * 返回一个副本
-     */
     public CommandList clone() {
         return new CommandList(this.name, this);
     }

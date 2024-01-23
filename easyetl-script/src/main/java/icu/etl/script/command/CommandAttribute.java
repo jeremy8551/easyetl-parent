@@ -66,7 +66,7 @@ public class CommandAttribute implements Attribute<String> {
     /**
      * 返回属性信息
      *
-     * @return
+     * @return 属性集合
      */
     public Map<String, String> getAttributes() {
         return attributes;
@@ -84,7 +84,7 @@ public class CommandAttribute implements Attribute<String> {
      * 返回整数型属性值
      *
      * @param key 属性名（大小写不敏感）
-     * @return
+     * @return 整数
      */
     public int getIntAttribute(String key) {
         return Integer.parseInt(this.attributes.get(key));
@@ -95,7 +95,7 @@ public class CommandAttribute implements Attribute<String> {
      *
      * @param key   属性名
      * @param array 默认值数组
-     * @return
+     * @return 属性值
      */
     public String getAttribute(String key, String... array) {
         String value = this.attributes.get(key);
@@ -135,11 +135,6 @@ public class CommandAttribute implements Attribute<String> {
         return obj;
     }
 
-    /**
-     * 返回一个副本
-     *
-     * @return
-     */
     public CommandAttribute clone() {
         CommandAttribute obj = new CommandAttribute();
         obj.attributes.putAll(this.attributes);

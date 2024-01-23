@@ -26,84 +26,84 @@ public interface UniversalScriptConfiguration {
     /**
      * 返回脚本引擎默认的命令
      *
-     * @return
+     * @return 默认的命令
      */
     String getDefaultCommand();
 
     /**
      * 返回脚本引擎支持的类型信息
      *
-     * @return
+     * @return 脚本引擎支持的类型信息
      */
     String getMimeTypes();
 
     /**
      * 返回脚本引擎支持的扩展名
      *
-     * @return
+     * @return 脚本引擎支持的扩展名
      */
     String getExtensions();
 
     /**
      * 返回脚本引擎支持的名字
      *
-     * @return
+     * @return 脚本引擎支持的名字
      */
     String getNames();
 
     /**
      * 返回脚本引擎默认的编译器类名
      *
-     * @return
+     * @return 脚本引擎默认的编译器类名
      */
     String getCompiler();
 
     /**
      * 返回脚本引擎的会话参数
      *
-     * @return
+     * @return 脚本引擎的会话参数
      */
     String getSessionFactory();
 
     /**
      * 返回脚本引擎默认的类型转换器的类名
      *
-     * @return
+     * @return 脚本引擎默认的类型转换器的类名
      */
     String getConverter();
 
     /**
      * 返回脚本引擎默认的校验接口实现类名
      *
-     * @return
+     * @return 脚本引擎默认的校验接口实现类名
      */
     String getChecker();
 
     /**
      * 返回脚本引擎的名字
      *
-     * @return
+     * @return 脚本引擎的名字
      */
     String getEngineName();
 
     /**
      * 返回脚本引擎的版本信息
      *
-     * @return
+     * @return 脚本引擎的版本信息
      */
     String getEngineVersion();
 
     /**
      * 返回脚本引擎中语言名
      *
-     * @return
+     * @return 脚本引擎中语言名
      */
     String getLanguageName();
 
     /**
      * 返回脚本引擎中语言版本号
      *
-     * @return
+     * @return 脚本引擎中语言版本号
      */
     String getLanguageVersion();
 

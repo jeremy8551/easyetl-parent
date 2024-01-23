@@ -67,8 +67,8 @@ public class ExecuteFunctionCommand extends AbstractTraceCommand implements Nohu
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param body        自定义方法内容
      * @param args        自定义方法的参数, 第一个值是方法名, 从第二个值开始是方法参数
-     * @return
-     * @throws Exception
+     * @return 返回0表示方法执行成功
+     * @throws Exception 执行自定义方法发生错误
      */
     protected int execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, CommandList body, String[] args) throws Exception {
         try {

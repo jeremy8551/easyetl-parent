@@ -14,28 +14,28 @@ public interface OSService {
     /**
      * 端口服务名
      *
-     * @return
+     * @return 端口服务名
      */
     String getName();
 
     /**
      * 端口号
      *
-     * @return
+     * @return 端口号
      */
     int getPort();
 
     /**
      * 使用的网络协议信息 tcp 或 udp
      *
-     * @return
+     * @return 网络协议信息 tcp 或 udp
      */
     String getProtocal();
 
     /**
      * 网络服务别名
      *
-     * @return
+     * @return 网络服务别名
      */
     List<String> getAliases();
 }

@@ -228,16 +228,14 @@ public class ScriptFormatter extends UniversalScriptFormatter {
 
                 // 对象数组
                 Object[] array = (Object[]) obj;
-                StringBuilder buf = new StringBuilder(array.length * 5);
-                buf.append(StringUtils.join(array, ", "));
-                return buf.toString();
+                return StringUtils.join(array, ", ");
             } catch (ClassCastException e) {
                 return obj.toString();
             }
         } else if (obj instanceof Clob) {
             try {
                 Clob clob = (Clob) obj;
-                return clob.getSubString((long) 1, (int) clob.length());
+                return clob.getSubString(1, (int) clob.length());
             } catch (Exception e) {
                 log.error(StringUtils.toString(e));
             }

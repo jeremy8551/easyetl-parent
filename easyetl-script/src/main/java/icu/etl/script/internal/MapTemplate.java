@@ -21,7 +21,7 @@ public class MapTemplate<E> {
      * 判断属性是否存在
      *
      * @param name 属性名
-     * @return
+     * @return 返回true表示属性存在
      */
     public boolean contains(String name) {
         return this.map.containsKey(name);
@@ -43,7 +43,7 @@ public class MapTemplate<E> {
      * 返回属性值
      *
      * @param name 属性名
-     * @return
+     * @return 属性值
      */
     public E get(String name) {
         return this.map.get(name);
@@ -60,9 +60,6 @@ public class MapTemplate<E> {
         return this.map.remove(name);
     }
 
-    /**
-     * 关闭所有属性，并清空信息
-     */
     public void close() {
         for (Enumeration<String> it = this.map.keys(); it.hasMoreElements(); ) {
             String name = it.nextElement();

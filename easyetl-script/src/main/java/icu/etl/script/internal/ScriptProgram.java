@@ -17,7 +17,7 @@ public class ScriptProgram extends HashMap<String, Object> implements Map<String
     /**
      * 从输入参数中复制
      *
-     * @param program
+     * @param program 数据或程序集合
      */
     public void addAll(ScriptProgram program) {
         Set<Entry<String, Object>> set = program.entrySet();

@@ -1,7 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,8 +50,8 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
      * @param analysis      语句分析器
      * @param orginalScript 原始脚本语句（带日志输出语句, 如: {@literal echo "" > ~/log.txt）}
      * @param command       脚本语句（不带日志输出语句，如: echo ""）
-     * @return
-     * @throws Exception
+     * @return 脚本命令
+     * @throws Exception 编译命令发生错误
      */
     public abstract AbstractTraceCommand compile(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptParser parser, UniversalScriptAnalysis analysis, String orginalScript, String command) throws Exception;
 
@@ -65,8 +63,8 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
      * @param analysis 语句分析器
      * @param command  脚本命令
      * @param from     符号 ‘>’ 所在位置
-     * @return
-     * @throws Exception
+     * @return 脚本命令配置信息
+     * @throws Exception 解析语句发生错误
      */
     private AbstractTraceCommandConfiguration parse(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptAnalysis analysis, String command, int from) throws Exception {
         ScriptWriterFactory stdout = null;
@@ -134,9 +132,9 @@ public abstract class AbstractTraceCommandCompiler extends AbstractCommandCompil
     /**
      * 读取下一个日志文件路径
      *
-     * @param it
-     * @param command
-     * @return
+     * @param it      便利器
+     * @param command 命令
+     * @return 返回日志文件
      */
     private String readLogfile(Iterator<String> it, String command) {
         if (it.hasNext()) {

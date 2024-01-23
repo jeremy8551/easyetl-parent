@@ -47,8 +47,8 @@ public class ScriptWriterFactory {
      *
      * @param session 用户会话信息
      * @param context 脚本引擎上下文信息
-     * @return
-     * @throws IOException
+     * @return 输出流
+     * @throws IOException 打开输出流发生错误
      */
     public Writer build(UniversalScriptSession session, UniversalScriptContext context) throws IOException {
         Ensure.notNull(session);
@@ -69,7 +69,7 @@ public class ScriptWriterFactory {
     /**
      * 返回日志文件
      *
-     * @return
+     * @return 日志文件
      */
     public File getFile() {
         return this.logfile;
@@ -78,7 +78,7 @@ public class ScriptWriterFactory {
     /**
      * 关闭输出流
      *
-     * @throws IOException
+     * @throws IOException 关闭输出流发生错误
      */
     public void close() throws IOException {
         if (this.out != null) {

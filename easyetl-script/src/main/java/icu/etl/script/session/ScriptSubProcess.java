@@ -43,7 +43,7 @@ public class ScriptSubProcess {
      * 判断是否已添加命令
      *
      * @param pid 进程编号
-     * @return
+     * @return 返回true表示已添加命令
      */
     public boolean contains(String pid) {
         return this.map.containsKey(pid);
@@ -53,7 +53,7 @@ public class ScriptSubProcess {
      * 返回进程
      *
      * @param pid 进程编号
-     * @return
+     * @return 进程
      */
     public ScriptProcess get(String pid) {
         return this.map.get(Ensure.notBlank(pid));
@@ -71,7 +71,7 @@ public class ScriptSubProcess {
     /**
      * 返回进程迭代器
      *
-     * @return
+     * @return 进程迭代器
      */
     public Iterator<ScriptProcess> iterator() {
         return Collections.unmodifiableCollection(this.map.values()).iterator();
@@ -79,10 +79,8 @@ public class ScriptSubProcess {
 
     /**
      * 终止所有后台进程
-     *
-     * @throws Exception 发生错误
      */
-    public void terminate() throws Exception {
+    public void terminate() {
         Throwable exception = null;
         for (Iterator<ScriptProcess> it = this.map.values().iterator(); it.hasNext(); ) {
             ScriptProcess process = it.next();

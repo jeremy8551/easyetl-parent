@@ -310,7 +310,7 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 创建一个表格型文件
      *
-     * @return
+     * @return 表格型文件
      */
     public TextTableFile createTableFile() {
         return this.createTableFile(this.filetype);
@@ -319,7 +319,7 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 创建一个表格型文件
      *
-     * @return
+     * @return 表格型文件
      */
     public TextTableFile createTableFile(String filetype) {
         TextTableFile file = this.context.getContainer().getBean(TextTableFile.class, filetype, this);
@@ -355,7 +355,7 @@ public class IncrementExpression implements Attribute<String> {
      * 返回整数型属性值
      *
      * @param key 属性名（大小写不敏感）
-     * @return
+     * @return 属性值
      */
     public int getIntAttribute(String key) {
         return Integer.parseInt(this.attributes.get(key));
@@ -364,7 +364,7 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 返回索引字段的位置信息
      *
-     * @return
+     * @return 位置信息数组
      */
     public int[] getIndexPosition() {
         return indexPosition;
@@ -373,7 +373,7 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 返回比较字段的位置信息
      *
-     * @return
+     * @return 位置信息数组
      */
     public int[] getComparePosition() {
         return comparePosition;
@@ -382,7 +382,7 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 返回将记录写入输出流之前的字段处理逻辑
      *
-     * @return
+     * @return 字段处理逻辑集合
      */
     public List<IncrementReplace> getNewChg() {
         return newchg;
@@ -391,7 +391,7 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 返回将记录写入输出流之前的字段处理逻辑
      *
-     * @return
+     * @return 字段处理逻辑集合
      */
     public List<IncrementReplace> getUpdChg() {
         return updchg;
@@ -400,7 +400,7 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 返回将记录写入输出流之前的字段处理逻辑
      *
-     * @return
+     * @return 字段处理逻辑集合
      */
     public List<IncrementReplace> getDelChg() {
         return delchg;
@@ -415,7 +415,7 @@ public class IncrementExpression implements Attribute<String> {
      * del 表示只输出删除数据 <br>
      * log 表示只删除日志数据 <br>
      *
-     * @return
+     * @return 输出流种类
      */
     public Set<String> getKinds() {
         return kinds;
@@ -424,7 +424,7 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 返回数据文件类型
      *
-     * @return
+     * @return 数据文件类型
      */
     public String getFiletype() {
         return filetype;
@@ -433,16 +433,16 @@ public class IncrementExpression implements Attribute<String> {
     /**
      * 返回数据文件路径表达式
      *
-     * @return
+     * @return 数据文件路径表达式
      */
     public String getFilepath() {
         return filepath;
     }
 
     /**
-     * 返回 true 表示是日志输出流表达式
+     * 判断是否是日志输出流
      *
-     * @return
+     * @return 返回 true 表示是日志输出流表达式
      */
     public boolean isLogWriter() {
         return isLogExpr;

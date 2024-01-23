@@ -45,7 +45,7 @@ public class ScriptMainProcess {
     /**
      * 返回最后一个命令的返回值
      *
-     * @return
+     * @return 返回值
      */
     public Integer getExitcode() {
         return this.exitcode;
@@ -60,8 +60,8 @@ public class ScriptMainProcess {
      * @param stderr      错误信息输出接口
      * @param forceStdout true 表示使用标准信息输出接口输出标准信息（忽略 {@linkplain UniversalScriptSession#isEchoEnable()} 返回值）
      * @param command     脚本命令
-     * @return
-     * @throws Exception
+     * @return 脚本命令执行结果集
+     * @throws Exception 执行脚本命令发生错误
      */
     public UniversalCommandResultSet execute(UniversalScriptSession session, UniversalScriptContext context, UniversalScriptStdout stdout, UniversalScriptStderr stderr, boolean forceStdout, UniversalScriptCommand command) throws Exception {
         String key = StringUtils.toRandomUUID();
@@ -112,7 +112,7 @@ public class ScriptMainProcess {
     /**
      * 返回所有正在执行命令的遍历器
      *
-     * @return
+     * @return 命令便利器
      */
     public Iterator<UniversalScriptCommand> iterator() {
         return Collections.unmodifiableCollection(this.cache.values()).iterator();
@@ -121,7 +121,7 @@ public class ScriptMainProcess {
     /**
      * 主线程创建时间
      *
-     * @return
+     * @return 创建时间
      */
     public Date getCreateTime() {
         return this.create;
@@ -130,7 +130,7 @@ public class ScriptMainProcess {
     /**
      * 返回最近一次执行失败的命令
      *
-     * @return
+     * @return 执行失败的命令
      */
     public UniversalScriptCommand getErrorCommand() {
         return this.failCommand;

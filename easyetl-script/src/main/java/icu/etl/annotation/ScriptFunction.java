@@ -19,14 +19,14 @@ public @interface ScriptFunction {
     /**
      * 变量方法名
      *
-     * @return
+     * @return 变量方法名
      */
     String name();
 
     /**
      * 变量方法关键字
      *
-     * @return
+     * @return 变量方法关键字
      */
     String[] keywords() default {};
 
