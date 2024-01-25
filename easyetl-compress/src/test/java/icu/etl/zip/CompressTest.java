@@ -243,7 +243,7 @@ public class CompressTest {
         Assert.assertTrue(uncomf4.exists());
     }
 
-    public static void main3(String[] args) throws IOException {
+    public void test61() throws IOException {
         String path = "C:\\Users\\etl\\Desktop\\cshi\\cshi.zip";
         ZipCompress jc = new ZipCompress();
         jc.setFile(new File(path));
@@ -251,7 +251,7 @@ public class CompressTest {
         jc.close();
     }
 
-    public static void main1(String[] args) throws IOException {
+    public void test62() throws IOException {
         String zip = "C:\\Users\\etl\\Desktop\\test\\cshi.zip";
         File zipFile = new File(zip);
 

@@ -5,7 +5,7 @@ import icu.etl.util.Dates;
 
 public class SendEmailExample {
 
-    public static void main(String[] args) {
+    public void test() {
         try {
             SimpleEmail mail = new SimpleEmail();
             mail.setHostName("mail.foxmail.com");

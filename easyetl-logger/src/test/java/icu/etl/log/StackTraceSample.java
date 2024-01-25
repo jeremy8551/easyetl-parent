@@ -11,7 +11,7 @@ package icu.etl.log;
  * */
 public class StackTraceSample {
 
-    public static void main(String[] args) {
+    public void test() {
         System.out.println("line1: " + new Throwable().getStackTrace()[0].getLineNumber());
         System.out.println("line2: " + getLineInfo());
         System.out.println("line3: " + getTraceInfo());

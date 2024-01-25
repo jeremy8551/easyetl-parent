@@ -67,14 +67,4 @@ public class Ping {
         return 0;
     }
 
-    public static void main(String[] args) throws Exception {
-        String ip = InetAddress.getByName("www.baidu.com").getHostAddress();
-        System.out.println(ip);
-        ping(ip);
-
-//        String ipAddress = "localhost";
-//        System.out.println(ping(ipAddress));
-//        ping02(ipAddress);
-//        System.out.println(ping(ipAddress, 5, 5000));
-    }
 }

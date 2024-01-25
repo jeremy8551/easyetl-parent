@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import icu.etl.util.Ensure;
+
 /**
  * 组件信息表
  *
@@ -21,8 +23,8 @@ public class EasyBeanTable {
     private LinkedHashMap<Class<?>, EasyBeanTableRow> rows;
 
     public EasyBeanTable(EasyContext context) {
+        this.context = Ensure.notNull(context);
         this.rows = new LinkedHashMap<Class<?>, EasyBeanTableRow>(50);
-        this.context = context;
     }
 
     /**
