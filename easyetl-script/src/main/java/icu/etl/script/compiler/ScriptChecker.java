@@ -43,7 +43,7 @@ public class ScriptChecker implements UniversalScriptChecker {
             return false;
         }
 
-        if (name.length() > 0 && !StringUtils.isLetter(name.charAt(0)) && !StringUtils.inArray(name.charAt(0), '_', '$')) {
+        if (!StringUtils.isLetter(name.charAt(0)) && !StringUtils.inArray(name.charAt(0), '_', '$')) {
             return false;
         }
 

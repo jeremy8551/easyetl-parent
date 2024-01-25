@@ -153,13 +153,9 @@ public class BufferedLineReader extends Reader implements TextFileReader, Iterat
      * @param expectedLength 每行字符串的初始容量长度（单位：字符），小于等于零时会使用默认值
      */
     public BufferedLineReader(File file, String charsetName, int size, int expectedLength) {
-        if (StringUtils.isBlank(charsetName)) {
-            charsetName = StringUtils.CHARSET;
-        }
-
         try {
             FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis, charsetName);
+            InputStreamReader isr = new InputStreamReader(fis, StringUtils.charset(charsetName));
             this.open(isr, size, expectedLength);
         } catch (Throwable e) {
             throw new RuntimeException(StringUtils.toString(file), e);

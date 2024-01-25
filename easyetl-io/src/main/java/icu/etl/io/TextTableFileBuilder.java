@@ -7,6 +7,7 @@ import icu.etl.ioc.EasyContext;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.Attribute;
 import icu.etl.util.CharsetName;
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 /**
@@ -23,16 +24,10 @@ public class TextTableFileBuilder implements EasyBeanBuilder<TextTableFile> {
     @SuppressWarnings("unchecked")
     public TextTableFile getBean(EasyContext context, Object... args) throws Exception {
         // 查询参数中一定要有文件类型
-        String name = ArrayUtils.indexOf(args, String.class, 0);
-        if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(StringUtils.toString(args));
-        }
+        String name = Ensure.notBlank(ArrayUtils.indexOf(args, String.class, 0));
 
         // 根据文件类型查询对应的组件
-        EasyBeanInfo beanInfo = context.getBeanInfo(TextTableFile.class, name);
-        if (beanInfo == null) {
-            throw new UnsupportedOperationException(name);
-        }
+        EasyBeanInfo beanInfo = Ensure.notNull(context.getBeanInfo(TextTableFile.class, name));
 
         // 创建文件，并设置属性
         TextTableFile file = context.createBean(beanInfo.getType());

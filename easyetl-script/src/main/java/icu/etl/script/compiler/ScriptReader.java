@@ -527,10 +527,7 @@ public class ScriptReader extends ScriptAnalysis implements UniversalScriptReade
     }
 
     private String readSymmetryScript(CacheLineReader in, String currentLine, String flag) throws IOException {
-        if (StringUtils.isBlank(flag)) {
-            throw new IllegalArgumentException(flag);
-        }
-
+        Ensure.notBlank(flag);
         flag = StringUtils.trimBlank(flag);
         if (StringUtils.inArray(flag, "\"", "'")) {
             throw new IllegalArgumentException(flag);

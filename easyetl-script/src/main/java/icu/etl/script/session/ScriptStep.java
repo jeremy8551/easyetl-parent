@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Vector;
 
 import icu.etl.script.UniversalScriptContext;
-import icu.etl.util.StringUtils;
+import icu.etl.util.Ensure;
 
 /**
  * 脚本引擎步骤信息集合
@@ -98,11 +98,7 @@ public class ScriptStep {
      * @param step step 命令的参数值
      */
     public void setTarget(String step) {
-        if (StringUtils.isBlank(step)) {
-            throw new IllegalArgumentException(step);
-        }
-
-        this.target = step;
+        this.target = Ensure.notBlank(step);
         this.jumping = true;
     }
 

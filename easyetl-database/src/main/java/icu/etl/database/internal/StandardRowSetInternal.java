@@ -1,11 +1,11 @@
 package icu.etl.database.internal;
 
+import javax.sql.RowSetInternal;
+import javax.sql.RowSetMetaData;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.sql.RowSetInternal;
-import javax.sql.RowSetMetaData;
 
 public class StandardRowSetInternal implements RowSetInternal {
 
@@ -38,7 +38,7 @@ public class StandardRowSetInternal implements RowSetInternal {
             resultSet.beforeFirst();
             return resultSet;
         } catch (Exception e) {
-            throw new UnsupportedOperationException(e);
+            throw new UnsupportedOperationException(e.getLocalizedMessage(), e);
         }
     }
 

@@ -258,12 +258,8 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
     }
 
     public synchronized boolean addUser(String username, String password, String group, String home, String shell) {
-        if (StringUtils.isBlank(username)) {
-            throw new IllegalArgumentException(username);
-        }
-        if (password == null) {
-            throw new IllegalArgumentException(password);
-        }
+        Ensure.notBlank(username);
+        Ensure.notNull(password);
 
         StringBuilder cmd = new StringBuilder();
         cmd.append("useradd");
@@ -294,9 +290,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
     }
 
     public synchronized boolean delUser(String username) {
-        if (StringUtils.isBlank(username)) {
-            throw new IllegalArgumentException(username);
-        }
+        Ensure.notBlank(username);
 
         boolean need = this.needDisableOSCommand();
         try {
@@ -314,12 +308,8 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
     }
 
     public synchronized boolean changePassword(String username, String password) {
-        if (StringUtils.isBlank(username)) {
-            throw new IllegalArgumentException(username);
-        }
-        if (password == null) {
-            throw new IllegalArgumentException(password);
-        }
+        Ensure.notBlank(username);
+        Ensure.notNull(password);
 
         boolean need = this.needDisableOSCommand();
         try {

@@ -13,6 +13,7 @@ import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CharsetName;
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.Property;
 import icu.etl.util.StringUtils;
 import icu.etl.util.XMLUtils;
@@ -63,10 +64,7 @@ public class ChinaUtils {
      * @return 属性集合
      */
     public static List<Property> getProperties(String nameOrType) {
-        if (StringUtils.isBlank(nameOrType)) {
-            throw new IllegalArgumentException(nameOrType);
-        }
-
+        Ensure.notBlank(nameOrType);
         List<Property> list = new ArrayList<Property>();
         Element root = XMLUtils.getRoot(CONFIG_XML);
         NodeList nodes = root.getChildNodes();
@@ -378,10 +376,7 @@ public class ChinaUtils {
      * @return 金额
      */
     public static BigDecimal parseChineseNumber(CharSequence str) {
-        if (StringUtils.isBlank(str)) {
-            throw new IllegalArgumentException(String.valueOf(str));
-        }
-
+        Ensure.notBlank(str);
         str = StringUtils.removeBlank(str);
         boolean negative = str.charAt(0) == '-' || str.charAt(0) == '负';
         if (negative) {
@@ -425,10 +420,7 @@ public class ChinaUtils {
      * @return 将字符串转为数字
      */
     protected static long parseLong(CharSequence str) {
-        if (StringUtils.isBlank(str)) {
-            throw new IllegalArgumentException(StringUtils.toString(str));
-        }
-
+        Ensure.notBlank(str);
         str = StringUtils.removeBlank(str);
         boolean negative = str.charAt(0) == '-' || str.charAt(0) == '负';
         long v = 0;

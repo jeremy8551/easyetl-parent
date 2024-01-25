@@ -5,7 +5,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import icu.etl.util.CollectionUtils;
-import icu.etl.util.StringUtils;
+import icu.etl.util.Ensure;
 
 public class ScriptCatalog extends Hashtable<String, Properties> {
     private final static long serialVersionUID = 1L;
@@ -15,11 +15,8 @@ public class ScriptCatalog extends Hashtable<String, Properties> {
     }
 
     public synchronized Properties put(String name, Properties value) {
-        if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(name);
-        } else {
-            return super.put(name, value);
-        }
+        Ensure.notBlank(name);
+        return super.put(name, value);
     }
 
     public void addAll(ScriptCatalog catalog) {

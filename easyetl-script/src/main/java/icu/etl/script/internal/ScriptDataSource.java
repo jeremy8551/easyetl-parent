@@ -104,10 +104,7 @@ public class ScriptDataSource {
      * @throws UniversalScriptException 如果数据库编目名对应的数据库编目信息不存在!
      */
     public DataSource getPool(String name) {
-        if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(name);
-        }
-
+        Ensure.notBlank(name);
         String key = name.toUpperCase();
         DataSource pool = this.map.get(key); // 优先从外部设置的数据库连接池中查找
         if (pool != null) {

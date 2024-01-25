@@ -116,12 +116,8 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
     }
 
     public boolean addUser(String username, String password, String group, String home, String shell) {
-        if (StringUtils.isBlank(username)) {
-            throw new IllegalArgumentException(username);
-        }
-        if (password == null) {
-            throw new IllegalArgumentException(password);
-        }
+        Ensure.notBlank(username);
+        Ensure.notNull(password);
 
         StringBuilder command = new StringBuilder();
         command.append("useradd");
@@ -436,7 +432,7 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
             while (in.hasNext()) {
                 String line = in.next();
                 String[] p = StringUtils.splitByBlank(StringUtils.trimBlank(Linuxs.removeShellNote(line, null)));
-                if (p != null && p.length == 2) {
+                if (p.length == 2) {
                     if (StringUtils.isBlank(dns1)) {
                         dns1 = p[1];
                     } else {

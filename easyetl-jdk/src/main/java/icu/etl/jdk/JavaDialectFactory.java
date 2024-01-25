@@ -46,9 +46,9 @@ public class JavaDialectFactory {
 
         if (cls == null) {
             throw new UnsupportedOperationException(className);
-        } else {
-            return this.create(className, cls);
         }
+        
+        return this.create(className, cls);
     }
 
     /**

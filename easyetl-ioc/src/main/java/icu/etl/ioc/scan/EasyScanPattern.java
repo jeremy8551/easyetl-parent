@@ -1,5 +1,6 @@
 package icu.etl.ioc.scan;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 /**
@@ -28,11 +29,7 @@ public class EasyScanPattern {
     private String rule;
 
     public EasyScanPattern(String name) {
-        if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(name);
-        }
-
-        this.value = StringUtils.trimBlank(name);
+        this.value = StringUtils.trimBlank(Ensure.notBlank(name));
         this.exclude = StringUtils.inArray(this.value.charAt(0), EXCLUDE_CHARS);
         this.rule = StringUtils.rtrim(this.value, '.', '*', '?');
         this.pattern = this.exclude ? StringUtils.ltrim(this.value, EXCLUDE_CHARS) : this.value;

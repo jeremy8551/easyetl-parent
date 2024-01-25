@@ -10,6 +10,7 @@ import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.os.OSConnectCommand;
 import icu.etl.os.OSException;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -157,12 +158,8 @@ public class SecureShellForwardCommand implements OSConnectCommand {
      * @return 端口号
      */
     public int localPortForward(int localPort, String remoteHost, int remotePort) {
-        if (StringUtils.isBlank(remoteHost)) {
-            throw new IllegalArgumentException(remoteHost);
-        }
-        if (remotePort <= 0) {
-            throw new IllegalArgumentException(String.valueOf(remotePort));
-        }
+        Ensure.notBlank(remoteHost);
+        Ensure.isFromOne(remotePort);
 
         if (this.session == null || !this.session.isConnected()) {
             throw new OSException("use connect() establish an connection first!");

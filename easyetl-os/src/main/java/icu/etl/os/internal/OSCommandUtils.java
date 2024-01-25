@@ -126,9 +126,7 @@ public class OSCommandUtils {
      * @return 命令输出信息
      */
     private static OSCommandStdouts splitMultiCommandStdout(String prefix, CharSequence stdout) {
-        if (StringUtils.isBlank(stdout)) {
-            throw new IllegalArgumentException(StringUtils.toString(stdout));
-        }
+        Ensure.notBlank(stdout);
 
         String key = "";
         OSCommandStdoutsImpl map = new OSCommandStdoutsImpl();
@@ -142,11 +140,7 @@ public class OSCommandUtils {
                         key = StringUtils.trimBlank(line.substring(prefix.length()));
                         continue;
                     } else {
-                        if (StringUtils.isBlank(key)) {
-                            throw new IllegalArgumentException(key);
-                        }
-
-                        map.put(key, new ArrayList<String>(list));
+                        map.put(Ensure.notBlank(key), new ArrayList<String>(list));
                         list.clear();
                         key = StringUtils.trimBlank(line.substring(prefix.length()));
                         continue;

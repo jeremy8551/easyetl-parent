@@ -130,11 +130,6 @@ public class UniversalScriptSessionImpl implements UniversalScriptSession {
         this.factory = Ensure.notNull(factory);
     }
 
-    /**
-     * 设置脚本文件信息
-     *
-     * @param file 脚本文件表达式
-     */
     public void setScriptFile(ScriptFileExpression file) throws IOException {
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_SCRIPTNAME, file.getName());
         this.addVariable(UniversalScriptVariable.SESSION_VARNAME_SCRIPTFILE, file.getAbsolutePath());
