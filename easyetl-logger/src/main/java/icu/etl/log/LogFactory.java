@@ -79,6 +79,7 @@ public class LogFactory {
      * @return 日志接口
      */
     public synchronized static Log getLog(LogContext context, Class<?> type, String fqcn, boolean dynamicCategory) {
+        Ensure.notNull(context);
         Ensure.notNull(type);
 
         try {
