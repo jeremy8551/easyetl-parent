@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.Property;
 import icu.etl.util.StringUtils;
 
@@ -373,9 +374,8 @@ public class ChineseRandom {
      * @return 出生日期
      */
     public Date nextBirthday(Date start, Date end) {
-        if (start == null || end == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(start);
+        Ensure.notNull(end);
 
         long days = Dates.calcDay(start, end) + 1;
         int count = this.random.nextInt((int) days);

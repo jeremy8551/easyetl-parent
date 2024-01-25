@@ -12,6 +12,7 @@ import icu.etl.log.LogFactory;
 public class EasyJobStatus {
     private final static Log log = LogFactory.getLog(EasyJobStatus.class);
 
+    /** 锁 */
     private final Object lock = new Object();
 
     public EasyJobStatus() {

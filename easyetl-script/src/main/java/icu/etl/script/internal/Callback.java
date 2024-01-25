@@ -13,6 +13,7 @@ import icu.etl.script.command.ContinueCommand;
 import icu.etl.script.command.ExitCommand;
 import icu.etl.script.command.ReturnCommand;
 import icu.etl.script.command.feature.LoopCommandKind;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -108,11 +109,7 @@ public class Callback {
      * @param callback 回调函数信息
      */
     public void add(CommandList callback) {
-        if (callback == null) {
-            throw new NullPointerException();
-        } else {
-            this.list.add(callback);
-        }
+        this.list.add(Ensure.notNull(callback));
     }
 
     /**
@@ -122,15 +119,7 @@ public class Callback {
      * @param callback 回调函数信息
      */
     public void add(int index, CommandList callback) {
-        if (index < 0) {
-            throw new IllegalArgumentException(String.valueOf(index));
-        }
-
-        if (callback == null) {
-            throw new NullPointerException();
-        } else {
-            this.list.add(index, callback);
-        }
+        this.list.add(Ensure.isFromZero(index), Ensure.notNull(callback));
     }
 
     /**

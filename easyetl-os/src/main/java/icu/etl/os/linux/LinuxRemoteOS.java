@@ -145,9 +145,7 @@ public class LinuxRemoteOS implements OS, OSFileCommand, OSDateCommand, OSNetwor
         this.groups.addAll(Linuxs.parseEtcGroup(stdouts.get("/etc/group"))); // 用户组
         this.release = Linuxs.parseEtcRelease(stdouts.get("os-release")); // 发行版本号
         this.currentUser = this.getUser(username); // 当前登录用户信息
-        if (this.currentUser == null) {
-            throw new NullPointerException(username);
-        }
+        Ensure.notNull(this.currentUser);
 
         this.currentUser.setPassword(this.password); // 保存密码
         this.currentUser.setProfiles((List<String>) this.cmd.getAttribute("profile"));

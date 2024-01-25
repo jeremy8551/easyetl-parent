@@ -10,6 +10,7 @@ import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.util.Attribute;
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 /**
@@ -52,10 +53,8 @@ public class CommandAttribute implements Attribute<String> {
         }
 
         for (int i = 0; i < names.length; i++) {
-            String name = names[i];
-            if (name == null) {
-                throw new NullPointerException();
-            } else if (name.endsWith(":")) {
+            String name = Ensure.notNull(names[i]);
+            if (name.endsWith(":")) {
                 this.value.add(StringUtils.removeSuffix(name));
             } else {
                 this.novalue.add(name);

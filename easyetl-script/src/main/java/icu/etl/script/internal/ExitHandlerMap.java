@@ -11,7 +11,7 @@ import icu.etl.script.UniversalScriptProgram;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
-import icu.etl.util.StringUtils;
+import icu.etl.util.Ensure;
 
 /**
  * 脚本引擎异常错误处理逻辑 <br>
@@ -51,11 +51,8 @@ public class ExitHandlerMap implements UniversalScriptProgram {
      * @return 处理逻辑
      */
     public ScriptHandler add(ScriptHandler handler) {
-        if (handler == null) {
-            throw new NullPointerException();
-        } else {
-            return this.map.put(handler.getKey(), handler);
-        }
+        Ensure.notNull(handler);
+        return this.map.put(handler.getKey(), handler);
     }
 
     /**
@@ -65,11 +62,7 @@ public class ExitHandlerMap implements UniversalScriptProgram {
      * @return 处理逻辑
      */
     public ScriptHandler remove(String condition) {
-        if (StringUtils.isBlank(condition)) {
-            throw new IllegalArgumentException(condition);
-        } else {
-            return this.map.remove(ScriptHandler.toKey(condition));
-        }
+        return this.map.remove(ScriptHandler.toKey(Ensure.notBlank(condition)));
     }
 
     /**

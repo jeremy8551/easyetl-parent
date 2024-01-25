@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.expression.DataUnitExpression;
@@ -24,6 +23,7 @@ import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.script.internal.FtpList;
 import icu.etl.script.io.ScriptFile;
 import icu.etl.util.CollectionUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
@@ -88,10 +88,7 @@ public class LengthCommand extends AbstractTraceCommand implements UniversalScri
                 stderr.println(ResourcesUtils.getMessage("script.message.stderr050", filepath));
                 return UniversalScriptCommand.COMMAND_ERROR;
             } else if (ftp.isFile(filepath)) { // expression is remote file path
-                OSFile file = CollectionUtils.firstElement(ftp.ls(filepath));
-                if (file == null) {
-                    throw new NullPointerException();
-                }
+                OSFile file = Ensure.notNull(CollectionUtils.firstElement(ftp.ls(filepath)));
                 if (print) {
                     stdout.println(file.length());
                 }

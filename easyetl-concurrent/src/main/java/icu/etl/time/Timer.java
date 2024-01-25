@@ -6,6 +6,7 @@ import java.util.List;
 
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -181,9 +182,7 @@ public class Timer {
      * <code>{@link Timer#START_EXCEPTION }</code><br>
      */
     public synchronized int[] addTask(Collection<TimerTask> list) {
-        if (list == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(list);
         if (this.isStop()) {
             throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg007"));
         }

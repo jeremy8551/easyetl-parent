@@ -345,12 +345,8 @@ public class StandardDatabaseTableColumn implements Cloneable, Comparable<Databa
      * @return 0表示字段相同 小于零表示字段1小于字段2 大于零表示字段1大于字段2
      */
     private int compareTo(DatabaseTableColumn column1, DatabaseTableColumn column2) {
-        if (column1 == null) {
-            throw new NullPointerException();
-        }
-        if (column2 == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(column1);
+        Ensure.notNull(column2);
         String name1 = column1.getTableFullName();
         String name2 = column2.getTableFullName();
 

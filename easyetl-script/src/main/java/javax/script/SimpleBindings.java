@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import icu.etl.util.Ensure;
+
 /**
  * 脚本引擎属性集合默认实现类
  *
@@ -41,10 +43,7 @@ public class SimpleBindings implements Bindings {
     private Map<String, Object> map;
 
     public SimpleBindings(Map<String, Object> m) {
-        if (m == null) {
-            throw new NullPointerException();
-        }
-        this.map = m;
+        this.map = Ensure.notNull(m);
     }
 
     public SimpleBindings() {
@@ -57,9 +56,7 @@ public class SimpleBindings implements Bindings {
     }
 
     public void putAll(Map<? extends String, ? extends Object> toMerge) {
-        if (toMerge == null) {
-            throw new NullPointerException("toMerge map is null");
-        }
+        Ensure.notNull(toMerge);
 
         for (Entry<? extends String, ? extends Object> entry : toMerge.entrySet()) {
             String key = entry.getKey();
@@ -112,9 +109,7 @@ public class SimpleBindings implements Bindings {
     }
 
     private void checkKey(Object key) {
-        if (key == null) {
-            throw new NullPointerException("key can not be null");
-        }
+        Ensure.notNull(key);
 
         if (!(key instanceof String)) {
             throw new ClassCastException("key should be a String");

@@ -134,9 +134,7 @@ public class DB2Instance {
      * @return 数据库实例集合
      */
     private List<DB2Instance> detectDB2Instance(OS os) {
-        if (os == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(os);
         Ensure.isTrue(os.supportOSCommand() && os.enableOSCommand(), os);
 
         OSUser currentUser = os.getUser();
@@ -157,10 +155,7 @@ public class DB2Instance {
                 if (str.startsWith("dasadm")) {
                     List<String> users = group.getUsers();
                     for (String name : users) {
-                        OSUser user = os.getUser(name);
-                        if (user == null) {
-                            throw new NullPointerException();
-                        }
+                        OSUser user = Ensure.notNull(os.getUser(name));
                         set.add(StringUtils.replaceVariable(template, "HOME", user.getHome()));
                     }
                 }
@@ -172,10 +167,7 @@ public class DB2Instance {
                 if (str.startsWith("db2iadm")) {
                     List<String> usernames = group.getUsers();
                     for (String name : usernames) {
-                        OSUser user = os.getUser(name);
-                        if (user == null) {
-                            throw new NullPointerException();
-                        }
+                        OSUser user = Ensure.notNull(os.getUser(name));
                         set.add(StringUtils.replaceVariable(template, "HOME", user.getHome()));
                     }
                 }
@@ -449,15 +441,8 @@ public class DB2Instance {
      * @throws IOException 执行远程命令错误
      */
     public boolean addUserDB2Profile(OS os, String username) throws IOException {
-        OSUser user = os.getUser(username);
-        if (user == null) {
-            throw new NullPointerException();
-        }
-
-        String lineSeperator = os.getLineSeparator();
-        if (lineSeperator == null) {
-            throw new NullPointerException();
-        }
+        OSUser user = Ensure.notNull(os.getUser(username));
+        String lineSeperator = Ensure.notNull(os.getLineSeparator());
 
         List<String> profiles = new ArrayList<String>(user.getProfiles());
         if (profiles.isEmpty()) {
@@ -501,12 +486,8 @@ public class DB2Instance {
         if (os == null || !os.supportOSFileCommand() || !os.enableOSFileCommand()) {
             throw new IllegalArgumentException(StringUtils.toString(os));
         }
-        if (userProfiles == null) {
-            throw new NullPointerException();
-        }
-        if (StringUtils.isBlank(db2profile)) {
-            throw new IllegalArgumentException(db2profile);
-        }
+        Ensure.notNull(userProfiles);
+        Ensure.notBlank(db2profile);
 
         String db2profilepath = StringUtils.escapeRegex(db2profile);
         OSFileCommand cmd = os.getOSFileCommand();

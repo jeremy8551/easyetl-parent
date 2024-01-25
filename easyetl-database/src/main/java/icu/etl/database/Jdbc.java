@@ -153,9 +153,7 @@ public class Jdbc {
      * @return true-数据库连接可用
      */
     public static boolean testConnection(Connection conn, DatabaseDialect dialect) {
-        if (dialect == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(dialect);
         if (conn == null) {
             return false;
         }

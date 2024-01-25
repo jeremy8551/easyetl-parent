@@ -1,6 +1,7 @@
 package icu.etl.log;
 
 import icu.etl.log.cxt.LogContextImpl;
+import icu.etl.util.Ensure;
 
 /**
  * 日志模块
@@ -78,9 +79,7 @@ public class LogFactory {
      * @return 日志接口
      */
     public synchronized static Log getLog(LogContext context, Class<?> type, String fqcn, boolean dynamicCategory) {
-        if (type == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(type);
 
         try {
             return context.getBuilder().create(context, type, fqcn, dynamicCategory);

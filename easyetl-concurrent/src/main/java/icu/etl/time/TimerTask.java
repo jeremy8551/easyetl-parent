@@ -5,6 +5,7 @@ import java.util.Date;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
@@ -602,11 +603,8 @@ public abstract class TimerTask implements Runnable {
             throw new TimerException(ResourcesUtils.getMessage("timer.standard.output.msg027", this.getTaskId()));
         }
 
-        if (StringUtils.isBlank(taskId)) {
-            throw new NullPointerException();
-        } else {
-            this.taskId = StringUtils.removeBlank(taskId);
-        }
+        Ensure.notBlank(taskId);
+        this.taskId = StringUtils.removeBlank(taskId);
     }
 
     /**

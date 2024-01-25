@@ -10,6 +10,7 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.EasyContextAware;
 import icu.etl.util.ClassUtils;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.StringUtils;
@@ -138,11 +139,7 @@ public class CommonTextTableFile implements TextTableFile, EasyContextAware {
     }
 
     public void setLineSeparator(String str) {
-        if (str == null) {
-            throw new NullPointerException();
-        } else {
-            this.lineSeparator = str;
-        }
+        this.lineSeparator = Ensure.notNull(str);
     }
 
     public String getCharDelimiter() {

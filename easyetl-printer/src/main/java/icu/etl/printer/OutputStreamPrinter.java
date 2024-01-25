@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import icu.etl.collection.ByteBuffer;
 import icu.etl.util.CharsetName;
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 /**
@@ -29,15 +30,8 @@ public class OutputStreamPrinter extends OutputStream implements CharsetName {
      */
     public OutputStreamPrinter(Printer out, String charsetName) {
         super();
-        if (out == null) {
-            throw new NullPointerException();
-        }
-        if (StringUtils.isBlank(charsetName)) {
-            charsetName = StringUtils.CHARSET;
-        }
-
-        this.out = out;
-        this.buffer = new ByteBuffer(512, 50, charsetName);
+        this.out = Ensure.notNull(out);
+        this.buffer = new ByteBuffer(512, 50, StringUtils.charset(charsetName));
     }
 
     public void write(int b) throws IOException {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -386,9 +387,7 @@ public class BaseAnalysis implements Analysis {
     }
 
     public int indexOfBrace(CharSequence str, int from) {
-        if (str == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(str);
         if (from < 0 || from >= str.length()) {
             throw new IllegalArgumentException(str + ", " + from);
         }

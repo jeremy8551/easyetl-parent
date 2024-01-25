@@ -17,6 +17,7 @@ import icu.etl.script.UniversalScriptListener;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -44,16 +45,13 @@ public class ScriptListener implements UniversalScriptListener {
     }
 
     public void add(UniversalCommandListener listener) {
-        if (listener == null) {
-            throw new NullPointerException();
-        } else {
-            this.map.put(listener.getClass(), listener);
-            this.list.clear(); // 先清空再添加
-            Set<Class<?>> set = this.map.keySet();
-            for (Class<?> cls : set) {
-                UniversalCommandListener next = this.map.get(cls);
-                this.list.add(next);
-            }
+        Ensure.notNull(listener);
+        this.map.put(listener.getClass(), listener);
+        this.list.clear(); // 先清空再添加
+        Set<Class<?>> set = this.map.keySet();
+        for (Class<?> cls : set) {
+            UniversalCommandListener next = this.map.get(cls);
+            this.list.add(next);
         }
     }
 

@@ -33,6 +33,7 @@ import icu.etl.log.LogFactory;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.CollectionUtils;
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.Property;
@@ -61,9 +62,7 @@ public abstract class AbstractDialect implements DatabaseDialect {
     }
 
     public String dropPrimaryKey(Connection connection, DatabaseIndex index) throws SQLException {
-        if (index == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(index);
 
         String sql = "alter table " + index.getTableFullName() + " drop primary key ";
         int count = 0;

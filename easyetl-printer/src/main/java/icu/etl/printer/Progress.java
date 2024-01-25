@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.Numbers;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
@@ -105,18 +106,9 @@ public class Progress {
      * @param format  总记录数的格式化工具
      */
     public Progress(ProgressPrinter out, String message, long total, Format format) {
-        if (out == null) {
-            throw new NullPointerException();
-        }
-        if (total < 0) {
-            throw new IllegalArgumentException(String.valueOf(total));
-        }
-        if (format == null) {
-            throw new NullPointerException();
-        }
-
-        this.out = out;
-        this.total = total;
+        Ensure.notNull(format);
+        this.out = Ensure.notNull(out);
+        this.total = Ensure.isFromZero(total);
         this.hand = 100L;
         this.totalRecordsStr = format.format(total);
         this.last = 0;

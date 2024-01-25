@@ -17,6 +17,7 @@ import icu.etl.database.JdbcConverterMapper;
 import icu.etl.database.JdbcDao;
 import icu.etl.database.internal.AbstractDialect;
 import icu.etl.database.internal.StandardDatabaseURL;
+import icu.etl.util.Ensure;
 import icu.etl.util.StringUtils;
 
 @EasyBean(name = "mysql")
@@ -50,18 +51,14 @@ public class MysqlDialect extends AbstractDialect {
     }
 
     public List<DatabaseURL> parseJdbcUrl(String url) {
-        if (url == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(url);
 
         List<DatabaseURL> list = new ArrayList<DatabaseURL>(1);
         String[] part = StringUtils.split(url, "/");
         if (part.length == 4) {
             String databaseType = "mysql";
 
-            /**
-             * 解析第一部分
-             */
+            // 解析第一部分
             String[] part1 = StringUtils.split(part[0], ":");
             if (part1.length == 3) {
                 databaseType = part1[1];
@@ -69,16 +66,12 @@ public class MysqlDialect extends AbstractDialect {
                 throw new IllegalArgumentException(url + " error!");
             }
 
-            /**
-             * 第二部分
-             */
+            // 第二部分
             if (!part[1].equals("")) {
                 throw new IllegalArgumentException(url + " error!");
             }
 
-            /**
-             * 解析第三部分
-             */
+            // 解析第三部分
             String[] part3 = StringUtils.removeBlank(StringUtils.split(part[2], ","));
             if (part3.length == 0) {
                 throw new IllegalArgumentException(url + " error!");
@@ -102,9 +95,7 @@ public class MysqlDialect extends AbstractDialect {
                 }
             }
 
-            /**
-             * 解析第四部分
-             */
+            // 解析第四部分
             int p4 = part[3].indexOf('?');
             if (p4 == -1) {
                 for (DatabaseURL cfg : list) {

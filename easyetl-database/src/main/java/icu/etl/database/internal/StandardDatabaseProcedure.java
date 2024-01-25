@@ -11,6 +11,7 @@ import icu.etl.database.DatabaseProcedureParameter;
 import icu.etl.database.DatabaseProcedureParameterList;
 import icu.etl.database.JdbcDao;
 import icu.etl.database.SQL;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -34,9 +35,7 @@ public class StandardDatabaseProcedure implements DatabaseProcedure {
         if (StringUtils.startsWith(sql, "call", 0, true, true) && (names = resolveDatabaseProcedureCallName(sql)) != null) { // 解析 call procedure(...) 表达式
             String catalog = dao.getDialect().getCatalog(dao.getConnection());
             DatabaseProcedure obj = dao.getDialect().getProcedureForceOne(dao.getConnection(), catalog, names[0], names[1]);
-            if (obj == null) {
-                throw new NullPointerException();
-            }
+            Ensure.notNull(obj);
 
             DatabaseProcedureParameterList list = obj.getParameters();
             String[] array = StandardDatabaseProcedure.resolveProcedureInputParameters(sql);

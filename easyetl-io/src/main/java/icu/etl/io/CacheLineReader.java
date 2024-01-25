@@ -171,11 +171,8 @@ public class CacheLineReader extends Reader implements TextFileReader {
      */
     public synchronized void setCurrentLine(String line) throws IOException {
         if (this.open) {
-            if (line == null) {
-                throw new NullPointerException();
-            } else {
-                this.cacher.setCurrentLine(line, null); // 添加到缓存中
-            }
+            Ensure.notNull(line);
+            this.cacher.setCurrentLine(line, null); // 添加到缓存中
         } else {
             throw new IOException(ResourcesUtils.getMessage("io.standard.output.msg034"));
         }

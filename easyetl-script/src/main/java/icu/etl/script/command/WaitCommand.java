@@ -13,6 +13,7 @@ import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.session.ScriptProcess;
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 /**
@@ -52,11 +53,7 @@ public class WaitCommand extends AbstractTraceCommand {
         this.process = process;
 
         // 计算等待命令的超时时间，单位秒
-        UniversalScriptCommand command = process.getCommand();
-        if (command == null) {
-            throw new NullPointerException();
-        }
-
+        UniversalScriptCommand command = Ensure.notNull(process.getCommand());
         String script = command.getScript();
         long timeout = new MillisExpression(timeoutExpression).value();
         boolean usetimeout = timeout > 0;

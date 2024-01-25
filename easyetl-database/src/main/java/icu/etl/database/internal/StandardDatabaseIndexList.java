@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import icu.etl.database.DatabaseIndex;
 import icu.etl.database.DatabaseIndexList;
+import icu.etl.util.Ensure;
 
 public class StandardDatabaseIndexList extends ArrayList<DatabaseIndex> implements DatabaseIndexList {
     private final static long serialVersionUID = 1L;
@@ -31,9 +32,7 @@ public class StandardDatabaseIndexList extends ArrayList<DatabaseIndex> implemen
     }
 
     public boolean contains(DatabaseIndex index, boolean ignoreIndexName, boolean ignoreIndexSort) {
-        if (index == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(index);
 
         for (DatabaseIndex idx : this) {
             if (idx.equals(index, ignoreIndexName, ignoreIndexSort)) {

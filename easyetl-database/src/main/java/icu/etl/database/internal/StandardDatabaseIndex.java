@@ -6,6 +6,7 @@ import java.util.List;
 import icu.etl.database.DatabaseIndex;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 
 public class StandardDatabaseIndex implements DatabaseIndex {
@@ -234,9 +235,7 @@ public class StandardDatabaseIndex implements DatabaseIndex {
      * @return 返回true表示索引相等 false表示索引不等
      */
     public boolean equals(DatabaseIndex index, boolean ignoreIndexName, boolean ignoreIndexSort) {
-        if (index == null) {
-            throw new NullPointerException("equals(" + index + ", " + ignoreIndexName + ", " + ignoreIndexSort + ")");
-        }
+        Ensure.notNull(index);
 
         List<String> names1 = this.getColumnNames();
         List<String> names2 = index.getColumnNames();

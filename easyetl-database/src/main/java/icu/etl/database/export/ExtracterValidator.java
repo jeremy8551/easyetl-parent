@@ -1,6 +1,6 @@
 package icu.etl.database.export;
 
-import icu.etl.util.StringUtils;
+import icu.etl.util.Ensure;
 
 public class ExtracterValidator {
 
@@ -22,21 +22,10 @@ public class ExtracterValidator {
             context.setMaximum(0);
         }
 
-        if (context.getDataSource() == null) {
-            throw new NullPointerException();
-        }
-
-        if (context.getFormat() == null) {
-            throw new NullPointerException();
-        }
-
-        if (StringUtils.isBlank(context.getSource())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (StringUtils.isBlank(context.getTarget())) {
-            throw new IllegalArgumentException();
-        }
+        Ensure.notNull(context.getDataSource());
+        Ensure.notNull(context.getFormat());
+        Ensure.notBlank(context.getSource());
+        Ensure.notBlank(context.getTarget());
 
         if (context.getCacheLines() <= 0) {
             context.setCacheLines(100);

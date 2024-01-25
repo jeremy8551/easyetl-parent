@@ -12,6 +12,7 @@ import icu.etl.database.export.ExtractWriter;
 import icu.etl.io.TableLine;
 import icu.etl.io.TableWriter;
 import icu.etl.io.TextTable;
+import icu.etl.util.Ensure;
 import icu.etl.util.NetUtils;
 
 @EasyBean(name = "http", description = "卸载数据到用户浏览器")
@@ -39,12 +40,9 @@ public class HttpRequestWriter implements ExtractWriter {
      * @throws IOException 卸载数据发生错误
      */
     public HttpRequestWriter(Object request, Object response, String filename, TextTable table, ExtractMessage message) throws IOException {
-        if (request == null) {
-            throw new NullPointerException();
-        }
-        if (response == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(request);
+        Ensure.notNull(response);
+        
         this.filename = filename;
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;

@@ -8,6 +8,7 @@ import java.sql.Statement;
 
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 import icu.etl.util.TimeWatch;
@@ -51,16 +52,9 @@ public class ConnectionLogger implements InvocationHandler {
      * @param warnTimeout 超时提醒时间，单位秒
      */
     public ConnectionLogger(Connection conn, int warnTimeout) {
-        if (conn == null) {
-            throw new NullPointerException();
-        }
-        if (warnTimeout < 0) {
-            throw new IllegalArgumentException(String.valueOf(warnTimeout));
-        }
-
         this.number = getSerialNo();
-        this.conn = conn;
-        this.warnTimeout = warnTimeout;
+        this.conn = Ensure.notNull(conn);
+        this.warnTimeout = Ensure.isFromZero(warnTimeout);
     }
 
     /**

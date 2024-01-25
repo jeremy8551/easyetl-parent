@@ -457,11 +457,8 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         this.context = context;
     }
 
-    public String dropPrimaryKey(Connection connection, DatabaseIndex index) throws SQLException {
-        if (index == null) {
-            throw new NullPointerException();
-        }
-
+    public String dropPrimaryKey(Connection connection, DatabaseIndex index) {
+        Ensure.notNull(index);
         String sql = "alter table " + index.getTableFullName() + " drop primary key "; // + index.getFullName();
         int count = 0;
         while (true) {
@@ -530,9 +527,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
      * @throws SQLException
      */
     protected String extractTableDDL(Connection connection, DatabaseTable table) throws SQLException {
-        if (table == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(table);
 
         try {
             return this.toDDLByProduce(connection, table);
@@ -632,9 +627,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
 
                     // 返回 db2 命令集合
                     DB2Command builder = this.context.getBean(DB2Command.class, "db2", os.getName(), major, minor);
-                    if (builder == null) {
-                        throw new NullPointerException();
-                    }
+                    Ensure.notNull(builder);
 
                     // 得到db2look 命令
                     String oscommand = builder.getTableCommand(name, table.getSchema(), table.getName(), acct.getUsername(), acct.getPassword());
@@ -1198,10 +1191,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
 
         String applicationHandle = config.getProperty(DB2Dialect.APPLICATION_HANDLE);
         DatabaseConfigurationContainer container = this.context.getBean(DatabaseConfigurationContainer.class);
-        DatabaseConfiguration jdbc = container.get(conn);
-        if (jdbc == null) {
-            throw new NullPointerException();
-        }
+        DatabaseConfiguration jdbc = Ensure.notNull(container.get(conn));
 
         try {
             OSAccount sshacct = jdbc.getSSHAccount();
@@ -1282,9 +1272,7 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
         OS os = this.context.getBean(OS.class, config);
         try {
             DB2Command builder = this.context.getBean(DB2Command.class, "db2", os.getName(), major, minor);
-            if (builder == null) {
-                throw new NullPointerException();
-            }
+            Ensure.notNull(builder);
 
             String command = builder.getApplicationDetail(applicationid);
             Ensure.isTrue(os.enableOSCommand(), os.getName(), major, minor);
@@ -1503,42 +1491,12 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
     }
 
     public List<String> alterTableColumn(Connection connection, DatabaseTableColumn oc, DatabaseTableColumn nc) throws SQLException {
-        if (oc == null && nc == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(oc);
+        Ensure.notNull(nc);
 
         List<String> list = new ArrayList<String>();
         JdbcDao dao = new JdbcDao(this.context, connection);
         try {
-            // 添加数据库表字段
-            if (oc == null) {
-                String sql = "alter table " + nc.getTableFullName() + " add " + nc.getName() + " " + nc.getFieldName();
-
-                // 添加默认值
-                if (StringUtils.isNotBlank(nc.getDefault())) {
-                    sql += " default " + nc.getDefaultValue();
-                }
-
-                list.add(sql);
-
-                // not null 语句
-                if ("no".equalsIgnoreCase(nc.getNullAble())) {
-                    list.add("alter table " + nc.getTableFullName() + " alter column " + nc.getName() + " set not null");
-                }
-
-                dao.execute(list);
-                dao.callProcedure("call sysproc.admin_cmd('reorg table " + nc.getTableFullName() + "');");
-                return list;
-            }
-
-            // 删除字段
-            if (nc == null) {
-                list.add("alter table " + oc.getTableFullName() + " drop column " + oc.getName());
-                dao.execute(list);
-                dao.callProcedure("call sysproc.admin_cmd('reorg table " + oc.getTableFullName() + "');");
-                return list;
-            }
-
             // 修改字段
             if (StringComparator.compareIgnoreBlank(oc.getTableCatalog(), nc.getTableCatalog()) != 0 //
                     || StringComparator.compareIgnoreBlank(oc.getTableName(), nc.getTableName()) != 0 //

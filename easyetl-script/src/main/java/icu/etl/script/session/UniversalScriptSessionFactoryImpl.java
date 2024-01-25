@@ -7,6 +7,7 @@ import icu.etl.annotation.EasyBean;
 import icu.etl.script.UniversalScriptEngine;
 import icu.etl.script.UniversalScriptSession;
 import icu.etl.script.UniversalScriptSessionFactory;
+import icu.etl.util.Ensure;
 import icu.etl.util.IO;
 
 /**
@@ -74,11 +75,8 @@ public class UniversalScriptSessionFactoryImpl implements UniversalScriptSession
      * @return 用户会话
      */
     public UniversalScriptSession add(UniversalScriptSession session) {
-        if (session == null) {
-            throw new NullPointerException();
-        } else {
-            return this.map.put(session.getId(), session);
-        }
+        Ensure.notNull(session);
+        return this.map.put(session.getId(), session);
     }
 
     public UniversalScriptSession get(String sessionid) {

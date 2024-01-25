@@ -48,6 +48,7 @@ public class TextTableLineImpl implements TextTableLine {
         if (position > this.column) {
             throw new IllegalArgumentException(String.valueOf(position));
         }
+        
         return this.line.isColumnBlank(position);
     }
 
@@ -55,6 +56,7 @@ public class TextTableLineImpl implements TextTableLine {
         if (position > this.column) {
             throw new IllegalArgumentException(String.valueOf(position));
         }
+
         return this.line.getColumn(position);
     }
 
@@ -62,6 +64,7 @@ public class TextTableLineImpl implements TextTableLine {
         if (position > this.column) {
             throw new IllegalArgumentException(String.valueOf(position));
         }
+
         this.line.setColumn(position, value);
     }
 

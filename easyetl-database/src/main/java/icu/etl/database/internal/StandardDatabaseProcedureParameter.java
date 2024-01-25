@@ -10,6 +10,7 @@ import icu.etl.database.DatabaseProcedureParameter;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
 import icu.etl.util.Dates;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
@@ -268,9 +269,7 @@ public class StandardDatabaseProcedureParameter implements DatabaseProcedurePara
     }
 
     public void setStatement(CallableStatement statement) throws SQLException {
-        if (statement == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(statement);
 
         int type = this.getSqlType();
         String expression = StringUtils.trimBlank(this.getExpression());

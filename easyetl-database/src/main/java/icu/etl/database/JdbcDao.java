@@ -997,10 +997,7 @@ public class JdbcDao implements OSConnectCommand {
      * @return 执行删除数据库表时使用的SQL语句
      */
     public List<String> dropIndex(DatabaseTable table) {
-        if (table == null) {
-            throw new NullPointerException();
-        }
-
+        Ensure.notNull(table);
         List<DatabaseIndex> indexs = table.getIndexs();
         List<String> list = new ArrayList<String>(indexs.size());
         for (DatabaseIndex index : indexs) {
@@ -1017,11 +1014,9 @@ public class JdbcDao implements OSConnectCommand {
      * @throws SQLException 数据库错误
      */
     public String dropPrimaryKey(DatabaseIndex index) throws SQLException {
-        if (index == null) {
-            throw new NullPointerException();
-        } else {
-            return this.getDialect().dropPrimaryKey(this.getConnection(), index);
-        }
+        Ensure.notNull(index);
+        
+        return this.getDialect().dropPrimaryKey(this.getConnection(), index);
     }
 
     /**
@@ -1031,9 +1026,7 @@ public class JdbcDao implements OSConnectCommand {
      * @return 执行删除数据库表索引时使用的SQL语句
      */
     public String dropIndex(DatabaseIndex index) {
-        if (index == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(index);
 
         String sql = "drop index " + index.getFullName();
         int count = 0;

@@ -34,6 +34,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import icu.etl.util.Ensure;
+
 /**
  * 脚本引擎管理器，用于支持 JDK1.5
  *
@@ -147,9 +149,7 @@ public class ScriptEngineManager {
     }
 
     public javax.script.ScriptEngine getEngineByName(String shortName) {
-        if (shortName == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(shortName);
 
         // look for registered name first
         if (this.nameAssociations.containsKey(shortName)) {
@@ -196,9 +196,7 @@ public class ScriptEngineManager {
     }
 
     public javax.script.ScriptEngine getEngineByExtension(String extension) {
-        if (extension == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(extension);
 
         // look for registered extension first
         if (this.extensionAssociations.containsKey(extension)) {
@@ -246,9 +244,7 @@ public class ScriptEngineManager {
     }
 
     public javax.script.ScriptEngine getEngineByMimeType(String mimeType) {
-        if (mimeType == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(mimeType);
 
         // look for registered types first
         if (this.mimeTypeAssociations.containsKey(mimeType)) {
@@ -304,27 +300,21 @@ public class ScriptEngineManager {
     }
 
     public void registerEngineName(String name, ScriptEngineFactory factory) {
-        if (name == null || factory == null) {
-            throw new NullPointerException();
-        } else {
-            this.nameAssociations.put(name, factory);
-        }
+        Ensure.notNull(name);
+        Ensure.notNull(factory);
+        this.nameAssociations.put(name, factory);
     }
 
     public void registerEngineMimeType(String type, ScriptEngineFactory factory) {
-        if (type == null || factory == null) {
-            throw new NullPointerException();
-        } else {
-            this.mimeTypeAssociations.put(type, factory);
-        }
+        Ensure.notNull(type);
+        Ensure.notNull(factory);
+        this.mimeTypeAssociations.put(type, factory);
     }
 
     public void registerEngineExtension(String extension, ScriptEngineFactory factory) {
-        if (extension == null || factory == null) {
-            throw new NullPointerException();
-        } else {
-            this.extensionAssociations.put(extension, factory);
-        }
+        Ensure.notNull(extension);
+        Ensure.notNull(factory);
+        this.extensionAssociations.put(extension, factory);
     }
 
 }

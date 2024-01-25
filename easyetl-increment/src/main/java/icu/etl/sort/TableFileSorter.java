@@ -111,9 +111,7 @@ public class TableFileSorter implements Terminate {
      * @throws Exception 发生错误
      */
     public synchronized File sort(TextTableFile file, OrderByExpression... orders) throws Exception {
-        if (file == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(file);
         if (orders.length == 0) {
             return new File(file.getAbsolutePath());
         }

@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import icu.etl.util.Ensure;
+
 /**
  * 脚本引擎服务加载器
  *
@@ -62,12 +64,8 @@ public final class ServiceLoader<S> implements Iterable<S> {
     private LazyIterator lookupIterator;
 
     private ServiceLoader(Class<S> svc, ClassLoader cl) {
-        if (svc == null) {
-            throw new NullPointerException();
-        }
-
         this.providers = new LinkedHashMap<String, S>();
-        this.service = svc;
+        this.service = Ensure.notNull(svc);
         this.loader = (cl == null) ? ClassLoader.getSystemClassLoader() : cl;
         this.acc = (System.getSecurityManager() != null) ? AccessController.getContext() : null;
         this.reload();

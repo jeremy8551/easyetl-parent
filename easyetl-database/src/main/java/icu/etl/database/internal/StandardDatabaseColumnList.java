@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import icu.etl.database.DatabaseTableColumn;
 import icu.etl.database.DatabaseTableColumnList;
+import icu.etl.util.Ensure;
 
 public class StandardDatabaseColumnList extends ArrayList<DatabaseTableColumn> implements DatabaseTableColumnList {
 
@@ -81,9 +82,7 @@ public class StandardDatabaseColumnList extends ArrayList<DatabaseTableColumn> i
     }
 
     public int compareTo(DatabaseTableColumnList columns) {
-        if (columns == null) {
-            throw new NullPointerException();
-        }
+        Ensure.notNull(columns);
         if (this.size() != columns.size()) {
             return this.size() - columns.size();
         }

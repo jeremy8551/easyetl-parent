@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import icu.etl.annotation.EasyBean;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -218,12 +219,9 @@ public class CsvFile extends CommonTextTableFile implements TextTableFile {
      * @return 替换后的字符串
      */
     public static String replaceFieldValue(CharSequence str, int column, String newStr) {
-        if (newStr == null) {
-            throw new NullPointerException();
-        }
-        if (column <= 0) {
-            throw new IllegalArgumentException(String.valueOf(column));
-        }
+        Ensure.notNull(newStr);
+        Ensure.isFromOne(column);
+        
         if (str == null) {
             return null;
         }
