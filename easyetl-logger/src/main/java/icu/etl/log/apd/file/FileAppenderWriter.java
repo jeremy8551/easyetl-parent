@@ -13,7 +13,6 @@ import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
 import icu.etl.util.JUL;
-import icu.etl.util.ObjectUtils;
 import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
 
@@ -57,7 +56,7 @@ public class FileAppenderWriter {
             logfile = FileUtils.joinPath(Settings.getUserHome().getAbsolutePath(), "." + ProjectPom.getArtifactID(), Settings.getUserName() + ".log");
         }
 
-        this.charsetName = ObjectUtils.coalesce(charsetName, StringUtils.CHARSET);
+        this.charsetName = StringUtils.charset(charsetName);
         this.blockingQueue = Ensure.notNull(queue);
         this.logfile = Ensure.notNull(logfile);
         this.layout = Ensure.notNull(layout);

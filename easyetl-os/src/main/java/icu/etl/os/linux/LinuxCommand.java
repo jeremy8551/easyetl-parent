@@ -432,7 +432,7 @@ public class LinuxCommand implements OSCommand {
     }
 
     public String getCharsetName() {
-        return StringUtils.defaultString(this.charsetName, StringUtils.CHARSET);
+        return StringUtils.charset(this.charsetName);
     }
 
     public Object getAttribute(String key) {

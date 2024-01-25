@@ -53,13 +53,12 @@ public class ZipCompress implements Compress {
     protected void addFile(File file, String dir, String charsetName, int level) throws IOException {
         Ensure.notNull(this.zipFile);
         FileUtils.assertExists(file);
-        charsetName = StringUtils.charset(charsetName);
 
         if (this.zos == null) {
             this.zos = new ZipOutputStream(new FileOutputStream(this.zipFile));
         }
 
-        this.zos.setEncoding(charsetName);
+        this.zos.setEncoding(StringUtils.charset(charsetName));
 
         // 处理目录
         dir = (dir == null) ? "" : dir.trim();
@@ -147,9 +146,8 @@ public class ZipCompress implements Compress {
     public void extract(String outputDir, String charsetName) throws IOException {
         FileUtils.assertFile(this.zipFile);
         FileUtils.assertCreateDirectory(outputDir);
-        charsetName = StringUtils.charset(charsetName);
 
-        ZipFile file = new ZipFile(zipFile, charsetName);
+        ZipFile file = new ZipFile(zipFile, StringUtils.charset(charsetName));
         try {
             if (log.isDebugEnabled()) {
                 log.debug("unzip " + zipFile + " " + outputDir + " ..");
@@ -183,9 +181,8 @@ public class ZipCompress implements Compress {
         FileUtils.assertFile(this.zipFile);
         Ensure.notBlank(entryName);
         FileUtils.assertCreateDirectory(outputDir);
-        charsetName = StringUtils.charset(charsetName);
 
-        ZipFile file = new ZipFile(this.zipFile, charsetName);
+        ZipFile file = new ZipFile(this.zipFile, StringUtils.charset(charsetName));
         try {
             if (log.isDebugEnabled()) {
                 log.debug("unzip " + this.zipFile + " -> " + entryName + " " + outputDir + " ..");
@@ -214,9 +211,8 @@ public class ZipCompress implements Compress {
     public List<ZipEntry> getEntrys(String charsetName, String filename, boolean ignoreCase) throws IOException {
         FileUtils.assertFile(this.zipFile);
         Ensure.notBlank(filename);
-        charsetName = StringUtils.charset(charsetName);
 
-        ZipFile file = new ZipFile(this.zipFile, charsetName);
+        ZipFile file = new ZipFile(this.zipFile, StringUtils.charset(charsetName));
         try {
             List<ZipEntry> list = new ArrayList<ZipEntry>();
             for (Enumeration<ZipEntry> it = file.getEntries(); it.hasMoreElements(); ) {

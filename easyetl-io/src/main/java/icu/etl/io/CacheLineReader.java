@@ -443,15 +443,17 @@ public class CacheLineReader extends Reader implements TextFileReader {
         public String readLine() throws IOException {
             if (!this.main.isOpen()) {
                 throw new IOException();
-            } else if (this.lineReader == null || this.lines.size() == 0) {
+            }
+            if (this.lineReader == null || this.lines.size() == 0) {
                 return null;
-            } else if (++this.index < this.lines.size()) {
+            }
+            if (++this.index < this.lines.size()) {
                 this.lineNumber++;
                 return this.lines.get(this.index).getContent();
-            } else {
-                this.main.setReader(this.lineReader);
-                return this.lineReader.readLine();
             }
+
+            this.main.setReader(this.lineReader);
+            return this.lineReader.readLine();
         }
 
         public long getLineNumber() {
@@ -465,15 +467,18 @@ public class CacheLineReader extends Reader implements TextFileReader {
         public String getLineSeparator() {
             if (!this.main.isOpen()) {
                 throw new UnsupportedOperationException();
-            } else if (this.lineReader == null || this.lines.size() == 0) {
-                return "";
-            } else if (this.index == -1) {
-                return this.lineSeparator;
-            } else if (this.index < this.lines.size()) {
-                return this.lines.get(this.index).getLineSeparator();
-            } else {
-                return this.lineReader.getLineSeparator();
             }
+            if (this.lineReader == null || this.lines.size() == 0) {
+                return "";
+            }
+            if (this.index == -1) {
+                return this.lineSeparator;
+            }
+            if (this.index < this.lines.size()) {
+                return this.lines.get(this.index).getLineSeparator();
+            }
+
+            return this.lineReader.getLineSeparator();
         }
 
         /**

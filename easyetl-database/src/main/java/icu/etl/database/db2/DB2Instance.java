@@ -492,7 +492,7 @@ public class DB2Instance {
         String db2profilepath = StringUtils.escapeRegex(db2profile);
         OSFileCommand cmd = os.getOSFileCommand();
         for (String profile : userProfiles) {
-            BufferedLineReader in = new BufferedLineReader(cmd.read(profile, StringUtils.defaultString(cmd.getCharsetName(), StringUtils.CHARSET), 0));
+            BufferedLineReader in = new BufferedLineReader(cmd.read(profile, StringUtils.charset(cmd.getCharsetName()), 0));
             try {
                 while (in.hasNext()) {
                     String line = StringUtils.trimBlank(in.next());

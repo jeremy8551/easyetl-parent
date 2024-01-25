@@ -88,9 +88,8 @@ public class TarCompress implements Compress {
     protected void addFile(File file, String dir, String charsetName, int level) throws IOException {
         Ensure.notNull(this.tarFile);
         FileUtils.assertExists(file);
-        charsetName = StringUtils.charset(charsetName);
 
-        this.initOutputStream(charsetName);
+        this.initOutputStream(StringUtils.charset(charsetName));
 
         // 处理目录
         dir = (dir == null) ? "" : StringUtils.trimBlank(dir);
@@ -180,8 +179,7 @@ public class TarCompress implements Compress {
 
     public void extract(String outputDir, String charsetName) throws IOException {
         FileUtils.assertCreateDirectory(outputDir);
-        charsetName = StringUtils.charset(charsetName);
-        this.initInputStream(charsetName);
+        this.initInputStream(StringUtils.charset(charsetName));
         try {
             TarEntry entry;
             while ((entry = this.inputStream.getNextEntry()) != null) {
@@ -198,8 +196,7 @@ public class TarCompress implements Compress {
 
     public void extract(String outputDir, String charsetName, String... excludeNames) throws IOException {
         FileUtils.assertCreateDirectory(outputDir);
-        charsetName = StringUtils.charset(charsetName);
-        this.initInputStream(charsetName);
+        this.initInputStream(StringUtils.charset(charsetName));
         try {
             TarEntry entry;
             while ((entry = this.inputStream.getNextEntry()) != null) {
@@ -216,8 +213,7 @@ public class TarCompress implements Compress {
 
     public void extract(String outputDir, String charsetName, String entryName) throws IOException {
         FileUtils.assertCreateDirectory(outputDir);
-        charsetName = StringUtils.charset(charsetName);
-        this.initInputStream(charsetName);
+        this.initInputStream(StringUtils.charset(charsetName));
         try {
             TarEntry entry;
             while ((entry = this.inputStream.getNextEntry()) != null) {
@@ -287,8 +283,7 @@ public class TarCompress implements Compress {
     }
 
     public List<TarEntry> getEntrys(String charsetName, String regex, boolean ignoreCase) throws IOException {
-        charsetName = StringUtils.charset(charsetName);
-        this.initInputStream(charsetName);
+        this.initInputStream(StringUtils.charset(charsetName));
         try {
             List<TarEntry> list = new ArrayList<TarEntry>();
             TarEntry entry;
