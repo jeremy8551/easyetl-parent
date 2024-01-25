@@ -47,10 +47,11 @@ public class BeanRepeatDefineException extends RuntimeException {
     protected static String toString(Object obj) {
         if (obj instanceof Class) {
             return ((Class<?>) obj).getName();
-        } else if (obj instanceof EasyBeanInfoValue) {
-            return ((EasyBeanInfoValue) obj).getType().getName();
-        } else {
-            return obj.getClass().getName();
         }
+        if (obj instanceof EasyBeanInfoValue) {
+            return ((EasyBeanInfoValue) obj).getType().getName();
+        }
+        
+        return obj.getClass().getName();
     }
 }
