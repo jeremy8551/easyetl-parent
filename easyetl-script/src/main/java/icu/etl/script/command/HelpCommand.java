@@ -61,6 +61,7 @@ import icu.etl.util.ClassUtils;
 import icu.etl.util.CollectionUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
+import icu.etl.util.MessageFormatter;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
@@ -93,9 +94,9 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
 
         Object[] args = { //
                 ProjectPom.getGroupID() // 0 groupId
-                , "easyetl" // 1 artifactId
-                , "2.0.6" // 2 version
-                , "easyetl-spring-boot-starter" // 3 easyetl-spring-boot-starter artifactId
+                , ProjectPom.getArtifactID() // 1 artifactId
+                , ProjectPom.getVersion() // 2 version
+                , ProjectPom.getArtifactID() + "-spring-boot-starter" // 3 springboot场景启动器
                 , UniversalScriptVariable.SESSION_VARNAME_PWD // 4
                 , UniversalScriptVariable.SESSION_VARNAME_SCRIPTNAME // 5
                 , UniversalScriptVariable.VARNAME_CHARSET // 6
@@ -205,8 +206,13 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IO.write(in, out);
         String markdown = out.toString(charsetName);
-        String usage = markdown; // MessageFormat.format(markdown, args);
+        String usage = new MessageFormatter(MessageFormatter.Placeholder.NORMAL).format(markdown, args);
         stdout.println(usage);
+
+        File mdfile = new File("/Users/user/Desktop/使用说明.md");
+        FileUtils.createFile(mdfile, true);
+        System.out.println(mdfile.getAbsolutePath());
+        FileUtils.write(mdfile, "utf-8", false, usage);
         return 0;
     }
 
