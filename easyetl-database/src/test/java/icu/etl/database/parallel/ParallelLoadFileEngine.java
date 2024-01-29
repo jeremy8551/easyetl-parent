@@ -26,7 +26,7 @@ public class ParallelLoadFileEngine implements Loader, EasyContextAware {
     private LoadEngineContext context;
 
     /** 容器上下文信息 */
-    protected EasyContext ioccxt;
+    protected EasyContext ioc;
 
     /**
      * 初始化
@@ -36,7 +36,7 @@ public class ParallelLoadFileEngine implements Loader, EasyContextAware {
     }
 
     public void setContext(EasyContext context) {
-        this.ioccxt = context;
+        this.ioc = context;
     }
 
     public void execute(LoadEngineContext context) throws Exception {
@@ -46,7 +46,7 @@ public class ParallelLoadFileEngine implements Loader, EasyContextAware {
             this.context = context;
         }
 
-        JdbcDao dao = new JdbcDao(this.ioccxt);
+        JdbcDao dao = new JdbcDao(this.ioc);
         try {
             dao.connect(this.context.getDataSource());
             LoadTable target = new LoadTable(dao, null);
@@ -60,7 +60,7 @@ public class ParallelLoadFileEngine implements Loader, EasyContextAware {
             try {
                 List<String> sources = context.getFiles();
                 for (String filepath : sources) {
-                    TextTableFile file = this.ioccxt.getBean(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
+                    TextTableFile file = this.ioc.getBean(TextTableFile.class, context.getFiletype(), context); // CommandAttribute.tofile(context, filepath, context.getFiletype());
                     file.setAbsolutePath(filepath);
                     this.execute(dao, factory, file);
                 }
@@ -104,7 +104,7 @@ public class ParallelLoadFileEngine implements Loader, EasyContextAware {
             LoadFileExecutorReader in = new LoadFileExecutorReader(factory, txtfile, readBuffer, result, msg.getFileFailRanage());
 
             // 将任务添加到容齐中并行执行装数任务
-            EasyJobService container = this.ioccxt.getBean(ThreadSource.class).getJobService(thread);
+            EasyJobService container = this.ioc.getBean(ThreadSource.class).getJobService(thread);
             container.execute(new EasyJobReaderImpl(in));
 
             // 并行同时执行多个任务

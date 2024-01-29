@@ -30,14 +30,14 @@ public class ExportEngine extends AbstractJob {
     protected ExtractMessage message;
 
     /** 容器上下文信息 */
-    protected EasyContext ioccxt;
+    protected EasyContext ioc;
 
     /** 计时器 */
     private TimeWatch watch;
 
     public ExportEngine(EasyContext context) {
         super();
-        this.ioccxt = Ensure.notNull(context);
+        this.ioc = Ensure.notNull(context);
         this.context = new ExtracterContext(this);
         this.listener = new ExtractListener(this.context);
         this.watch = new TimeWatch();
@@ -101,9 +101,9 @@ public class ExportEngine extends AbstractJob {
         this.message.setBytes(0); // 在输出流中设置
         this.message.setTarget(""); // 在输出流中设置
 
-        ExtractReader in = this.ioccxt.getBean(ExtractReader.class, context);
+        ExtractReader in = this.ioc.getBean(ExtractReader.class, context);
         try {
-            ExtractWriter out = this.ioccxt.getBean(ExtractWriter.class, context, this.message);
+            ExtractWriter out = this.ioc.getBean(ExtractWriter.class, context, this.message);
             try {
                 while (in.hasLine()) {
                     if (this.status.isTerminate()) {

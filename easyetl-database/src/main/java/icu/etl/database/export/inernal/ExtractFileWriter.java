@@ -53,10 +53,11 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
     /** 消息信息 */
     private ExtractMessage message;
 
-    protected EasyContext ioccxt;
+    /** 容器上下文信息 */
+    protected EasyContext ioc;
 
     public void setContext(EasyContext context) {
-        this.ioccxt = context;
+        this.ioc = context;
     }
 
     /**
@@ -104,7 +105,7 @@ public class ExtractFileWriter implements ExtractWriter, EasyContextAware {
         // 写入列标题信息
         if (this.context.isTitle()) {
             if (this.title == null) {
-                this.title = new TableTitle(this.context, this.ioccxt);
+                this.title = new TableTitle(this.context, this.ioc);
             }
             this.write(this.title);
         }

@@ -63,12 +63,12 @@ public class SortTableFileCommandCompiler extends AbstractTraceCommandCompiler {
         it.assertNext("order");
         it.assertNext("by");
 
-        EasyContext ioccxt = context.getContainer();
+        EasyContext ioc = context.getContainer();
         String position = it.readOther();
         String[] array = StringUtils.split(StringUtils.trimBlank(position), analysis.getSegment()); // int(1) desc,2, 4,5
         OrderByExpression[] orders = new OrderByExpression[array.length];
         for (int i = 0; i < array.length; i++) {
-            orders[i] = new OrderByExpression(ioccxt, analysis, array[i]);
+            orders[i] = new OrderByExpression(ioc, analysis, array[i]);
         }
         return new SortTableFileCommand(this, orginalScript, filepath, filetype, orders, attrs);
     }

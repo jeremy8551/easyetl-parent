@@ -30,10 +30,11 @@ public class TableTitle implements TableLine {
      * 初始化
      *
      * @param context 卸数引擎上下文信息
+     * @param ioc     容器上下文信息
      * @throws SQLException 数据库错误
      */
-    public TableTitle(ExtracterContext context, EasyContext ioccxt) throws SQLException {
-        JdbcDao dao = new JdbcDao(ioccxt, context.getDataSource().getConnection());
+    public TableTitle(ExtracterContext context, EasyContext ioc) throws SQLException {
+        JdbcDao dao = new JdbcDao(ioc, context.getDataSource().getConnection());
         try {
             JdbcQueryStatement query = dao.query(context.getSource(), ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ResultSet resultSet = query.getResultSet();
