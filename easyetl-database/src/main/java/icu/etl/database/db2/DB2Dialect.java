@@ -97,8 +97,10 @@ public class DB2Dialect extends AbstractDialect implements DatabaseDialect, Easy
     /** 数据库中字段类型与卸载处理逻辑的映射关系 */
     protected StandardJdbcConverterMapper exp;
 
+    /** 类型映射关系 */
     protected StandardJdbcConverterMapper map;
 
+    /** 容器上下文信息 */
     protected EasyContext context;
 
     public DB2Dialect() {

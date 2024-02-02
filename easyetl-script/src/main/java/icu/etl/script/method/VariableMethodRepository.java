@@ -11,6 +11,7 @@ import icu.etl.collection.CaseSensitivSet;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptVariableMethod;
 import icu.etl.util.CharTable;
+import icu.etl.util.Ensure;
 import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
@@ -32,8 +33,8 @@ public class VariableMethodRepository {
      * @param context 脚本引擎上下文信息
      */
     public VariableMethodRepository(UniversalScriptContext context) {
-        this.context = context;
         this.map = new HashMap<String, UniversalScriptVariableMethod>();
+        this.context = Ensure.notNull(context);
         new VariableMethodScanner(context, this);
     }
 

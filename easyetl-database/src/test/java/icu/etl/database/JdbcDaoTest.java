@@ -1,5 +1,6 @@
 package icu.etl.database;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 
 import icu.etl.database.internal.StandardDatabaseIndex;
 import icu.etl.database.internal.StandardDatabaseProcedureParameter;
@@ -39,7 +39,7 @@ public class JdbcDaoTest {
     private Connection connection;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         JdbcDao dao = new JdbcDao(rule.getContext(), rule.getConnection());
         try {
             DatabaseDialect dialect = dao.getDialect();

@@ -4,10 +4,13 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -22,7 +25,11 @@ import icu.etl.annotation.ScriptFunction;
 import icu.etl.collection.CaseSensitivSet;
 import icu.etl.database.DatabaseDialect;
 import icu.etl.database.Jdbc;
+import icu.etl.database.db2.DB2Dialect;
+import icu.etl.database.export.ExtractWriter;
 import icu.etl.database.internal.AbstractDialect;
+import icu.etl.database.internal.DatabaseDialectBuilder;
+import icu.etl.io.TextTableFile;
 import icu.etl.ioc.EasyBeanBuilder;
 import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyContext;
@@ -57,6 +64,7 @@ import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.script.internal.CommandCompilerContext;
 import icu.etl.script.method.VariableMethodRepository;
 import icu.etl.util.CharTable;
+import icu.etl.util.CharsetName;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.CollectionUtils;
 import icu.etl.util.FileUtils;
@@ -115,13 +123,88 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , UniversalScriptVariable.SESSION_VARNAME_SCRIPTFILE // 19
                 , UniversalScriptVariable.VARNAME_CATALOG // 20
                 , StringUtils.addLinePrefix(repository.toString(charsetName), "\t") // 21 方法
-                , "" //
-                , "" //
-                , "" //
-                , "" //
-                , "" //
-                , "" //
+                , EasyBean.class.getSimpleName() // 22
+                , TextTableFile.class.getSimpleName() // 23
+                , ExtractWriter.class.getSimpleName() // 24
+                , AbstractDialect.class.getName() // 25 基础数据库方言类
+                , DatabaseDialect.class.getName() // 26 数据库方言类
+                , this.supportedDatabase(context) // 27 所有数据库方言类
+                , EasyContext.class.getName() + ".getBean(Class type, Object[] args)" // 28
+                , EasyBean.class.getName() // 29
+                , DatabaseDialect.class.getSimpleName() // 30
+                , DatabaseDialectBuilder.class.getName() // 31
+                , EasyContext.class.getSimpleName() // 32
+                , DB2Dialect.class.getSimpleName() // 33
+                , "" // 34
+                , "" // 35
+                , "" // 36
+                , "" // 37
+                , "" // 38
+                , "" // 39
+                , "" // 40
+                , "" // 41
+                , "" // 42
+                , "" // 43
+                , "" // 44
+                , "" // 45
+                , "" // 46
+                , "" // 47
+                , "" // 48
+                , "" // 49
+                , ScriptCommand.class.getName() // 50
+                , ScriptCommand.class.getSimpleName() // 51
+                , ScriptFunction.class.getName() // 52
+                , ScriptFunction.class.getSimpleName() // 53
+                , UniversalScriptVariableMethod.class.getName() // 54
+                , this.readCommandUsage(2) // 55
+                , this.readVariableMethodUsage(2) // 56
+                , "" // 57
+                , "" // 58
+                , "" // 59
+                , "" // 60
+                , "" // 61
+                , "" // 62
+                , "" // 63
+                , "" // 64
+                , "" // 65
+                , "" // 66
+                , "" // 67
+                , "" // 68
+                , "" // 69
+                , "" // 70
+                , "" // 71
+                , "" // 72
+                , "" // 73
+                , "" // 74
+                , "" // 75
+                , "" // 76
+                , "" // 77
+                , "" // 78
+                , "" // 79
+                , "" // 80
+                , "" // 81
+                , "" // 82
+                , "" // 83
+                , "" // 84
+                , "" // 85
+                , "" // 86
+                , "" // 87
+                , "" // 88
+                , "" // 89
+                , "" // 90
+                , "" // 91
+                , "" // 92
+                , "" // 93
+                , "" // 94
+                , "" // 95
+                , "" // 96
+                , "" // 97
+                , "" // 98
+                , "" // 99
+                , "" // 100
         };
+
+        System.out.println(this.supportedDatabase(context));
 
         String[] old = {"" //
                 , StringUtils.addLinePrefix(this.getScriptAttributes(context).toString(CharTable.Style.standard), "\t") // 0
@@ -217,6 +300,48 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
     }
 
     public void terminate() throws Exception {
+    }
+
+    public String readCommandUsage(int size) throws IOException {
+        String prefix = StringUtils.left("", size, '#');
+        String url = "/" + ClassUtils.getPackageName(HelpCommand.class, 3).replace('.', '/') + "/scriptCommands.md";
+        StringBuilder buf = new StringBuilder(500);
+        InputStream in = ClassUtils.getResourceAsStream(url);
+        BufferedReader br = IO.getBufferedReader(new InputStreamReader(in, CharsetName.UTF_8));
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("#")) {
+                    buf.append(prefix).append(line).append(FileUtils.lineSeparator);
+                } else {
+                    buf.append(line).append(FileUtils.lineSeparator);
+                }
+            }
+            return buf.toString();
+        } finally {
+            br.close();
+        }
+    }
+
+    public String readVariableMethodUsage(int size) throws IOException {
+        String prefix = StringUtils.left("", size, '#');
+        String url = "/" + ClassUtils.getPackageName(HelpCommand.class, 3).replace('.', '/') + "/scriptVariableMethods.md";
+        StringBuilder buf = new StringBuilder(500);
+        InputStream in = ClassUtils.getResourceAsStream(url);
+        BufferedReader br = IO.getBufferedReader(new InputStreamReader(in, CharsetName.UTF_8));
+        try {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("#")) {
+                    buf.append(prefix).append(line).append(FileUtils.lineSeparator);
+                } else {
+                    buf.append(line).append(FileUtils.lineSeparator);
+                }
+            }
+            return buf.toString();
+        } finally {
+            br.close();
+        }
     }
 
     /**
@@ -339,10 +464,32 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
 
         for (EasyBeanInfo beanInfo : list) {
             table.addCell(beanInfo.getName());
-            table.addCell(beanInfo.getDescription() + "     ");
+            table.addCell(StringUtils.defaultString(beanInfo.getDescription(), "") + "     ");
             table.addCell("          " + beanInfo.getType().getName());
         }
-        return StringUtils.addLinePrefix(table.toString(CharTable.Style.standard), "\t");
+        return table.toString(CharTable.Style.markdown);
+    }
+
+    public String supportedVariableMethods(UniversalScriptContext context, VariableMethodRepository repository) {
+        List<EasyBeanInfo> list = context.getContainer().getBeanInfoList(DatabaseDialect.class);
+        Collections.sort(list, new Comparator<EasyBeanInfo>() {
+            public int compare(EasyBeanInfo o1, EasyBeanInfo o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        String[] array = StringUtils.split(ResourcesUtils.getMessage("script.engine.usage.msg008"), ',');
+        CharTable table = new CharTable(context.getCharsetName());
+        table.addTitle(array[0], CharTable.ALIGN_MIDDLE);
+        table.addTitle(array[1], CharTable.ALIGN_LEFT);
+        table.addTitle(array[2], CharTable.ALIGN_RIGHT);
+
+        for (EasyBeanInfo beanInfo : list) {
+            table.addCell(beanInfo.getName());
+            table.addCell(StringUtils.defaultString(beanInfo.getDescription(), "") + "     ");
+            table.addCell("          " + beanInfo.getType().getName());
+        }
+        return table.toString(CharTable.Style.markdown);
     }
 
     /**
