@@ -171,7 +171,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , "" // 67
                 , "" // 68
                 , "" // 69
-                , "" // 70
+                , ClassScanner.PROPERTY_SCANNPKG // 70
                 , "" // 71
                 , "" // 72
                 , "" // 73

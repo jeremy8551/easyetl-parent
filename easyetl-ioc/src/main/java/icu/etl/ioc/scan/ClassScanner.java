@@ -37,7 +37,7 @@ public class ClassScanner {
     private final static Log log = LogFactory.getLog(ClassScanner.class);
 
     /** 扫描的 JAVA 包名与 jar 文件名 */
-    public final static String PROPERTY_SCANNPKG = ProjectPom.getGroupID() + ".scanRule";
+    public final static String PROPERTY_SCANNPKG = ProjectPom.getGroupID() + ".scan";
 
     /** 类加载器 */
     private ClassLoader classLoader;
