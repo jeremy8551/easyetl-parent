@@ -19,7 +19,7 @@ import icu.etl.util.ObjectUtils;
 import icu.etl.util.ResourcesUtils;
 
 /**
- * 接口实现类
+ * 容器工厂接口实现类
  *
  * @author jeremy8551@qq.com
  * @createtime 2023/10/26

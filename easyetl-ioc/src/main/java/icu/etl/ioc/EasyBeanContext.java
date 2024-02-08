@@ -3,11 +3,12 @@ package icu.etl.ioc;
 import java.util.ArrayList;
 import java.util.List;
 
-import icu.etl.ProjectPom;
+import icu.etl.ioc.impl.BeanSerialFactory;
 import icu.etl.ioc.impl.EasyBeanFactoryImpl;
 import icu.etl.ioc.impl.EasyBeanInfoImpl;
 import icu.etl.ioc.scan.BeanClassScanner;
 import icu.etl.ioc.scan.EasyScanPatternList;
+import icu.etl.util.ArrayUtils;
 import icu.etl.util.ClassUtils;
 import icu.etl.util.Ensure;
 
@@ -18,11 +19,20 @@ import icu.etl.util.Ensure;
  */
 public class EasyBeanContext implements EasyContext {
 
+    /** 上级容器 */
+    private EasyContext parent;
+
+    /** 容器编号（唯一） */
+    private String name;
+
     /** 类加载器 */
     private ClassLoader classLoader;
 
     /** 启动参数 */
     private String[] args;
+
+    /** 用来记录类扫描规则 */
+    private EasyScanPatternList scanRule;
 
     /** Ioc容器管理器 */
     private ContainerContextManager iocManager;
@@ -30,17 +40,14 @@ public class EasyBeanContext implements EasyContext {
     /** 组件信息表 */
     private EasyBeanTable table;
 
-    /** 单个组件的构建工厂 */
+    /** 组件工厂管理器 */
     private BeanBuilderManager builders;
 
-    /** 所有组件的实例化工厂 */
+    /** 容器工厂 */
     private EasyBeanFactoryImpl factory;
 
     /** 事件管理器 */
     private BeanEventManager eventManager;
-
-    /** 上级容器 */
-    private EasyContext parent;
 
     /**
      * 上下文信息
@@ -75,14 +82,16 @@ public class EasyBeanContext implements EasyContext {
     }
 
     /**
-     * 容器上下文信息
+     * 初始化
      */
     protected void init() {
+        this.scanRule = new EasyScanPatternList();
         this.iocManager = new ContainerContextManager(this);
         this.factory = new EasyBeanFactoryImpl(this);
         this.table = new EasyBeanTable(this);
         this.eventManager = new BeanEventManager(this);
         this.builders = new BeanBuilderManager(this);
+        this.name = BeanSerialFactory.createContextName();
     }
 
     /**
@@ -140,11 +149,20 @@ public class EasyBeanContext implements EasyContext {
         this.eventManager.clear();
     }
 
+    public String[] getScanRule() {
+        return this.scanRule.toArray();
+    }
+
     public synchronized int scanPackages(String... args) {
+        this.scanRule.addAll(ArrayUtils.asList(args));
         BeanClassScanner scanner = new BeanClassScanner();
         int load = scanner.load(this, args);
-        this.table.refresh(); // 刷新
+        this.refresh();
         return load;
+    }
+
+    public synchronized void refresh() {
+        this.table.refresh();
     }
 
     public EasyBeanInfoValue getBeanInfo(Class<?> type, String name) {
@@ -240,6 +258,6 @@ public class EasyBeanContext implements EasyContext {
     }
 
     public String getName() {
-        return ProjectPom.getArtifactID();
+        return this.name;
     }
 }

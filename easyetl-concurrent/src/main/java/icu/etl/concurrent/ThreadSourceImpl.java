@@ -26,10 +26,10 @@ public class ThreadSourceImpl implements ThreadSource, Closeable {
     private boolean autoClose;
 
     /** 外部线程池工厂 */
-    private ExecutorsFactory externalFactory;
+    private ExecutorServiceFactory externalFactory;
 
     /** 默认线程池工厂 */
-    private ExecutorsFactory factory;
+    private ExecutorServiceFactory factory;
 
     /** 线程工厂 */
     private ThreadFactory threadFactory;
@@ -72,11 +72,11 @@ public class ThreadSourceImpl implements ThreadSource, Closeable {
         return this.threadFactory;
     }
 
-    public void setExecutorsFactory(ExecutorsFactory factory) {
+    public void setExecutorsFactory(ExecutorServiceFactory factory) {
         this.externalFactory = factory;
     }
 
-    public ExecutorsFactory getExecutorsFactory() {
+    public ExecutorServiceFactory getExecutorsFactory() {
         if (this.externalFactory != null) { // 优先使用外部线程池
             return this.externalFactory;
         }

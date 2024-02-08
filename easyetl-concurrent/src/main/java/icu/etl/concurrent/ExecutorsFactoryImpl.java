@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * @author jeremy8551@qq.com
  * @createtime 2023/11/28
  */
-public class ExecutorsFactoryImpl implements ExecutorsFactory {
+public class ExecutorsFactoryImpl implements ExecutorServiceFactory {
 
     public ExecutorsFactoryImpl() {
     }

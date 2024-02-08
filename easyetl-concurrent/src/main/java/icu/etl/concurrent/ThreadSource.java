@@ -27,14 +27,14 @@ public interface ThreadSource {
      *
      * @param factory 线程池工厂
      */
-    void setExecutorsFactory(ExecutorsFactory factory);
+    void setExecutorsFactory(ExecutorServiceFactory factory);
 
     /**
      * 返回线程池工厂
      *
      * @return 线程池工厂
      */
-    ExecutorsFactory getExecutorsFactory();
+    ExecutorServiceFactory getExecutorsFactory();
 
     /**
      * 返回线程池

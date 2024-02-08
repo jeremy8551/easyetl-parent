@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @author jeremy8551@qq.com
  * @createtime 2023/11/28
  */
-public interface ExecutorsFactory {
+public interface ExecutorServiceFactory {
 
     /**
      * 创建一个线程池

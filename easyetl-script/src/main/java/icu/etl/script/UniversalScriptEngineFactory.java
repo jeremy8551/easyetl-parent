@@ -38,6 +38,9 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      * 因为脚本引擎使用 SPI 机制读取并创建脚本引擎工厂实例，所以本方法中只做简单操作。
      */
     public UniversalScriptEngineFactory() {
+        if (EasyBeanContext.INSTANCE != null) {
+            this.setContext(EasyBeanContext.INSTANCE);
+        }
     }
 
     /**
@@ -46,7 +49,6 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      * @param context 容器上下文信息
      */
     public UniversalScriptEngineFactory(EasyContext context) {
-        this();
         this.setContext(context);
     }
 

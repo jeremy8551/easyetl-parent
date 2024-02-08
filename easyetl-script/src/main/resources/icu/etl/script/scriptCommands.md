@@ -1,8 +1,16 @@
 
 
-# #
+# memo
 
 注释内容是以符号 `#` 开始的一个字符串。
+
+## 语法
+
+```shell
+$ # 注释内容
+```
+
+## 示例
 
 ```shell
 echo test # test
@@ -15,6 +23,8 @@ echo test # test
 # echo
 
 标准信息输出命令。
+
+
 
 ## 语法
 
@@ -176,6 +186,22 @@ $ set varname=select count(*) from tablename;
 
 
 
+检查 `engine.eval("..")` 方法的状态码，如果状态码不是零则抛出异常。
+
+```shell
+$ set -e
+```
+
+
+
+不检查 `engine.eval("..")` 方法的状态码，如果状态码不是零不会抛出异常。
+
+```shell
+$ set -E
+```
+
+
+
 
 
 # variablemethod
@@ -195,10 +221,6 @@ set testline=`wc -l $temp/test.log`
 set testline=testline.split()[0]
 echo $testline
 ```
-
-## 内置方法
-
-{21}
 
 
 
@@ -279,8 +301,6 @@ fi
 
 用户自定义方法
 
-
-
 ## 语法
 
 ```shell
@@ -292,8 +312,6 @@ function 方法名() {
 在方法体中使用 `$1` 表示外部输入的参数1， `$0` 表示方法名，`$#` 表示输入参数个数，使用 `return` 关键字可以退出方法体。
 
 需要注意在方法体中不能使用 `step` 与`jump` 命令。
-
-
 
 ## 示例
 
@@ -320,6 +338,8 @@ $ function error() {echo $1;}
 
 
 
+
+
 # executefunction
 
 运行用户自定义方法
@@ -343,8 +363,6 @@ $ test “hello world!”
 
 设置全局变量，设置全局用户自定义方法。
 
-
-
 ## 语法
 
 ```shell
@@ -353,8 +371,6 @@ $ export function 自定义方法名 [;]
 ```
 
 子脚本会自动继承父脚本中定义的全局变量与全局用户自定义方法
-
-
 
 ## 示例
 
@@ -369,8 +385,6 @@ export set myname = 'this is good ' ;
 
 建立步骤标记
 
-
-
 ## 语法
 
 ```shell
@@ -378,8 +392,6 @@ $ step 步骤名[;]
 ```
 
 标记当前执行位置，配合 `jump` 命令，可以实现跳转到标记位置处开始执行的效果。
-
-
 
 ## 示例
 
@@ -440,8 +452,6 @@ step string2;
 在找到 `step` 命令前会根据命令的 `enableJump()` 方法的返回值判断是否不执行（越过）命令。
 
 在脚本文件中可以使用内置变量 `jump` 判断当前脚本引擎是否处于 `jump` 命令状态。
-
-
 
 ## 语法
 
@@ -505,8 +515,6 @@ SQL语句必须以 `;` 符号结束标志。
 
 在脚本文件中可以使用SQL注释`--`与`/** */`
 
-
-
 ## 语法
 
 ```shell
@@ -518,8 +526,6 @@ SQL语句结尾处必须用 `;` 符号来标记SQL语句结束。
 需要在SQL语句中把字符 `$` 替换成 `&ads;`
 
 内置变量名 `updateRows` 表示SQL语句影响记录的笔数。 
-
-
 
 ## 示例
 
@@ -535,8 +541,6 @@ echo SQL共更新 ${updateRows} 条记录!
 # declarecatalog
 
 定义数据库编目信息
-
-
 
 ## 语法
 
@@ -563,8 +567,6 @@ admin 与 adminPw 属性是可选选项表示数据库示例用户名和密码�
 
 sshUser，sshUserPw 与 sshPort 属性是可选选项分别表示数据库服务器SSH协议端口，用户名，密码。
 
-
-
 ## 示例
 
 通过JDBC配置文件来定义数据库编目
@@ -581,19 +583,19 @@ $ declare global name catalog configuration use driver com.ibm.db2.jcc.DB2Driver
 
 
 
+
+
 # dbconnect
 
+## 语法
 
-
-## 建立连接
+建立连接
 
 ```shell
 $ db connect to 数据库编目名[;]
 ```
 
-
-
-## 关闭连接
+关闭连接
 
 ```shell
 $ db connect reset[;]
@@ -604,8 +606,6 @@ $ db connect reset[;]
 # dbexport
 
 从数据库中卸载数据到指定位置。
-
-
 
 ## 语法
 
@@ -621,8 +621,6 @@ $ db export to 卸载位置 of 数据类型 [ modified by 参数名=参数值 �
 | 将数据卸载到远程sftp服务器上 | sftp://用户名@远程服务器host:端口?password=登陆密码/数据文件存储路径 |
 | 将数据卸载到远程 ftp服务器上 | ftp://用户名@远程服务器host:端口?password=登陆密码/数据文件存储路径 |
 | 将数据通过http响应下载给用户 | http://download/HttpServletRequest对象的变量名/HttpServletResponse对象的变量名/下载文件名（需要提前将 HttpServletRequest 对象与 HttpServletResponse 对象保存到脚本引擎变量中，变量分别是: httpServletRequest, httpServletResponse） |
-
-
 
 ## 自定义卸载位置
 
@@ -645,7 +643,7 @@ db export to bean://kind/mode/major/minor/../.. of txt select * from table;
 
 {6}
 
-默认支持的数据类型说明:
+默认支持的数据类型说明：
 
 {5}
 
@@ -663,8 +661,6 @@ public CsvExtractStyle() ..
 ..
 }
 ```
-
-
 
 ## 参数说明
 
@@ -697,8 +693,6 @@ progress:       表示卸载数据的进度输出接口编号，需要提前在�
 
 `db export` 命令支持 `container` 命令，可以并行执行多个数据卸载命令。
 
-
-
 ## 示例
 
 ```shell
@@ -715,31 +709,29 @@ db export to $temp\v7_test_tmp.del of del modified by progress=exportTaskId char
 
 # dbload
 
-将指定位置的数据文件装载到数据库表中
+将指定位置的数据文件装载到数据库表中。
+
+## 语法
 
 ```shell
 $ db load from 文件位置 of 数据类型 [ method P(3,2,1) C(字段名, 字段名) ] [ modified by 参数名=参数值 参数名=参数值 参数名 ] [ replace | insert | merge ] into table[(字段名,字段名,字段名)] [ for exception tableName ] [ indexing mode [ rebuild | incremental ]] [ statistics use profile ] [ prevent repeat operation ];
 ```
 
-
-
 ## 文件位置
 
 用于指定数据文件绝对路径，可以指定多个文件路径（用半角逗号分割，文件结构必须一致）。
 
-
-
 ## 数据类型
 
-默认支持的数据类型有:
+默认支持的数据类型有：
 
 {5}
 
-实现用户自定义数据类型
+实现用户自定义数据类型：
 
-必须实现 {7} 接口上的方法
+必须实现 `{7}` 接口上的方法
 
-如: 自定义 csv 数据类型：
+如：自定义 csv 数据类型
 
 ```shell
 @{22}(name = "csv", description = "csv文件格式")
@@ -749,8 +741,6 @@ public CsvExtractStyle() ..
 ..
 }
 ```
-
-
 
 ## 参数说明
 
@@ -776,29 +766,23 @@ keepblanks:     表示将数据装入到一个变长列时，会截断尾部空�
 message:        用于指定消息文件绝对路径  
 nocrlf:         表示自动删除字符串中的回车符和换行符，只有参数名无需设置参数值  
 dumpfile:       用于指定错误数据存储文件路径  
-progress:       用于指定装载文件的进度输出接口编号，需要提前在脚本引擎中定义进度输出接口 
+progress:       用于指定装载文件的进度输出接口编号，需要提前在脚本引擎中定义进度输出接口
 ```
-
-
 
 ## 数据装载模式
 
 ```
 replace:        表示先清空数据库表中所有数据，然后再读取文件批量插入到数据库表中。 
 insert:         表示插入模式：读取文件内容，并将文件每行记录通过批量接口插入到数据库表中。 
-merge:          表示合并模式：读取文件内容，并将文件每行记录通过批量接口插入到数据库表中。如果数据在数据库表中已存在则使用文件内容更新，如果数据不存在则将文件行插入到表中。  
-_               使用合并模式时，需要使用 method C(字段名, 字段名) 语句设置判断记录是否相等的字段名。 
+merge:          表示合并模式：读取文件内容，并将文件每行记录通过批量接口插入到数据库表中。如果数据在数据库表中已存在则使用文件内容更新，如果数据不存在则将文件行插入到表中。
+                使用合并模式时，需要使用 method C(字段名, 字段名) 语句设置判断记录是否相等的字段名。 
 ```
-
-
 
 ## 设置字段顺序
 
-可以使用 method P(3,2,1) 句柄设置文件中列插入到数据库表的顺序，如 method P(3,2,1) 表示按第三列，第二列，第一列的顺序读取文件中每列数据并插入到数据库表中。
+可以使用 `method` 句柄设置文件中列插入到数据库表的顺序，如` method P(3,2,1)` 表示按第三列，第二列，第一列的顺序读取文件中每列数据并插入到数据库表中。
 
-可以在数据库表名后面使用小括号与字段名的方式指定向数据库表中插入字段的顺序，如：tableName(fname1,fname3,fname2)，表示按 fname1,fname3,fname2 字段顺序插入数据。
-
-
+可以在数据库表名后面使用小括号与字段名的方式指定向数据库表中插入字段的顺序，如：`tableName(fname1,fname3,fname2)`表示按 fname1,fname3,fname2 字段顺序插入数据。
 
 ## 其他句柄说明
 
@@ -830,15 +814,17 @@ statistics use profile
 
 
 
+
+
 # increment
 
 对比二个表格型文件并抽取增量数据
 
+## 语法
+
 ```shell
 $ extract increment compare 新文件 of 数据类型 modified by 属性名=属性值 and 旧文件 of 数据类型 modified by 属性名=属性值 write [new [and] upd [and] del] into filepath [of 数据类型] [modified by 属性名=属性值] [write log into [filepath | stdout | stderr]]
 ```
-
-
 
 ## 参数说明
 
@@ -867,8 +853,6 @@ write log into /home/user/inc.log
 write log into stdout 
 write log into stderr
 ```
-
-
 
 ## 文件属性
 
@@ -917,18 +901,16 @@ outbuf:     设置输出流的缓冲行数，默认是 20 行
 
 对表格型文件排序
 
+## 语法
+
 ```shell
 $ sort table file 数据文件绝对路径 of 数据类型 [modified by 属性名=属性值 属性名] order by 排序字段 {asc | desc}
 ```
-
-
 
 ## 参数说明
 
 数据类型表示文件内容对应的类型标识符，当前脚本引擎支持的类型有:
 {0}
-
-
 
 ## 文件属性
 
@@ -964,15 +946,11 @@ desc:       排序字段从大到小排列
 
 建立并发任务的运行容器，并立即运行并发任务
 
-
-
 ## 语法
 
 ```shell
 $ container to execute tasks in parallel [ using 参数名=参数值 参数名=参数值 参数名 ] begin 并发任务 end
 ```
-
-
 
 ## 参数说明
 
@@ -997,8 +975,6 @@ end
 
 提交当前数据库连接上的事务
 
-
-
 ## 语法
 
 ```shell
@@ -1010,8 +986,6 @@ $ commit[;]
 # rollback
 
 回滚当前数据库连接上的事务
-
-
 
 ## 语法
 
@@ -1025,15 +999,11 @@ $ rollback[;]
 
 以静默方式执行命令，如果命令发生错误时不会抛出异常或输出错误信息。
 
-
-
 ## 语法
 
 ```shell
 $ quiet 命令语句;
 ```
-
-
 
 ## 示例
 
@@ -1048,15 +1018,11 @@ $ quiet commit
 
 执行数据库存储过程
 
-
-
 ## 语法
 
 ```shell
 $ call SCHEMA.PRODUCENAME(?)[;]
 ```
-
-
 
 ## 示例
 
@@ -1071,8 +1037,6 @@ $ call TEST('read in msg', $RES); echo $RES;
 # cursor
 
 遍历数据库游标
-
-
 
 ## 语法
 
@@ -1094,8 +1058,6 @@ end loop
 
 while 循环语句
 
-
-
 ## 语法
 
 ```shell
@@ -1115,8 +1077,6 @@ end loop
 # for
 
 for 循环语句
-
-
 
 ## 语法
 
@@ -1146,8 +1106,6 @@ for 循环语句用于便利数组中的元素信息，每次循环会按顺序�
 
 读取文件或文本信息
 
-
-
 ## 语法
 
 ```shell
@@ -1161,8 +1119,6 @@ done < [ filepath | command ]
 - break：退出当前循环
 - continue：执行下一次循环
 - return：退出当前方法
-
-
 
 ## 示例
 
@@ -1185,8 +1141,6 @@ done < /home/user/list.txt
 
 if语句，支持嵌套使用。
 
-
-
 ## 语法
 
 ```shell
@@ -1198,8 +1152,6 @@ if .. then .. elsif .. then .. elseif .. then .. fi
 # ssh2
 
 登录 ssh 服务器并执行命令
-
-
 
 ## 语法
 
@@ -1219,8 +1171,6 @@ $ ssh admin@192.168.1.1:10?password=admin && ./shell.sh && . ~/load.sh
 
 建立本地端口转发隧道，配合 sftp 命令实现通过本地局域网代理服务器访问远程服务器ssh端口的功能。
 
-
-
 ## 语法
 
 建立隧道命令：
@@ -1237,8 +1187,6 @@ $ declare 隧道名 ssh tunnel use proxy 代理服务器用户名@代理服务�
 $ undeclare 隧道名 ssh tunnel [;]
 ```
 
-
-
 ## 示例
 
 ```shell
@@ -1246,8 +1194,8 @@ $ undeclare 隧道名 ssh tunnel [;]
 set localport=`declare sshname ssh tunnel use proxy root@192.168.1.10:22?password=root connect to 0:192.168.10.20:22 | tail -n 1` 
 
 # 建立sftp连接
-'sftp test@127.0.0.1:${localport}?password=test' 
-\tput `pwd`/file.txt /home/test 
+sftp test@127.0.0.1:${localport}?password=test
+   put `pwd`/file.txt /home/test 
 bye
 
 # 关闭隧道 
@@ -1260,15 +1208,11 @@ undeclare sshname tunnel
 
 建立SFTP连接
 
-
-
 ## 语法
 
 ```shell
 $ sftp 用户名@服务器HOST:端口?password=密码
 ```
-
-
 
 ## 相关命令
 
@@ -1296,15 +1240,11 @@ bye         关闭 SFTP 连接
 
 建立FTP连接
 
-
-
 ## 语法
 
 ```shell
 $ ftp 用户名@服务器HOST:端口?password=密码
 ```
-
-
 
 ## 相关命令
 
@@ -1332,8 +1272,6 @@ bye         关闭 FTP 连接
 
 显示本地目录下的文件或远程ftp服务器当前目录下文件
 
-
-
 ## 语法
 
 ```shell
@@ -1341,8 +1279,6 @@ $ ls 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 选项
 
@@ -1356,8 +1292,6 @@ $ ls 文件名或文件路径 [;]
 
 进入本地目录或远程服务器目录。
 
-
-
 ## 语法
 
 ```shell
@@ -1365,8 +1299,6 @@ $ cd 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 选项
 
@@ -1380,15 +1312,11 @@ $ cd 文件名或文件路径 [;]
 
 显示本地文件或远程文件的大小，或测量字符串的长度。
 
-
-
 ## 语法
 
 ```shell
 $ length string;
 ```
-
-
 
 ## 选项
 
@@ -1399,8 +1327,6 @@ $ length string;
 -f 选项表示本地文件的字节数 
 -r 选项表示显示远程文件的字节数
 ```
-
-
 
 ## 示例
 
@@ -1418,15 +1344,11 @@ length -r remotefilepath;
 
 显示本地目录路径或远程ftp服务器当前目录路径。
 
-
-
 ## 语法
 
 ```shell
 $ pwd [-l] [;]
 ```
-
-
 
 ## 选项
 
@@ -1440,8 +1362,6 @@ $ pwd [-l] [;]
 
 创建本地目录或在远程服务器上创建目录。
 
-
-
 ## 语法
 
 ```shell
@@ -1449,8 +1369,6 @@ $ mkdir [-l] 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 选项
 
@@ -1464,8 +1382,6 @@ $ mkdir [-l] 文件名或文件路径 [;]
 
 删除本地文件或目录或远程ftp服务器上的文件或目录。
 
-
-
 ## 语法
 
 ```shell
@@ -1473,8 +1389,6 @@ $ rm [-l] 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 选项
 
@@ -1488,8 +1402,6 @@ $ rm [-l] 文件名或文件路径 [;]
 
 判断文件是否存在或远程ftp服务器上是否存在文件。
 
-
-
 ## 语法
 
 ```shell
@@ -1497,8 +1409,6 @@ $ [!]isfile [-l] 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 选项
 
@@ -1512,8 +1422,6 @@ $ [!]isfile [-l] 文件名或文件路径 [;]
 
 判断目录文件是否存在或远程ftp服务器上是否存在目录。
 
-
-
 ## 语法
 
 ```shell
@@ -1521,8 +1429,6 @@ $ [!]isDirectory [-l] 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 选项
 
@@ -1536,8 +1442,6 @@ $ [!]isDirectory [-l] 文件名或文件路径 [;]
 
 判断文件路径在本地是否存在 或 远程ftp服务器上是否存在文件路径。
 
-
-
 ## 语法
 
 ```shell
@@ -1545,8 +1449,6 @@ $ [!]exists [-l] 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 选项
 
@@ -1574,8 +1476,6 @@ $ cat 文件名或文件路径 [;]
 
 输出文件前几行的内容。
 
-
-
 ## 语法
 
 ```shell
@@ -1583,8 +1483,6 @@ $ head [-n 行号] 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 示例
 
@@ -1600,8 +1498,6 @@ $ head -n 10 /home/user/file.txt
 
 输出文件结尾几行的内容
 
-
-
 ## 语法
 
 ```shell
@@ -1609,8 +1505,6 @@ $ tail [-n 行号] 文件名或文件路径 [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 示例
 
@@ -1626,8 +1520,6 @@ $ tail -n 1 /home/user/file.txt
 
 显示文件的行数、字数、字节数、文件名。
 
-
-
 ## 语法
 
 ```shell
@@ -1635,8 +1527,6 @@ $ wc [-l] [-w] [-c] filepath [;]
 ```
 
 文件名或文件路径二端可以使用成对的单引号或双引号。
-
-
 
 ## 选项
 
@@ -1652,15 +1542,11 @@ $ wc [-l] [-w] [-c] filepath [;]
 
 显示当前操作系统的文件系统信息。
 
-
-
 ## 语法
 
 ```shell
 $ df [;]
 ```
-
-
 
 ## 输出格式
 
@@ -1679,8 +1565,6 @@ $ df [;]
 
 将文件或字符串中的行间分隔符转为换行符。
 
-
-
 ## 语法
 
 ```shell
@@ -1693,8 +1577,6 @@ $ dos2unix 文件路径|字符串 [;]
 
 过滤数据
 
-
-
 ## 语法
 
 ```shell
@@ -1703,16 +1585,12 @@ $ grep string
 
 可以在管道符后过滤前一个命令的标准输出信息。
 
-
-
 ## 选项
 
 ```shell
 -i 选项表示忽略字符大小写 
 -v 选项表示不包括字符串参数 
 ```
-
-
 
 ## 示例
 
@@ -1821,9 +1699,9 @@ global是可选选项,  用于表示是全局进度输出逻辑（可被子脚�
 declare global progress use step print "正在更新数据库记录 ${process}, 共有 ${totalRecord} 笔数据记录, ${leftTime} " total 10000 times 
 
 while ... loop 
-\t# 进度输出 
-\tprogress 
-\t... 
+  # 进度输出 
+  progress 
+  ... 
 end loop
 ```
 
@@ -1965,6 +1843,8 @@ cursor cno loop
 end loop
 undeclare cno cursor;
 ```
+
+
 
 
 

@@ -1,6 +1,5 @@
 package icu.etl.script.command;
 
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
@@ -11,6 +10,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import icu.etl.Easyetl;
 import icu.etl.ProjectPom;
 import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
@@ -32,26 +33,25 @@ import icu.etl.database.internal.DatabaseDialectBuilder;
 import icu.etl.io.TextTableFile;
 import icu.etl.ioc.EasyBeanBuilder;
 import icu.etl.ioc.EasyBeanInfo;
+import icu.etl.ioc.EasyBeanInfoValue;
+import icu.etl.ioc.EasyBeanTable;
 import icu.etl.ioc.EasyContext;
 import icu.etl.ioc.scan.ClassScanRule;
 import icu.etl.ioc.scan.ClassScanner;
 import icu.etl.jdk.JavaDialect;
 import icu.etl.jdk.JavaDialectFactory;
 import icu.etl.log.LogFactory;
+import icu.etl.os.linux.Linuxs;
 import icu.etl.script.UniversalCommandCompiler;
 import icu.etl.script.UniversalCommandRepository;
 import icu.etl.script.UniversalScriptAnalysis;
-import icu.etl.script.UniversalScriptChecker;
 import icu.etl.script.UniversalScriptCommand;
 import icu.etl.script.UniversalScriptCompiler;
 import icu.etl.script.UniversalScriptConfiguration;
 import icu.etl.script.UniversalScriptContext;
 import icu.etl.script.UniversalScriptEngine;
 import icu.etl.script.UniversalScriptEngineFactory;
-import icu.etl.script.UniversalScriptExpression;
 import icu.etl.script.UniversalScriptFormatter;
-import icu.etl.script.UniversalScriptInputStream;
-import icu.etl.script.UniversalScriptJob;
 import icu.etl.script.UniversalScriptParser;
 import icu.etl.script.UniversalScriptReader;
 import icu.etl.script.UniversalScriptSession;
@@ -59,7 +59,6 @@ import icu.etl.script.UniversalScriptStderr;
 import icu.etl.script.UniversalScriptStdout;
 import icu.etl.script.UniversalScriptVariable;
 import icu.etl.script.UniversalScriptVariableMethod;
-import icu.etl.script.command.feature.LoopCommandKind;
 import icu.etl.script.command.feature.NohupCommandSupported;
 import icu.etl.script.internal.CommandCompilerContext;
 import icu.etl.script.method.VariableMethodRepository;
@@ -69,9 +68,9 @@ import icu.etl.util.ClassUtils;
 import icu.etl.util.CollectionUtils;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;
+import icu.etl.util.LogUtils;
 import icu.etl.util.MessageFormatter;
 import icu.etl.util.ResourcesUtils;
-import icu.etl.util.Settings;
 import icu.etl.util.StringUtils;
 
 /**
@@ -129,18 +128,18 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , AbstractDialect.class.getName() // 25 基础数据库方言类
                 , DatabaseDialect.class.getName() // 26 数据库方言类
                 , this.supportedDatabase(context) // 27 所有数据库方言类
-                , EasyContext.class.getName() + ".getBean(Class type, Object[] args)" // 28
+                , EasyContext.class.getName()  // 28
                 , EasyBean.class.getName() // 29
                 , DatabaseDialect.class.getSimpleName() // 30
                 , DatabaseDialectBuilder.class.getName() // 31
                 , EasyContext.class.getSimpleName() // 32
                 , DB2Dialect.class.getSimpleName() // 33
-                , "" // 34
-                , "" // 35
-                , "" // 36
-                , "" // 37
-                , "" // 38
-                , "" // 39
+                , Arrays.toString(context.getContainer().getScanRule()) // 34
+                , Easyetl.class.getName().toLowerCase().replace('.', '/') // 35
+                , EasyBeanTable.class.getName() // 36
+                , EasyBeanBuilder.class.getName() // 37
+                , EasyBeanInfoValue.class.getName() // 38
+                , ClassUtils.toMethodName(EasyContext.class, "getBean", Class.class, Object[].class) // 39
                 , "" // 40
                 , "" // 41
                 , "" // 42
@@ -158,8 +157,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , UniversalScriptVariableMethod.class.getName() // 54
                 , this.readCommandUsage(2) // 55
                 , this.readVariableMethodUsage(2) // 56
-                , "" // 57
-                , "" // 58
+                , ClassUtils.toMethodName(ScriptFunction.class, "name") // 57
+                , ClassUtils.toMethodName(ScriptFunction.class, "keywords") // 58
                 , "" // 59
                 , "" // 60
                 , "" // 61
@@ -172,17 +171,17 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , "" // 68
                 , "" // 69
                 , ClassScanner.PROPERTY_SCANNPKG // 70
-                , "" // 71
-                , "" // 72
-                , "" // 73
-                , "" // 74
-                , "" // 75
-                , "" // 76
-                , "" // 77
-                , "" // 78
-                , "" // 79
-                , "" // 80
-                , "" // 81
+                , LogFactory.PROPERTY_LOG // 71
+                , LogFactory.PROPERTY_LOG_SOUT // 72
+                , StringUtils.PROPERTY_CHARSET // 73
+                , ClassUtils.PROPERTY_CLASSPATH // 74
+                , ResourcesUtils.PROPERTY_RESOURCE // 75
+                , IO.PROPERTY_READBUF // 76
+                , FileUtils.PROPERTY_TEMPDIR // 77
+                , LogUtils.PROPERTY_LOG_STACKTRACE // 78
+                , Jdbc.PROPERTY_DBLOG // 79
+                , Linuxs.PROPERTY_LINUX_BUILTIN_ACCT // 80
+                , LogFactory.DEFAULT_LOG_PATTERN // 81
                 , "" // 82
                 , "" // 83
                 , "" // 84
@@ -191,96 +190,67 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , "" // 87
                 , "" // 88
                 , "" // 89
-                , "" // 90
-                , "" // 91
-                , "" // 92
-                , "" // 93
-                , "" // 94
-                , "" // 95
-                , "" // 96
-                , "" // 97
-                , "" // 98
-                , "" // 99
-                , "" // 100
-        };
-
-        System.out.println(this.supportedDatabase(context));
-
-        String[] old = {"" //
-                , StringUtils.addLinePrefix(this.getScriptAttributes(context).toString(CharTable.Style.standard), "\t") // 0
-                , StringUtils.addLinePrefix(cr.toString(charsetName), "\t") // 1
-                , UniversalScriptCommand.class.getName() // 2
-                , UniversalCommandCompiler.class.getName() // 3
-                , UniversalScriptVariableMethod.class.getName() // 4
-                , UniversalScriptVariableMethod.class.getName() // 5
-                , AbstractCommandCompiler.class.getName() // 6
-                , AbstractTraceCommandCompiler.class.getName() // 7
-                , AbstractFileCommandCompiler.class.getName() // 8
-                , AbstractGlobalCommandCompiler.class.getName() // 9
-                , AbstractSlaveCommandCompiler.class.getName() // 10
-                , UniversalScriptInputStream.class.getName() // 11
-                , LoopCommandKind.class.getName() // 12
-                , UniversalScriptJob.class.getName() // 13
-                , ScriptCommand.class.getName() // 14
-                , ScriptFunction.class.getName() // 15
-                , this.supportedDatabase(context) // 16
-                , DatabaseDialect.class.getName() // 17
-                , AbstractDialect.class.getName() // 18
-                , EasyBean.class.getName() // 19
-                , ClassScanner.PROPERTY_SCANNPKG // 20
-                , CollectionUtils.firstElement(context.getFactory().getExtensions()) // 21
-                , "" // 22
-                , "" // 23
-                , ProjectPom.getGroupID() // 24
-                , UniversalScriptEngine.class.getName() // 25
-                , ClassUtils.getClasspath(HelpCommand.class) // 26
-                , Settings.getFileEncoding() // 27
-                , UniversalScriptEngineFactory.class.getName() // 28
-                , UniversalScriptChecker.class.getName() // 29
-                , UniversalScriptCompiler.class.getName() // 30
-                , UniversalScriptConfiguration.class.getName() // 31
-                , UniversalScriptContext.class.getName() // 32
-                , UniversalScriptFormatter.class.getName() // 33
-                , DatabaseDialect.class.getName() // 34
-                , ResourcesUtils.ResourceName + ".properties" // 35
-                , ResourcesUtils.PROPERTY_RESOURCE // 36
-                , UniversalScriptParser.class.getName() // 37
-                , UniversalScriptReader.class.getName() // 38
-                , UniversalScriptAnalysis.class.getName() // 39
-                , ScriptEngineFactory.class.getName() // 40
-                , ScriptEngine.class.getName() // 41
-                , ScriptContext.class.getName() // 42
-                , LogFactory.PROPERTY_LOG // 43
-                , StringUtils.PROPERTY_CHARSET // 44
-                , "" // 45
-                , Jdbc.PROPERTY_DBLOG // 46
-                , StringUtils.CHARSET // 47
-                , "" // 48
-                , ClassUtils.toMethodName(UniversalCommandCompiler.class, "read", UniversalScriptReader.class, UniversalScriptAnalysis.class) // 49
-                , ClassUtils.toMethodName(UniversalCommandCompiler.class, "compile", UniversalScriptParser.class, UniversalScriptAnalysis.class, String.class)// 50
-                , ClassUtils.toMethodName(UniversalScriptCommand.class, "execute", UniversalScriptSession.class, UniversalScriptContext.class, UniversalScriptStdout.class, UniversalScriptStderr.class, Boolean.class) // 51
-                , ClassUtils.toMethodName(UniversalCommandCompiler.class, "compile") // 52
-                , "META-INF/services/" + ClassScanRule.class.getName() // 53
-                , "" // 54
-                , "" // 55
-                , "" // 56
-                , "" // 57
-                , "" // 58
-                , "" // 59
-                , "" // 60
-                , ClassUtils.toMethodName(EasyBean.class, "description") // 61
-                , "" // 62
-                , UniversalScriptExpression.class.getName() // 63
-                , ClassUtils.toMethodName(ScriptFunction.class, "name") // 64
-                , ClassUtils.toMethodName(ScriptFunction.class, "keywords") // 65
-                , "" // 66
-                , StringUtils.addLinePrefix(repository.toString(charsetName), "\t") // 67
-                , String.valueOf(analysis.getSegment()) // 68
-                , this.toAllImplements(context) // 69
-                , this.toJavaVersionTable(context) // 70
-                , JavaDialectFactory.getDialect().getClass().getSimpleName() // 71
-                , Settings.class.getName() // 72
-                , "info" // 73 日志默认级别
+                , UniversalScriptEngineFactory.class.getName() // 90
+                , UniversalScriptEngine.class.getName() // 91
+                , UniversalScriptContext.class.getName() // 92
+                , UniversalCommandCompiler.class.getName() // 93
+                , UniversalScriptParser.class.getName() // 94
+                , UniversalScriptReader.class.getName() // 95
+                , UniversalScriptAnalysis.class.getName() // 96
+                , UniversalScriptFormatter.class.getName() // 97
+                , UniversalScriptConfiguration.class.getName() // 98
+                , UniversalScriptCommand.class.getName() // 99
+                , UniversalScriptVariableMethod.class.getName() // 100
+                , ResourcesUtils.class.getName() // 101
+                , ClassScanRule.class.getName() // 102
+                , ClassUtils.toMethodName(UniversalCommandCompiler.class, "read", UniversalScriptReader.class, UniversalScriptAnalysis.class) // 103
+                , ClassUtils.toMethodName(UniversalCommandCompiler.class, "compile", UniversalScriptSession.class, UniversalScriptContext.class, UniversalScriptParser.class, UniversalScriptAnalysis.class, String.class) // 104
+                , ClassUtils.toMethodName(UniversalScriptCommand.class, "execute", UniversalScriptSession.class, UniversalScriptContext.class, UniversalScriptStdout.class, UniversalScriptStderr.class, Boolean.class) // 105
+                , ClassUtils.toMethodName(UniversalCommandCompiler.class, "match", String.class, String.class) // 106
+                , ClassScanner.class.getName() // 107
+                , ClassScanRule.class.getSimpleName() // 108
+                , UniversalScriptCompiler.class.getName() // 109
+                , "" // 110
+                , "" // 111
+                , "" // 112
+                , "" // 113
+                , "" // 114
+                , "" // 115
+                , "" // 116
+                , "" // 117
+                , "" // 118
+                , "" // 119
+                , FileUtils.class.getSimpleName() // 120
+                , ClassUtils.toMethodName(FileUtils.class, "getTempDir") // 121
+                , "" // 122
+                , "" // 123
+                , "" // 124
+                , "" // 125
+                , "" // 126
+                , "" // 127
+                , "" // 128
+                , "" // 129
+                , "" // 130
+                , "" // 131
+                , "" // 132
+                , "" // 133
+                , "" // 134
+                , "" // 135
+                , "" // 136
+                , "" // 137
+                , "" // 138
+                , "" // 139
+                , "" // 140
+                , "" // 141
+                , "" // 142
+                , "" // 143
+                , "" // 144
+                , "" // 145
+                , "" // 146
+                , "" // 147
+                , "" // 148
+                , "" // 149
+                , this.toAllImplements(context) // 150
         };
 
         // 返回命令的使用说明文件
@@ -297,6 +267,14 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         System.out.println(mdfile.getAbsolutePath());
         FileUtils.write(mdfile, "utf-8", false, usage);
         return 0;
+    }
+
+    public static void main(String[] args) {
+        String str = ClassUtils.toMethodName(ScriptFunction.class, "keywords");
+        System.out.println(str);
+        for (int i = 119; i <= 150; i++) {
+//            System.out.println(", \"\" // " + i);
+        }
     }
 
     public void terminate() throws Exception {
@@ -389,57 +367,90 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         return StringUtils.rtrimBlank(buf, ',');
     }
 
-    public String toAllImplements(UniversalScriptContext scriptContext) {
-        StringBuilder buf = new StringBuilder();
-        EasyContext context = scriptContext.getContainer();
-        Set<Class<?>> setes = new LinkedHashSet<Class<?>>(context.getBeanInfoTypes());
+    public String toAllImplements(UniversalScriptContext context) {
+        EasyContext ioc = context.getContainer();
+
+        List<Class<?>> types1 = ioc.getBeanInfoTypes();
+        Collections.sort(types1, new Comparator<Class<?>>() {
+            public int compare(Class<?> o1, Class<?> o2) {
+                return o1.getSimpleName().compareTo(o2.getSimpleName());
+            }
+        });
+        LinkedHashSet<Class<?>> keys = new LinkedHashSet<Class<?>>(types1);
 
         // 以下这些接口的实现类已在帮助说明中删除
-        setes.remove(UniversalScriptVariableMethod.class);
-        setes.remove(UniversalCommandCompiler.class);
-        setes.remove(DatabaseDialect.class);
+        keys.remove(UniversalScriptVariableMethod.class);
+        keys.remove(UniversalCommandCompiler.class);
+        keys.remove(DatabaseDialect.class);
 
-        for (Class<?> cls : setes) {
-            if (context.getBeanBuilder(cls) != null) {
+        String colName1 = "Bean Class Name";
+        String colName2 = "Description";
+
+        StringBuilder buf = new StringBuilder();
+        for (Class<?> cls : keys) {
+            if (ioc.getBeanBuilder(cls) != null) {
                 continue;
             }
 
-            buf.append("* ").append(cls.getName()).append(FileUtils.lineSeparator);
-            List<EasyBeanInfo> list = context.getBeanInfoList(cls);
+            List<EasyBeanInfo> list = ioc.getBeanInfoList(cls);
+            if (list.isEmpty()) {
+                continue;
+            }
+
             CharTable ct = new CharTable();
-            ct.addTitle("");
-            ct.addTitle("");
+            ct.addTitle(colName1);
+            ct.addTitle(colName2);
             for (EasyBeanInfo beanInfo : list) {
                 ct.addCell(beanInfo.getType().getName());
                 ct.addCell(beanInfo.getDescription());
             }
-            buf.append(ct.toString(CharTable.Style.simple));
-            buf.append(FileUtils.lineSeparator);
-            buf.append(FileUtils.lineSeparator);
+
+            buf.append("### ").append(cls.getSimpleName());
+            buf.append(FileUtils.lineSeparatorUnix);
+
+            buf.append(ct.toString(CharTable.Style.markdown));
+            buf.append(FileUtils.lineSeparatorUnix);
+            buf.append(FileUtils.lineSeparatorUnix);
+            buf.append(FileUtils.lineSeparatorUnix);
         }
 
-        Set<Class<?>> beanClses = new LinkedHashSet<Class<?>>(context.getBeanBuilderType());
-        beanClses.remove(UniversalScriptVariableMethod.class);
-        beanClses.remove(UniversalCommandCompiler.class);
-        beanClses.remove(DatabaseDialect.class);
-        for (Class<?> cls : beanClses) {
-            EasyBeanBuilder<?> beanBuilder = context.getBeanBuilder(cls);
-            buf.append("* ").append(cls.getName()).append(" -> ").append(beanBuilder.getClass().getName()).append(FileUtils.lineSeparator);
+        List<Class<?>> types2 = ioc.getBeanBuilderType();
+        Collections.sort(types2, new Comparator<Class<?>>() {
+            public int compare(Class<?> o1, Class<?> o2) {
+                return o1.getSimpleName().compareTo(o2.getSimpleName());
+            }
+        });
 
-            List<EasyBeanInfo> list = context.getBeanInfoList(cls);
+        LinkedHashSet<Class<?>> builders = new LinkedHashSet<Class<?>>(types2);
+        builders.remove(UniversalScriptVariableMethod.class);
+        builders.remove(UniversalCommandCompiler.class);
+        builders.remove(DatabaseDialect.class);
+        for (Class<?> cls : builders) {
+            EasyBeanBuilder<?> beanBuilder = ioc.getBeanBuilder(cls);
+
+            List<EasyBeanInfo> list = ioc.getBeanInfoList(cls);
+            if (list.isEmpty()) {
+                continue;
+            }
+
             CharTable ct = new CharTable();
-            ct.addTitle("");
-            ct.addTitle("");
+            ct.addTitle(colName1);
+            ct.addTitle(colName2);
+
             for (EasyBeanInfo beanInfo : list) {
                 ct.addCell(beanInfo.getType().getName());
                 ct.addCell(beanInfo.getDescription());
             }
-            buf.append(ct.toString(CharTable.Style.simple));
-            buf.append(FileUtils.lineSeparator);
-            buf.append(FileUtils.lineSeparator);
+
+            buf.append("### ").append(cls.getSimpleName()).append(FileUtils.lineSeparatorUnix);
+            buf.append("**Use Bean Builder：").append(beanBuilder.getClass().getName()).append("**").append(FileUtils.lineSeparatorUnix);
+            buf.append(ct.toString(CharTable.Style.markdown));
+            buf.append(FileUtils.lineSeparatorUnix);
+            buf.append(FileUtils.lineSeparatorUnix);
+            buf.append(FileUtils.lineSeparatorUnix);
         }
 
-        return StringUtils.addLinePrefix(buf, "\t");
+        return buf.toString();
     }
 
     /**

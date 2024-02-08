@@ -30,7 +30,7 @@ public class SetCommand extends AbstractGlobalCommand {
     /** 变量值 */
     private String value;
 
-    /** 0表示赋值表达式; 1表示查询SQL; 2表示输出所有变量; 3表示删除变量 */
+    /** 0表示赋值表达式; 1表示查询SQL; 2表示输出所有变量; 3表示删除变量；4表示检查返回值；5表示不检查返回值； */
     private int type;
 
     public SetCommand(UniversalCommandCompiler compiler, String command, String name, String value, int type) {

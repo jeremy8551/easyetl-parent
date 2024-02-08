@@ -65,4 +65,9 @@ public interface EasyContext extends EasyContainerContext, EasyBeanRegister, Eas
      */
     EasyContainerContext removeIoc(String name);
 
+    /**
+     * 刷新组件信息
+     */
+    void refresh();
+    
 }

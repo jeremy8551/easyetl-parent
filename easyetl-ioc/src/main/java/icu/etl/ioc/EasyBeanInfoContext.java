@@ -18,6 +18,13 @@ public interface EasyBeanInfoContext {
     int scanPackages(String... args);
 
     /**
+     * 返回类包扫描规则
+     *
+     * @return 类包数组
+     */
+    String[] getScanRule();
+
+    /**
      * 返回容器中存储的所有组件的查询条件（按组件添加的顺序）
      *
      * @return 组件类信息的集合（按组件添加的顺序）

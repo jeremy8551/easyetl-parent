@@ -1,7 +1,7 @@
 package icu.etl.ioc;
 
 /**
- * 所有组件的实例化工厂
+ * 容器工厂接口
  */
 public interface EasyBeanFactory {
 
