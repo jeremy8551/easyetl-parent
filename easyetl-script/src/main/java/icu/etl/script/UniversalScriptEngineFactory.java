@@ -9,6 +9,7 @@ import java.util.Set;
 
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;
+import icu.etl.ioc.EasyContextInstance;
 import icu.etl.util.ArrayUtils;
 import icu.etl.util.CharTable;
 import icu.etl.util.Dates;
@@ -38,8 +39,8 @@ public class UniversalScriptEngineFactory implements ScriptEngineFactory {
      * 因为脚本引擎使用 SPI 机制读取并创建脚本引擎工厂实例，所以本方法中只做简单操作。
      */
     public UniversalScriptEngineFactory() {
-        if (EasyBeanContext.INSTANCE != null) {
-            this.setContext(EasyBeanContext.INSTANCE);
+        if (EasyContextInstance.get() != null) {
+            this.setContext(EasyContextInstance.get());
         }
     }
 
