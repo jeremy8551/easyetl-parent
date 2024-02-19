@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import icu.etl.util.ChinaUtils;
 import icu.etl.util.Dates;
 import icu.etl.util.Ensure;
 import icu.etl.util.Property;

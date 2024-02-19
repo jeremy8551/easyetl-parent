@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import icu.etl.Easyetl;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.io.BufferedLineReader;
 import icu.etl.jdk.JavaDialectFactory;
@@ -21,7 +22,7 @@ import icu.etl.util.StringUtils;
 public class Linuxs {
 
     /** Linux 操作系统内置账户名（用于过滤操作系统内置账户信息） */
-    public final static String PROPERTY_LINUX_BUILTIN_ACCT = Linuxs.class.getPackage().getName().split("\\.")[0] + "." + Linuxs.class.getPackage().getName().split("\\.")[1] + ".linux.builtin.accounts";
+    public final static String PROPERTY_LINUX_BUILTIN_ACCT = Easyetl.class.getPackage().getName() + ".linux.builtin.accounts";
 
     private Linuxs() {
     }

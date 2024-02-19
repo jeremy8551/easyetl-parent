@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import icu.etl.util.CharsetName;
+import icu.etl.util.ChinaUtils;
 import icu.etl.util.Ensure;
 import icu.etl.util.Property;
 import icu.etl.util.StringUtils;

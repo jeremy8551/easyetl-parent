@@ -1,4 +1,4 @@
-package icu.etl.cn;
+package icu.etl.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,14 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import icu.etl.cn.ChineseRandom;
 import icu.etl.jdk.JavaDialectFactory;
-import icu.etl.util.ArrayUtils;
-import icu.etl.util.CharsetName;
-import icu.etl.util.Dates;
-import icu.etl.util.Ensure;
-import icu.etl.util.Property;
-import icu.etl.util.StringUtils;
-import icu.etl.util.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -29,7 +23,7 @@ import org.w3c.dom.NodeList;
 public class ChinaUtils {
 
     /** 资源文件 */
-    public static String CONFIG_XML = "/" + ChinaUtils.class.getPackage().getName().replace('.', '/') + "/china.xml";
+    public static String CONFIG_XML = "/" + ChineseRandom.class.getPackage().getName().replace('.', '/') + "/china.xml";
 
     /** 字符集编码器 */
     public final static CharsetEncoder GBK_ENCODER = Charset.forName(CharsetName.GBK).newEncoder();

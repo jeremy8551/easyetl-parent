@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import icu.etl.Easyetl;
 import icu.etl.collection.CaseSensitivMap;
 import icu.etl.collection.CaseSensitivSet;
 import icu.etl.database.internal.StandardDatabaseType;
@@ -60,7 +61,7 @@ public class Jdbc {
     public final static String adminPw = "adminPw";
 
     /** 是否打印内部使用的数据库连接池详细操作日志, true-表示使用数据库连接池代理打印详细信息 */
-    public final static String PROPERTY_DBLOG = Jdbc.class.getPackage().getName().split("\\.")[0] + "." + Jdbc.class.getPackage().getName().split("\\.")[1] + ".dblog";
+    public final static String PROPERTY_DBLOG = Easyetl.class.getPackage().getName() + ".dblog";
 
     public Jdbc() {
     }

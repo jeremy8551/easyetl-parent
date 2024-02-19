@@ -1,5 +1,6 @@
 package icu.etl.log;
 
+import icu.etl.Easyetl;
 import icu.etl.log.cxt.LogContextImpl;
 import icu.etl.util.Ensure;
 
@@ -12,10 +13,10 @@ import icu.etl.util.Ensure;
 public class LogFactory {
 
     /** JVM参数名，日志级别，详见 {@linkplain LogLevel} */
-    public final static String PROPERTY_LOG = Log.class.getPackage().getName().split("\\.")[0] + "." + Log.class.getPackage().getName().split("\\.")[1] + ".logger";
+    public final static String PROPERTY_LOG = Easyetl.class.getPackage().getName() + ".logger";
 
     /** JVM参数名，强制使用控制台输出日志, 参数值就是日志格式（详见{@linkplain icu.etl.log.apd.LogPattern}） */
-    public final static String PROPERTY_LOG_SOUT = Log.class.getPackage().getName().split("\\.")[0] + "." + Log.class.getPackage().getName().split("\\.")[1] + ".logger.sout";
+    public final static String PROPERTY_LOG_SOUT = Easyetl.class.getPackage().getName() + ".logger.sout";
 
     /** 默认的日志格式, 详见{@linkplain icu.etl.log.apd.LogPattern} */
     public static String DEFAULT_LOG_PATTERN = "%d|%-5.5p|%30.30c|%50.50l|%m%ex%n";

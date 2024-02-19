@@ -30,7 +30,7 @@ public class PSCommandCompiler extends AbstractTraceCommandCompiler {
         String charsetName = context.getCharsetName();
         String[] cmd = StringUtils.split(ResourcesUtils.getMessage("script.message.stdout048"), ',');
         String[] ses = StringUtils.split(ResourcesUtils.getMessage("script.message.stdout049"), ',');
-        int length = Math.max(StringUtils.width(charsetName, cmd), StringUtils.width(charsetName, ses));
+        int length = Math.max(StringUtils.width(cmd, charsetName), StringUtils.width(ses, charsetName));
         out.println(new ScriptUsage(this.getClass() //
                 , StringUtils.left(cmd[0], length, charsetName, ' ') //
                 , StringUtils.left(cmd[1], length, charsetName, ' ') //
