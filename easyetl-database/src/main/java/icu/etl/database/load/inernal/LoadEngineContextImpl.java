@@ -1,8 +1,8 @@
 package icu.etl.database.load.inernal;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 
 import icu.etl.database.JdbcConverterMapper;
 import icu.etl.database.load.IndexMode;

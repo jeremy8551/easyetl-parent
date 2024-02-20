@@ -1,8 +1,5 @@
 package icu.etl.database.export.converter;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 public class DoubleConverter extends AbstractConverter {
 
     public void init() throws Exception {

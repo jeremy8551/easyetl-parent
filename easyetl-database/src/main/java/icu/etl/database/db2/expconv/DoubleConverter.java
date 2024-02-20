@@ -1,8 +1,5 @@
 package icu.etl.database.db2.expconv;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.database.db2.format.DB2DoubleFormat;
 import icu.etl.database.export.converter.AbstractConverter;
 

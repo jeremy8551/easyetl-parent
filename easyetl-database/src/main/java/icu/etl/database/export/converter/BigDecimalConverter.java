@@ -1,8 +1,6 @@
 package icu.etl.database.export.converter;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 
 public class BigDecimalConverter extends AbstractConverter {
 

@@ -17,7 +17,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import icu.etl.ProjectPom;
+import icu.etl.Easyetl;
 import icu.etl.ioc.EasyBeanRegister;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;
@@ -37,7 +37,7 @@ public class ClassScanner {
     private final static Log log = LogFactory.getLog(ClassScanner.class);
 
     /** 扫描的 JAVA 包名与 jar 文件名 */
-    public final static String PROPERTY_SCANNPKG = ProjectPom.getGroupID() + ".scan";
+    public final static String PROPERTY_SCANNPKG = Easyetl.class.getPackage().getName() + ".scan";
 
     /** 类加载器 */
     private ClassLoader classLoader;

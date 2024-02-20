@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import icu.etl.util.ClassUtils;
+import icu.etl.Easyetl;
 import icu.etl.util.IO;
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +37,7 @@ public class DatabaseDialectByDBTest {
         String schema = null;
         JdbcDao dao = new JdbcDao(rule.getContext(), this.connection);
         try {
-            String packageName = ClassUtils.getPackageName(DatabaseDialectByDBTest.class, 2);
+            String packageName = Easyetl.class.getPackage().getName();
             String tableName = packageName.replace('.', '_') + "_TEST_TEMP".toUpperCase();
             tableName = tableName.toUpperCase();
             System.out.println("tableName: " + tableName);

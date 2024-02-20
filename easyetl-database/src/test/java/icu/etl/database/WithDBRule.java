@@ -1,12 +1,12 @@
 package icu.etl.database;
 
-import javax.script.SimpleBindings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import javax.script.SimpleBindings;
 
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.ioc.EasyContext;

@@ -1,12 +1,12 @@
 package icu.etl.script;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 import java.util.Properties;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 
 import icu.etl.io.AliveReader;
 import icu.etl.ioc.EasyContext;

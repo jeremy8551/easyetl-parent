@@ -5,8 +5,8 @@ import java.util.Map;
 
 import icu.etl.script.compiler.ScriptAnalysis;
 import icu.etl.script.session.ScriptMainProcess;
-import icu.etl.script.session.UniversalScriptSessionImpl;
 import icu.etl.script.session.UniversalScriptSessionFactoryImpl;
+import icu.etl.script.session.UniversalScriptSessionImpl;
 import icu.etl.util.StringUtils;
 import org.junit.Before;
 import org.junit.Test;

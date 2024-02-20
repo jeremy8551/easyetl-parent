@@ -1,9 +1,7 @@
 package icu.etl.database.export.converter;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.sql.Clob;
-import java.sql.SQLException;
 
 import icu.etl.util.IO;
 

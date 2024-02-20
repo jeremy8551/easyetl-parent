@@ -1,8 +1,6 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import icu.etl.database.Jdbc;

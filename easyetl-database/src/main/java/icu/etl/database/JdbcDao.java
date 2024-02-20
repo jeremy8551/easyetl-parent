@@ -1,8 +1,5 @@
 package icu.etl.database;
 
-import javax.sql.DataSource;
-import javax.sql.RowSetInternal;
-import javax.sql.RowSetReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import javax.sql.DataSource;
+import javax.sql.RowSetInternal;
+import javax.sql.RowSetReader;
 
 import icu.etl.database.internal.StandardDatabaseProcedure;
 import icu.etl.database.internal.StandardRowSetInternal;
@@ -1015,7 +1015,7 @@ public class JdbcDao implements OSConnectCommand {
      */
     public String dropPrimaryKey(DatabaseIndex index) throws SQLException {
         Ensure.notNull(index);
-        
+
         return this.getDialect().dropPrimaryKey(this.getConnection(), index);
     }
 

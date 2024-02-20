@@ -1,11 +1,11 @@
 package icu.etl.database.pool;
 
-import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Logger;
+import javax.sql.DataSource;
 
 import icu.etl.database.logger.DataSourceLogger;
 import icu.etl.database.logger.DataSourceLoggerProxy;

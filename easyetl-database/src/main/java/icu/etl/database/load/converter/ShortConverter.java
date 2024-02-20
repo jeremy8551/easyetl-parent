@@ -1,7 +1,5 @@
 package icu.etl.database.load.converter;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.sql.Types;
 
 public class ShortConverter extends AbstractConverter {

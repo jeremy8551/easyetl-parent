@@ -5,7 +5,6 @@ import java.util.Arrays;
 import icu.etl.ProjectPom;
 import icu.etl.ioc.scan.ClassScanner;
 import icu.etl.ioc.scan.EasyScanPatternList;
-import icu.etl.util.Settings;
 import org.junit.Assert;
 import org.junit.Test;
 

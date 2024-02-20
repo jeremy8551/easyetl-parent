@@ -1,8 +1,8 @@
 package icu.etl.os;
 
-import javax.script.SimpleBindings;
 import java.io.File;
 import java.io.IOException;
+import javax.script.SimpleBindings;
 
 import icu.etl.crypto.MD5Encrypt;
 import icu.etl.io.BufferedLineWriter;

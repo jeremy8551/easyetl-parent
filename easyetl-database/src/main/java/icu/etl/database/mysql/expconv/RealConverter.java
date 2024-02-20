@@ -1,8 +1,5 @@
 package icu.etl.database.mysql.expconv;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.database.db2.format.DB2FloatFormat;
 import icu.etl.database.export.converter.AbstractConverter;
 

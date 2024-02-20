@@ -1,10 +1,10 @@
 package icu.etl.script;
 
+import java.io.File;
+import java.io.IOException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.File;
-import java.io.IOException;
 
 import icu.etl.database.db2.DB2ExportFile;
 import icu.etl.io.TextTableFileReader;

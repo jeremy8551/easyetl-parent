@@ -1,9 +1,7 @@
 package icu.etl.database.mysql.expconv;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 
 import icu.etl.database.db2.format.DB2DecimalFormat;
 import icu.etl.database.export.converter.AbstractConverter;

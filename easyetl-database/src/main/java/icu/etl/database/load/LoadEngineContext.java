@@ -1,7 +1,7 @@
 package icu.etl.database.load;
 
-import javax.sql.DataSource;
 import java.util.List;
+import javax.sql.DataSource;
 
 import icu.etl.database.JdbcConverterMapper;
 import icu.etl.database.load.inernal.DataWriterContext;

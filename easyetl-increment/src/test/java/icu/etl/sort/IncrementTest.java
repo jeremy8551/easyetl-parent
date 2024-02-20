@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.Date;
 
 import icu.etl.concurrent.ThreadSourceImpl;
-import icu.etl.increment.IncrementJob;
 import icu.etl.increment.IncrementContext;
+import icu.etl.increment.IncrementJob;
 import icu.etl.increment.IncrementListenerImpl;
 import icu.etl.increment.IncrementPositionImpl;
 import icu.etl.io.BufferedLineWriter;

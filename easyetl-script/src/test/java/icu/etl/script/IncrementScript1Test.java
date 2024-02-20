@@ -1,10 +1,10 @@
 package icu.etl.script;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;

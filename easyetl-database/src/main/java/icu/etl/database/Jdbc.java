@@ -1,6 +1,5 @@
 package icu.etl.database;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -21,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import javax.sql.DataSource;
 
 import icu.etl.Easyetl;
 import icu.etl.collection.CaseSensitivMap;

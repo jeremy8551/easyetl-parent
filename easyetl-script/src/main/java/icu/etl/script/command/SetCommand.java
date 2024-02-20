@@ -1,10 +1,10 @@
 package icu.etl.script.command;
 
-import javax.script.Bindings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.script.Bindings;
 
 import icu.etl.database.JdbcDao;
 import icu.etl.script.UniversalCommandCompiler;

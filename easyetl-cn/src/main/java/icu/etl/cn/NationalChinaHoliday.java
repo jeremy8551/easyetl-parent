@@ -10,7 +10,10 @@ import icu.etl.util.Dates;
 @EasyBean(name = "zh_cn", description = "2013-2023中国法定节假日")
 public class NationalChinaHoliday implements NationalHoliday {
 
+    /** 休息日 */
     private Set<Date> reset;
+
+    /** 工作日 */
     private Set<Date> works;
 
     public NationalChinaHoliday() {
@@ -441,6 +444,52 @@ public class NationalChinaHoliday implements NationalHoliday {
         this.reset.add(Dates.parse("2023-10-06")); // 国庆节
         this.works.add(Dates.parse("2023-10-07")); // 国庆节上班
         this.works.add(Dates.parse("2023-10-08")); // 国庆节上班
+
+        this.reset.add(Dates.parse("2023-12-30")); // 元旦
+        this.reset.add(Dates.parse("2023-12-31")); // 元旦
+
+        // 2024
+        this.reset.add(Dates.parse("2024-01-01")); // 元旦
+        
+        this.works.add(Dates.parse("2024-02-04")); // 春节上班
+        this.reset.add(Dates.parse("2024-02-10")); // 春节
+        this.reset.add(Dates.parse("2024-02-11")); // 春节
+        this.reset.add(Dates.parse("2024-02-12")); // 春节
+        this.reset.add(Dates.parse("2024-02-13")); // 春节
+        this.reset.add(Dates.parse("2024-02-14")); // 春节
+        this.reset.add(Dates.parse("2024-02-15")); // 春节
+        this.reset.add(Dates.parse("2024-02-16")); // 春节
+        this.reset.add(Dates.parse("2024-02-17")); // 春节
+        this.works.add(Dates.parse("2024-02-18")); // 春节上班
+
+        this.reset.add(Dates.parse("2024-04-04")); // 清明
+        this.reset.add(Dates.parse("2024-04-05")); // 清明
+        this.reset.add(Dates.parse("2024-04-06")); // 清明
+        this.works.add(Dates.parse("2024-04-07")); // 清明上班
+
+        this.works.add(Dates.parse("2024-04-28")); // 五一上班
+        this.reset.add(Dates.parse("2024-05-01")); // 五一
+        this.reset.add(Dates.parse("2024-05-02")); // 五一
+        this.reset.add(Dates.parse("2024-05-03")); // 五一
+        this.reset.add(Dates.parse("2024-05-04")); // 五一
+        this.reset.add(Dates.parse("2024-05-05")); // 五一
+        this.works.add(Dates.parse("2024-05-11")); // 五一上班
+
+        this.reset.add(Dates.parse("2024-06-10")); // 端午
+
+        this.works.add(Dates.parse("2024-09-14")); // 中秋节上班
+        this.reset.add(Dates.parse("2024-09-16")); // 中秋节
+        this.reset.add(Dates.parse("2024-09-17")); // 中秋节
+
+        this.works.add(Dates.parse("2024-09-29")); // 国庆上班
+        this.reset.add(Dates.parse("2024-10-01")); // 国庆
+        this.reset.add(Dates.parse("2024-10-02")); // 国庆
+        this.reset.add(Dates.parse("2024-10-03")); // 国庆
+        this.reset.add(Dates.parse("2024-10-04")); // 国庆
+        this.reset.add(Dates.parse("2024-10-05")); // 国庆
+        this.reset.add(Dates.parse("2024-10-06")); // 国庆
+        this.reset.add(Dates.parse("2024-10-07")); // 国庆
+        this.works.add(Dates.parse("2024-10-12")); // 国庆上班
     }
 
     public Set<Date> getRestDays() {

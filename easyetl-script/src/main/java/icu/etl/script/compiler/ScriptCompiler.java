@@ -1,8 +1,6 @@
 package icu.etl.script.compiler;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 

@@ -1,8 +1,5 @@
 package icu.etl.script.method;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import icu.etl.annotation.ScriptFunction;
 import icu.etl.script.UniversalScriptAnalysis;
 import icu.etl.script.UniversalScriptCommand;

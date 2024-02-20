@@ -1,9 +1,7 @@
 package icu.etl.database.db2.expconv;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.sql.SQLException;
 
 import icu.etl.collection.CharBuffer;
 import icu.etl.util.StringUtils;

@@ -1,10 +1,10 @@
 package icu.etl.database.export.inernal;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 import icu.etl.annotation.EasyBean;
 import icu.etl.database.export.ExtractMessage;
@@ -42,7 +42,7 @@ public class HttpRequestWriter implements ExtractWriter {
     public HttpRequestWriter(Object request, Object response, String filename, TextTable table, ExtractMessage message) throws IOException {
         Ensure.notNull(request);
         Ensure.notNull(response);
-        
+
         this.filename = filename;
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;

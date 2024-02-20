@@ -1,10 +1,10 @@
 package icu.etl.database.logger;
 
-import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import javax.sql.DataSource;
 
 import icu.etl.database.pool.SimpleDatasource;
 import icu.etl.ioc.EasyContext;

@@ -3,7 +3,6 @@ package icu.etl.script.command;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 
 import icu.etl.os.OSFtpCommand;
 import icu.etl.script.UniversalCommandCompiler;

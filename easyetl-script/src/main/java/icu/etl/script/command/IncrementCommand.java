@@ -7,13 +7,13 @@ import java.util.Set;
 
 import icu.etl.concurrent.EasyJob;
 import icu.etl.concurrent.ThreadSource;
-import icu.etl.increment.IncrementJob;
 import icu.etl.increment.IncrementContext;
+import icu.etl.increment.IncrementJob;
 import icu.etl.increment.IncrementListenerImpl;
 import icu.etl.increment.IncrementPosition;
+import icu.etl.increment.IncrementPositionImpl;
 import icu.etl.increment.IncrementReplace;
 import icu.etl.increment.IncrementReplaceListener;
-import icu.etl.increment.IncrementPositionImpl;
 import icu.etl.io.TextTableFile;
 import icu.etl.io.TextTableFileWriter;
 import icu.etl.printer.StandardFilePrinter;

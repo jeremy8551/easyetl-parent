@@ -1,8 +1,6 @@
 package icu.etl.database.export.converter;
 
-import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Map;
 
 import icu.etl.collection.CaseSensitivMap;

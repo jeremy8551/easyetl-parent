@@ -5,8 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import icu.etl.ProjectPom;
-import icu.etl.util.Settings;
+import icu.etl.Easyetl;
 import icu.etl.util.StringUtils;
 
 /**
@@ -140,7 +139,7 @@ public class EasyScanPatternList {
      * 将包名添加到集合中的第一个位置上
      */
     public void addGroupID() {
-        this.addFirst(ProjectPom.getGroupID());
+        this.addFirst(Easyetl.class.getPackage().getName());
     }
 
     /**

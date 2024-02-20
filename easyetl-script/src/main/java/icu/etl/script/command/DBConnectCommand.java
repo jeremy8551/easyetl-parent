@@ -1,9 +1,9 @@
 package icu.etl.script.command;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import javax.sql.DataSource;
 
 import icu.etl.database.JdbcDao;
 import icu.etl.script.UniversalCommandCompiler;

@@ -1,7 +1,5 @@
 package icu.etl.script.command;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
 
 import icu.etl.crypto.DESEncrypt;

@@ -1,8 +1,8 @@
 package icu.etl.script.internal;
 
+import java.util.Map;
 import javax.script.Bindings;
 import javax.script.SimpleBindings;
-import java.util.Map;
 
 import icu.etl.script.UniversalScriptVariable;
 

@@ -1,7 +1,5 @@
 package icu.etl.database.export.converter;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
