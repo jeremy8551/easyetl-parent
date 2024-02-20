@@ -7,12 +7,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import icu.apache.net.telnet.EchoOptionHandler;
-import icu.apache.net.telnet.InvalidTelnetOptionException;
-import icu.apache.net.telnet.SuppressGAOptionHandler;
-import icu.apache.net.telnet.TelnetClient;
-import icu.apache.net.telnet.TelnetNotificationHandler;
-import icu.apache.net.telnet.TerminalTypeOptionHandler;
+import icu.etl.apache.net.telnet.EchoOptionHandler;
+import icu.etl.apache.net.telnet.InvalidTelnetOptionException;
+import icu.etl.apache.net.telnet.SuppressGAOptionHandler;
+import icu.etl.apache.net.telnet.TelnetClient;
+import icu.etl.apache.net.telnet.TelnetNotificationHandler;
+import icu.etl.apache.net.telnet.TerminalTypeOptionHandler;
 import icu.etl.annotation.EasyBean;
 import icu.etl.collection.ByteBuffer;
 import icu.etl.io.BufferedLineReader;

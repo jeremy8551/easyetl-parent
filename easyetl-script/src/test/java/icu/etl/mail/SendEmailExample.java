@@ -1,6 +1,6 @@
 package icu.etl.mail;
 
-import icu.apache.mail.common.SimpleEmail;
+import icu.etl.apache.mail.common.SimpleEmail;
 import icu.etl.util.Dates;
 
 public class SendEmailExample {

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import icu.apache.ant.tar.TarEntry;
+import icu.etl.apache.ant.tar.TarEntry;
 import icu.etl.annotation.EasyBean;
 import icu.etl.log.Log;
 import icu.etl.log.LogFactory;

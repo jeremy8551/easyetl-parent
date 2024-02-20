@@ -3,7 +3,7 @@ package icu.etl.zip;
 import java.io.File;
 import java.io.IOException;
 
-import icu.apache.ant.zip.ZipFile;
+import icu.etl.apache.ant.zip.ZipFile;
 import icu.etl.ioc.EasyBeanContext;
 import icu.etl.util.FileUtils;
 import icu.etl.util.IO;

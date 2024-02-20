@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Locale;
 
-import icu.apache.net.pop3.POP3Client;
-import icu.apache.net.pop3.POP3MessageInfo;
+import icu.etl.apache.net.pop3.POP3Client;
+import icu.etl.apache.net.pop3.POP3MessageInfo;
 import icu.etl.util.IO;
 import org.junit.Assert;
 import org.junit.Ignore;

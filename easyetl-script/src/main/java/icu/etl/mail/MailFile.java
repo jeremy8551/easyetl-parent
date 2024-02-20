@@ -3,7 +3,7 @@ package icu.etl.mail;
 import java.io.File;
 import java.io.IOException;
 
-import icu.apache.mail.common.EmailAttachment;
+import icu.etl.apache.mail.common.EmailAttachment;
 import icu.etl.ioc.EasyContext;
 import icu.etl.util.Ensure;
 import icu.etl.util.FileUtils;

@@ -3,7 +3,7 @@ package icu.etl.mail;
 import java.io.File;
 import java.util.List;
 
-import icu.apache.mail.search.SearchTerm;
+import icu.etl.apache.mail.search.SearchTerm;
 import icu.etl.util.CharsetName;
 
 /**

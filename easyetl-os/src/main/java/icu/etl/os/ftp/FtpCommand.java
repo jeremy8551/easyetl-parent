@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import icu.apache.net.ftp.FTPClient;
-import icu.apache.net.ftp.parser.FTPFileEntryParserFactory;
+import icu.etl.apache.net.ftp.FTPClient;
+import icu.etl.apache.net.ftp.parser.FTPFileEntryParserFactory;
 import icu.etl.annotation.EasyBean;
 import icu.etl.expression.GPatternExpression;
 import icu.etl.ioc.EasyContext;

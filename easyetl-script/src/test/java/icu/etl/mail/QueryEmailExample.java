@@ -1,9 +1,9 @@
 package icu.etl.mail;
 
-import icu.apache.mail.Folder;
-import icu.apache.mail.MessagingException;
-import icu.apache.mail.Multipart;
-import icu.apache.mail.Part;
+import icu.etl.apache.mail.Folder;
+import icu.etl.apache.mail.MessagingException;
+import icu.etl.apache.mail.Multipart;
+import icu.etl.apache.mail.Part;
 import icu.etl.util.StringUtils;
 
 public class QueryEmailExample {
