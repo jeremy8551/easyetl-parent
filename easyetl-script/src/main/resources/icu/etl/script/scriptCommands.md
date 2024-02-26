@@ -186,7 +186,7 @@ $ set varname=select count(*) from tablename;
 
 
 
-检查 `engine.eval("..")` 方法的状态码，如果状态码不是零则抛出异常。
+设置检查 `engine.eval("..")` 方法的状态码（如果 `engine.eval("..")` 方法返回的状态码不是零，则会抛出异常）
 
 ```shell
 $ set -e
@@ -194,7 +194,7 @@ $ set -e
 
 
 
-不检查 `engine.eval("..")` 方法的状态码，如果状态码不是零不会抛出异常。
+设置不检查 `engine.eval("..")` 方法的状态码（不管 `engine.eval("..")` 方法返回的状态码是不是零，都不会抛出异常）
 
 ```shell
 $ set -E

@@ -76,10 +76,10 @@ import icu.etl.util.StringUtils;
 /**
  * 打印脚本引擎的使用说明
  * <p>
- * help
- * help markdown
- * help html
- * help command
+ * help <br>
+ * help markdown <br>
+ * help html <br>
+ * help command <br>
  */
 public class HelpCommand extends AbstractTraceCommand implements NohupCommandSupported {
 

@@ -42,12 +42,12 @@ public class MysqlDialect extends AbstractDialect {
         return 0;
     }
 
-    public void setSchema(Connection conn, String schema) {
-        throw new UnsupportedOperationException(schema);
+    public void setSchema(Connection conn, String schema) throws SQLException {
+        JdbcDao.execute(conn, "set schema " + schema);
     }
 
     public boolean supportSchema() {
-        return false;
+        return true;
     }
 
     public List<DatabaseURL> parseJdbcUrl(String url) {
