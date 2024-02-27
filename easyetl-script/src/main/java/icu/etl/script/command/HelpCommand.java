@@ -18,7 +18,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
-import icu.etl.Easyetl;
 import icu.etl.ProjectPom;
 import icu.etl.annotation.EasyBean;
 import icu.etl.annotation.ScriptCommand;
@@ -95,6 +94,8 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
         UniversalScriptAnalysis analysis = session.getAnalysis();
         String type = analysis.replaceVariable(session, context, this.format, false); // md html cmd
 
+        String[] strArgs = {};
+
         UniversalCommandRepository cr = session.getCompiler().getRepository();
         VariableMethodRepository repository = cr.get(VariableMethodCommandCompiler.class).getRepository();
         String charsetName = context.getCharsetName();
@@ -135,7 +136,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , EasyContext.class.getSimpleName() // 32
                 , DB2Dialect.class.getSimpleName() // 33
                 , Arrays.toString(context.getContainer().getScanRule()) // 34
-                , Easyetl.class.getName().toLowerCase().replace('.', '/') // 35
+                , FileUtils.getTempDir(false).getAbsolutePath() // 35
                 , EasyBeanTable.class.getName() // 36
                 , EasyBeanBuilder.class.getName() // 37
                 , EasyBeanInfoValue.class.getName() // 38
@@ -221,7 +222,7 @@ public class HelpCommand extends AbstractTraceCommand implements NohupCommandSup
                 , "" // 118
                 , "" // 119
                 , FileUtils.class.getSimpleName() // 120
-                , ClassUtils.toMethodName(FileUtils.class, "getTempDir") // 121
+                , ClassUtils.toMethodName(FileUtils.class, "getTempDir", strArgs.getClass()) // 121
                 , "" // 122
                 , "" // 123
                 , "" // 124
