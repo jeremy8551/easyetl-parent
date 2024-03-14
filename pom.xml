@@ -6,7 +6,7 @@
         <groupId>icu.etl</groupId>
         <artifactId>easyetl-dependencies</artifactId>
         <version>${revision}</version>
-        <relativePath>../easyetl-dependencies</relativePath>
+        <relativePath/>
     </parent>
 
     <!-- 项目信息 -->
