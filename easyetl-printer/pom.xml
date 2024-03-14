@@ -7,11 +7,10 @@
         <groupId>icu.etl</groupId>
         <artifactId>easyetl-parent</artifactId>
         <version>${revision}</version>
-        <relativePath>../../easyetl-parent</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>easyetl-printer</artifactId>
-    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
