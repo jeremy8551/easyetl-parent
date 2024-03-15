@@ -121,7 +121,15 @@ public class FileAppenderWriter {
      * 关闭资源
      */
     public void close() {
-        IO.closeQuiet(this.out);
+        try {
+            this.flush(); // 提交缓存
+        } catch (Throwable e) {
+            if (JUL.isErrorEnabled()) {
+                JUL.error(e.getLocalizedMessage(), e);
+            }
+        } finally {
+            IO.closeQuiet(this.out); // 关闭输出流
+        }
     }
 
     /**
