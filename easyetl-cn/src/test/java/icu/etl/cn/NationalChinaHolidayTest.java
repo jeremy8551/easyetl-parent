@@ -57,9 +57,11 @@ public class NationalChinaHolidayTest {
         EasyBeanContext context = new EasyBeanContext();
         List<EasyBeanInfo> list = context.getBeanInfoList(NationalHoliday.class);
         for (EasyBeanInfo beanInfo : list) {
-            System.out.println(beanInfo.getType().getSimpleName());
+            System.out.println("1: " + beanInfo.getType().getSimpleName());
         }
-        assertTrue(context.getBean(NationalHoliday.class).getWorkDays().size() > 0);
+        NationalHoliday holiday = context.getBean(NationalHoliday.class);
+        System.out.println("2: " + holiday);
+        assertTrue(holiday.getWorkDays().size() > 0);
     }
 
     @Test
