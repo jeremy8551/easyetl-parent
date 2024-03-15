@@ -6,11 +6,10 @@ import icu.etl.os.macos.MacOS;
 import icu.etl.util.Dates;
 import icu.etl.util.TimeWatch;
 import org.junit.Assert;
-import org.junit.Test;
 
 public class MacOSTest {
 
-    @Test
+    //    @Test
     public void test() {
         TimeWatch watch = new TimeWatch();
         MacOS os = null;

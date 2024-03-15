@@ -50,7 +50,7 @@ public class NationalHolidaysTest {
         FileUtils.delete(classfile);
         System.out.println("classes path: " + classfile.getAbsolutePath());
 
-        NationalHoliday bean = context.getBean(NationalHoliday.class);
+        NationalHoliday bean = context.getBean(NationalHoliday.class, "zh_CN");
         Assert.assertNotNull(bean);
         Assert.assertFalse(bean.getRestDays().contains(Dates.parse("2021-12-24")));
         Assert.assertFalse(bean.getWorkDays().contains(Dates.parse("2021-12-24")));
