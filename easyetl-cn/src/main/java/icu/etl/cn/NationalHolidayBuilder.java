@@ -12,7 +12,10 @@ import icu.etl.ioc.EasyBeanEvent;
 import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.ioc.EasyBeanInfoValue;
 import icu.etl.ioc.EasyContext;
+import icu.etl.log.Log;
+import icu.etl.log.LogFactory;
 import icu.etl.util.ArrayUtils;
+import icu.etl.util.ResourcesUtils;
 import icu.etl.util.StringUtils;
 
 /**
@@ -25,7 +28,9 @@ import icu.etl.util.StringUtils;
  */
 @EasyBean
 public class NationalHolidayBuilder implements EasyBeanBuilder<NationalHoliday>, BeanEventListener {
+    private final static Log log = LogFactory.getLog(NationalHolidayBuilder.class);
 
+    /** 国家地区与法定假日的映射关系,如: zh_CN 与 {@linkplain NationalChinaHoliday} 映射 */
     private Map<String, NationalHolidaySet> map;
 
     /**
@@ -69,7 +74,16 @@ public class NationalHolidayBuilder implements EasyBeanBuilder<NationalHoliday>,
     public NationalHoliday getBean(EasyContext context, Object... args) throws Exception {
         // 使用当前默认国家语言信息
         if (args.length == 0) {
-            return this.map.get(this.toKey(Locale.getDefault()));
+            String key = this.toKey(Locale.getDefault());
+            NationalHolidaySet holidaySet = this.map.get(key);
+            if (holidaySet == null) {
+                String defaultKey = "zh_CN";
+                if (log.isWarnEnabled()) {
+                    log.warn(ResourcesUtils.getMessage("cn.standard.output.msg001", key, defaultKey));
+                }
+                holidaySet = this.map.get(defaultKey);
+            }
+            return holidaySet;
         }
 
         // 查询指定国家语言信息

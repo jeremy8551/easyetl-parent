@@ -7,7 +7,7 @@ import java.util.Set;
 import icu.etl.annotation.EasyBean;
 import icu.etl.util.Dates;
 
-@EasyBean(name = "zh_cn", description = "2013-2023中国法定节假日")
+@EasyBean(name = "zh_cn", description = "从2013年开始至今的中国法定节假日")
 public class NationalChinaHoliday implements NationalHoliday {
 
     /** 休息日 */
@@ -450,7 +450,7 @@ public class NationalChinaHoliday implements NationalHoliday {
 
         // 2024
         this.reset.add(Dates.parse("2024-01-01")); // 元旦
-        
+
         this.works.add(Dates.parse("2024-02-04")); // 春节上班
         this.reset.add(Dates.parse("2024-02-10")); // 春节
         this.reset.add(Dates.parse("2024-02-11")); // 春节
