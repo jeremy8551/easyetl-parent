@@ -1,9 +1,6 @@
 package icu.etl.cn;
 
-import java.util.List;
-
 import icu.etl.ioc.EasyBeanContext;
-import icu.etl.ioc.EasyBeanInfo;
 import icu.etl.util.Dates;
 import org.junit.Test;
 
@@ -55,13 +52,7 @@ public class NationalChinaHolidayTest {
     @Test
     public void testGetLegalWorkDay() {
         EasyBeanContext context = new EasyBeanContext();
-        List<EasyBeanInfo> list = context.getBeanInfoList(NationalHoliday.class);
-        for (EasyBeanInfo beanInfo : list) {
-            System.out.println("1: " + beanInfo.getType().getSimpleName());
-        }
-        NationalHoliday holiday = context.getBean(NationalHoliday.class);
-        System.out.println("2: " + holiday);
-        assertTrue(holiday.getWorkDays().size() > 0);
+        assertTrue(context.getBean(NationalHoliday.class).getWorkDays().size() > 0);
     }
 
     @Test

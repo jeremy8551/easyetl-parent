@@ -77,11 +77,9 @@ public class NationalHolidayBuilder implements EasyBeanBuilder<NationalHoliday>,
             String key = this.toKey(Locale.getDefault());
             NationalHolidaySet holidaySet = this.map.get(key);
             if (holidaySet == null) {
-                String defaultKey = "zh_CN";
                 if (log.isWarnEnabled()) {
-                    log.warn(ResourcesUtils.getMessage("cn.standard.output.msg001", key, defaultKey));
+                    log.warn(ResourcesUtils.getMessage("cn.standard.output.msg001", key));
                 }
-                holidaySet = this.map.get(defaultKey);
             }
             return holidaySet;
         }
