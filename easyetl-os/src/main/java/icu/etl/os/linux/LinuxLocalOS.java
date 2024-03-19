@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -90,6 +91,10 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
         File file = new File("/proc/version");
         String kernelStr = FileUtils.readline(file, CharsetName.ISO_8859_1, 0);
         String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(kernelStr));
+        if (array.length < 3) {
+            throw new IllegalArgumentException(kernelStr + FileUtils.lineSeparator + Arrays.toString(array));
+        }
+
         this.name = array[0];
         this.kernel = array[2];
 
