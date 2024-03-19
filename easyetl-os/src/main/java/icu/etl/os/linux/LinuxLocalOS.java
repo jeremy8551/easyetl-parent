@@ -89,14 +89,30 @@ public class LinuxLocalOS implements OS, OSDateCommand, OSNetwork {
      */
     protected void init() throws IOException {
         File file = new File("/proc/version");
-        String kernelStr = FileUtils.readline(file, CharsetName.ISO_8859_1, 0);
-        String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(kernelStr));
-        if (array.length < 3) {
-            throw new IllegalArgumentException(kernelStr + FileUtils.lineSeparator + Arrays.toString(array));
+        if (file.exists()) {
+            String kernelStr = FileUtils.readline(file, CharsetName.ISO_8859_1, 0);
+            if (StringUtils.isNotBlank(kernelStr)) {
+                String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(kernelStr));
+                if (array.length < 3) {
+                    throw new IllegalArgumentException(kernelStr + FileUtils.lineSeparator + Arrays.toString(array));
+                }
+
+                this.name = array[0];
+                this.kernel = array[2];
+            }
         }
 
-        this.name = array[0];
-        this.kernel = array[2];
+        // 如果不能读取 /proc/version 文件，则执行 uname 命令
+        if (StringUtils.isBlank(this.name)) {
+            this.cmd.execute("uname -a");
+            String uname = this.cmd.getStdout();
+            String[] array = StringUtils.splitByBlank(StringUtils.trimBlank(uname));
+            if (array.length < 3) {
+                throw new IllegalArgumentException(uname + FileUtils.lineSeparator + Arrays.toString(array));
+            }
+            this.name = array[0];
+            this.kernel = array[2];
+        }
 
         this.cmd.execute("cat /etc/*-release");
         this.release = StringUtils.trimBlank(this.cmd.getStdout());
